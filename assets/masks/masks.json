@@ -1,0 +1,240 @@
+{
+  "balance-3": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit Balance 3"
+  },
+  "balance-ultra": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit Balance Ultra"
+  },
+  "bip-max": {
+    "w": 432,
+    "h": 514,
+    "radius": 106,
+    "shape": "s",
+    "name": "Amazfit Bip Max"
+  },
+  "cheetah-2-ultra": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit Cheetah 2 Ultra"
+  },
+  "cheetah-2-pro": {
+    "w": 466,
+    "h": 466,
+    "radius": 233,
+    "shape": "r",
+    "name": "Amazfit Cheetah 2 Pro"
+  },
+  "active-3-premium": {
+    "w": 466,
+    "h": 466,
+    "radius": 233,
+    "shape": "r",
+    "name": "Amazfit Active 3 Premium"
+  },
+  "trex-ultra-2": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit T-Rex Ultra 2"
+  },
+  "active-max": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit Active Max"
+  },
+  "trex-3-pro-44": {
+    "w": 466,
+    "h": 466,
+    "radius": 233,
+    "shape": "r",
+    "name": "Amazfit T-Rex 3 Pro (44mm)"
+  },
+  "trex-3-pro-48": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit T-Rex 3 Pro (48mm)"
+  },
+  "active-2-square": {
+    "w": 390,
+    "h": 450,
+    "radius": 86,
+    "shape": "s",
+    "name": "Amazfit Active 2 (Square)"
+  },
+  "balance-2": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit Balance 2"
+  },
+  "bip-6": {
+    "w": 390,
+    "h": 450,
+    "radius": 86,
+    "shape": "s",
+    "name": "Amazfit Bip 6"
+  },
+  "active-2": {
+    "w": 466,
+    "h": 466,
+    "radius": 233,
+    "shape": "r",
+    "name": "Amazfit Active 2 (Round)"
+  },
+  "trex-3": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit T-Rex 3"
+  },
+  "bip-5-unity": {
+    "w": 320,
+    "h": 380,
+    "radius": 69,
+    "shape": "s",
+    "name": "Amazfit Bip 5 Unity"
+  },
+  "active-edge": {
+    "w": 360,
+    "h": 360,
+    "radius": 180,
+    "shape": "r",
+    "name": "Amazfit Active Edge"
+  },
+  "active": {
+    "w": 390,
+    "h": 450,
+    "radius": 86,
+    "shape": "s",
+    "name": "Amazfit Active"
+  },
+  "balance": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit Balance"
+  },
+  "cheetah-square": {
+    "w": 390,
+    "h": 450,
+    "radius": 86,
+    "shape": "s",
+    "name": "Amazfit Cheetah (Square)"
+  },
+  "bip-5": {
+    "w": 320,
+    "h": 380,
+    "radius": 69,
+    "shape": "s",
+    "name": "Amazfit Bip 5"
+  },
+  "cheetah-pro": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit Cheetah Pro"
+  },
+  "cheetah-round": {
+    "w": 454,
+    "h": 454,
+    "radius": 227,
+    "shape": "r",
+    "name": "Amazfit Cheetah (Round)"
+  },
+  "trex-ultra": {
+    "w": 454,
+    "h": 454,
+    "radius": 227,
+    "shape": "r",
+    "name": "Amazfit T-Rex Ultra"
+  },
+  "gtr-mini": {
+    "w": 416,
+    "h": 416,
+    "radius": 208,
+    "shape": "r",
+    "name": "Amazfit GTR Mini"
+  },
+  "gtr-4": {
+    "w": 466,
+    "h": 466,
+    "radius": 233,
+    "shape": "r",
+    "name": "Amazfit GTR 4"
+  },
+  "gts-4": {
+    "w": 390,
+    "h": 450,
+    "radius": 86,
+    "shape": "s",
+    "name": "Amazfit GTS 4"
+  },
+  "gts-4-mini": {
+    "w": 336,
+    "h": 384,
+    "radius": 80,
+    "shape": "s",
+    "name": "Amazfit GTS 4 mini"
+  },
+  "falcon": {
+    "w": 416,
+    "h": 416,
+    "radius": 208,
+    "shape": "r",
+    "name": "Amazfit Falcon"
+  },
+  "band-7": {
+    "w": 194,
+    "h": 368,
+    "radius": 25,
+    "shape": "b",
+    "name": "Amazfit Band 7"
+  },
+  "gtr-3-pro": {
+    "w": 480,
+    "h": 480,
+    "radius": 240,
+    "shape": "r",
+    "name": "Amazfit GTR 3 Pro"
+  },
+  "gtr-3": {
+    "w": 454,
+    "h": 454,
+    "radius": 227,
+    "shape": "r",
+    "name": "Amazfit GTR 3"
+  },
+  "gts-3": {
+    "w": 390,
+    "h": 450,
+    "radius": 86,
+    "shape": "s",
+    "name": "Amazfit GTS 3"
+  },
+  "trex-2": {
+    "w": 454,
+    "h": 454,
+    "radius": 227,
+    "shape": "r",
+    "name": "Amazfit T-Rex 2"
+  }
+}

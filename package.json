@@ -1,0 +1,65 @@
+{
+  "name": "amazfit-watchface-designer",
+  "version": "0.1.0",
+  "description": "Zepp OS (Amazfit) watchface designer for Electron — visual editor + Zeus CLI project export",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "dist": "electron-builder",
+    "dist-mac": "electron-builder --mac",
+    "dist-win": "electron-builder --win",
+    "dist-linux": "electron-builder --linux",
+    "css": "tailwindcss -i styles-src.css -o styles.css --minify",
+    "masks": "node tools/gen-masks.js",
+    "sample": "node tools/make-sample.js",
+    "smoke": "electron tools/smoke.js",
+    "shots": "electron tools/shot.js"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
+    "sortablejs": "^1.15.7",
+    "tailwindcss": "^4.3.3"
+  },
+  "dependencies": {
+    "pngjs": "^7.0.0",
+    "qrcode": "^1.5.4"
+  },
+  "build": {
+    "appId": "com.amazfit.watchface.designer",
+    "productName": "Amazfit Watchface Designer",
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "styles.css",
+      "vendor/**/*",
+      "renderer.js",
+      "assets/fonts/**/*",
+      "assets/masks/**/*",
+      "core/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development"
+    }
+  }
+}

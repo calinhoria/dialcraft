@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Amazfit Watchface Designer</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-bg text-ink select-none">
+<header class="flex items-center gap-1.5 px-3 h-[46px] bg-panel border-b border-line">
+  <!-- file group -->
+  <button id="btnNew" title="New watchface" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 12v6M9 15h6"/></svg>New</button>
+  <button id="btnUndo" title="Undo (Ctrl+Z)" disabled class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+  <button id="btnRedo" title="Redo (Ctrl+Shift+Z)" disabled class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+  <span class="hsep"></span>
+  <button id="btnOpen" title="Open a saved .wfproj project folder" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15.5 12.5h5M18 10v5"/></svg>Open</button>
+  <button id="btnSave" title="Save project (Ctrl+S)" disabled class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l3 3v15H5z"/><path d="M9 3v6h6V3M8 15h8v6H8z"/></svg>Save</button>
+
+  <!-- add tools group -->
+  <span class="hsep"></span>
+  <div class="presets">
+    <button id="btnComponents" title="Add a widget" disabled class="hbtn sm">
+      <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg>Add<span class="text-slate-500">▾</span>
+    </button>
+    <div id="componentsMenu" class="presets-menu" hidden></div>
+  </div>
+  <div class="presets">
+    <button id="btnPresets" title="Ready-made components from the Zepp design spec" disabled class="hbtn sm">
+      <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>Presets<span class="text-slate-500">▾</span>
+    </button>
+    <div id="presetsMenu" class="presets-menu" hidden></div>
+  </div>
+  <div class="flex items-center gap-1 p-1 rounded-lg bg-black/25 border border-line">
+    <button id="btnGrid" title="Toggle grid &amp; snapping" class="hbtn sm"><svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4h16v16H4z"/><path d="M9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16"/></svg>Grid</button>
+    <button id="btnMask" title="Toggle the device display mask" class="hbtn sm"><svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="6" y="3" width="12" height="18" rx="4"/><path d="M9 8h6"/></svg>Mask</button>
+    <button id="btnUpload" title="Import images (any format, saved as PNG)" disabled class="hbtn sm"><svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 20h16"/></svg>Upload</button>
+  </div>
+  <div class="presets">
+    <button id="btnGlyphs" title="Generate digit / glyph image sets from a font" disabled class="hbtn sm">
+      <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2M9 20h6M12 5v15"/></svg>Glyphs<span class="text-slate-500">▾</span>
+    </button>
+    <div id="glyphsMenu" class="presets-menu" hidden></div>
+  </div>
+
+  <div class="flex-1"></div>
+
+  <!-- checks + export -->
+  <button id="btnLint" title="Check the project against the Zepp design spec" class="hbtn">Check</button>
+  <button id="btnExportZeus" title="Export a Zeus CLI project (app.json + app.js + watchface/ + assets/)" disabled class="hbtn">
+    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 21h16"/></svg>Export Zeus
+  </button>
+  <button id="btnBuild" title="Export and build an installable .zab with the Zeus CLI" disabled class="hbtn primary">
+    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12 4 7.5M12 12v9M12 12l8-4.5"/></svg>Build .zab
+  </button>
+  <button id="btnInstall" title="Install on the watch over Wi-Fi: serve the package and scan a QR code" disabled class="hbtn">
+    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v3M17 20h4"/></svg>Install
+  </button>
+
+  <input id="fileUpload" type="file" accept="image/*" multiple hidden />
+</header>
+
+<main class="grid gap-3 p-3 grid-cols-[300px_minmax(0,1fr)_320px] empty">
+  <section class="left flex flex-col gap-3 min-w-0">
+    <div class="panel-c rounded-xl border border-line bg-panel p-3" data-panel>
+      <h3 class="phead" data-panel-head>Watchface <span class="flex-1"></span><span class="chev">▾</span></h3>
+      <div class="pbody">
+        <div class="row"><span class="lbl">Name</span><input id="inpName" type="text" placeholder="My watchface" /></div>
+        <div class="row"><span class="lbl">Device</span><select id="projDevice"></select></div>
+        <div class="row"><span class="lbl">Description</span><input id="inpDesc" type="text" placeholder="Short store description" /></div>
+        <div class="row"><span class="lbl">App id</span><input id="inpAppId" type="number" min="1" max="9999999" /></div>
+        <div class="row"><span class="lbl">Glyph font</span><select id="projFont"></select></div>
+        <div class="row"><span class="lbl">Fonts</span><button id="btnFonts" class="row-btn" title="Import your own fonts, preview them and rasterize glyph sets">Font library &amp; glyphs…</button></div>
+        <div class="row small" id="screenInfo"></div>
+        <div class="row small" id="targetInfo"></div>
+        <button id="btnConvert" class="row-btn" title="Point this project at another device (scales geometry, resamples images)">Change device…</button>
+        <button id="btnCloseProject" class="row-btn">Close project</button>
+      </div>
+    </div>
+    <div class="panel-c rounded-xl border border-line bg-panel p-3 min-w-0" data-panel>
+      <h3 class="phead" data-panel-head>Layers <span id="wcount" class="mut-n"></span><span class="flex-1"></span><span class="lbtns"><button id="btnGroup" title="Group selected layers (Ctrl+G)">&#x29C9;</button><button id="btnUngroup" title="Ungroup (Ctrl+Shift+G)">&#x29C9;&#xFE0E;</button></span><span class="chev">▾</span></h3>
+      <div id="layers" class="pbody"></div>
+    </div>
+    <div class="panel-c collapsed rounded-xl border border-line bg-panel p-3 min-w-0" data-panel id="imagesPanel">
+      <h3 class="phead" data-panel-head>Project images <span id="icount" class="mut-n"></span><span class="flex-1"></span><span class="chev">▾</span></h3>
+      <div class="pbody">
+        <button id="btnPruneImages" class="row-btn" title="Delete images no widget references">Remove unused</button>
+        <div id="images" class="mt-2"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="center flex flex-col items-center justify-center gap-2.5 min-w-0">
+    <div id="emptyState" class="empty-state" hidden>
+      <h2>No watchface open</h2>
+      <p class="muted">Start a new watchface, open a saved project, or read the Zepp OS docs at <code>docs.zepp.com</code>.</p>
+      <div class="es-btns">
+        <button id="btnEmptyNew" class="es-primary">New watchface</button>
+        <button id="btnEmptyOpenProject">Open project</button>
+      </div>
+      <div id="recentWrap" class="recent" hidden>
+        <div class="recent-head">Recent projects</div>
+        <div id="recentList"></div>
+      </div>
+    </div>
+    <div class="watch-head text-center">
+      <div id="watchTitle" class="text-[17px] font-bold leading-tight">No face loaded</div>
+      <div id="watchSub" class="text-xs text-mut mt-0.5"></div>
+    </div>
+    <div class="canvas-wrap"><div id="cvDevice" class="cv-device"><canvas id="cv"></canvas></div></div>
+    <div class="center-tools">
+      <button id="btnPreviewNormal" class="on" title="Preview the normal (always-on for the user) state">Normal</button>
+      <button id="btnPreviewAod" title="Preview the AOD (always-on display) state">AOD</button>
+      <button id="btnPreviewLive" title="Run the preview clock from the real time">Live clock</button>
+    </div>
+    <div id="meta" class="meta-status"></div>
+    <div class="hint">Drag widget to move &middot; resize from the corner handles &middot; click a layer to select &middot; Ctrl+Z undo</div>
+  </section>
+
+  <section class="flex flex-col gap-3 min-w-0">
+    <div class="panel-c rounded-xl border border-line bg-panel p-3 min-w-0" data-panel>
+      <h3 class="phead" data-panel-head>Properties <span class="flex-1"></span><span class="chev">▾</span></h3>
+      <div id="props" class="pbody text-[13px]"><p class="muted">Select a layer.</p></div>
+    </div>
+    <div class="panel-c rounded-xl border border-line bg-panel p-3 min-w-0" data-panel>
+      <h3 class="phead" data-panel-head>Test data <span class="flex-1"></span><span class="chev">▾</span></h3>
+      <div class="pbody">
+        <div class="row"><span class="lbl">Live clock</span><input id="tdCurrent" type="checkbox" title="Drive time/date widgets from the real clock" /></div>
+        <div class="muted" id="tdNote">The Zepp design spec uses 10:09:36 as its reference time.</div>
+        <div id="testData"></div>
+      </div>
+    </div>
+    <div class="panel-c rounded-xl border border-line bg-panel p-3 min-w-0" data-panel>
+      <h3 class="phead" data-panel-head>Generated code <span class="flex-1"></span><span class="lbtns"><button id="btnCopyCode" title="Copy the generated watchface JS">Copy</button></span><span class="chev">▾</span></h3>
+      <div class="pbody">
+        <div id="codeWarn" class="code-warn" hidden></div>
+        <pre id="code" class="code-box">// create or open a watchface to see the generated code</pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- new watchface -->
+<div id="newFaceModal" class="modal-backdrop" hidden>
+  <div class="modal">
+    <h3>New watchface</h3>
+    <div class="row"><span class="lbl">Name</span><input id="newFaceName" type="text" placeholder="My watchface" /></div>
+    <div class="row"><span class="lbl">Device</span><select id="newFaceDevice"></select></div>
+    <div class="row"><span class="lbl">From</span><select id="newFaceTemplate">
+      <option value="blank">Blank canvas</option>
+      <option value="digital">Digital clock starter</option>
+      <option value="analog">Analog clock starter</option>
+      <option value="health">Health dashboard starter</option>
+    </select></div>
+    <div class="modal-btns">
+      <button id="newFaceCancel">Cancel</button>
+      <button id="newFaceCreate">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- image set editor (digit sets etc.) -->
+<div id="imgSetModal" class="modal-backdrop" hidden>
+  <div class="modal wide">
+    <h3><span id="ismTitle">Image set</span> <span id="ismCount" class="muted"></span></h3>
+    <div class="muted" id="ismSub">Drag the handle to reorder &middot; index 0 is the first frame (digit 0, week day 1 &hellip;)</div>
+    <div id="ismHint" class="ilm-hint" hidden></div>
+    <div id="ismList" class="ilm-list"></div>
+    <div class="ilm-add">
+      <img id="ismPreview" class="imgthumb-sm" alt="" hidden />
+      <select id="ismPick"></select>
+      <button id="ismAdd">Add</button>
+      <button id="ismUpload">Upload…</button>
+      <input id="ismUploadFile" type="file" accept="image/*" multiple hidden />
+    </div>
+    <div class="ilm-add">
+      <button id="ismGenDigits" title="Generate a 0-9 digit set from the glyph font">Generate 0-9</button>
+      <button id="ismGenWeather" title="Add the 29 weather icons in the design-spec order (blank until replaced)">Weather 0-28</button>
+      <button id="ismGenWeek" title="Add the 7 weekday images in order">Week 1-7</button>
+    </div>
+    <div class="modal-btns">
+      <button id="ismCancel">Cancel</button>
+      <button id="ismSave">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- image fit dialog -->
+<div id="cropModal" class="modal-backdrop" hidden>
+  <div class="modal crop-modal">
+    <h3>Import image <span id="cropName" class="muted"></span></h3>
+    <div id="cropStage" class="imgfit-stage">
+      <canvas id="cropCv"></canvas>
+    </div>
+    <div class="imgfit-modes">
+      <label><input type="radio" name="cropMode" value="asis" /><span class="m-t">As is</span><span class="m-s">keep every pixel</span></label>
+      <label><input type="radio" name="cropMode" value="cover" /><span class="m-t">Cover</span><span class="m-s">fill &middot; drag to move</span></label>
+      <label><input type="radio" name="cropMode" value="contain" /><span class="m-t">Contain</span><span class="m-s">fit inside</span></label>
+    </div>
+    <div class="imgfit-size"><span>Result</span><b id="cropSize">—</b></div>
+    <div class="imgfit-info" id="cropInfo"></div>
+    <div class="modal-btns">
+      <button id="cropCancel">Cancel</button>
+      <button id="cropOk">Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- check / lint -->
+<div id="lintModal" class="modal-backdrop" hidden>
+  <div class="modal wide">
+    <h3>Project check <span id="lintCount" class="muted"></span></h3>
+    <div id="lintList" class="lint-list"></div>
+    <div class="modal-btns"><button id="lintClose">Close</button></div>
+  </div>
+</div>
+
+<!-- export / build log -->
+<div id="logModal" class="modal-backdrop" hidden>
+  <div class="modal wide">
+    <h3 id="logTitle">Zeus export</h3>
+    <div id="logPath" class="muted"></div>
+    <div id="logSub" class="muted"></div>
+    <pre id="logBox" class="log-box"></pre>
+    <div class="modal-btns">
+      <button id="logFolder">Show folder</button>
+      <button id="logClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- font library + glyph generation -->
+<div id="fontModal" class="modal-backdrop" hidden>
+  <div class="modal wide font-modal">
+    <h3>Font library &amp; glyphs <span id="fontCount" class="muted"></span></h3>
+    <div class="font-grid">
+      <div class="font-col">
+        <div class="font-col-head">
+          <span>Typefaces</span>
+          <span class="flex-1"></span>
+          <button id="fontImport" title="Import .ttf / .otf / .woff / .woff2 — the file is kept inside the project folder">Import font…</button>
+        </div>
+        <div id="fontList" class="font-list"></div>
+      </div>
+      <div class="font-col">
+        <canvas id="fontPreview" class="font-preview" width="460" height="230"></canvas>
+        <div class="row"><span class="lbl">Size</span><input id="fontSize" type="number" min="6" max="400" step="1" value="48" /></div>
+        <div class="row"><span class="lbl">Color</span><input id="fontColor" type="color" value="#ffffff" /></div>
+        <div class="row"><span class="lbl">Weight</span><select id="fontWeight">
+          <option value="100">100 thin</option><option value="200">200 extra light</option>
+          <option value="300">300 light</option><option value="400" selected>400 regular</option>
+          <option value="500">500 medium</option><option value="600">600 semi bold</option>
+          <option value="700">700 bold</option><option value="800">800 extra bold</option>
+          <option value="900">900 black</option>
+        </select></div>
+        <div class="row"><span class="lbl">Variation</span><input id="fontVariation" type="text" placeholder="e.g. 'wght' 700, 'ELSH' 6" /></div>
+        <div class="row small" id="fontInfo"></div>
+        <div class="glyph-actions">
+          <button id="fontGenDigits" title="Rasterize 0-9 into font_&lt;n&gt;_0.png … font_&lt;n&gt;_9.png">Digits 0-9</button>
+          <button id="fontGenWeek" title="Rasterize week_w1.png … week_w7.png">Weekdays</button>
+          <button id="fontGenSep" title="colon, dot, percent, negative, degree, slash">Separators</button>
+          <button id="fontGenHands" title="hour_hand / minute_hand / second_hand">Analog hands</button>
+          <button id="fontGenDial" title="dial.png ticks and rim">Analog dial</button>
+        </div>
+        <div class="muted small">Glyph images are rendered with these settings. The selected typeface is also used for the canvas preview of Text layers, and any font in this list can be attached to a Text layer so the watch itself draws with it.</div>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button id="fontRemove" class="danger" title="Remove the selected imported font from the project">Remove font</button>
+      <button id="fontUseGlyph">Use for glyphs</button>
+      <button id="fontClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- install over Wi-Fi / QR -->
+<div id="installModal" class="modal-backdrop" hidden>
+  <div class="modal wide install-modal">
+    <h3>Install over Wi-Fi <span id="instState" class="muted">stopped</span></h3>
+    <div class="inst-grid">
+      <div class="inst-qr">
+        <div class="qr-frame">
+          <img id="instQr" alt="Install QR code" hidden />
+          <div id="instQrEmpty" class="qr-empty">Start the server to get a QR code</div>
+        </div>
+        <div class="qr-select">
+          <label><input type="radio" name="instQrWhat" value="install" checked /> <span>Install package</span></label>
+          <label><input type="radio" name="instQrWhat" value="page" /> <span>Open page</span></label>
+        </div>
+        <div class="muted small" id="instQrHint"></div>
+      </div>
+      <div class="inst-side">
+        <div class="row"><span class="lbl">Address</span><select id="instAddress"></select></div>
+        <div class="row"><span class="lbl">Port</span><input id="instPort" type="number" min="1" max="65535" value="7331" /></div>
+        <div class="row"><span class="lbl">Packages</span></div>
+        <div id="instFiles" class="inst-files"></div>
+        <div class="inst-url"><code id="instUrl">—</code><button id="instCopy">Copy</button><button id="instOpen">Open</button></div>
+        <div class="inst-actions">
+          <button id="instBuild" class="primary">Build &amp; serve</button>
+          <button id="instServe">Serve existing</button>
+          <button id="instStop">Stop</button>
+          <button id="instFolder">Show folder</button>
+        </div>
+        <ol class="inst-steps">
+          <li>Phone and computer on the same Wi-Fi network.</li>
+          <li>Zepp App → Profile → your device → <b>Developer Mode</b>.</li>
+          <li>Tap the scan icon (top right) and scan this QR code.</li>
+          <li>Confirm the install, then select the watchface on the watch.</li>
+        </ol>
+        <div class="inst-log" id="instLog"></div>
+        <div class="muted small">The Zepp App downloads the package straight from this server, so the computer has to stay awake while installing. If the app refuses a plain <code>http://</code> address, use the Zeus CLI preview (cloud QR) instead.</div>
+      </div>
+    </div>
+    <div class="modal-btns"><button id="instClose">Close</button></div>
+  </div>
+</div>
+
+<script src="vendor/Sortable.min.js"></script>
+<script src="renderer.js"></script>
+<div id="toastHost" class="toast-host"></div>
+</body>
+</html>
