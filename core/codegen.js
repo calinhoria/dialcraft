@@ -20,12 +20,15 @@ function hexToNum(hex) {
 function num(n) { return Number.isFinite(+n) ? Math.round(+n) : 0; }
 function p(n) { return `px(${num(n)})`; }
 function ident(s) { return String(s || 'x').replace(/[^\w]+/g, '_').replace(/^(\d)/, '_$1'); }
+// hmUI.show_level is a bitmask: ONLY_NORMAL 1, ONLY_AOD 2, ONLY_EDIT 4 (the docs
+// also spell the AOD bit ONAL_AOD — same value, the watchface typedefs and every
+// shipping face use ONLY_AOD)
 function showLevel(show) {
   switch (show) {
-    case 'aod': return 'ui.show_level.ONAL_AOD';
+    case 'aod': return 'ui.show_level.ONLY_AOD';
     case 'edit': return 'ui.show_level.ONLY_EDIT';
     case 'normal': return 'ui.show_level.ONLY_NORMAL';
-    default: return 'ui.show_level.ONLY_NORMAL | ui.show_level.ONAL_AOD';
+    default: return 'ui.show_level.ONLY_NORMAL | ui.show_level.ONLY_AOD';
   }
 }
 // image names are stored as `images/<name>` in the model; the watch reads them
@@ -35,6 +38,26 @@ function asset(el, key) {
   return name ? `A('${name}')` : null;
 }
 function arrName(el) { return `img_${ident(el.name)}_${el.id.slice(-4)}`; }
+
+// The TEXT widget only takes a flat `color` (plus text_size / font / spacing —
+// see the docs link above). A gradient fill, an outline, bold or italic exist
+// only in the designer, so those layers are rasterised by the renderer into a
+// transparent PNG and emitted as an IMG instead. Keep in sync with
+// needsTextBake() in renderer.js.
+function needsTextBake(el) {
+  if (!el || el.kind !== 'TEXT') return false;
+  const fill = el.fillType || 'solid';
+  return fill !== 'solid' || !!el.bold || !!el.italic;
+}
+function bakeReason(el) {
+  const why = [];
+  if ((el.fillType || 'solid') === 'gradient') why.push('gradient fill');
+  else if ((el.fillType || 'solid') === 'css') why.push('CSS gradient fill');
+  else if ((el.fillType || 'solid') === 'outline') why.push('outline fill');
+  if (el.bold) why.push('bold');
+  if (el.italic) why.push('italic');
+  return why.join(' + ') || 'styled text';
+}
 
 // one line of `key: value,` when the value is present
 function kv(lines, key, value, when = true) {
@@ -67,6 +90,23 @@ function emitElement(el, ctx, out) {
       break;
     }
     case 'TEXT': {
+      // A gradient/outline fill, bold or italic cannot be expressed with the
+      // TEXT widget (docs: only `color`, `text_size`, `font`, spacing), so those
+      // layers are rasterised by the designer and shipped as a picture.
+      if (needsTextBake(el)) {
+        if (!el.bakedImage) {
+          ctx.warnings.push(`${el.name}: ${bakeReason(el)} — re-export to refresh the baked image`);
+        } else {
+          L.push(`  // baked by the designer: ${bakeReason(el)}`);
+          L.push('  ui.createWidget(ui.widget.IMG, {');
+          kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
+          kv(L, 'w', p(el.w || 200)); kv(L, 'h', p(el.h || 40));
+          kv(L, 'src', asset(el, 'bakedImage'));
+          kv(L, 'show_level', showLevel(el.show));
+          out.push(L.join('\n') + '\n  })');
+          break;
+        }
+      }
       L.push('  ui.createWidget(ui.widget.TEXT, {');
       kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
       kv(L, 'w', p(el.w || 200)); kv(L, 'h', p(el.h || 40));
@@ -101,11 +141,18 @@ function emitElement(el, ctx, out) {
     case 'IMG_TIME': {
       const part = el.part || 'hour';
       const pre = part === 'hour12' ? 'hour' : part;
-      kv(L, `${pre}_startX`, p(el.x)); kv(L, `${pre}_startY`, p(el.y));
+      const follow = num(el.follow) ? 1 : 0;
+      // a following part is placed by the watch next to the previous one, so it
+      // sends no startX / space / align (same as Zepp's own tool)
+      if (!follow) {
+        kv(L, `${pre}_startX`, p(el.x)); kv(L, `${pre}_startY`, p(el.y));
+      }
       if (pre !== 'hour12') {
         kv(L, `${pre}_zero`, num(el.zero) ? 1 : 0);
-        kv(L, `${pre}_space`, p(el.space || 0));
-        kv(L, `${pre}_align`, `ui.align.${el.alignH || 'LEFT'}`);
+        if (!follow) {
+          kv(L, `${pre}_space`, p(el.space || 0));
+          kv(L, `${pre}_align`, `ui.align.${el.alignH || 'LEFT'}`);
+        }
       }
       kv(L, `${pre}_array`, arrays[arrName(el)]);
       if (el.unit) {
@@ -140,11 +187,16 @@ function emitElement(el, ctx, out) {
     }
     case 'IMG_DATE': {
       const part = el.part || 'day';
-      kv(L, `${part}_startX`, p(el.x)); kv(L, `${part}_startY`, p(el.y));
+      const follow = num(el.follow) ? 1 : 0;
+      if (!follow) {
+        kv(L, `${part}_startX`, p(el.x)); kv(L, `${part}_startY`, p(el.y));
+      }
       kv(L, `${part}_zero`, num(el.zero) ? 1 : 0);
-      kv(L, `${part}_space`, p(el.space || 0));
-      kv(L, `${part}_align`, `ui.align.${el.alignH || 'LEFT'}`);
-      kv(L, `${part}_follow`, num(el.follow) ? 1 : 0);
+      if (!follow) {
+        kv(L, `${part}_space`, p(el.space || 0));
+        kv(L, `${part}_align`, `ui.align.${el.alignH || 'LEFT'}`);
+      }
+      kv(L, `${part}_follow`, follow);
       if (el.isCharacter) kv(L, `${part}_is_character`, 'true');
       kv(L, `${part}_en_array`, arrays[arrName(el)]);
       kv(L, `${part}_sc_array`, arrays[arrName(el)]);
@@ -314,7 +366,7 @@ function readerFor(el, ctx) {
   const dt = dataType(el.dataType);
   if (!dt || !dt.reader) return null;
   const { cls, get } = dt.reader;
-  const varName = `w_${ident(el.name)}_${el.id.slice(-4)}`;
+  const varName = `w_${ident(el.name)}_${el.id.slice(-4)}${el._emitState ? `_${el._emitState}` : ''}`;
   const sensorVar = `s_${ident(el.dataType).toLowerCase()}`;
   ctx.sensors.add(cls);
   const targetCls = cls;
@@ -335,7 +387,7 @@ function readerFor(el, ctx) {
   return { varName, code };
 }
 
-function generateWatchface(project, device) {
+function generateWatchface(project, device = deviceByKey(project.device)) {
   const ctx = { sensors: new Set(), arrays: {}, warnings: [] };
   const els = (project.elements || []).filter((e) => e.visible !== false);
   // ---- declare the image arrays the widgets reference ----
@@ -376,7 +428,6 @@ function generateWatchface(project, device) {
   out.push('// the pixel budget under 10% with a black background and no second hand.');
   out.push('// ---------------------------------------------------------------------------');
   out.push("import ui from '@zos/ui'");
-  out.push("import { getScene, SCENE_AOD } from '@zos/app'");
   if (ctx.sensors.size) {
     out.push(`import { ${[...ctx.sensors].sort().join(', ')} } from '@zos/sensor'`);
   }
@@ -390,19 +441,24 @@ function generateWatchface(project, device) {
   }
   out.push('WatchFace({');
   out.push('  initView() {');
-  out.push('    const scene = getScene()');
-  out.push('    const aod = scene === SCENE_AOD');
-  out.push('');
   if (!els.length) {
     out.push('    // no visible elements yet');
   }
   for (const el of els) {
-    out.push(`    // ${el.name} (${el.kind})`);
-    const chunk = [];
-    emitElement(el, ctx, chunk);
-    // the emitters are written at a 2-space base indent; shift them inside initView
-    for (const line of chunk.join('\n').split('\n')) out.push(line ? '  ' + line : line);
-    out.push('');
+    // A layer shown in both states becomes two widgets — one ONLY_NORMAL, one
+    // ONLY_AOD — because the watch's AOD path only picks up widgets that carry
+    // the AOD bit on its own (the combined bitmask is not honoured). This is the
+    // structure every shipping watchface uses.
+    const both = (el.show || 'both') === 'both';
+    const states = both ? ['normal', 'aod'] : [el.show || 'normal'];
+    for (const state of states) {
+      out.push(`    // ${el.name} (${el.kind})${both ? ` — ${state === 'aod' ? 'AOD (screen-off)' : 'normal state'}` : ''}`);
+      const chunk = [];
+      emitElement({ ...el, show: state, _emitState: both ? state : null }, ctx, chunk);
+      // the emitters are written at a 2-space base indent; shift them inside initView
+      for (const line of chunk.join('\n').split('\n')) out.push(line ? '  ' + line : line);
+      out.push('');
+    }
   }
   out.push('  },');
   out.push('');
@@ -411,11 +467,15 @@ function generateWatchface(project, device) {
   out.push('  },');
   out.push('})');
   out.push('');
-  return { code: out.join('\n'), warnings: ctx.warnings };
+  return { code: out.join('\n'), warnings: [...new Set(ctx.warnings)] };
 }
 
 function generateAppJson(project, device, opts = {}) {
   const appId = Number(opts.appId) || 20000 + Math.floor(Math.random() * 9000);
+  // `lockscreen` tells the system the face brings its own AOD (lock screen)
+  // design: without it (the default is 0 = none) the watch shows its own AOD
+  // face and the widgets' show_level never gets a chance.
+  const hasAod = (project.elements || []).some((e) => e.visible !== false && (e.show === 'aod' || e.show === 'both'));
   const doc = {
     configVersion: 'v3',
     app: {
@@ -431,7 +491,7 @@ function generateAppJson(project, device, opts = {}) {
     runtime: { apiVersion: apiVersionFor(device.api), type: 0 },
     targets: {
       [device.target]: {
-        module: { watchface: { path: `watchface/${device.target}/index`, main: 1, editable: 0, lockscreen: 0 } },
+        module: { watchface: { path: `watchface/${device.target}/index`, main: 1, editable: 0, lockscreen: hasAod ? 1 : 0 } },
         platforms: platformsFor(device),
         designWidth: device.designWidth,
       },

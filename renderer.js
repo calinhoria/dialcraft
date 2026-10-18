@@ -57,6 +57,8 @@ const WH_KINDS = new Set(['IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_POINTER', 'IM
   'IMG_STATUS', 'IMG_CLICK', 'TEXT', 'FILL_RECT', 'STROKE_RECT', 'ARC']);
 // kinds that draw digit images and therefore take an image array + metrics
 const SET_KINDS = new Set(['IMG_TIME', 'IMG_WEEK', 'IMG_DATE', 'TEXT_IMG', 'IMG_LEVEL', 'IMG_PROGRESS']);
+// text styling is only written to Text layers when a group/multi selection is used
+const TEXT_KINDS = new Set(['TEXT']);
 
 const dev = () => DEVICES.find((d) => d.target === (project && project.device)) || DEVICES[0];
 const dtByKey = (k) => DT_BY_KEY[k] || null;
@@ -155,10 +157,13 @@ window.addEventListener('keydown', (e) => {
   if (mod && e.key.toLowerCase() === 's') { e.preventDefault(); doSave(); return; }
   if (mod && e.key.toLowerCase() === 'g') { e.preventDefault(); e.shiftKey ? ungroup() : groupSelection(); return; }
   if (mod && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicateSelection(); return; }
+  // typing in a field (renaming a group, editing a value) must not nudge or
+  // deselect layers
+  const typing = document.activeElement && /input|select|textarea/i.test(document.activeElement.tagName);
+  if (typing) return;
   if (e.key === 'Delete' || e.key === 'Backspace') {
     const sel = selection();
     if (!sel.length) return;
-    if (document.activeElement && /input|select|textarea/i.test(document.activeElement.tagName)) return;
     e.preventDefault(); deleteSelection(); return;
   }
   if (e.key === 'Escape') { selectedId = null; multiSel = new Set(); refreshPanels(); render(); return; }
@@ -216,6 +221,11 @@ function uniqImageName(base) {
 function imageDataBase64(img) { return String(img.url || '').split(',')[1] || ''; }
 function projectImagesPayload() {
   return project.images.map((i) => ({ name: i.name, dataBase64: imageDataBase64(i) }));
+}
+// what an export/build/install ships: the project's images plus the freshly
+// rasterised PNGs of every styled Text layer (see bakedTextImages)
+async function exportImagesPayload() {
+  return [...projectImagesPayload(), ...(await bakedTextImages())];
 }
 // imported fonts: the file travels with the project (<dir>/fonts/<file>) and is
 // copied into the Zeus export when a Text layer actually uses it
@@ -336,20 +346,69 @@ function nextDigitPrefix() {
   return `font_${n}`;
 }
 
+// Paint one glyph with the layer's style: solid colour, a 2-stop gradient, a
+// gradient parsed from CSS, or a hollow outline — plus optional faux bold (a
+// stroke of the same paint, so single-weight fonts get a real bold) and italic
+// (a 0.212 slant, applied by the caller as a transform). `gx`/`gy` place the
+// gradient back over the glyph cell when the context is already translated.
+function paintGlyph(c, st, ch, cellW, cellH, gx, gy) {
+  const t = st.fill || 'solid';
+  const color = st.color || '#ffffff';
+  const box = { x: gx, y: gy, w: cellW, h: cellH };
+  if (t === 'gradient') c.fillStyle = linearFill(c, box, st.angle == null ? 90 : +st.angle, [[st.from || color, 0], [st.to || '#000000', 1]]);
+  else if (t === 'css') c.fillStyle = cssGradientFill(c, { cssGradient: st.css, color }, box);
+  else c.fillStyle = color;
+  if (t === 'outline') {
+    // A stroked glyph puts a join disc on every corner, and at a sharp angle that
+    // disc creeps into the letter ("renders inside the number"). Draw the
+    // silhouette dilated by the outline width, then carve the glyph back out:
+    // a true outline that never covers the inside, sharp corners included.
+    const w = Math.max(1, +st.outlineWidth || 2) + (st.bold ? Math.max(1, Math.round((st.size || 48) / 18)) : 0);
+    c.save();
+    c.fillStyle = st.outlineColor || color;
+    c.fillText(ch, 0, 0);
+    const steps = Math.max(8, Math.min(24, Math.round(w * 8)));
+    for (let i = 0; i < steps; i++) {
+      const a2 = (i / steps) * Math.PI * 2;
+      c.fillText(ch, Math.cos(a2) * w, Math.sin(a2) * w);
+    }
+    c.globalCompositeOperation = 'destination-out';
+    c.fillText(ch, 0, 0);
+    c.restore();
+    return;
+  }
+  if (st.bold) {
+    c.lineJoin = 'round';
+    c.miterLimit = 2;
+    c.lineWidth = Math.max(1, Math.round((st.size || 48) / 18));
+    c.strokeStyle = c.fillStyle;
+    c.strokeText(ch, 0, 0);
+  }
+  c.fillText(ch, 0, 0);
+}
+
 // Draw a set of glyphs from one font into transparent PNGs and register them.
 // mono=true shares one cell width so digits line up; entries are {tag,char}.
+// `style` carries the glyph styling (fill type, gradient, outline, bold,
+// italic); `replace` keeps the existing file names so a layer can be
+// restyled in place instead of piling up a new set.
 async function genGlyphImages(entries, opts = {}) {
   const {
     size = glyphOpts.size, color = glyphOpts.color, prefix = null, mono = true,
     family = null, weight = glyphOpts.weight, variations = glyphOpts.variations,
+    replace = false, style = null, cellH = 0,
   } = opts;
+  const st = { fill: 'solid', color, size, ...(style || {}) };
   const fam = family || glyphFont;
   if (!await ensureFont(fam, weight)) throw new Error(`Font not available: ${fam}`);
   const chars = entries.map((e) => e.char).join('');
   try { await document.fonts.load(`${weight && weight !== 400 ? weight + ' ' : ''}${size}px "${fam}"`, chars); } catch (e) { /* keep going */ }
   const meas = document.createElement('canvas').getContext('2d');
   setFontOn(meas, fam, size, weight, variations);
-  const pad = Math.max(1, Math.round(size / 28));
+  // An outline ring is drawn outside the glyph, so the cell always reserves room
+  // for it — that also keeps the cell size the same when the fill type changes,
+  // so toggling Solid/Outline never shifts the digits around.
+  const pad = Math.max(1, Math.round(size / 28), Math.round(+st.outlineWidth || 0) + 1);
   const info = entries.map((e) => {
     const m = meas.measureText(e.char);
     return {
@@ -362,24 +421,34 @@ async function genGlyphImages(entries, opts = {}) {
   });
   const ascent = Math.ceil(Math.max(...info.map((i) => i.asc)));
   const descent = Math.ceil(Math.max(...info.map((i) => i.desc)));
-  const H = Math.max(1, ascent + descent + pad * 2);
+  // cellH forces a taller cell while keeping the ink where it is (at the top):
+  // that is how the degree sign is rasterised as a superscript.
+  const H = cellH ? Math.max(1, Math.round(cellH)) : Math.max(1, ascent + descent + pad * 2);
+  const slant = st.italic ? Math.ceil(H * 0.212) : 0;
   const wide = Math.ceil(Math.max(...info.map((i) => i.left + i.right)));
   const pre = prefix || nextDigitPrefix();
   const names = [];
   for (const i of info) {
-    const cw = Math.max(1, Math.ceil(mono ? wide : (i.left + i.right)) + pad * 2);
+    const cw = Math.max(1, Math.ceil(mono ? wide : (i.left + i.right)) + pad * 2 + slant);
     const c2 = document.createElement('canvas');
     c2.width = cw; c2.height = H;
     const c = c2.getContext('2d');
     setFontOn(c, fam, size, weight, variations);
-    c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.fillStyle = color;
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
     const inkW = Math.max(0, i.left + i.right);
     c.save();
-    c.translate((cw - inkW) / 2 + i.left, pad + ascent);
-    c.fillText(i.e.char, 0, 0);
+    const tx = (cw - inkW - slant) / 2 + i.left + slant;
+    const ty = pad + ascent;
+    c.translate(tx, ty);
+    if (st.italic) c.transform(1, 0, -0.212, 1, 0, 0);
+    // paint after the transform, offsetting the gradient so it still spans the cell
+    paintGlyph(c, st, i.e.char, cw, H, -tx, -ty);
     c.restore();
-    const name = uniqImageName(i.e.name || `${pre}_${i.e.tag}.png`);
-    addProjectImage(name, c2, { replace: false });
+    // an in-place re-render must keep the existing file names (`replace`), a
+    // fresh set must never overwrite one that is already in the project
+    const want = i.e.name || `${pre}_${i.e.tag}.png`;
+    const name = replace ? want : uniqImageName(want);
+    addProjectImage(name, c2, { replace });
     names.push(name);
   }
   await loadAllImages();
@@ -436,22 +505,59 @@ function levelFraction(key, staticLevel) {
   return clamp01(Number(dtValue(key)) / max);
 }
 function weekIndexS() { return Math.max(0, Math.min(6, (+dateParts.weekday || 1) - 1)); }
+// What the canvas draws for the sample time/date, spelled out in Properties so
+// the leading-zero switch, the alignment anchor (and the preview as a whole) can
+// be checked against what the generated code asks the watch to do.
+function digitPreviewNote(e) {
+  const t = digitTextFor(e);
+  const isDate = e.kind === 'IMG_DATE';
+  const sample = isDate
+    ? `${dateParts.year}-${pad2(dateParts.month)}-${pad2(dateParts.day)}`
+    : `${pad2(clock.h)}:${pad2(clock.m)}:${pad2(clock.s)}`;
+  const hour12 = e.kind === 'IMG_TIME' && (e.part || 'hour') === 'hour12';
+  const key = `${isDate ? (e.part === 'month' ? 'month' : 'day') : (e.part || 'hour')}_zero`;
+  const zero = !!+e.zero;
+  const zeroTxt = hour12
+    ? 'the 12-hour form carries no leading-zero or align switch'
+    : `leading zero ${zero ? 'on' : 'off'} (${key}: ${zero ? 1 : 0})`;
+  const b = digitBox(e);
+  const cap = digitCapacity(e);
+  const src = followSource(e);
+  if (src) {
+    return `Preview draws “${t}” at ${sample} right after “${src.name || src.part}” (Follow) — ${zeroTxt}, with that layer's spacing and alignment.`;
+  }
+  const boxTxt = cap ? `a ${cap}-digit box ${Math.round(b.w)}×${Math.round(b.h)}` : `its ${Math.round(b.w)}px run`;
+  const alignTxt = hour12 ? 'the run starts at the box'
+    : b.run >= b.w ? 'the value fills the box, so Align has nothing to shift'
+      : e.alignH === 'RIGHT' ? 'Align Right puts the run at the box\'s right edge'
+        : e.alignH === 'CENTER_H' ? 'Align Center centres the run in the box'
+          : 'Align Left puts the run at the box\'s left edge';
+  return `Preview draws “${t}” at ${sample} in ${boxTxt} — ${zeroTxt} · ${alignTxt}.`;
+}
 
-// digit string a widget shows in the preview
+// digit string a widget shows in the preview. It has to mirror what the
+// generated code asks the watch for — including the leading-zero switch
+// (`zero` → hour_zero / minute_zero / day_zero …): with it off the watch draws
+// "9", with it on "09", and the editor has to show the same.
+function padDigits(v, zero) { return zero ? pad2(v) : String(v); }
 function digitTextFor(e) {
+  const zero = !!+e.zero;
   switch (e.kind) {
     case 'IMG_TIME': {
       const p = e.part || 'hour';
-      if (p === 'minute') return pad2(clock.m);
-      if (p === 'second') return pad2(clock.s);
+      if (p === 'minute') return padDigits(clock.m, zero);
+      if (p === 'second') return padDigits(clock.s, zero);
+      // hour12 carries no zero switch in the export, so it keeps its own form
       if (p === 'hour12') { const h = clock.h % 12; return String(h === 0 ? 12 : h); }
-      return pad2(clock.h);
+      return padDigits(clock.h, zero);
     }
-    case 'IMG_DATE': return pad2((e.part || 'day') === 'month' ? dateParts.month : dateParts.day);
+    case 'IMG_DATE': return padDigits((e.part || 'day') === 'month' ? dateParts.month : dateParts.day, zero);
     case 'TEXT_IMG': {
       const d = dtByKey(e.dataType);
+      // the widget shows the reading as it is (22°, 8670 steps); the data type's
+      // digit count is the *box* it stays in, not a padding request
       let t = valueString(e.dataType).replace(/[^0-9]/g, '');
-      if (d && d.digits) t = t.padStart(d.digits, '0').slice(-d.digits);
+      if (d && d.digits) t = t.slice(-d.digits);
       return t;
     }
     case 'IMG_LEVEL': return String(levelIndex(e));
@@ -480,11 +586,75 @@ function setUnitWidth(e) {
   const m = e.unit ? imgMeta(e.unit) : null;
   return m ? m.width + 2 : 0;
 }
+// `Follow` is the watch's *_follow: the value is drawn directly after the
+// previous part of the same kind, using that part's spacing and alignment — the
+// export then sends no startX, *_space or *_align for it, exactly like Zepp's own
+// tool. Time reads hour → minute → second, a date month → day (the spec's
+// "12/04" order).
+const FOLLOW_ORDER = {
+  IMG_TIME: ['hour', 'hour12', 'minute', 'second'],
+  IMG_DATE: ['month', 'day'],
+};
+function followSource(e) {
+  if (!+e.follow) return null;
+  const order = FOLLOW_ORDER[e.kind];
+  if (!order) return null;
+  const idx = order.indexOf(e.part || order[0]);
+  if (idx <= 0) return null;
+  for (let i = idx - 1; i >= 0; i--) {
+    const src = elements().find((x) => x.kind === e.kind && (x.part || order[0]) === order[i] && x !== e);
+    if (src) return src;
+  }
+  return null;
+}
+// the alignment and spacing a layer really uses (a following part inherits them)
+function effAlign(e) { const s = followSource(e); return s ? effAlign(s) : (e.alignH || 'LEFT'); }
+function effSpace(e) { const s = followSource(e); return s ? effSpace(s) : setSpacing(e); }
 function measureSet(e) {
   const cell = setCell(e);
   const n = Math.max(1, digitTextFor(e).length);
-  const sp = setSpacing(e);
+  const sp = effSpace(e);
   return { w: n * cell.w + Math.max(0, n - 1) * sp + setUnitWidth(e), h: cell.h, cell, n, sp };
+}
+// The box a digit widget occupies. hmUI gives IMG_TIME / IMG_DATE / TEXT_IMG no
+// width, so the watch lays the value out inside a box as wide as the part can
+// get — hour/minute/second/day/month are two digits, a TEXT_IMG reading as many
+// as its data type can show — and `align` places the value *inside* that box
+// (Zepp's own tool does the same: getImgArrAfterAlign shifts the run by
+// `u - b` / `(u - b) / 2` / 0, and not at all once the run is wider than the
+// box). That is why a reading stays put when it grows (9:00 → 10:00) and why a
+// value that fills the box looks the same in every align mode. The box is
+// anchored at the layer's X — the startX the export sends — so it never jumps.
+function digitCapacity(e) {
+  if (e.kind === 'IMG_TIME' || e.kind === 'IMG_DATE') return 2;
+  if (e.kind === 'TEXT_IMG') {
+    if (e.isCharacter) return 0;             // month names have no fixed width
+    const d = dtByKey(e.dataType);
+    return (d && d.digits) || 0;
+  }
+  return 0;                                  // IMG_WEEK: one image, no align
+}
+function digitBox(e) {
+  const m = measureSet(e);
+  // a following part sits directly after the part it follows
+  const sb = followSource(e) ? digitBox(followSource(e)) : null;
+  const x = sb ? sb.x + sb.w : devNum(e.x);
+  const y = sb ? sb.y : devNum(e.y);
+  const cap = digitCapacity(e);
+  const capW = cap ? cap * m.cell.w + Math.max(0, cap - 1) * m.sp + setUnitWidth(e) : 0;
+  const explicit = e.kind === 'TEXT_IMG' ? devNum(e.w) : 0;   // TEXT_IMG may carry a width
+  return { x, y, w: Math.max(explicit, capW, m.w), h: m.h, anchor: x, run: m.w };
+}
+// where the value's own run starts inside that box (the value is what grows and
+// shrinks, the box does not)
+function digitRunX(e, b) {
+  const run = b.run == null ? b.w : b.run;
+  if (run >= b.w) return b.x;
+  // the 12-hour form exports no *_align, so it always starts at the box
+  const mode = (e.kind === 'IMG_TIME' && (e.part || 'hour') === 'hour12') ? 'LEFT' : effAlign(e);
+  if (mode === 'RIGHT') return b.x + b.w - run;
+  if (mode === 'CENTER_H') return b.x + (b.w - run) / 2;
+  return b.x;
 }
 function levelIndex(e) {
   const n = Math.max(1, (e.images || []).length);
@@ -525,10 +695,8 @@ function elBox(e) {
     case 'IMG_TIME':
     case 'IMG_WEEK':
     case 'IMG_DATE':
-    case 'TEXT_IMG': {
-      const m = measureSet(e);
-      return { x: num(e.x), y: num(e.y), w: m.w, h: m.h };
-    }
+    case 'TEXT_IMG':
+      return digitBox(e);
     case 'IMG_LEVEL': {
       const m = setFirstImage(e);
       return { x: num(e.x), y: num(e.y), w: num(e.w, 0) || (m ? m.width : 100), h: num(e.h, 0) || (m ? m.height : 100) };
@@ -546,6 +714,16 @@ function elBox(e) {
     default: return { x: num(e.x), y: num(e.y), w: num(e.w, 100), h: num(e.h, 100) };
   }
 }
+// Bounding box of several boxes / of the current selection. Align, distribute
+// and group dragging all work on this box, so what the panel promises is what
+// the canvas shows.
+function devNum(v, d = 0) { return Number.isFinite(+v) ? +v : d; }
+function unionBox(boxes) {
+  const x = Math.min(...boxes.map((b) => b.x)), y = Math.min(...boxes.map((b) => b.y));
+  const x1 = Math.max(...boxes.map((b) => b.x + b.w)), y1 = Math.max(...boxes.map((b) => b.y + b.h));
+  return { x, y, w: x1 - x, h: y1 - y };
+}
+function selBox(sel) { return unionBox(sel.map((e) => elBox(e))); }
 function moveEl(e, dx, dy) {
   if (e.kind === 'CIRCLE' || e.kind === 'ARC_PROGRESS') {
     e.centerX = Math.round((+e.centerX || 0) + dx);
@@ -619,16 +797,284 @@ function drawDigits(c, e, x, y, text) {
   }
   if (e.unit) {
     const m = imgMeta(e.unit);
-    if (m) put(c, e.unit, cx, y + (cell.h - m.height) / 2, m.width, m.height);
+    // never above the cell: a unit image taller than the digits (a degree sign
+    // generated for a bigger set) is drawn from the cell top instead of centred
+    if (m) put(c, e.unit, cx, y + Math.max(0, (cell.h - m.height) / 2), m.width, m.height);
   }
   return cx;
 }
-function alignTextX(c, text, e) {
+// ------------------------------------------------------------- text styles --
+// The TEXT widget on the watch takes only one flat `color` plus `text_size`,
+// `font` and spacing (https://docs.zepp.com/docs/reference/device-app-api/
+// newAPI/ui/widget/TEXT/) — no gradient, no outline, no bold, no italic. Those
+// styles exist only in the designer: the canvas draws them live and the export
+// rasterises the layer into a transparent PNG that is emitted as an IMG
+// widget. core/codegen.js mirrors needsTextBake()/bakeReason() to pick the
+// widget, so the two sides must stay in step.
+const TEXT_FILL_TYPES = [
+  { value: 'solid', label: 'Solid' },
+  { value: 'gradient', label: 'Linear gradient' },
+  { value: 'css', label: 'CSS gradient' },
+  { value: 'outline', label: 'Outline' },
+];
+function textFillType(e) { return e && TEXT_FILL_TYPES.some((t) => t.value === e.fillType) ? e.fillType : 'solid'; }
+function needsTextBake(e) {
+  return !!e && e.kind === 'TEXT'
+    && (textFillType(e) !== 'solid' || !!e.bold || !!e.italic);
+}
+function bakeReason(e) {
+  const why = [];
+  const f = textFillType(e);
+  if (f === 'gradient') why.push('gradient fill');
+  else if (f === 'css') why.push('CSS gradient fill');
+  else if (f === 'outline') why.push('outline fill');
+  if (e.bold) why.push('bold');
+  if (e.italic) why.push('italic');
+  return why.join(' + ') || 'styled text';
+}
+// the watch has no fake-bold either: pick the heavy end of the family
+function textWeight(e) { const w = +e.weight || 400; return e.bold ? Math.max(700, w) : w; }
+
+// measured size of a Text layer as the canvas would draw it (used by the lint,
+// because a baked image is clipped to the layer box while the preview is not)
+let measureCanvas = null;
+function textMetrics(e) {
+  if (!measureCanvas) measureCanvas = document.createElement('canvas');
+  const c = measureCanvas.getContext('2d');
+  setFontOn(c, familyForFontFile(e.fontFile) || 'Inter', +e.size || 32, textWeight(e), e.variations);
+  const lines = String(e.text == null ? '' : e.text).split('\n');
+  const w = lines.reduce((m, l) => Math.max(m, c.measureText(l).width), 0);
+  const h = lines.length * ((+e.size || 32) * 1.15 + (+e.lineSpace || 0));
+  return { w, h };
+}
+
+function clamp01(v) { const n = +v; return Number.isFinite(n) ? Math.max(0, Math.min(1, n)) : 0; }
+
+// Minimal CSS gradient parser → { type, angle, stops:[{color,pos}] } or null.
+// Handles (repeating-)linear / radial / conic, `to top` or `90deg` directions,
+// `NN%` stops, and any colour token the canvas accepts (#hex, names, rgb()).
+function parseCssGradient(css) {
+  const s = String(css || '').trim();
+  const m = /^(-webkit-)?(repeating-)?(linear|radial|conic)-gradient\(([\s\S]*)\)$/i.exec(s);
+  if (!m) return null;
+  const type = m[3].toLowerCase();
+  const parts = [];
+  let depth = 0, cur = '';
+  for (const ch of m[4]) {
+    if (ch === '(') depth++;
+    else if (ch === ')') depth--;
+    if (ch === ',' && depth === 0) { parts.push(cur.trim()); cur = ''; continue; }
+    cur += ch;
+  }
+  if (cur.trim()) parts.push(cur.trim());
+  if (parts.length < 2) return null;
+  const isDir = (t) => /^to\s/i.test(t) || /^-?[\d.]+(deg|grad|rad|turn)$/i.test(t);
+  // `circle`, `ellipse`, `closest-far`, `… at 30% 40%` — radial/conic head tokens
+  const isShape = (t) => /^(circle|ellipse)$/i.test(t) || /^(closest|farthest)-(side|corner)$/i.test(t) || /(^|\s)at(\s|$)/i.test(t);
+  const toDeg = (t) => {
+    const mm = /^(-?[\d.]+)(deg|grad|rad|turn)$/i.exec(t);
+    if (mm) {
+      const v = parseFloat(mm[1]), u = mm[2].toLowerCase();
+      return u === 'turn' ? v * 360 : u === 'grad' ? v * 0.9 : u === 'rad' ? (v * 180) / Math.PI : v;
+    }
+    // `to right` / `to bottom right` — CSS angles start at "up", clockwise
+    const words = t.replace(/^to\s+/i, '').split(/[\s-]+/).filter(Boolean);
+    const dir = { top: 0, right: 90, bottom: 180, left: 270 };
+    if (words.length === 1) return dir[words[0]] != null ? dir[words[0]] : 90;
+    const a = dir[words[0]], b = dir[words[1]];
+    if (a == null || b == null) return 90;
+    let d = b - a;
+    if (d > 180) d -= 360;
+    if (d < -180) d += 360;
+    return (a + d / 2 + 360) % 360;
+  };
+  let start = 0;
+  let angle = 180;          // CSS default for linear-gradient: to bottom
+  let center = null;        // `at …` position of a radial/conic gradient
+  const readAt = (t) => { const m = /(?:^|\s)at\s+(.+)$/i.exec(t); if (m) center = m[1].trim(); };
+  if (type === 'linear') {
+    if (isDir(parts[0])) { angle = toDeg(parts[0]); start = 1; }
+  } else if (type === 'radial') {
+    if (isShape(parts[0]) || /^(circle|ellipse)?\s*(closest|farthest)/i.test(parts[0])) {
+      readAt(parts[0]);
+      start = 1;
+    }
+  } else if (type === 'conic') {
+    const fm = /^from\s+(-?[\d.]+(?:deg|grad|rad|turn))/i.exec(parts[0] || '');
+    if (fm || isShape(parts[0])) {
+      if (fm) angle = toDeg(fm[1]);
+      readAt(parts[0]);
+      start = 1;
+    }
+  }
+  const stops = [];
+  for (let i = start; i < parts.length; i++) {
+    const t = parts[i];
+    if (!t) continue;
+    const head = /^(-?[\d.]+%)(?:\s+([\s\S]+))?$/.exec(t);
+    const tail = /(?:^|\s)(-?[\d.]+%)$/.exec(t);
+    let color = null, pos = null;
+    if (head) { pos = parseFloat(head[1]) / 100; color = (head[2] || '').trim(); }
+    else if (tail) { pos = parseFloat(tail[1]) / 100; color = t.slice(0, tail.index).trim(); }
+    else color = t;
+    if (!color) continue;
+    stops.push({ color, pos });
+  }
+  if (stops.length < 2) return null;
+  return { type, angle, center, stops };
+}
+// `at 30% 40%`, `at 10px 20px`, `at left center` inside the element box
+function cssPos(tok, base, size, axis) {
+  const t = String(tok || '').trim().toLowerCase();
+  if (/%$/.test(t)) return base + (parseFloat(t) / 100) * size;
+  const px = /^(-?[\d.]+)px$/.exec(t);
+  if (px) return base + parseFloat(px[1]);
+  const start = axis === 'x' ? 'left' : 'top';
+  const end = axis === 'x' ? 'right' : 'bottom';
+  if (t === start) return base;
+  if (t === end) return base + size;
+  return base + size / 2;       // center / missing / unknown
+}
+function cssCenter(b, center) {
+  if (!center) return { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+  const [a, c] = String(center).split(/\s+/);
+  return { x: cssPos(a, b.x, b.w, 'x'), y: cssPos(c, b.y, b.h, 'y') };
+}
+// CSS uses the "magic corners" rule for its gradient line; the preview and the
+// bake just use half the box diagonal, which is visually the same at watch size.
+function linearFill(c, b, cssAngle, stops) {
+  const a = ((+cssAngle || 0) - 90) * Math.PI / 180;   // CSS: 0deg points up
+  const cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+  const r = Math.hypot(b.w, b.h) / 2 || 1;
+  const dx = Math.cos(a) * r, dy = Math.sin(a) * r;
+  const g = c.createLinearGradient(cx - dx, cy - dy, cx + dx, cy + dy);
+  for (const [color, pos] of stops) g.addColorStop(clamp01(pos), String(color || '#ffffff'));
+  return g;
+}
+function radialFill(c, b, stops, center) {
+  const ctr = cssCenter(b, center);
+  const g = c.createRadialGradient(ctr.x, ctr.y, 0, ctr.x, ctr.y, Math.hypot(b.w, b.h) / 2 || 1);
+  for (const [color, pos] of stops) g.addColorStop(clamp01(pos), String(color || '#ffffff'));
+  return g;
+}
+function cssGradientFill(c, e, b) {
+  const g = parseCssGradient(e.cssGradient);
+  if (!g) return hexOrWhite(e.color);
+  const stops = g.stops.map((s, i, a) => [s.color, s.pos == null ? (a.length > 1 ? i / (a.length - 1) : 0) : s.pos]);
+  // conic has no canvas equivalent — drawn as a linear ramp, same stops
+  return g.type === 'radial' ? radialFill(c, b, stops, g.center) : linearFill(c, b, g.angle, stops);
+}
+function textFillStyle(c, e, b) {
+  const t = textFillType(e);
+  if (t === 'gradient') return linearFill(c, b, +e.gradAngle || 0, [[e.color, 0], [e.color2 || e.color, 1]]);
+  if (t === 'css') return cssGradientFill(c, e, b);
+  return hexOrWhite(e.color);
+}
+
+// Shared glyph painter: used by the canvas preview *and* by the PNG bake, so
+// what you see in the editor is exactly what lands in the .zab.
+function drawTextInto(c, e, b, fam, box) {
+  const size = +e.size || 32;
+  c.save();
+  setFontOn(c, fam, size, textWeight(e), e.variations);
+  if (e.italic) { try { c.font = `oblique 11deg ${c.font}`; } catch (err) { /* unsupported */ } }
+  const outline = textFillType(e) === 'outline';
+  c.fillStyle = outline ? hexOrWhite(e.color) : textFillStyle(c, e, b);
+  const va = e.alignV || 'CENTER_V';
+  c.textBaseline = va === 'TOP' ? 'top' : va === 'BOTTOM' ? 'bottom' : 'middle';
+  const lines = String(e.text == null ? '' : e.text).split('\n');
+  const lh = size * 1.15 + (+e.lineSpace || 0);
+  const totalH = lines.length * lh;
+  const y0 = va === 'TOP' ? b.y : va === 'BOTTOM' ? b.y + b.h - totalH + lh : b.y + (b.h - totalH) / 2 + lh / 2;
+  const run = (fn) => {
+    let y = y0;
+    for (const line of lines) {
+      c.textAlign = 'left';
+      fn(line, alignTextX(c, line, e, box), y);
+      y += lh;
+    }
+  };
+  if (outline) {
+    c.lineJoin = 'round';
+    c.miterLimit = 2;
+    c.lineWidth = Math.max(1, +e.outlineWidth || 2);
+    c.strokeStyle = hexOrWhite(e.outlineColor);
+    run((t, x, y) => c.strokeText(t, x, y));
+  }
+  run((t, x, y) => c.fillText(t, x, y));
+  c.restore();
+}
+
+// ---------------------------------------------------------------- text bake --
+const bakeCache = new Map();      // image name -> base64, survives style edits
+function textStyleKey(e) {
+  return JSON.stringify([
+    String(e.text == null ? '' : e.text), +e.size || 32, e.color, e.color2, e.gradAngle,
+    e.cssGradient, e.outlineColor, e.outlineWidth, textFillType(e), !!e.bold, !!e.italic,
+    e.fontFile || '', textWeight(e), e.variations || '', e.alignH, e.alignV,
+    e.lineSpace, e.charSpace, Math.round(+e.w || 200), Math.round(+e.h || 40),
+    e.alpha != null && +e.alpha < 255 ? +e.alpha : 255,
+  ]);
+}
+function hashString(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
+  return h.toString(36);
+}
+// deterministic name (`text_<layer>_<stylehash>.png`) so two exports of the
+// same project produce the same assets
+function bakedTextName(e) { return `text_${e.id}_${hashString(textStyleKey(e))}.png`; }
+
+function bakeText(e) {
+  const w = Math.max(1, Math.round(+e.w || 200));
+  const h = Math.max(1, Math.round(+e.h || 40));
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const c = cv.getContext('2d');
+  if (e.alpha != null && +e.alpha < 255) c.globalAlpha = Math.max(0, +e.alpha) / 255;
+  drawTextInto(c, e, { x: 0, y: 0, w, h }, familyForFontFile(e.fontFile) || 'Inter', { x: 0, w });
+  const dataBase64 = cv.toDataURL('image/png').split(',')[1] || '';
+  return { name: bakedTextName(e), dataBase64 };
+}
+
+// Refresh every styled Text layer's bitmap and hand the export a payload of
+// them. The PNGs are *not* part of the project file (they are re-derived on
+// demand and cached by style hash); `e.bakedImage` is what codegen reads.
+async function bakedTextImages() {
+  const out = [];
+  for (const e of elements()) {
+    if (!needsTextBake(e)) {
+      if (e.bakedImage) { delete e.bakedImage; delete e.bakedKey; }
+      continue;
+    }
+    if (e.visible === false) continue;   // codegen skips hidden layers too
+    const key = textStyleKey(e);
+    if (e.bakedKey === key && e.bakedImage && bakeCache.has(e.bakedImage)) {
+      out.push({ name: e.bakedImage, dataBase64: bakeCache.get(e.bakedImage) });
+      continue;
+    }
+    const fam = familyForFontFile(e.fontFile) || 'Inter';
+    if (!fontCache.has(fam)) await ensureFont(fam, textWeight(e));
+    const img = bakeText(e);
+    if (!img.dataBase64) continue;
+    bakeCache.set(img.name, img.dataBase64);
+    e.bakedImage = img.name;
+    e.bakedKey = key;
+    out.push(img);
+  }
+  return out;
+}
+function clearBakeCache() { bakeCache.clear(); }
+// the baked bitmaps are regenerated on demand, so they never travel in .wfproj.json
+function stripBakeKeys(e) { const { bakedImage, bakedKey, ...rest } = e; return rest; }
+
+function alignTextX(c, text, e, box) {
   const a = e.alignH || 'CENTER_H';
-  if (a === 'LEFT') return e.x;
+  const b = box || { x: +e.x, w: +e.w || 200 };
+  if (a === 'LEFT') return b.x;
   const w = c.measureText(text).width;
-  if (a === 'RIGHT') return e.x + (+e.w || 200) - w;
-  return e.x + ((+e.w || 200) - w) / 2;
+  if (a === 'RIGHT') return b.x + b.w - w;
+  return b.x + (b.w - w) / 2;
 }
 function drawElement(c, e) {
   const bg = (hex) => `0x${hex}`;
@@ -677,17 +1123,8 @@ function drawElement(c, e) {
     case 'IMG_TIME':
     case 'IMG_DATE':
     case 'TEXT_IMG': {
-      const b = elBox(e);
-      const text = digitTextFor(e);
-      const cell = setCell(e);
-      const sp = setSpacing(e);
-      if (e.alignH && e.alignH !== 'LEFT') {
-        const tw = text.length * cell.w + Math.max(0, text.length - 1) * sp + setUnitWidth(e);
-        const x = e.alignH === 'RIGHT' ? b.x + b.w - tw : b.x + (b.w - tw) / 2;
-        drawDigits(c, e, x, b.y, text);
-      } else {
-        drawDigits(c, e, b.x, b.y, text);
-      }
+      const b = digitBox(e);
+      drawDigits(c, e, digitRunX(e, b), b.y, digitTextFor(e));
       break;
     }
     case 'IMG_WEEK': {
@@ -701,22 +1138,7 @@ function drawElement(c, e) {
       const b = elBox(e);
       const fam = familyForFontFile(e.fontFile) || 'Inter';
       if (e.fontFile && !fontCache.has(fam)) ensureFont(fam, e.weight).then(() => render());
-      c.save();
-      c.fillStyle = hexOrWhite(e.color);
-      setFontOn(c, fam, +e.size || 32, e.weight, e.variations);
-      const va = e.alignV || 'CENTER_V';
-      c.textBaseline = va === 'TOP' ? 'top' : va === 'BOTTOM' ? 'bottom' : 'middle';
-      const lines = String(e.text == null ? '' : e.text).split('\n');
-      const lh = (+e.size || 32) * 1.15 + (+e.lineSpace || 0);
-      const totalH = lines.length * lh;
-      let y = va === 'TOP' ? b.y : va === 'BOTTOM' ? b.y + b.h - totalH + lh : b.y + (b.h - totalH) / 2 + lh / 2;
-      for (const line of lines) {
-        c.textAlign = 'left';
-        const x = alignTextX(c, line, e);
-        c.fillText(line, x, y);
-        y += lh;
-      }
-      c.restore();
+      drawTextInto(c, e, b, fam);
       break;
     }
     case 'IMG_STATUS': {
@@ -900,6 +1322,61 @@ function drawOverlay(c, W, H) {
       c.arc(+e.centerX || 0, +e.centerY || 0, 4, 0, Math.PI * 2);
       c.fill();
     }
+    // a digit widget: the value sits *inside* the part's box, so show both — the
+    // dashed outline is where the glyphs are, the dot is the box origin (the X
+    // the export sends as startX)
+    if (primary && (e.kind === 'IMG_TIME' || e.kind === 'IMG_DATE' || e.kind === 'TEXT_IMG')) {
+      const db = digitBox(e);
+      const rx = digitRunX(e, db);
+      const ay = db.y + db.h / 2;
+      c.save();
+      c.strokeStyle = 'rgba(255,120,220,0.75)';
+      c.lineWidth = 1;
+      c.setLineDash([3, 2]);
+      c.strokeRect(rx + 0.5, db.y + 0.5, Math.max(db.run - 1, 1), Math.max(db.h - 1, 1));
+      c.setLineDash([]);
+      c.beginPath();
+      c.moveTo(db.x - 7, ay); c.lineTo(db.x + 7, ay);
+      c.stroke();
+      c.fillStyle = '#ff78dc';
+      c.beginPath();
+      c.arc(db.x, ay, 3, 0, Math.PI * 2);
+      c.fill();
+      c.restore();
+    }
+    c.restore();
+  }
+  // A group (or any multi-selection) gets one box around the whole selection,
+  // plus a faint outline per member: this is the box that Align to box and the
+  // drag snapping use, so it has to be visible.
+  if (sel.length > 1) {
+    const gb = selBox(sel);
+    c.save();
+    c.setLineDash([3, 3]);
+    c.strokeStyle = 'rgba(91,140,255,0.45)';
+    c.lineWidth = 1;
+    for (const e of sel) {
+      const eb = elBox(e);
+      c.strokeRect(eb.x + 0.5, eb.y + 0.5, Math.max(eb.w - 1, 1), Math.max(eb.h - 1, 1));
+    }
+    c.setLineDash([]);
+    c.strokeStyle = '#5b8cff';
+    c.lineWidth = 2;
+    c.strokeRect(gb.x + 1, gb.y + 1, Math.max(gb.w - 2, 2), Math.max(gb.h - 2, 2));
+    // size label, kept inside the canvas whichever edge the box is on
+    const label = `${sel.length} layers · ${Math.round(gb.w)}×${Math.round(gb.h)}`;
+    c.font = '600 11px -apple-system, BlinkMacSystemFont, sans-serif';
+    const tw = c.measureText(label).width;
+    const lx = Math.min(Math.max(gb.x, 4), Math.max(4, W - tw - 12));
+    const above = gb.y - 16 >= 0;
+    const ly = above ? gb.y - 6 : Math.min(H - 4, gb.y + gb.h + 15);
+    c.fillStyle = 'rgba(13,15,20,0.85)';
+    c.fillRect(lx - 4, ly - 11, tw + 8, 15);
+    c.strokeStyle = 'rgba(91,140,255,0.55)';
+    c.lineWidth = 1;
+    c.strokeRect(lx - 4.5, ly - 11.5, tw + 9, 16);
+    c.fillStyle = '#cdd9ff';
+    c.fillText(label, lx, ly);
     c.restore();
   }
 }
@@ -999,6 +1476,58 @@ function composePreviewB64() {
 
 // ----------------------------------------------------------------- layers --
 function groupName(gid) { return (project.groups && project.groups[gid]) || `Group ${String(gid).replace(/^g/, '')}`; }
+// Rename a group: the name is a designer label (groups are a designer concept —
+// the watch sees the layers, not the grouping), so it is only stored in the
+// project file.
+function renameGroup(gid, name) {
+  if (!project || !gid) return;
+  pushHistory();
+  project.groups = project.groups || {};
+  const n = String(name == null ? '' : name).trim();
+  if (n) project.groups[gid] = n; else delete project.groups[gid];
+  refreshPanels(); render(); scheduleCode();
+}
+// the group every selected layer belongs to, when the whole selection is one
+function commonGroup(sel) {
+  const g = sel.length > 1 && sel[0] ? sel[0].group : null;
+  return g && sel.every((e) => e.group === g) ? g : null;
+}
+// inline rename in the layers panel (double-click the group name)
+function startGroupRename(gid, span) {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'gname-edit';
+  inp.value = groupName(gid);
+  span.replaceWith(inp);
+  inp.focus();
+  inp.select();
+  let closed = false;
+  const done = (save) => {
+    if (closed) return;
+    closed = true;
+    const v = inp.value;
+    if (inp.parentNode) inp.replaceWith(span);
+    if (save && v.trim() !== groupName(gid)) renameGroup(gid, v);
+  };
+  inp.onkeydown = (ev) => {
+    ev.stopPropagation();
+    if (ev.key === 'Enter') done(true);
+    else if (ev.key === 'Escape') done(false);
+  };
+  inp.onblur = () => done(true);
+  inp.onclick = (ev) => ev.stopPropagation();
+  inp.ondblclick = (ev) => ev.stopPropagation();
+}
+// the same rename, as a Properties row (a whole group is selected)
+function groupNameInput(gid) {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.value = groupName(gid);
+  inp.placeholder = 'Group name';
+  inp.onchange = () => renameGroup(gid, inp.value);
+  inp.onkeydown = (ev) => { if (ev.key === 'Enter') inp.blur(); else if (ev.key === 'Escape') { inp.value = groupName(gid); inp.blur(); } };
+  return inp;
+}
 const ICON = {
   grip: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>',
   eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>',
@@ -1011,6 +1540,9 @@ const ICON = {
   data: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V5M4 19h16"/><path d="M8 19v-6M12 19V9M16 19v-4"/></svg>',
   shape: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>',
   text: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6V4h16v2M12 4v16M8 20h8"/></svg>',
+  dup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="8.5" y="8.5" width="12" height="12" rx="2.6"/><path d="M15.5 5.4A2.6 2.6 0 0 0 12.9 3H5.6A2.6 2.6 0 0 0 3 5.6v7.3A2.6 2.6 0 0 0 5.4 15.5"/></svg>',
+  group: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="19" height="19" rx="3.2" stroke-dasharray="3.4 2.6"/><rect x="6" y="6" width="7" height="7" rx="1.7" fill="currentColor" stroke="none"/><rect x="11.5" y="11.5" width="7" height="7" rx="1.7" fill="currentColor" stroke="none"/></svg>',
+  ungroup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 8.5V5.7A3.2 3.2 0 0 1 5.7 2.5h2.8M15.5 2.5h2.8a3.2 3.2 0 0 1 3.2 3.2v2.8M21.5 15.5v2.8a3.2 3.2 0 0 1-3.2 3.2h-2.8M8.5 21.5H5.7a3.2 3.2 0 0 1-3.2-3.2v-2.8"/><rect x="5.5" y="5.5" width="6.5" height="6.5" rx="1.7" fill="currentColor" stroke="none"/><rect x="13.5" y="13.5" width="5.5" height="5.5" rx="1.6" fill="currentColor" stroke="none"/></svg>',
 };
 function kindIcon(kind) {
   const k = kindById(kind);
@@ -1079,6 +1611,8 @@ function groupBlock(gid, members) {
     refreshPanels();
   };
   const nm = document.createElement('span'); nm.className = 'gname'; nm.textContent = groupName(gid);
+  nm.title = 'Double-click to rename this group';
+  nm.ondblclick = (ev) => { ev.stopPropagation(); startGroupRename(gid, nm); };
   const cnt = document.createElement('span'); cnt.className = 'gcount'; cnt.textContent = `${members.length}`;
   head.appendChild(chev); head.appendChild(nm); head.appendChild(cnt);
   head.onclick = () => {
@@ -1164,26 +1698,57 @@ function mkRow(lbl, title) {
   r.appendChild(s);
   return r;
 }
+// Rows about the layer as a whole (Show in, Alpha) write to every selected
+// layer — the primary first, so the panel still shows that layer's values.
+function commonTargets(e) {
+  const sel = selection();
+  return sel.length > 1 ? [e, ...sel.filter((x) => x.id !== e.id)] : [e];
+}
+// Multi-layer editing: when several layers (or a whole group) are selected the
+// style controls write to every one of them, not just to the primary layer.
+function asList(obj) { return Array.isArray(obj) ? obj : [obj]; }
+function targetsFor(e, kinds) {
+  const sel = selection();
+  if (sel.length <= 1) return [e];
+  const pool = kinds ? sel.filter((x) => kinds.has(x.kind)) : sel;
+  return pool.length ? pool : [e];
+}
+// same idea for predicates the kind alone cannot answer (a glyph layer is one
+// whose images come from the design's glyph pipeline)
+function targetsWhere(e, pred) {
+  const sel = selection();
+  if (sel.length <= 1) return [e];
+  const pool = sel.filter(pred);
+  return pool.length ? pool : [e];
+}
+function setOn(targets, key, value) { for (const t of targets) t[key] = value; }
+
 function ctlNum(obj, key, { min, max, step = 1 } = {}) {
+  const targets = asList(obj);
+  const first = targets[0] || {};
   const inp = document.createElement('input');
   inp.type = 'number'; inp.step = step;
   if (min != null) inp.min = min;
   if (max != null) inp.max = max;
-  inp.value = Number.isFinite(+obj[key]) ? +obj[key] : 0;
-  inp.oninput = () => { pushHistory(); obj[key] = +inp.value || 0; render(); scheduleCode(); };
+  inp.value = Number.isFinite(+first[key]) ? +first[key] : 0;
+  inp.oninput = () => { pushHistory(); setOn(targets, key, +inp.value || 0); render(); scheduleCode(); };
   return inp;
 }
 function ctlText(obj, key, placeholder) {
+  const targets = asList(obj);
+  const first = targets[0] || {};
   const inp = document.createElement('input');
-  inp.type = 'text'; inp.value = obj[key] == null ? '' : obj[key];
+  inp.type = 'text'; inp.value = first[key] == null ? '' : first[key];
   if (placeholder) inp.placeholder = placeholder;
-  inp.oninput = () => { pushHistory(); obj[key] = inp.value; refreshPanels(); render(); scheduleCode(); };
+  inp.oninput = () => { pushHistory(); setOn(targets, key, inp.value); refreshPanels(); render(); scheduleCode(); };
   return inp;
 }
 function ctlColor(obj, key) {
+  const targets = asList(obj);
+  const first = targets[0] || {};
   const inp = document.createElement('input');
-  inp.type = 'color'; inp.value = obj[key] || '#ffffff';
-  inp.oninput = () => { pushHistory(); obj[key] = inp.value; render(); scheduleCode(); };
+  inp.type = 'color'; inp.value = first[key] || '#ffffff';
+  inp.oninput = () => { pushHistory(); setOn(targets, key, inp.value); render(); scheduleCode(); };
   return inp;
 }
 function ctlSelect(value, options, onChange) {
@@ -1199,10 +1764,12 @@ function ctlSelect(value, options, onChange) {
   return sel;
 }
 function ctlCheck(obj, key, title) {
+  const targets = asList(obj);
+  const first = targets[0] || {};
   const inp = document.createElement('input');
-  inp.type = 'checkbox'; inp.checked = !!obj[key];
+  inp.type = 'checkbox'; inp.checked = !!first[key];
   if (title) inp.title = title;
-  inp.onchange = () => { pushHistory(); obj[key] = inp.checked; render(); scheduleCode(); };
+  inp.onchange = () => { pushHistory(); setOn(targets, key, inp.checked); render(); scheduleCode(); };
   return inp;
 }
 function ctlButton(label, title, fn) {
@@ -1284,14 +1851,26 @@ function infoBlock(e) {
   }
   return box;
 }
+// Rebuilding the panel empties it for a moment, which clamps the panel's own
+// scroll to the top — remember where it was and put it back, so typing in a
+// field (the Symbol field especially: the font rows come and go) does not jump.
 function renderProps() {
   const host = $('props');
+  const keepTop = host.scrollTop;
+  renderPropsBody(host);
+  if (host.scrollTop !== keepTop) host.scrollTop = keepTop;
+}
+function renderPropsBody(host) {
   host.innerHTML = '';
   if (!project) return;
   const e = selEl();
   const sel = selection();
   if (sel.length > 1) {
-    host.appendChild(groupBox(`${sel.length} layers selected`));
+    const gb = groupBox(`${sel.length} layers selected`);
+    gb.appendChild(propNote('Show in and Alpha below apply to every selected layer.'));
+    host.appendChild(gb);
+    const gid = commonGroup(sel);
+    if (gid) host.appendChild(ctlRow('Group name', groupNameInput(gid), 'Rename this group (double-clicking its name in the layers panel works too)'));
     host.appendChild(propsGroupTools(sel));
   }
   if (!e) {
@@ -1300,9 +1879,14 @@ function renderProps() {
   }
   host.appendChild(infoBlock(e));
   // common
+  const many = sel.length > 1;
+  const targets = commonTargets(e);
   host.appendChild(ctlRow('Name', ctlText(e, 'name', layerLabel(e))));
-  host.appendChild(ctlRow('Show in', ctlSelect(e.show || 'both', SHOW_LEVELS.map((s) => ({ value: s.key, label: s.label })), (v) => { e.show = v; })));
-  host.appendChild(ctlRow('Alpha', ctlNum(e, 'alpha', { min: 0, max: 255 })));
+  host.appendChild(ctlRow('Show in',
+    ctlSelect(e.show || 'normal', SHOW_LEVELS.map((s) => ({ value: s.key, label: s.label })), (v) => { setOn(targets, 'show', v); }),
+    many ? `Applies to all ${sel.length} selected layers` : 'When this layer is drawn: normal, AOD, both or edit-only'));
+  host.appendChild(ctlRow('Alpha', ctlNum(targets, 'alpha', { min: 0, max: 255 }),
+    many ? `Applies to all ${sel.length} selected layers` : 'Layer opacity, 0-255'));
 
   const geo = document.createElement('div');
   geo.className = 'prop-sep';
@@ -1325,68 +1909,577 @@ function renderProps() {
   del.className = 'row-btn';
   host.appendChild(del);
 }
-function ctlRow(label, control) {
-  const row = mkRow(label);
+function ctlRow(label, control, title) {
+  const row = mkRow(label, title);
   row.appendChild(control);
   return row;
 }
-function propsGroupTools(sel) {
-  const box = groupBox('Align');
-  const wrap = document.createElement('div');
-  wrap.className = 'aligntools';
-  const D = dev();
-  const items = [
-    ['Left', () => alignSel(sel, 'left', D)],
-    ['Center', () => alignSel(sel, 'hcenter', D)],
-    ['Right', () => alignSel(sel, 'right', D)],
-    ['Top', () => alignSel(sel, 'top', D)],
-    ['Middle', () => alignSel(sel, 'vcenter', D)],
-    ['Bottom', () => alignSel(sel, 'bottom', D)],
-  ];
-  for (const [label, fn] of items) {
-    const b = document.createElement('button');
-    b.textContent = label; b.onclick = fn;
-    wrap.appendChild(b);
-  }
-  box.appendChild(wrap);
-  return box;
+// full-width explanatory line inside the properties panel
+function propNote(text) {
+  const p = document.createElement('p');
+  p.className = 'prop-note';
+  p.textContent = text;
+  return p;
 }
-function alignSel(sel, mode, D) {
+// ---------------------------------------------------------------------------
+// Glyph styling
+//
+// A digit / weekday / data layer draws PNG images, not text, so hmUI has no
+// text_size or color parameter for it: both were baked when the glyphs were
+// rasterised. Every such layer carries a spec (`e.glyph`) that the rows below
+// edit, and changing anything re-renders the layer's *own* images in place —
+// the reference designer's per-layer font box, wired to this project's glyph
+// pipeline.
+//
+// Three cases are special, because the watchface format fixes their file names
+// (so the file is shared between layers instead of owned by one):
+//   * separators — colon.png, degree.png, dot.png, negative.png, percent.png,
+//     slash.png, am/pm.png. A clock colon is a single IMG layer pointing at
+//     colon.png; a temperature reading carries its degree (and minus) glyph as
+//     the layer's `unit` / `negative` image, so the ° follows the digits;
+//   * a blinking colon is a frame list: the `…_off` frames are rendered blank,
+//     so the blink keeps working while the colon itself takes the new style;
+//   * imported sets (weather icons, month names) are never re-rendered.
+const DIGIT_SET_KINDS = new Set(['IMG_TIME', 'IMG_DATE', 'IMG_LEVEL', 'IMG_PROGRESS', 'TEXT_IMG']);
+const GLYPH_ATTACHED = ['unit', 'dot', 'negative', 'am', 'pm'];
+const GLYPH_FILLS = [
+  { value: 'solid', label: 'Solid' },
+  { value: 'gradient', label: 'Gradient (2 stops)' },
+  { value: 'css', label: 'Gradient from CSS' },
+  { value: 'outline', label: 'Outline' },
+];
+const DIGIT_FILE_RE = /^font_\d+_\d+\.png$/;
+const WEEK_FILE_RE = /^week_w\d+\.png$/;
+const WEEK_CHARS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+const SEPARATOR_CHARS = { colon: ':', dot: '.', percent: '%', negative: '-', degree: '°', slash: '/', am: 'A', pm: 'P' };
+const SEPARATOR_FILE_RE = /^(colon|dot|percent|negative|degree|slash|am|pm)(_\w+)?\.png$/i;
+const DEFAULT_GLYPH_CSS = 'linear-gradient(180deg, #ffd400, #ff2d55)';
+
+// colon.png → { : }, colon_off.png → a blank frame, degree.png → { ° }
+function separatorGlyphFor(name) {
+  const stem = String(name || '').replace(/\.png$/i, '');
+  if (!stem) return null;
+  const off = /(_off|_empty|_blank)$/i.test(stem);
+  const base = stem.replace(/(_off|_empty|_blank|_\d+)$/i, '');
+  const ch = SEPARATOR_CHARS[base];
+  if (ch == null) return null;
+  return { tag: stem.replace(/[^\w\-]+/g, '_'), char: off ? ' ' : ch, name: String(name) };
+}
+// a glyph layer is a digit/weekday/data layer, or an image layer whose file is
+// one of the fixed separators (the clock colon, a blink frame list)
+// a readable file name for an image generated from a symbol: 'A' → symbol_A.png,
+// '°' → symbol_u00b0.png (never a spec separator name — those are shared files)
+function symbolFileName(char) {
+  const c = String(char == null ? '' : char).trim();
+  if (!c) return 'symbol.png';
+  if (/^[A-Za-z0-9]$/.test(c)) return `symbol_${c}.png`;
+  return `symbol_${[...c].map((ch) => 'u' + ch.codePointAt(0).toString(16).padStart(4, '0')).join('_')}.png`;
+}
+// the symbol a layer's image is drawn from: an explicit one (any image layer can
+// be generated from a character), or the separator its file name implies
+function layerSymbol(e) {
+  // an explicit choice wins, even an empty one (that is how Symbol is cleared
+  // back to a regular image layer); otherwise a separator file name implies it
+  if (e.symbol) return e.symbol.char ? e.symbol : null;
+  const sep = e.kind === 'IMG' ? separatorGlyphFor(e.src) : null;
+  return sep ? { char: sep.char, name: sep.name } : null;
+}
+function isGlyphLayer(e) {
+  if (!e) return false;
+  if (DIGIT_SET_KINDS.has(e.kind) || e.kind === 'IMG_WEEK') return true;
+  if (e.kind === 'IMG') return !!layerSymbol(e);
+  if (e.kind === 'IMG_ANIM') {
+    const f = e.frames || [];
+    return f.length > 0 && f.every((n) => !!separatorGlyphFor(n));
+  }
+  return false;
+}
+// what the panel edits, with the values the layer's images were drawn with
+function glyphStyle(e) {
+  const g = e.glyph || {};
+  const sepOnly = (e.kind === 'IMG' || e.kind === 'IMG_ANIM') && isGlyphLayer(e);
+  const size = +g.size || ((e.kind === 'IMG_WEEK' || sepOnly) ? 40 : +glyphOpts.size) || 48;
+  return {
+    font: g.font || glyphFont,
+    size: Math.max(8, Math.round(size)),
+    weight: g.weight == null ? +glyphOpts.weight : +g.weight,
+    variations: g.variations == null ? glyphOpts.variations : g.variations,
+    fill: g.fill || 'solid',
+    color: g.color || '#ffffff',
+    from: g.from || '#ffd400',
+    to: g.to || '#ff2d55',
+    angle: g.angle == null ? 180 : +g.angle,
+    css: g.css || DEFAULT_GLYPH_CSS,
+    outlineColor: g.outlineColor || '#ffffff',
+    outlineWidth: Math.max(1, Math.round(+g.outlineWidth || 2)),
+    bold: !!g.bold,
+    italic: !!g.italic,
+  };
+}
+// the glyph list this layer's images stand for, or null when the designer must
+// not touch them (imported sets, month names, an unknown picture)
+function glyphSpecForLayer(e) {
+  const g = e.glyph || {};
+  if (g.glyphs && g.glyphs.length) return g.glyphs.map((x) => ({ ...x }));
+  const imgs = e.images || [];
+  if (e.kind === 'IMG_WEEK') {
+    if (imgs.length >= 7 && imgs.slice(0, 7).every((n) => WEEK_FILE_RE.test(n))) {
+      return imgs.slice(0, 7).map((n, i) => ({ tag: `w${i + 1}`, char: WEEK_CHARS[i], name: n }));
+    }
+    if (!imgs.length) return WEEK_CHARS.map((l, i) => ({ tag: `w${i + 1}`, char: l }));
+    return null;
+  }
+  if (e.kind === 'IMG' || e.kind === 'IMG_ANIM') {
+    if (e.kind === 'IMG' && e.symbol && e.symbol.char) {
+      return [{ tag: 'symbol', char: e.symbol.char, name: e.symbol.name || e.src || null }];
+    }
+    const files = e.kind === 'IMG_ANIM' ? (e.frames || []) : (e.src ? [e.src] : []);
+    const seps = files.map(separatorGlyphFor);
+    return seps.length && seps.every(Boolean) ? seps : null;
+  }
+  if (!DIGIT_SET_KINDS.has(e.kind)) return null;
+  if (e.kind === 'IMG_DATE' && e.isCharacter) return null;   // month names, not digits
+  if (imgs.length >= 10 && imgs.slice(0, 10).every((n) => DIGIT_FILE_RE.test(n))) {
+    return imgs.slice(0, 10).map((n, i) => ({ tag: String(i), char: String(i), name: n }));
+  }
+  if (!imgs.length) return '0123456789'.split('').map((c, i) => ({ tag: String(i), char: c }));
+  return null;   // imported or hand-picked images are left alone
+}
+// separator images attached to a layer (the temperature ° / −, a decimal dot,
+// AM/PM) — they are re-rendered with the layer, keeping their design names
+function attachedSepGlyphs(e) {
+  const out = [];
+  for (const key of GLYPH_ATTACHED) {
+    const g = separatorGlyphFor(e[key]);
+    if (g) out.push(g);
+  }
+  return out;
+}
+function glyphLayerFiles(e) {
+  const out = [];
+  for (const n of (e.images || [])) out.push(n);
+  for (const n of (e.frames || [])) out.push(n);
+  if (e.src) out.push(e.src);
+  for (const key of GLYPH_ATTACHED) if (e[key]) out.push(e[key]);
+  return out.filter(Boolean);
+}
+// other layers that point at the same glyph files
+function glyphUsersOf(names, ...except) {
+  const set = new Set(names.filter(Boolean));
+  return elements().filter((x) => !except.includes(x) && glyphLayerFiles(x).some((n) => set.has(n)));
+}
+function glyphPrefixFor(e, spec) {
+  const first = (spec[0] && spec[0].name) || (e.images || [])[0] || e.src || '';
+  const m = /^(font_\d+)_\d+\.png$/.exec(first);
+  return (m && m[1]) || (e.kind === 'IMG_WEEK' ? 'week' : nextDigitPrefix());
+}
+// Rasterise this layer's images again, in place, with its current style.
+// A digit set shared with a layer we are *not* restyling is copied first (the
+// reference does the same): the other layers keep the glyphs they were drawn
+// with, this one gets a set of its own.
+async function regenerateGlyphs(e, { targets = [e] } = {}) {
+  const spec = glyphSpecForLayer(e);
+  if (!spec || !spec.length) return null;
+  const st = glyphStyle(e);
+  // An image drawn from a symbol gets a file of its own the first time
+  // (symbol_<char>.png) — it never overwrites the picture (or the shared
+  // separator file) the layer was pointing at. Later edits re-render that file
+  // in place, and the symbol is remembered on the layer.
+  const sym = e.kind === 'IMG' ? layerSymbol(e) : null;
+  if (sym && !(e.symbol && e.symbol.name)) {
+    const name = uniqImageName(symbolFileName(sym.char));
+    e.symbol = { char: sym.char, name };
+    spec[0].name = name;
+  }
+  const cur = spec.map((g) => g.name).filter(Boolean);
+  let pre = glyphPrefixFor(e, spec);
+  // only a generated digit set can be forked; separators and weekdays carry
+  // design-fixed names (colon.png, week_w1.png) that other layers share on purpose
+  const fork = glyphUsersOf(cur, e).filter((x) => !targets.includes(x)).length > 0
+    && cur.length > 0 && DIGIT_FILE_RE.test(cur[0]);
+  if (fork) pre = nextDigitPrefix();
+  const names = await genGlyphImages(
+    spec.map((g) => ({ tag: g.tag, char: g.char, name: (fork || !g.name) ? `${pre}_${g.tag}.png` : g.name })),
+    { prefix: pre, mono: spec.length > 1, replace: true, size: st.size,
+      family: st.font, weight: st.weight, variations: st.variations, style: st },
+  );
+  if (e.kind === 'IMG') e.src = names[0];
+  else if (e.kind === 'IMG_ANIM') e.frames = names;
+  else e.images = names;
+  for (const key of GLYPH_ATTACHED) {
+    const g = separatorGlyphFor(e[key]);
+    if (!g) continue;
+    // separators keep the digits' proportions, and the degree sign keeps the
+    // digits' cell height so it reads as a superscript
+    const cell = digitCellHeight(e);
+    const [n] = await genGlyphImages([{ tag: g.tag, char: g.char, name: g.name }],
+      { prefix: g.tag, mono: false, replace: true,
+        size: g.tag === 'degree' ? Math.max(8, Math.round((cell || st.size) * 0.8)) : (cell || st.size),
+        cellH: g.tag === 'degree' ? cell : 0,
+        family: st.font, weight: st.weight, variations: st.variations, style: st });
+    e[key] = n;
+  }
+  return names;
+}
+// Editing a control re-renders 10-40 PNGs per layer, so it is batched: the
+// canvas updates at once, the images follow a moment after the last change.
+let glyphGenTimer = null;
+let glyphGenQueue = [];
+function scheduleGlyphGen(targets) {
+  for (const t of targets) if (!glyphGenQueue.includes(t.id)) glyphGenQueue.push(t.id);
+  clearTimeout(glyphGenTimer);
+  glyphGenTimer = setTimeout(glyphGenNow, 400);
+}
+async function glyphGenNow() {
+  const ids = glyphGenQueue;
+  glyphGenQueue = [];
+  const list = ids.map(elementById).filter(Boolean);
+  if (list.length && project) await rerenderGlyphLayers(list, { quiet: true });
+}
+async function rerenderGlyphLayers(targets, { quiet } = {}) {
+  const list = targets.filter(Boolean);
+  let done = 0;
+  for (const el of list) {
+    try { if (await regenerateGlyphs(el, { targets: list })) done++; }
+    catch (err) { status('Could not re-render the glyphs: ' + (err.message || err), true); }
+  }
+  if (!done) {
+    if (!quiet) status('Nothing to re-render on these layers — they use imported images.', true);
+    return 0;
+  }
+  await loadAllImages();
+  withFocusKept(() => refreshPanels());
+  render(); scheduleCode();
+  status(`Re-rendered ${done} image layer${done === 1 ? '' : 's'} at the new size / colour.`);
+  return done;
+}
+function glyphFamilyOptions() {
+  const out = [];
+  const seen = new Set();
+  const push = (fam, label) => { if (!fam || seen.has(fam)) return; seen.add(fam); out.push({ value: fam, label }); };
+  for (const f of customFonts) push(f.family, `${f.family} · imported`);
+  for (const f of BUNDLED_FONTS) push(f.family, `${f.family} · bundled`);
+  const cur = glyphStyle(selEl() || {}).font;
+  push(cur, cur);
+  return out;
+}
+// Properties rows for one glyph layer; every control writes to *all* selected
+// glyph layers, so selecting a group restyles the whole clock in one go.
+// a thumbnail of the image a layer draws, so the panel shows what the export
+// will ship
+function imagePreview(name) {
+  const wrap = document.createElement('div');
+  wrap.className = 'imgprev';
+  const meta = name ? imgMeta(name) : null;
+  if (meta) {
+    const im = document.createElement('img');
+    im.src = meta.url;
+    im.alt = name;
+    im.title = name;
+    wrap.appendChild(im);
+    const t = document.createElement('span');
+    t.className = 'muted small';
+    t.textContent = `${name} · ${meta.width}×${meta.height}`;
+    wrap.appendChild(t);
+  } else {
+    const t = document.createElement('span');
+    t.className = 'muted small';
+    t.textContent = 'no image yet — pick one above, or generate one from a symbol below';
+    wrap.appendChild(t);
+  }
+  return wrap;
+}
+// The character an image is drawn from. Works for any image layer: type a symbol
+// and the PNG is rasterised from the font and set as this layer's image (a
+// separator layer keeps its design name, a fresh one gets symbol_*.png).
+function symbolInput(e) {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.maxLength = 4;
+  inp.placeholder = '° ♥ A';
+  inp.dataset.keepFocus = 'symbol';
+  const sym = layerSymbol(e);
+  inp.value = sym ? sym.char : '';
+  const had = !!layerSymbol(e);
+  inp.oninput = () => {
+    pushHistory();
+    const char = inp.value.trim();
+    // a fresh symbol gets a file of its own when it is generated; an existing
+    // generated file is re-rendered in place. Clearing it makes this a regular
+    // image layer again (the picture it already has stays).
+    e.symbol = char ? { char, name: (e.symbol && e.symbol.name) || null } : { char: '' };
+    // the font rows appear/disappear with the symbol, so rebuild when that changes
+    if (!!char === had) render(); else refreshPanels();
+    scheduleGlyphGen([e]);
+    scheduleCode();
+  };
+  return inp;
+}
+// Regenerating glyphs rebuilds the Properties panel; put the caret back where it
+// was so typing a symbol or a size does not lose focus mid-edit.
+function withFocusKept(fn) {
+  const act = document.activeElement;
+  const key = act && act.dataset ? act.dataset.keepFocus : null;
+  const pos = key && act.selectionStart != null ? act.selectionStart : null;
+  fn();
+  if (!key) return;
+  const next = document.querySelector(`[data-keep-focus="${key}"]`);
+  if (next && next.focus) {
+    next.focus();
+    if (pos != null && next.setSelectionRange) next.setSelectionRange(pos, pos);
+  }
+}
+function glyphStyleRows(frag, add, e) {
+  const spec = glyphSpecForLayer(e);
+  const files = glyphLayerFiles(e);
+  const meta = files[0] ? imgMeta(files[0]) : null;
+  // any image layer can be *generated* from a symbol (a character drawn with a
+  // font); kinds that only draw imported sets cannot
+  const canSymbol = e.kind === 'IMG';
+  const sym = canSymbol ? layerSymbol(e) : null;
+  if (!spec && !canSymbol) {
+    frag.appendChild(propNote(files.length
+      ? `This layer's ${files.length} images were imported (or picked by hand), so the designer leaves them alone — their size and colour are in the pictures themselves.`
+      : 'No images yet — add a set under Images above, then the size and colour become editable here.'));
+    return;
+  }
+  const T = targetsWhere(e, isGlyphLayer);
+  const st = glyphStyle(e);
+  const apply = (key, value) => {
+    for (const t of T) { const g = (t.glyph = t.glyph || {}); g[key] = value; }
+    scheduleGlyphGen(T);
+  };
+  const num = (key, { min = null, max = null } = {}) => {
+    const inp = document.createElement('input');
+    inp.type = 'number';
+    if (min != null) inp.min = min;
+    if (max != null) inp.max = max;
+    inp.value = st[key];
+    inp.oninput = () => {
+      pushHistory();
+      let v = +inp.value || 0;
+      if (min != null) v = Math.max(min, v);
+      if (max != null) v = Math.min(max, v);
+      apply(key, v);
+      render(); scheduleCode();
+    };
+    return inp;
+  };
+  const color = (key) => {
+    const inp = document.createElement('input');
+    inp.type = 'color';
+    inp.value = st[key];
+    inp.oninput = () => { pushHistory(); apply(key, inp.value); render(); scheduleCode(); };
+    return inp;
+  };
+  const text = (key, placeholder) => {
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.value = st[key] || '';
+    if (placeholder) inp.placeholder = placeholder;
+    inp.oninput = () => { pushHistory(); apply(key, inp.value); render(); scheduleCode(); };
+    return inp;
+  };
+  const check = (key, title) => {
+    const inp = document.createElement('input');
+    inp.type = 'checkbox';
+    inp.checked = !!st[key];
+    if (title) inp.title = title;
+    inp.onchange = () => { pushHistory(); apply(key, inp.checked); render(); scheduleCode(); };
+    return inp;
+  };
+  if (canSymbol) {
+    add('Symbol', symbolInput(e), 'The character this image is drawn from — a letter, a separator like ° or :, an emoji. Fill it in and the image is rasterised from the font below, into a file of its own');
+  }
+  // the font rows belong to a symbol: without one this is a regular image layer
+  if (spec) {
+  add('Font', ctlSelect(st.font, glyphFamilyOptions(), (v) => {
+    apply('font', v);
+    ensureFont(v, st.weight).then(() => render());
+  }), 'Typeface these images are rasterised from');
+  add('Size', num('size', { min: 8 }), 'Height the glyphs are rasterised at, in px');
+  add('Fill', ctlSelect(st.fill, GLYPH_FILLS, (v) => apply('fill', v)));
+  if (st.fill === 'solid') add('Color', color('color'));
+  if (st.fill === 'outline') {
+    // the outline is a hollow ring: the fill colour is not used
+    add('Outline', color('outlineColor'), 'Colour of the outline ring');
+    add('Outline width', num('outlineWidth', { min: 1, max: 24 }));
+  }
+  if (st.fill === 'gradient') {
+    add('From', color('from'));
+    add('To', color('to'));
+    add('Angle°', num('angle'), '0 = up, 90 = right (CSS degrees)');
+  }
+  if (st.fill === 'css') {
+    add('Gradient', text('css', 'linear-gradient(180deg, #ffd400, #ff2d55)'));
+    frag.appendChild(propNote(parseCssGradient(st.css)
+      ? 'linear / radial / conic, e.g. linear-gradient(180deg, #ffd400 0%, #ff2d55 100%)'
+      : 'not parsed — the glyphs fall back to the flat colour'));
+  }
+  add('Bold', check('bold', 'Thickens every glyph — works with single-weight fonts too'));
+  add('Italic', check('italic', 'Slants every glyph 12°'));
+  add('Re-render', ctlButton(files.length ? 'Apply size & colour' : (spec.length > 1 ? 'Generate images' : 'Generate image'),
+    files.length ? 'Rasterise these images again now' : 'Rasterise a set from this style now', () => {
+      pushHistory();
+      rerenderGlyphLayers(T);
+    }));
+  }
+  // what the images actually are, and what a change will do to them
+  if (canSymbol && sym) {
+    frag.appendChild(propNote(`Draws “${sym.char}” with ${st.font} ${st.size}px — the image${files.length ? ` (${meta ? `${meta.width}×${meta.height}` : '?'})` : ''} is rasterised from that font, into ${sym.name || 'a file of its own'}, and re-rendered whenever the style changes.`));
+  } else if (canSymbol) {
+    frag.appendChild(propNote('This is a regular image layer. Fill in Symbol to rasterise the image from a font instead — it gets a file of its own and becomes this layer\'s image.'));
+  }
+  const count = `${spec ? spec.length : 0} image${!spec || spec.length === 1 ? '' : 's'}`;
+  frag.appendChild(propNote(files.length
+    ? `The watch draws ${count}${meta ? ` (${meta.width}×${meta.height} px)` : ''}, not text: size, colour, fill, bold and italic are baked into the PNGs and re-rendered here.`
+    : `No images yet — ${count} are rasterised from this style, and re-rendered whenever it changes.`));
+  const attached = attachedSepGlyphs(e);
+  if (attached.length) {
+    frag.appendChild(propNote(`Separator images follow the same style: ${attached.map((a) => a.name).join(', ')} — that is how a temperature layer's ° (and −) glyph keeps in step with its digits.`));
+  }
+  if (e.kind === 'IMG_ANIM' && (e.frames || []).some((n) => /(_off|_empty|_blank)\.png$/i.test(n))) {
+    frag.appendChild(propNote('Blink frames: the `…_off` images are kept blank, so the colon keeps blinking with the new look.'));
+  }
+  const shared = glyphUsersOf((spec || []).map((g) => g.name).filter(Boolean), e);
+  if (shared.length) {
+    frag.appendChild(propNote(`Shared with ${shared.length} other layer${shared.length === 1 ? '' : 's'} — restyling this one gives it a copy of its own, the others keep theirs.`));
+  }
+  if (T.filter((t) => !!glyphSpecForLayer(t)).length > 1) {
+    frag.appendChild(propNote(`Styles are applied to all ${T.filter((t) => !!glyphSpecForLayer(t)).length} selected image layers.`));
+  }
+}
+function propsGroupTools(sel) {
+  const D = dev();
+  const tools = (title, defs) => {
+    const box = groupBox(title);
+    const wrap = document.createElement('div');
+    wrap.className = 'aligntools';
+    for (const [label, tip, fn] of defs) {
+      const b = document.createElement('button');
+      b.textContent = label;
+      if (tip) b.title = tip;
+      b.onclick = fn;
+      wrap.appendChild(b);
+    }
+    box.appendChild(wrap);
+    return box;
+  };
+  const ALIGN = [
+    ['Left', 'Align left edges', 'left'],
+    ['Center', 'Centre horizontally', 'hcenter'],
+    ['Right', 'Align right edges', 'right'],
+    ['Top', 'Align top edges', 'top'],
+    ['Middle', 'Centre vertically', 'vcenter'],
+    ['Bottom', 'Align bottom edges', 'bottom'],
+  ];
+  const frag = document.createDocumentFragment();
+  frag.appendChild(tools('Align to box', ALIGN.map(([label, tip, mode]) => [
+    label, `${tip} — relative to the selection's bounding box`, () => alignSel(sel, mode, D, 'box'),
+  ])));
+  frag.appendChild(tools('Align to device', ALIGN.map(([label, tip, mode]) => [
+    label, `${tip} — relative to the device screen`, () => alignSel(sel, mode, D, 'device'),
+  ])));
+  // Distribute mirrors the reference designer's row: Even spaces the gaps *and*
+  // the device margins, Spread puts the first and last on the device edges,
+  // Start/End pack the row against that edge.
+  const DIST = [
+    ['Even', 'Space evenly across the device: equal gaps and equal device margins', 'evenly'],
+    ['Spread', 'First layer on the left device edge, last on the right edge', 'between'],
+    ['Start', 'Pack the row against the left device edge', 'start'],
+    ['End', 'Pack the row against the right device edge', 'end'],
+  ];
+  const dist = (axis, [label, tip, mode]) => [label, tip, () => distributeSel(sel, axis, mode, D)];
+  frag.appendChild(tools('Distribute across', DIST.map((d) => dist('x', d))));
+  frag.appendChild(tools('Distribute down', DIST.map((d) => dist('y', d))));
+  return frag;
+}
+// Align the selection: `ref` is the selection's bounding box (default) or the
+// whole device screen.
+function alignSel(sel, mode, D, ref = 'box') {
   if (sel.length < 2) return;
   pushHistory();
   const boxes = sel.map((e) => ({ e, b: elBox(e) }));
-  const minX = Math.min(...boxes.map((x) => x.b.x));
-  const maxX = Math.max(...boxes.map((x) => x.b.x + x.b.w));
-  const minY = Math.min(...boxes.map((x) => x.b.y));
-  const maxY = Math.max(...boxes.map((x) => x.b.y + x.b.h));
+  const R = ref === 'device' ? { x: 0, y: 0, w: D.w, h: D.h } : unionBox(boxes.map((x) => x.b));
   for (const { e, b } of boxes) {
     let dx = 0, dy = 0;
-    if (mode === 'left') dx = minX - b.x;
-    else if (mode === 'right') dx = maxX - (b.x + b.w);
-    else if (mode === 'hcenter') dx = (minX + maxX) / 2 - (b.x + b.w / 2);
-    else if (mode === 'top') dy = minY - b.y;
-    else if (mode === 'bottom') dy = maxY - (b.y + b.h);
-    else if (mode === 'vcenter') dy = (minY + maxY) / 2 - (b.y + b.h / 2);
+    if (mode === 'left') dx = R.x - b.x;
+    else if (mode === 'right') dx = R.x + R.w - (b.x + b.w);
+    else if (mode === 'hcenter') dx = R.x + R.w / 2 - (b.x + b.w / 2);
+    else if (mode === 'top') dy = R.y - b.y;
+    else if (mode === 'bottom') dy = R.y + R.h - (b.y + b.h);
+    else if (mode === 'vcenter') dy = R.y + R.h / 2 - (b.y + b.h / 2);
     moveEl(e, Math.round(dx), Math.round(dy));
   }
-  refreshPanels(); render();
+  refreshPanels(); render(); scheduleCode();
+  status(`Aligned ${sel.length} layers to the ${ref === 'device' ? 'device' : 'selection box'}.`);
+}
+// Distribute the selection along one axis, in *layers-panel order* (top of the
+// list first) so a jumbled layout — hour, colon, minute — is never scrambled:
+//   evenly  = equal gaps and equal device margins (the row centres on the device)
+//   between = first layer on one device edge, last on the other
+//   start   = pack against the low edge (left / top)
+//   end     = pack against the high edge (right / bottom)
+function distributeSel(sel, axis, mode, D) {
+  if (sel.length < 2) return;
+  const span = axis === 'x' ? D.w : D.h;
+  const sizeOf = (b) => (axis === 'x' ? b.w : b.h);
+  const posOf = (b) => (axis === 'x' ? b.x : b.y);
+  const order = new Map([...elements()].reverse().map((e, i) => [e.id, i]));
+  const items = sel.map((e) => ({ e, b: elBox(e) })).sort((a, b) => order.get(a.e.id) - order.get(b.e.id));
+  const total = items.reduce((a, o) => a + sizeOf(o.b), 0);
+  const slack = span - total;
+  const targets = new Map();
+  if (mode === 'start') {
+    let p = 0;
+    for (const o of items) { targets.set(o, Math.round(p)); p += sizeOf(o.b); }
+  } else if (mode === 'end') {
+    let p = span;
+    for (let i = items.length - 1; i >= 0; i--) { p -= sizeOf(items[i].b); targets.set(items[i], Math.round(p)); }
+  } else if (mode === 'between') {
+    const gap = slack / (items.length - 1);
+    let p = 0;
+    for (const o of items) { targets.set(o, Math.round(p)); p += sizeOf(o.b) + gap; }
+  } else {
+    const gap = slack / (items.length + 1);   // n layers → n+1 shares
+    let p = gap;
+    for (const o of items) { targets.set(o, Math.round(p)); p += sizeOf(o.b) + gap; }
+  }
+  const moved = items.filter((o) => posOf(o.b) !== targets.get(o)).length;
+  if (!moved) {
+    status(`Nothing to do — already distributed ${axis === 'x' ? 'across' : 'down'} the device.`);
+    return;
+  }
+  pushHistory();
+  for (const [o, p] of targets) {
+    const d = p - posOf(o.b);
+    moveEl(o.e, axis === 'x' ? Math.round(d) : 0, axis === 'x' ? 0 : Math.round(d));
+  }
+  refreshPanels(); render(); scheduleCode();
+  status(`Distributed ${items.length} layers ${axis === 'x' ? 'across' : 'down'} the device (${moved} moved).`);
 }
 // kind-specific rows
 function propsKind(e) {
   const frag = document.createElement('div');
-  const add = (label, ctl) => frag.appendChild(ctlRow(label, ctl));
+  const add = (label, ctl, title) => frag.appendChild(ctlRow(label, ctl, title));
   switch (e.kind) {
     case 'IMG':
       add('Image', buildSingle(e, 'src'));
+      add('Preview', imagePreview(e.src), 'The PNG this layer draws, as the export ships it');
       add('Angle', ctlNum(e, 'angle', { min: -360, max: 360 }));
       add('Pos X', ctlNum(e, 'posX'));
       add('Pos Y', ctlNum(e, 'posY'));
+      // every image layer gets the helper: the Symbol field is how an image is
+      // generated from a font (the font rows follow it, see glyphStyleRows)
+      glyphStyleRows(frag, add, e);
       break;
     case 'IMG_ANIM':
       add('Frames', ctlButton(`${(e.frames || []).length} frame${(e.frames || []).length === 1 ? '' : 's'}…`, 'Import a frame sequence', () => openAnimFrames(e)));
       add('FPS', ctlNum(e, 'fps', { min: 1, max: 60 }));
       add('Repeat', ctlNum(e, 'repeat', { min: 0 }), '0 = forever');
       add('Step', ctlNum(e, 'step', { min: 1 }));
+      // a blinking colon is a frame list of separator glyphs
+      if (isGlyphLayer(e)) glyphStyleRows(frag, add, e);
       break;
     case 'IMG_LEVEL':
       add('Data', ctlSelect(e.dataType || '', [{ value: '', label: '— static level —' }, ...dtOptions(false)], (v) => {
@@ -1394,6 +2487,7 @@ function propsKind(e) {
       }));
       if (!e.dataType) add('Level', ctlNum(e, 'level', { min: 0, max: 100 }));
       add('Images', ctlButton(`${(e.images || []).length}…`, 'Edit the image set', () => openImageSet(e)));
+      glyphStyleRows(frag, add, e);
       break;
     case 'IMG_PROGRESS':
       add('Data', ctlSelect(e.dataType || '', [{ value: '', label: '— static level —' }, ...dtOptions(false)], (v) => {
@@ -1402,6 +2496,7 @@ function propsKind(e) {
       if (!e.dataType) add('Level', ctlNum(e, 'level', { min: 0, max: 100 }));
       add('Spread', ctlNum(e, 'spread', { min: 0 }));
       add('Images', ctlButton(`${(e.images || []).length}…`, 'Edit the image set', () => openImageSet(e)));
+      glyphStyleRows(frag, add, e);
       break;
     case 'IMG_POINTER': {
       add('Image', buildSingle(e, 'src'));
@@ -1418,50 +2513,93 @@ function propsKind(e) {
         { value: 'hour', label: 'Hour' }, { value: 'hour12', label: 'Hour (12h)' },
         { value: 'minute', label: 'Minute' }, { value: 'second', label: 'Second' },
       ], (v) => { e.part = v; }));
-      if ((e.part || 'hour') !== 'hour12') {
-        add('Leading 0', ctlCheck(e, 'zero'));
-        add('Space', ctlNum(e, 'space'));
+      {
+        const src = followSource(e);
+        if ((e.part || 'hour') !== 'hour12') {
+          add('Leading 0', ctlCheck(e, 'zero'));
+          if (!src) {
+            add('Space', ctlNum(e, 'space'));
+            add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
+              'Where the value sits inside the widget box (hour/minute/second/day/month are 2 digits, a reading is as wide as its data type): Left, centred, or Right — the box stays put, the value moves inside it');
+          }
+        }
+        add('Follow', ctlCheck(e, 'follow'),
+          'Follow the previous time part: the watch draws this value directly after it, with its spacing and alignment — so the export sends no startX, space or align for this layer');
+        add('Digits', ctlButton(`${(e.images || []).length}…`, 'Edit the digit set', () => openImageSet(e)));
+        add('Unit', buildSingle(e, 'unit'));
+        if ((e.part || 'hour') === 'hour12') {
+          add('AM image', buildSingle(e, 'am'));
+          add('AM X', ctlNum(e, 'amX'));
+          add('AM Y', ctlNum(e, 'amY'));
+          add('PM image', buildSingle(e, 'pm'));
+          add('PM X', ctlNum(e, 'pmX'));
+          add('PM Y', ctlNum(e, 'pmY'));
+        }
+        if (src) {
+          frag.appendChild(propNote(`Follows “${src.name || src.part}”: the watch places this value right after it and takes that layer's spacing and alignment — Space and Align are hidden here because the export sends no startX, space or align for a following part.`));
+        }
       }
-      add('Follow', ctlCheck(e, 'follow', 'Seconds follow the minute hand'));
-      add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }));
-      add('Digits', ctlButton(`${(e.images || []).length}…`, 'Edit the digit set', () => openImageSet(e)));
-      add('Unit', buildSingle(e, 'unit'));
-      if ((e.part || 'hour') === 'hour12') {
-        add('AM image', buildSingle(e, 'am'));
-        add('AM X', ctlNum(e, 'amX'));
-        add('AM Y', ctlNum(e, 'amY'));
-        add('PM image', buildSingle(e, 'pm'));
-        add('PM X', ctlNum(e, 'pmX'));
-        add('PM Y', ctlNum(e, 'pmY'));
-      }
+      frag.appendChild(propNote(digitPreviewNote(e)));
+      glyphStyleRows(frag, add, e);
       break;
     case 'IMG_DATE':
       add('Part', ctlSelect(e.part || 'day', [{ value: 'day', label: 'Day' }, { value: 'month', label: 'Month' }], (v) => { e.part = v; }));
       add('Leading 0', ctlCheck(e, 'zero'));
-      add('Space', ctlNum(e, 'space'));
-      add('Follow', ctlCheck(e, 'follow'));
+      if (!followSource(e)) add('Space', ctlNum(e, 'space'));
+      add('Follow', ctlCheck(e, 'follow'),
+        'Follow the previous date part (month → day, the spec\'s 12/04 order): the watch draws this value directly after it, with its spacing and alignment');
       add('Character', ctlCheck(e, 'isCharacter', 'Month name instead of digits'));
-      add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }));
+      if (!followSource(e)) add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
+        'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it');
       add('Digits', ctlButton(`${(e.images || []).length}…`, 'Edit the digit set', () => openImageSet(e)));
+      frag.appendChild(propNote(digitPreviewNote(e)));
+      glyphStyleRows(frag, add, e);
       break;
     case 'IMG_WEEK':
       add('Weekdays', ctlButton(`${(e.images || []).length}…`, 'Edit the 7 weekday images', () => openImageSet(e)));
+      glyphStyleRows(frag, add, e);
       break;
     case 'TEXT_IMG':
       add('Data', ctlSelect(e.dataType || 'STEP', dtOptions(false), (v) => { e.dataType = v; }));
       add('Digits', ctlButton(`${(e.images || []).length}…`, 'Edit the digit set', () => openImageSet(e)));
       add('Spacing', ctlNum(e, 'hSpace', { min: 0 }));
-      add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }));
+      add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
+        'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it');
       add('Unit', buildSingle(e, 'unit'));
       add('Decimal', buildSingle(e, 'dot'));
       add('Negative', buildSingle(e, 'negative'));
+      glyphStyleRows(frag, add, e);
       break;
-    case 'TEXT':
-      add('Text', ctlText(e, 'text', 'MONDAY'));
-      add('Color', ctlColor(e, 'color'));
-      add('Size', ctlNum(e, 'size', { min: 1 }));
+    case 'TEXT': {
+      // Every row here writes to all selected Text layers, so selecting a group
+      // restyles the whole group (its children) in one go.
+      const T = targetsFor(e, TEXT_KINDS);
+      const fill = textFillType(e);
+      const addNote = (txt) => frag.appendChild(propNote(txt));
+      add('Text', ctlText(T, 'text', 'MONDAY'));
+      add('Size', ctlNum(T, 'size', { min: 1 }));
+      add('Fill', ctlSelect(fill, TEXT_FILL_TYPES, (v) => setOn(T, 'fillType', v)));
+      if (fill === 'solid') add('Color', ctlColor(T, 'color'));
+      if (fill === 'outline') {
+        add('Color', ctlColor(T, 'color'));
+        add('Outline', ctlColor(T, 'outlineColor'));
+        add('Outline width', ctlNum(T, 'outlineWidth', { min: 1, max: 24 }));
+      }
+      if (fill === 'gradient') {
+        add('From', ctlColor(T, 'color'));
+        add('To', ctlColor(T, 'color2'));
+        add('Angle°', ctlNum(T, 'gradAngle', { min: -360, max: 360 }), '0 = up, 90 = right');
+      }
+      if (fill === 'css') {
+        add('Gradient', ctlText(T, 'cssGradient', 'linear-gradient(90deg, #fff, #f0f)'));
+        addNote(parseCssGradient(e.cssGradient)
+          ? 'linear / radial / conic, e.g. linear-gradient(180deg, #ffd400 0%, #ff2d55 100%)'
+          : 'not parsed — the export falls back to the flat colour above');
+      }
+      add('Bold', ctlCheck(T, 'bold'), 'Picks the boldest face of the font and, on watch, is baked into an image');
+      add('Italic', ctlCheck(T, 'italic'), 'Slanted 11°; on watch it is baked into an image');
       add('Font', ctlSelect(e.fontFile || '', fontFileOptions(), (v) => {
-        e.fontFile = v;
+        setOn(T, 'fontFile', v);
         const fam = familyForFontFile(v);
         if (fam) ensureFont(fam, e.weight).then(() => render());
         else render();
@@ -1470,14 +2608,23 @@ function propsKind(e) {
         { value: '300', label: '300 light' }, { value: '400', label: '400 regular' },
         { value: '500', label: '500 medium' }, { value: '600', label: '600 semi bold' },
         { value: '700', label: '700 bold' }, { value: '900', label: '900 black' },
-      ], (v) => { e.weight = +v; render(); }));
-      add('Align H', ctlSelect(e.alignH || 'CENTER_H', alignOptions(), (v) => { e.alignH = v; }));
+      ], (v) => { setOn(T, 'weight', +v); render(); }));
+      add('Align H', ctlSelect(e.alignH || 'CENTER_H', alignOptions(), (v) => setOn(T, 'alignH', v)));
       add('Align V', ctlSelect(e.alignV || 'CENTER_V', [
         { value: 'TOP', label: 'Top' }, { value: 'CENTER_V', label: 'Middle' }, { value: 'BOTTOM', label: 'Bottom' },
-      ], (v) => { e.alignV = v; }));
-      add('Line space', ctlNum(e, 'lineSpace'));
-      add('Char space', ctlNum(e, 'charSpace'));
+      ], (v) => setOn(T, 'alignV', v)));
+      add('Line space', ctlNum(T, 'lineSpace'));
+      add('Char space', ctlNum(T, 'charSpace'));
+      if (T.length > 1) addNote(`Styles are applied to all ${T.length} selected Text layers.`);
+      const tm = textMetrics(e);
+      const fits = tm.w <= (+e.w || 0) + 1 && tm.h <= (+e.h || 0) + 1;
+      addNote(`Text draws ${Math.round(tm.w)}×${Math.round(tm.h)} in a ${Math.round(+e.w || 0)}×${Math.round(+e.h || 0)} box`
+        + (fits ? '.' : ' — it is clipped.'));
+      if (needsTextBake(e)) {
+        addNote(`The watch TEXT widget cannot draw ${bakeReason(e)}: this layer is baked into ${bakedTextName(e)} and emitted as an IMG.`);
+      }
       break;
+    }
     case 'IMG_STATUS':
       add('Status', ctlSelect(e.status || 'DISCONNECT', SYSTEM_STATUS.map((s) => ({ value: s.key, label: s.label })), (v) => { e.status = v; }));
       add('Icon', buildSingle(e, 'src'));
@@ -1626,6 +2773,7 @@ function scheduleCode() {
 async function refreshCode() {
   if (!project) return;
   try {
+    await bakedTextImages();      // gives codegen the baked names for styled text
     const res = await API.generateCode({ project });
     $('code').textContent = res.code || '// (no code)';
     const w = $('codeWarn');
@@ -1649,6 +2797,7 @@ function refreshPanels() {
   renderProps();
   renderTestData();
   renderImagesPanel();
+  syncLayersToolbar();
   const has = !!project;
   ['btnComponents', 'btnPresets', 'btnGlyphs', 'btnUpload', 'btnSave', 'btnExportZeus', 'btnBuild', 'btnInstall', 'btnFonts'].forEach((id) => { if ($(id)) $(id).disabled = !has; });
 }
@@ -1749,24 +2898,60 @@ function deleteElements(list) {
   refreshPanels(); render(); scheduleCode();
 }
 function deleteSelection() { deleteElements(selection()); }
+// A duplicated clock owns its separator images. `colon.png` (and dot / negative /
+// percent / degree / am / pm) are fixed design names shared by every layer that
+// points at them, so a copy that kept sharing them could not be restyled on its
+// own; the copy gets its own file (`colon_2.png`). Digit sets stay shared — they
+// fork by themselves when they are restyled (see regenerateGlyphs).
+function duplicateSeparatorImages(el) {
+  const map = new Map();
+  const fresh = (name) => {
+    if (!name) return name;
+    if (map.has(name)) return map.get(name);
+    const meta = imgMeta(name);
+    if (!meta || !separatorGlyphFor(name)) return name;      // not a separator: keep sharing
+    const copyName = uniqImageName(name);
+    project.images.push({ name: copyName, width: meta.width, height: meta.height, url: meta.url });
+    map.set(name, copyName);
+    return copyName;
+  };
+  for (const key of ['src', 'unit', 'dot', 'negative', 'am', 'pm']) if (el[key]) el[key] = fresh(el[key]);
+  for (const key of ['images', 'frames']) if (Array.isArray(el[key])) el[key] = el[key].map(fresh);
+  return [...map.values()];
+}
 function duplicateSelection() {
   const sel = selection();
   if (!sel.length) return;
   pushHistory();
   const taken = new Set(elements().map((e) => e.name));
+  // duplicating a whole group gives the copies a group of their own, named
+  // "<group> copy", so the two can be moved and restyled independently
+  const gid = commonGroup(sel);
+  let newGid = null;
+  if (gid) {
+    newGid = `g${Date.now().toString(36)}`;
+    project.groups = project.groups || {};
+    project.groups[newGid] = uniqName(`${groupName(gid)} copy`, new Set(Object.values(project.groups)));
+  }
+  const newImages = [];
   const copies = sel.map((e) => {
     const copy = JSON.parse(JSON.stringify(e));
     copy.id = `el${Date.now().toString(36)}${Math.floor(Math.random() * 1e4).toString(36)}`;
     copy.name = uniqName(`${e.name} copy`, taken);
     taken.add(copy.name);
     moveEl(copy, 12, 12);
-    copy.group = null;
+    copy.group = newGid;
+    newImages.push(...duplicateSeparatorImages(copy));
     project.elements.push(copy);
     return copy;
   });
   selectedId = copies[copies.length - 1].id;
   multiSel = new Set(copies.map((c) => c.id));
   refreshPanels(); render(); scheduleCode();
+  const parts = [];
+  if (gid) parts.push(`group “${project.groups[newGid]}”`);
+  if (newImages.length) parts.push(newImages.join(', '));
+  status(`Duplicated ${copies.length} layer${copies.length === 1 ? '' : 's'}${parts.length ? ' — ' + parts.join(' · ') : ''}.`);
 }
 function uniqName(base, taken) {
   taken = taken || new Set(elements().map((e) => e.name));
@@ -1796,6 +2981,18 @@ function ungroup() {
   }
   refreshPanels(); render(); scheduleCode();
 }
+// the layers toolbar mirrors what the current selection can do
+function syncLayersToolbar() {
+  if (!$('btnDup')) return;
+  const sel = selection();
+  $('btnDup').disabled = !sel.length;
+  $('btnGroup').disabled = sel.length < 2;
+  $('btnUngroup').disabled = !sel.some((e) => e.group);
+}
+$('btnDup').innerHTML = ICON.dup;
+$('btnGroup').innerHTML = ICON.group;
+$('btnUngroup').innerHTML = ICON.ungroup;
+$('btnDup').onclick = duplicateSelection;
 $('btnGroup').onclick = groupSelection;
 $('btnUngroup').onclick = ungroup;
 
@@ -1809,7 +3006,9 @@ function newElement(kindId, patch = {}) {
     kind: kindId,
     name: k ? k.label : kindId,
     x: 0, y: 0,
-    show: 'both',
+    // a component added from the menu starts in Normal only; AOD is opt-in
+    // (the presets decide it per layer: clock in AOD, readings normal only)
+    show: 'normal',
     visible: true, locked: false, group: null, alpha: 255,
     ...(k ? k.defaults : {}),
     ...patch,
@@ -1836,7 +3035,7 @@ async function addElement(kindId, patch = {}) {
   selectedId = e.id;
   multiSel = new Set([e.id]);
   // digit-driven widgets get a usable set straight away
-  if (kindId === 'IMG_TIME' || kindId === 'IMG_DATE' || kindId === 'TEXT_IMG' || kindId === 'IMG_LEVEL' || kindId === 'IMG_PROGRESS') {
+  if (kindId === 'IMG_TIME' || kindId === 'IMG_DATE' || kindId === 'TEXT_IMG' || kindId === 'IMG_LEVEL' || kindId === 'IMG_PROGRESS' || kindId === 'IMG_WEEK') {
     await attachDigitSet(e);
   }
   refreshPanels(); render(); scheduleCode();
@@ -1844,10 +3043,20 @@ async function addElement(kindId, patch = {}) {
 }
 async function attachDigitSet(e) {
   try {
-    const prefix = nextDigitPrefix();
-    const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c })), { prefix });
-    if (e.kind === 'IMG_LEVEL' || e.kind === 'IMG_PROGRESS') e.images = names.slice(0, 10);
-    else e.images = names;
+    if (e.kind === 'IMG_WEEK') {
+      e.images = await genGlyphImages(WEEK_CHARS.map((l, i) => ({ tag: `w${i + 1}`, char: l })),
+        { prefix: 'week', mono: false, size: 40 });
+    } else {
+      const prefix = nextDigitPrefix();
+      const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c })), { prefix });
+      if (e.kind === 'IMG_LEVEL' || e.kind === 'IMG_PROGRESS') e.images = names.slice(0, 10);
+      else e.images = names;
+    }
+    // remember what the set was drawn with, so Properties shows the real values
+    e.glyph = {
+      font: glyphFont, size: e.kind === 'IMG_WEEK' ? 40 : +glyphOpts.size,
+      color: glyphOpts.color, weight: glyphOpts.weight, variations: glyphOpts.variations, fill: 'solid',
+    };
   } catch (err) {
     status('Could not generate a digit set: ' + (err.message || err), true);
   }
@@ -1890,13 +3099,30 @@ $('btnGlyphs').onclick = (e) => { e.stopPropagation(); toggleGlyphs(); };
 
 // glyph helpers ------------------------------------------------------------
 async function genWeekSet() {
-  const labels = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-  return genGlyphImages(labels.map((l, i) => ({ tag: `w${i + 1}`, char: l })), { prefix: 'week', mono: false, size: 40 });
+  return genGlyphImages(WEEK_CHARS.map((l, i) => ({ tag: `w${i + 1}`, char: l })), { prefix: 'week', mono: false, size: 40 });
 }
-async function genUnit(tag, char) {
+// The height of a layer's digit cell. A separator (the colon, the degree sign)
+// is rasterised at that height so it keeps its proportions when the digits are
+// big — and the layer's own set wins over whatever set the project has first.
+function digitCellHeight(e) {
+  const own = e && (e.images || [])[0] ? imgMeta((e.images || [])[0]) : null;
+  const any = project && project.images.find((i) => /^font_\d+_\d+\.png$/.test(i.name));
+  const m = own || any;
+  return m ? m.height : 0;
+}
+async function genUnit(tag, char, { cellH = 0, size = 0 } = {}) {
   // the design specification names separators after the glyph itself
-  // (colon.png, dot.png, negative.png …), so use the tag as the file name
-  const names = await genGlyphImages([{ tag, char, name: `${tag.replace(/[^\w\-]+/g, '_')}.png` }], { mono: false, size: 40 });
+  // (colon.png, dot.png, negative.png …), so use the tag as the file name.
+  // Separators are drawn at the digits' cell height (that is what the fixed
+  // "size 40" always was, for the default 48px digits), and the degree sign is
+  // additionally a superscript: three quarters of that size, in a cell as tall
+  // as the digits with its ink kept at the top, so the PNG itself carries the
+  // offset (the watch draws the unit image as it is, and so does the preview).
+  const cell = cellH || digitCellHeight();
+  const base = size || (cell || 40);
+  const s = tag === 'degree' ? Math.max(8, Math.round(base * 0.8)) : base;
+  const h = tag === 'degree' ? (cell || 0) : 0;
+  const names = await genGlyphImages([{ tag, char, name: `${tag.replace(/[^\w\-]+/g, '_')}.png` }], { mono: false, size: s, cellH: h });
   return names[0];
 }
 async function ensureDigitNames() {
@@ -2073,12 +3299,12 @@ async function applyPreset(id) {
       break;
     }
     case 'steps': return dataTextPreset('STEP', 'Steps', null);
-    case 'hr': return dataTextPreset('HEART', 'Heart rate', await genUnit('bpm', 'bpm'));
+    case 'hr': return dataTextPreset('HEART', 'Heart rate', ['bpm', 'bpm']);
     case 'cal': return dataTextPreset('CAL', 'Calories', null);
-    case 'battery': return dataTextPreset('BATTERY', 'Battery', await genUnit('percent', '%'));
-    case 'temp': return dataTextPreset('WEATHER_CURRENT', 'Temperature', await genUnit('degree', '°'), await genUnit('negative', '-'));
+    case 'battery': return dataTextPreset('BATTERY', 'Battery', ['percent', '%']);
+    case 'temp': return dataTextPreset('WEATHER_CURRENT', 'Temperature', ['degree', '°'], ['negative', '-']);
     case 'distance': return dataTextPreset('DISTANCE', 'Distance', null, null, true);
-    case 'spo2': return dataTextPreset('SPO2', 'Blood oxygen', await genUnit('percent', '%'));
+    case 'spo2': return dataTextPreset('SPO2', 'Blood oxygen', ['percent', '%']);
     case 'stress': return dataTextPreset('STRESS', 'Stress', null);
     case 'weather': {
       pushHistory();
@@ -2205,9 +3431,17 @@ async function dataTextPreset(dataType, label, unit, negative, useDot) {
   const digits = await ensureDigitNames();
   const cell = imgMeta(digits.find(Boolean));
   const cw = cell ? cell.width : 30, ch = cell ? cell.height : 44;
+  // separators are generated after the digits, at the digits' cell height, so a
+  // colon/degree keeps the reading's proportions (a [tag, char] spec defers the
+  // rasterisation until the height is known; a plain string is an existing file)
+  const cellH = ch;
+  const asUnit = async (spec) => (Array.isArray(spec) ? genUnit(spec[0], spec[1], { cellH }) : spec);
+  const unitName = await asUnit(unit);
+  const negativeName = await asUnit(negative);
+  const dotName = useDot ? await genUnit('dot', '.', { cellH }) : '';
   const e = newElement('TEXT_IMG', {
     dataType, images: digits, hSpace: Math.max(1, Math.round(cw * 0.06)),
-    unit: unit || '', negative: negative || '', dot: useDot ? await genUnit('dot', '.') : '',
+    unit: unitName || '', negative: negativeName || '', dot: dotName,
     alignH: 'LEFT', show: 'normal',
     // stack successive readings under the centre so presets do not pile up
     x: Math.round(d.w / 2) - cw,
@@ -2531,10 +3765,13 @@ function eventDevPos(ev) {
   const sc = cv.width / (r.width || 1);
   return { x: (ev.clientX - r.left) * sc, y: (ev.clientY - r.top) * sc };
 }
-function alignTargets(excludeId) {
+// align/snap targets from the other widgets — `exclude` is an id, or every id
+// of a group being dragged (a group must never snap to its own members)
+function alignTargets(exclude) {
+  const skip = new Set(Array.isArray(exclude) ? exclude : (exclude == null ? [] : [exclude]));
   const xs = [], ys = [];
   for (const e of elements()) {
-    if (e.id === excludeId || e.visible === false) continue;
+    if (skip.has(e.id) || e.visible === false) continue;
     const b = elBox(e);
     xs.push(b.x, b.x + b.w / 2, b.x + b.w);
     ys.push(b.y, b.y + b.h / 2, b.y + b.h);
@@ -2553,10 +3790,10 @@ function snapAxis(value, size, targets, snapTo) {
   return best;
 }
 // snap a box against the other widgets, the screen centre and the grid
-function snapBox(boxX, boxY, boxW, boxH, excludeId) {
+function snapBox(boxX, boxY, boxW, boxH, exclude) {
   const d = dev();
   const cx = d.w / 2, cy = d.h / 2;
-  const al = alignTargets(excludeId);
+  const al = alignTargets(exclude);
   const gx = [], gy = [];
   for (let x = GRID_PX; x < d.w; x += GRID_PX) gx.push(x);
   for (let y = GRID_PX; y < d.h; y += GRID_PX) gy.push(y);
@@ -2635,15 +3872,21 @@ window.addEventListener('mousemove', (ev) => {
   const p = eventDevPos(ev);
   if (drag.mode === 'move') {
     const rawDx = p.x - drag.px, rawDy = p.y - drag.py;
-    let boxX = drag.startBox.x + rawDx, boxY = drag.startBox.y + rawDy;
+    // A group (or any multi-selection) is dragged *and snapped* as one box, so
+    // the snap aid belongs to the group's bounding box, not to the layer that
+    // happens to be under the cursor.
+    const mates = drag.mates.filter((m) => !m.locked);
+    const group = mates.length ? unionBox([drag.startBox, ...mates.map((m) => m.box)]) : drag.startBox;
+    let boxX = group.x + rawDx, boxY = group.y + rawDy;
     if (showGrid) {
-      const s = snapBox(boxX, boxY, drag.startBox.w, drag.startBox.h, drag.e.id);
+      const skip = [drag.e.id, ...mates.map((m) => m.el.id)];
+      const s = snapBox(boxX, boxY, group.w, group.h, skip);
       boxX = s.x; boxY = s.y;
     } else guides = { v: [], h: [] };
-    const dx = Math.round(boxX - drag.startBox.x), dy = Math.round(boxY - drag.startBox.y);
+    const dx = Math.round(boxX - group.x), dy = Math.round(boxY - group.y);
     if (drag.dx !== dx || drag.dy !== dy) {
       moveEl(drag.e, dx - (drag.dx || 0), dy - (drag.dy || 0));
-      for (const m of drag.mates) moveEl(m.el, dx - (drag.dx || 0), dy - (drag.dy || 0));
+      for (const m of mates) moveEl(m.el, dx - (drag.dx || 0), dy - (drag.dy || 0));
       drag.dx = dx; drag.dy = dy;
       render();
     }
@@ -2708,6 +3951,10 @@ function setPreviewMode(mode) {
   $('btnPreviewNormal').classList.toggle('on', mode === 'normal');
   $('btnPreviewAod').classList.toggle('on', mode === 'aod');
   if (project) render();
+  // an empty AOD is why a watch shows its own AOD face instead of yours
+  if (project && mode === 'aod' && !elements().some((e) => e.visible !== false && showAllowed(e.show, 'aod'))) {
+    status('Nothing is shown in AOD — the watch would use its own default AOD face. Set the layers that should stay on to “Both” (or “AOD only”).');
+  }
 }
 $('btnPreviewNormal').onclick = () => setPreviewMode('normal');
 $('btnPreviewAod').onclick = () => setPreviewMode('aod');
@@ -2788,6 +4035,7 @@ async function createProject(name, target, template) {
   project.font = glyphFont;
   project.images = [];
   imgCache.clear();
+  clearBakeCache();
   selectedId = null; multiSel = new Set();
   past = []; future = []; updateHistoryButtons(); dirty = true;
   resetTestData();
@@ -2798,8 +4046,8 @@ async function createProject(name, target, template) {
   else if (template === 'analog') { await analogPreset(); }
   else if (template === 'health') {
     await dataTextPreset('STEP', 'Steps', null);
-    await dataTextPreset('HEART', 'Heart rate', await genUnit('bpm', 'bpm'));
-    await dataTextPreset('BATTERY', 'Battery', await genUnit('percent', '%'));
+    await dataTextPreset('HEART', 'Heart rate', ['bpm', 'bpm']);
+    await dataTextPreset('BATTERY', 'Battery', ['percent', '%']);
   }
   status(`New watchface “${name}” on ${dev().name}.`);
   refreshPanels(); render(); scheduleCode();
@@ -2864,6 +4112,7 @@ async function loadProject(res) {
     url: 'data:image/png;base64,' + i.dataBase64,
   }));
   project.savePath = res.savePath || null;
+  clearBakeCache();
   customFonts.length = 0;
   for (const f of res.fonts || []) await registerCustomFont(f, { quiet: true });
   fillFontSelect($('projFont'));
@@ -2887,7 +4136,8 @@ $('btnOpen').onclick = async () => {
 async function doSave() {
   if (!project) return;
   const payload = {
-    project: { ...project, fonts: projectFontsPayload() },
+    // bakedImage/bakedKey are derived at export time and must not be persisted
+    project: { ...project, fonts: projectFontsPayload(), elements: elements().map(stripBakeKeys) },
     images: projectImagesPayload(),
     fonts: fontRecords(),
     savePath: project.savePath || null,
@@ -2957,7 +4207,7 @@ $('logClose').onclick = () => { $('logModal').hidden = true; };
 $('logFolder').onclick = () => { if (lastLogPath) API.showInFolder(lastLogPath); };
 $('btnExportZeus').onclick = async () => {
   if (!project) return;
-  const payload = { project, images: projectImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
+  const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
   const res = await API.exportZeus(payload);
   if (!res) return;
   if (res.ok === false) { openLogModal('Zeus export failed', '', res.error); return; }
@@ -2973,7 +4223,7 @@ $('btnBuild').onclick = async () => {
   if (!project) return;
   openLogModal('Zeus build', '', 'running the Zeus CLI…');
   appendLog('Exporting the project first…');
-  const payload = { project, images: projectImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
+  const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
   const res = await API.buildZeus(payload);
   lastLogPath = res.outDir || null;
   if (res.error && res.error !== 'cancelled') {
@@ -3050,6 +4300,16 @@ function lintProject() {
       }
     }
     if (e.kind === 'TEXT' && !(+(e.size || 0) > 0)) add('error', `“${label}” has a text size of 0.`);
+    if (e.kind === 'TEXT' && needsTextBake(e)) {
+      add('info', `“${label}”: ${bakeReason(e)} is baked into images/${bakedTextName(e)} — the watch TEXT widget can only draw a flat colour.`);
+      const m = textMetrics(e);
+      if (m.w > (+e.w || 0) + 1 || m.h > (+e.h || 0) + 1) {
+        add('warn', `“${label}”: the text needs ${Math.round(m.w)}×${Math.round(m.h)} but the layer box is ${Math.round(+e.w || 0)}×${Math.round(+e.h || 0)} — the baked image clips it.`);
+      }
+    }
+    if (e.kind === 'TEXT' && textFillType(e) === 'css' && !parseCssGradient(e.cssGradient)) {
+      add('warn', `“${label}”: the CSS gradient could not be read — the flat colour is used instead.`);
+    }
     if (e.kind === 'TEXT' && e.fontFile) {
       const fam = familyForFontFile(e.fontFile);
       const known = customFonts.some((f) => f.name === e.fontFile) || BUNDLED_FONTS.some((f) => baseName(f.file) === e.fontFile);
@@ -3070,6 +4330,32 @@ function lintProject() {
   }
   const ratio = aodArea / (d.w * d.h);
   if (ratio > 0.10) add('warn', `Roughly ${Math.round(ratio * 100)}% of the screen is lit in AOD — the spec asks for under 10%.`);
+  // Digit / reading layers that overlap: the usual cause is a glyph size raised
+  // after the preset placed the layers, so each cell grew and the parts now run
+  // into each other — which reads as stray strokes from the neighbouring glyph.
+  const glyphish = (e) => DIGIT_SET_KINDS.has(e.kind) || e.kind === 'IMG_WEEK' || (e.kind === 'IMG' && isGlyphLayer(e));
+  const shown = project.elements.filter((e) => e.visible !== false && glyphish(e) && e.show !== 'edit');
+  const clash = [];
+  for (let i = 0; i < shown.length; i++) {
+    for (let j = i + 1; j < shown.length; j++) {
+      const a = shown[i], b = shown[j];
+      const bothNormal = showAllowed(a.show, 'normal') && showAllowed(b.show, 'normal');
+      const bothAod = showAllowed(a.show, 'aod') && showAllowed(b.show, 'aod');
+      if (!bothNormal && !bothAod) continue;
+      const ba = elBox(a), bb = elBox(b);
+      const ox = Math.min(ba.x + ba.w, bb.x + bb.w) - Math.max(ba.x, bb.x);
+      const oy = Math.min(ba.y + ba.h, bb.y + bb.h) - Math.max(ba.y, bb.y);
+      if (ox > 2 && oy > 2) clash.push({ a, b, ox: Math.round(ox), oy: Math.round(oy) });
+    }
+  }
+  for (const c of clash.slice(0, 3)) {
+    add('warn', `“${c.a.name}” and “${c.b.name}” overlap by ${c.ox}×${c.oy} px — images run into each other (raise the glyph size before placing a clock, or select the row and use Distribute ▸ Start to pack it).`);
+  }
+  // Without a single layer that draws in the screen-off state the watch has
+  // nothing to show and falls back to its own AOD face.
+  if (!elements().some((e) => e.visible !== false && showAllowed(e.show, 'aod'))) {
+    add('warn', 'Nothing is shown in AOD — the watch will fall back to its own default AOD face. Set the layers that should stay on to “Both” (or “AOD only”).');
+  }
   const used = new Set();
   collectUsedImages(used);
   const unused = project.images.filter((i) => !used.has(i.name));
@@ -3329,18 +4615,36 @@ function instUrlFor(st) {
   const route = packageRoute(st);
   return route ? `${base}/${encodeURIComponent(route)}` : base + '/';
 }
+// The Zepp App's Developer-Mode scanner does not take a plain web URL: the QR
+// payload is the same host/path with the scheme swapped for `zpkd1://`. Checked
+// against a QR the community tools hand out —
+//   zpkd1://amazfitwatchfaces.com/dl/bip/zip/45655/x.zip?zpk=…&comp=Bip_6
+// The app puts a fetchable scheme back and pulls the file; a plain-HTTP LAN
+// address with a port installs fine on the watch (verified with the official
+// app). Zepp's own Watchface Maker uses a cloud scheme instead:
+//   watchface://api-mifit-cn2.huami.com/custom/tools/app-dial/download/<token>
+function zpkdUrl(url) { return url ? String(url).replace(/^https?:\/\//i, 'zpkd1://') : null; }
+// what the QR actually encodes: package → zpkd1://, landing page → plain http
+function instQrPayload(st) {
+  const url = instUrlFor(st);
+  if (!url) return null;
+  return instQrWhat === 'install' ? zpkdUrl(url) : url;
+}
 async function updateInstallQr() {
   const st = instLast;
-  const url = instUrlFor(st);
+  const payload = instQrPayload(st);
   const img = $('instQr');
-  if (!url) {
+  const enc = $('instEncoded');
+  if (!payload) {
     img.hidden = true;
     $('instQrEmpty').hidden = false;
     $('instQrEmpty').textContent = st && st.port ? 'No package on the server yet — press “Build & serve”.' : 'Start the server to get a QR code';
     $('instQrHint').textContent = '';
+    if (enc) enc.textContent = '—';
+    syncInstallButtons();
     return;
   }
-  const data = await API.qr({ text: url, width: 400 });
+  const data = await API.qr({ text: payload, width: 400 });
   if (data && img.src !== data) img.src = data;
   img.hidden = !data;
   $('instQrEmpty').hidden = !!data;
@@ -3348,6 +4652,8 @@ async function updateInstallQr() {
   $('instQrHint').textContent = instQrWhat === 'install'
     ? 'Zepp App → Developer Mode → scan.'
     : 'Any camera: opens the download page.';
+  if (enc) enc.textContent = payload;
+  syncInstallButtons();
 }
 function syncInstallButtons() {
   const running = !!(instLast && instLast.running);
@@ -3357,6 +4663,8 @@ function syncInstallButtons() {
   const url = instUrlFor(instLast);
   $('instCopy').disabled = !url;
   $('instOpen').disabled = !url;
+  const enc = $('instCopyEncoded');
+  if (enc) enc.disabled = !instQrPayload(instLast);
 }
 async function refreshInstall(status) {
   instLast = status || await API.installStatus();
@@ -3393,10 +4701,10 @@ function fmtBytes(n) {
   if (v >= 1024) return (v / 1024).toFixed(1) + ' KB';
   return v + ' B';
 }
-function installPayload() {
+async function installPayload() {
   return {
     project: { ...project, fonts: projectFontsPayload() },
-    images: projectImagesPayload(),
+    images: await exportImagesPayload(),
     fonts: fontRecords(),
     previewBase64: composePreviewB64(),
     port: +$('instPort').value || 7331,
@@ -3411,7 +4719,7 @@ async function doInstall(mode) {
   const d = dev();
   if (mode === 'build') {
     instLogLine(`Exporting and building for ${d.name} (${d.target}), API level ${d.api}…`);
-    const br = await API.installBuild(installPayload());
+    const br = await API.installBuild(await installPayload());
     if (!br || br.ok === false) {
       instLogLine(`build failed: ${(br && br.error) || 'unknown error'}`);
       $('instState').textContent = 'build failed';
@@ -3423,7 +4731,7 @@ async function doInstall(mode) {
     instLogLine(`build ok · ${(br.artifacts || []).length} artifact(s) in ${br.outDir}`);
   }
   instLogLine('starting the server…');
-  const res = await API.installStart(installPayload());
+  const res = await API.installStart(await installPayload());
   instBusy = false;
   if (res && res.ok === false) instLogLine('server error: ' + res.error);
   else instLogLine(`serving ${res.installUrl || res.pageUrl}`);
@@ -3453,6 +4761,7 @@ $('instStop').onclick = async () => {
 };
 $('instFolder').onclick = () => API.installOpenFolder();
 $('instCopy').onclick = () => { const u = instUrlFor(instLast); if (u) copyText(u); };
+$('instCopyEncoded').onclick = () => { const p = instQrPayload(instLast); if (p) copyText(p); };
 $('instOpen').onclick = () => { const u = instUrlFor(instLast); if (u) API.openExternal(u); };
 $('instAddress').onchange = async () => {
   // the server binds every interface, only the advertised URL changes

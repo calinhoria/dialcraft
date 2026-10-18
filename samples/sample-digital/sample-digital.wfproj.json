@@ -9,7 +9,7 @@
   "groups": {},
   "elements": [
     {
-      "id": "el5p4h5l",
+      "id": "el703boc",
       "kind": "FILL_RECT",
       "x": 0,
       "y": 0,
@@ -25,7 +25,7 @@
       "radius": 0
     },
     {
-      "id": "elx1gjem",
+      "id": "el6hm5on",
       "kind": "IMG_TIME",
       "x": 106,
       "y": 144,
@@ -52,7 +52,7 @@
       "space": 0
     },
     {
-      "id": "elr4ow99",
+      "id": "eltzuqha",
       "kind": "IMG",
       "x": 240,
       "y": 159,
@@ -65,7 +65,7 @@
       "src": "colon_3a.png"
     },
     {
-      "id": "elqyfc0l",
+      "id": "elfaq4v8",
       "kind": "IMG_TIME",
       "x": 254,
       "y": 144,
@@ -92,7 +92,7 @@
       "space": 0
     },
     {
-      "id": "el1sui6f",
+      "id": "elzxg8kg",
       "kind": "TEXT_IMG",
       "x": 120,
       "y": 298,
@@ -120,7 +120,7 @@
       "unit": ""
     },
     {
-      "id": "elb271ut",
+      "id": "el704jew",
       "kind": "TEXT_IMG",
       "x": 180,
       "y": 355,
@@ -148,7 +148,7 @@
       "unit": "unit_b0.png"
     },
     {
-      "id": "el2nzrvk",
+      "id": "el3kloll",
       "kind": "ARC_PROGRESS",
       "x": 0,
       "y": 0,
@@ -168,7 +168,7 @@
       "color": "#34e073"
     },
     {
-      "id": "ely7ddx1",
+      "id": "elkj55rb",
       "kind": "TEXT",
       "x": 130,
       "y": 413,

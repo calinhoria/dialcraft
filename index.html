@@ -77,8 +77,15 @@
       </div>
     </div>
     <div class="panel-c rounded-xl border border-line bg-panel p-3 min-w-0" data-panel>
-      <h3 class="phead" data-panel-head>Layers <span id="wcount" class="mut-n"></span><span class="flex-1"></span><span class="lbtns"><button id="btnGroup" title="Group selected layers (Ctrl+G)">&#x29C9;</button><button id="btnUngroup" title="Ungroup (Ctrl+Shift+G)">&#x29C9;&#xFE0E;</button></span><span class="chev">▾</span></h3>
-      <div id="layers" class="pbody"></div>
+      <h3 class="phead" data-panel-head>Layers <span id="wcount" class="mut-n"></span><span class="flex-1"></span><span class="chev">▾</span></h3>
+      <div class="pbody layers-panel">
+        <div id="layers"></div>
+        <div class="layers-toolbar">
+          <button id="btnDup" title="Duplicate the selection (Ctrl/Cmd+D)"></button>
+          <button id="btnGroup" title="Group the selected layers (Ctrl/Cmd+G)"></button>
+          <button id="btnUngroup" title="Ungroup the selection (Ctrl/Cmd+Shift+G)"></button>
+        </div>
+      </div>
     </div>
     <div class="panel-c collapsed rounded-xl border border-line bg-panel p-3 min-w-0" data-panel id="imagesPanel">
       <h3 class="phead" data-panel-head>Project images <span id="icount" class="mut-n"></span><span class="flex-1"></span><span class="chev">▾</span></h3>
@@ -286,6 +293,7 @@
           <label><input type="radio" name="instQrWhat" value="install" checked /> <span>Install package</span></label>
           <label><input type="radio" name="instQrWhat" value="page" /> <span>Open page</span></label>
         </div>
+        <div class="inst-url qr-encoded"><code id="instEncoded">—</code><button id="instCopyEncoded">Copy</button></div>
         <div class="muted small" id="instQrHint"></div>
       </div>
       <div class="inst-side">

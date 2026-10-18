@@ -10,13 +10,12 @@
 // the pixel budget under 10% with a black background and no second hand.
 // ---------------------------------------------------------------------------
 import ui from '@zos/ui'
-import { getScene, SCENE_AOD } from '@zos/app'
 import { Step } from '@zos/sensor'
 
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Hour_gjem = [
+const img_Hour_m5on = [
   A('time_30.png'),
   A('time_31.png'),
   A('time_32.png'),
@@ -29,7 +28,7 @@ const img_Hour_gjem = [
   A('time_39.png'),
 ]
 
-const img_Steps_ui6f = [
+const img_Steps_g8kg = [
   A('font_2_30.png'),
   A('font_2_31.png'),
   A('font_2_32.png'),
@@ -44,49 +43,88 @@ const img_Steps_ui6f = [
 
 WatchFace({
   initView() {
-    const scene = getScene()
-    const aod = scene === SCENE_AOD
-
-    // Background (FILL_RECT)
+    // Background (FILL_RECT) — normal state
     ui.createWidget(ui.widget.FILL_RECT, {
       x: px(0),
       y: px(0),
       w: px(480),
       h: px(480),
       color: 0x000000,
-      show_level: ui.show_level.ONLY_NORMAL | ui.show_level.ONAL_AOD,
+      show_level: ui.show_level.ONLY_NORMAL,
     })
 
-    // Hour (IMG_TIME)
+    // Background (FILL_RECT) — AOD (screen-off)
+    ui.createWidget(ui.widget.FILL_RECT, {
+      x: px(0),
+      y: px(0),
+      w: px(480),
+      h: px(480),
+      color: 0x000000,
+      show_level: ui.show_level.ONLY_AOD,
+    })
+
+    // Hour (IMG_TIME) — normal state
     ui.createWidget(ui.widget.IMG_TIME, {
       hour_startX: px(106),
       hour_startY: px(144),
       hour_zero: 0,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_gjem,
+      hour_array: img_Hour_m5on,
       hour_follow: 0,
-      show_level: ui.show_level.ONLY_NORMAL | ui.show_level.ONAL_AOD,
+      show_level: ui.show_level.ONLY_NORMAL,
     })
 
-    // Colon (IMG)
+    // Hour (IMG_TIME) — AOD (screen-off)
+    ui.createWidget(ui.widget.IMG_TIME, {
+      hour_startX: px(106),
+      hour_startY: px(144),
+      hour_zero: 0,
+      hour_space: px(0),
+      hour_align: ui.align.LEFT,
+      hour_array: img_Hour_m5on,
+      hour_follow: 0,
+      show_level: ui.show_level.ONLY_AOD,
+    })
+
+    // Colon (IMG) — normal state
     ui.createWidget(ui.widget.IMG, {
       x: px(240),
       y: px(159),
       src: A('colon_3a.png'),
-      show_level: ui.show_level.ONLY_NORMAL | ui.show_level.ONAL_AOD
+      show_level: ui.show_level.ONLY_NORMAL
     })
 
-    // Minute (IMG_TIME)
+    // Colon (IMG) — AOD (screen-off)
+    ui.createWidget(ui.widget.IMG, {
+      x: px(240),
+      y: px(159),
+      src: A('colon_3a.png'),
+      show_level: ui.show_level.ONLY_AOD
+    })
+
+    // Minute (IMG_TIME) — normal state
     ui.createWidget(ui.widget.IMG_TIME, {
       minute_startX: px(254),
       minute_startY: px(144),
       minute_zero: 0,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Hour_gjem,
+      minute_array: img_Hour_m5on,
       minute_follow: 0,
-      show_level: ui.show_level.ONLY_NORMAL | ui.show_level.ONAL_AOD,
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+
+    // Minute (IMG_TIME) — AOD (screen-off)
+    ui.createWidget(ui.widget.IMG_TIME, {
+      minute_startX: px(254),
+      minute_startY: px(144),
+      minute_zero: 0,
+      minute_space: px(0),
+      minute_align: ui.align.LEFT,
+      minute_array: img_Hour_m5on,
+      minute_follow: 0,
+      show_level: ui.show_level.ONLY_AOD,
     })
 
     // Steps (TEXT_IMG)
@@ -94,7 +132,7 @@ WatchFace({
       x: px(120),
       y: px(298),
       type: ui.data_type.STEP,
-      font_array: img_Steps_ui6f,
+      font_array: img_Steps_g8kg,
       h_space: px(2),
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
@@ -105,7 +143,7 @@ WatchFace({
       x: px(180),
       y: px(355),
       type: ui.data_type.WEATHER_CURRENT,
-      font_array: img_Steps_ui6f,
+      font_array: img_Steps_g8kg,
       h_space: px(2),
       align_h: ui.align.LEFT,
       unit_en: A('unit_b0.png'),
@@ -115,7 +153,7 @@ WatchFace({
     })
 
     // Step arc (ARC_PROGRESS)
-    const w_Step_arc_zrvk = ui.createWidget(ui.widget.ARC_PROGRESS, {
+    const w_Step_arc_loll = ui.createWidget(ui.widget.ARC_PROGRESS, {
       center_x: px(240),
       center_y: px(240),
       radius: px(192),
@@ -128,13 +166,13 @@ WatchFace({
     })
     // Steps progress (Step.getCurrent)
     const s_step = new Step()
-    const upd_Step_arc_zrvk = () => {
+    const upd_Step_arc_loll = () => {
       const value = s_step.getCurrent()
       const target = s_step.getTarget() || 1
-      w_Step_arc_zrvk.setProperty(ui.prop.LEVEL, Math.min(100, Math.round((value / target) * 100)))
+      w_Step_arc_loll.setProperty(ui.prop.LEVEL, Math.min(100, Math.round((value / target) * 100)))
     }
-    s_step.onChange(upd_Step_arc_zrvk)
-    upd_Step_arc_zrvk()
+    s_step.onChange(upd_Step_arc_loll)
+    upd_Step_arc_loll()
 
     // Steps label (TEXT)
     ui.createWidget(ui.widget.TEXT, {

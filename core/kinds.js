@@ -63,7 +63,16 @@ const KINDS = [
   },
   {
     id: 'TEXT', label: 'Text', group: 'Data', docs: 'TEXT', box: 'wh',
-    defaults: { text: 'MONDAY', color: '#ffffff', size: 32, alignH: 'CENTER_H', alignV: 'CENTER_V', lineSpace: 0, charSpace: 0, fontFile: '', weight: 400 },
+    defaults: {
+      text: 'MONDAY', color: '#ffffff', size: 32, alignH: 'CENTER_H', alignV: 'CENTER_V',
+      lineSpace: 0, charSpace: 0, fontFile: '', weight: 400,
+      // fill: solid | gradient | css | outline. The hmUI TEXT widget only knows
+      // one flat `color`, so anything else is baked to a PNG on export.
+      fillType: 'solid', color2: '#f0f', gradAngle: 90,
+      cssGradient: 'linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)',
+      outlineColor: '#000000', outlineWidth: 2,
+      bold: false, italic: false,
+    },
   },
   {
     id: 'IMG_STATUS', label: 'System status icon', group: 'Data', docs: 'IMG_STATUS', box: 'natural',
@@ -106,7 +115,8 @@ function newElement(kindId, patch = {}) {
     kind: kindId,
     name: kindLabel(kindId),
     x: 0, y: 0,
-    show: 'both',
+    // new components start in Normal only — AOD is opt-in (presets set it)
+    show: 'normal',
     visible: true, locked: false, group: null, alpha: 255,
     ...(k ? k.defaults : {}),
     ...patch,

@@ -67,20 +67,56 @@ Other scripts:
   layout.
 - **Layers** — top-to-bottom paint order, drag to restack, drag one layer onto
   another's group box to group. Eye = visibility, lock = not selectable on the
-  canvas, badges mark AOD/edit-only layers. `Ctrl/Cmd+G` groups, `Ctrl/Cmd+Shift+G`
-  ungroups.
+  canvas, badges mark AOD/edit-only layers. A flat toolbar at the bottom of the
+  panel works on the selection: **duplicate** (`Ctrl/Cmd+D`), **group**
+  (`Ctrl/Cmd+G`) and **ungroup** (`Ctrl/Cmd+Shift+G`). Duplicating a whole group
+  gives the copies a group of their own (`<group> copy`), 12 px offset, so the two
+  can be moved and restyled independently; a duplicate also gets **its own
+  separator images** — `colon.png` → `colon_2.png` — because those names are
+  shared by every layer that points at them and a copy that kept sharing them
+  could not be restyled on its own (digit sets stay shared and fork only when you
+  restyle them, see *Glyph size, colour and fill*). A group is named when it is
+  created (`Group 1`, …) and can be **renamed** by double-clicking its name in the
+  panel (Enter saves, Esc cancels) or from the *Group name* row in Properties when
+  the whole group is selected.
 - **Canvas** — drawn at device pixel size and CSS-scaled, so what you see is what
   the watch renders. Drag to move, corner handles to resize, the square on a
   circle's rim to change the radius. Snapping snaps to other layers, to the
   screen centre and to the 20px grid (toggle with **Grid**); pink guides show the
   active snap. The amber dashed rectangle is the 2px safe area; the black shape
   outside it is the bezel mask (toggle with **Mask**).
-- **Properties** — per-kind fields, plus alignment tools when several layers are
-  selected.
+- **Properties** — per-kind fields, plus **Align to box / Align to device /
+  Distribute** when several layers are selected (see *Groups, align and
+  distribute*). **Show in** and **Alpha** are the exception to "primary layer
+  only": with several layers (or a group) selected they write to every one of
+  them, so a whole group can be moved to AOD in one go.
 - **Test data** — the values the preview draws (and that the code panel is
   generated against). Defaults come from the design-spec reference readings
   (10:09:36, 8670 steps, 86 bpm, 280 kcal …). **Use current time** switches the
-  preview to the real clock.
+  preview to the real clock. Digit and date layers honour their own **Leading 0**
+  switch (off → `9`, on → `09`) and their **Align**, which moves the value
+  *inside* the widget's box: the box is as wide as the part can get (hour /
+  minute / second / day / month = 2 digits, a `TEXT_IMG` reading as many as its
+  data type can show) and it stays put at X, so a reading does not jump when it
+  grows (`9:00` → `10:00`). This is the rule Zepp's own tool uses
+  (`getImgArrAfterAlign`: `RIGHT → u - b`, `CENTER → (u - b) / 2`, `LEFT → 0`,
+  and no shift once the value is as wide as the box — a full-width value
+  therefore looks identical in every mode). The canvas draws the box (solid) and
+  the value's own outline (dashed, pink) with the anchor dot at the box origin,
+  and Properties spells out the result — `Preview draws “9” at 10:09:36 in a
+  2-digit box 78×39 — leading zero off (minute_zero: 0) · Align Left puts the run
+  at the box's left edge.`
+  **Follow** places a value directly after the previous part of its kind
+  (hour → minute → second, month → day) using that part's spacing and alignment;
+  the export then sends no `startX`, `*_space` or `*_align` for it, which is why
+  Space and Align are hidden in a following layer's panel.
+  A `TEXT_IMG` reading shows the value as it is — `22°`, not `022°`: its data
+  type's digit count is the *box* the value stays in, not a padding request
+  (only `IMG_TIME` / `IMG_DATE` have a **Leading 0** switch, and that is the
+  watch's `*_zero`). Separators — the colon, the `°` — are rasterised at the
+  digits' cell height, so they keep their proportions when the glyph size
+  changes, and the `°` is a superscript (three quarters of that size, ink at the
+  top of a cell as tall as the digits).
 - **Generated code** — live `watchface/<target>/index.js` preview, with warnings;
   *Copy* puts it on the clipboard.
 - **Check** — lint against the watchface spec: off-screen layers, safe edge,
@@ -107,7 +143,7 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | Date images | `IMG_DATE` | day / month |
 | Analog clock | `TIME_POINTER` | hour + minute + second hands, optional cover |
 | Data reading | `TEXT_IMG` | digits + unit/separator images for any `data_type` |
-| Text | `TEXT` | multiline, colour, alignment |
+| Text | `TEXT` | multiline, size, alignment, live font, solid/gradient/outline fill, bold + italic |
 | System status | `IMG_STATUS` | disconnect / DND / … icons |
 | Tap shortcut | `IMG_CLICK` | opens an app on tap |
 | Filled / stroked rect | `FILL_RECT`, `STROKE_RECT` | corner radius, optional rotation |
@@ -130,7 +166,7 @@ naming conventions from the design specification, so exports stay reviewable:
 | --- | --- |
 | Digits | `font_<set>_<0-9>.png` (e.g. `font_1_0.png`) |
 | Time digits | `time_<0-9>.png` / `hour_<0-9>.png` |
-| Weekdays | `week_0.png` … `week_6.png` (Monday = 0) |
+| Weekdays | `week_w1.png` … `week_w7.png` (Monday = w1) |
 | Separators | `colon.png`, `dot.png`, `percent.png`, `negative.png`, `degree.png`, `slash.png` |
 | Hands | `hour_hand.png`, `minute_hand.png`, `second_hand.png` |
 | Animation frames | `anim/<prefix>_<i>.png` |
@@ -140,6 +176,10 @@ naming conventions from the design specification, so exports stay reviewable:
 (`assets/fonts/`, all OFL): digit sets 0-9, weekday sets, separators, and
 programmatic analog hands and a dial. Regenerating a set overwrites the same file
 names, so it is idempotent.
+
+Once a layer has a set, its **size, colour, fill, bold and italic are edited in
+Properties** and the glyphs are rasterised again in place — see *Glyph size,
+colour and fill* below.
 
 **Upload** (or dropping files) opens the import dialog with three fits:
 
@@ -177,14 +217,170 @@ copied to `assets/<target>/fonts/` on export and referenced as
 (`font: 'raw/custom.ttf'`). Bundled fonts travel with their OFL notice
 (`fonts/FONTS-LICENSES.md`).
 
+## Text styles (gradients, outline, bold, italic)
+
+A **Text** layer has a *Fill* of four kinds, plus **Bold** and **Italic**:
+
+| Fill | Controls |
+| --- | --- |
+| Solid | one colour |
+| Linear gradient | from / to colour + angle (`0°` up, `90°` right — CSS angles) |
+| CSS gradient | any CSS string: `linear-gradient`, `radial-gradient(at 30% 40%)`, `conic-gradient(from 45deg)`, `repeating-…`, with `%` stops |
+| Outline | fill colour + outline colour + width |
+
+The canvas draws all of them live, so the editor is the source of truth.
+
+**Multi-layer editing.** With several layers selected (or a group clicked in the
+layers panel) every style row writes to all selected *Text* layers at once — so
+you can restyle a whole group, e.g. give all of its children the same gradient,
+size and weight in one pass. The panel reports `Applies to N selected Text
+layers` when it is doing that.
+
+**What the watch actually gets.** The `hmUI` Text widget takes only a flat
+`color` plus `text_size`, `font` and spacing (there is no gradient, outline,
+bold or italic parameter in
+[the API](https://docs.zepp.com/docs/reference/device-app-api/newAPI/ui/widget/TEXT/)).
+So the designer is honest about it:
+
+- flat colour, no bold/italic → a plain `TEXT` widget, exactly as you see it;
+- anything else → the layer is **baked** into a transparent PNG
+  (`images/text_<layer>_<stylehash>.png`, at the layer's box size, alpha
+  included) and emitted as an `IMG` widget with a `// baked by the designer: …`
+  comment. Bold picks the boldest face of the font, italic slants 11°.
+
+Baked PNGs are derived, never persisted: they are re-rendered at export/build/
+install time (and whenever the style changes), the file name is a hash of the
+style so two exports of the same project produce identical assets, and the code
+panel shows them immediately via `IMG`. If you would rather keep a real `TEXT`
+widget, choose a bold or italic *font file* instead of the Bold/Italic switches
+— a font file is a legitimate watch asset, whereas a Weight/Bold setting can
+only be baked.
+
+## Groups, align and distribute
+
+Selecting more than one layer (Ctrl/Cmd-click, or clicking a group in the layers
+panel) draws **one bounding box around the whole selection**, with a faint outline
+per member and a label — `3 layers · 142×71`. That box is the reference the tools
+use, so what the panel promises is what you see:
+
+| Panel box | Buttons | Reference |
+| --- | --- | --- |
+| **Align to box** | Left · Center · Right · Top · Middle · Bottom | the selection's bounding box |
+| **Align to device** | same six | the device screen (`0,0`–`480,480`), so Left means the left edge of the watch |
+| **Distribute across / down** | Even · Spread · Start · End | the device, along that axis |
+
+- **Even** — equal gaps *and* equal device margins, so the row ends up centred on
+  the device (`n` layers → `n+1` shares).
+- **Spread** — first layer on one device edge, last on the other.
+- **Start / End** — pack the row against the low (left/top) or high (right/bottom)
+  edge.
+
+Distribution follows the **layers-panel order**, never the current positions, so a
+jumbled layout (hour, colon, minute) is spaced in reading order instead of being
+scrambled.
+
+**Dragging a group** moves every member by the same delta and snaps the **group
+box** — the members are excluded from their own snap targets, so the aid is the
+selection's box, not the layer under the cursor. The pink guide lines show the
+edge or centre that matched.
+
+## Glyph size, colour and fill (digit, weekday and reading layers)
+
+A digit, weekday or reading layer draws PNGs, so the watch has no `text_size` or
+`color` parameter to edit — those values were baked when the glyphs were
+rasterised. Properties therefore edits the *glyphs* and re-renders them:
+
+| Row | What it does |
+| --- | --- |
+| Font | typeface the set is rasterised from (bundled, project or imported) |
+| Size | glyph height in px |
+| Fill | Solid / Linear gradient / CSS gradient / Outline — same controls as Text. **Outline** is a true ring (the silhouette grown by the outline width, with the glyph carved back out), not a stroke, so sharp corners stay clean and nothing creeps inside the letter; the cell always reserves room for the ring, which also keeps the glyph size stable when you switch fill types |
+| Bold | thickens every glyph with a stroke of the fill, so single-weight fonts get a real bold |
+| Outline width | the ring's thickness in px (outline fill only; Color is not used — the ring is hollow) |
+| Italic | slants every glyph 12° |
+| Re-render | rasterises the set again right away (editing any row already does it ~0.4 s later) |
+
+Everything is re-rendered **in place**, keeping the file names, so the generated
+watch-face code does not change.
+
+**Any image layer** (`IMG`) has a **Preview** row — the thumbnail and pixel size
+of the PNG it draws — and a **Symbol** field. Fill the symbol in (`°`, `:`, `♥`,
+`A`) and the Font / Size / Fill / Colour / Outline / Bold / Italic rows appear:
+the image is rasterised from that font into **a file of its own**
+(`symbol_A.png`, `symbol_u00b0.png`, deduplicated if the name is taken), which
+becomes the layer's image; later edits re-render that file in place. A separator
+layer (the clock's colon) starts with its symbol filled in from the file name, so
+its first restyle moves it onto its own `symbol_*.png` and leaves the shared
+`colon.png` alone. Clear the symbol and the font rows disappear — the layer is a
+plain image again, exactly as it was. The panel keeps its scroll position and the
+caret while it rebuilds, so typing a symbol (or a size) does not jump.
+
+Three cases are special, because the watch-face format fixes their file names and
+shares those files between layers:
+
+- **Colon and separators.** `colon.png`, `degree.png`, `dot.png`,
+  `negative.png`, `percent.png`, `slash.png` and `am`/`pm` images are single-glyph
+  layers: select the colon layer itself and you get the same rows, and its file
+  name is kept. A temperature layer carries its degree (and minus) glyph as the
+  layer's `unit` / `negative` image, and those follow the digits, so the `°` never
+  drifts out of style. The degree sign is a superscript: three quarters of the
+  digits' size, rasterised in a cell as tall as the digits with its ink kept at
+  the top — the PNG carries the offset, so the watch and the preview agree.
+  *Glyphs ▾ → Separators* (or a layer's *Re-render*) brings an older `degree.png`
+  up to date.
+- **A blinking colon** is a frame list: the `…_off` frames are re-rendered blank
+  at the same cell size, so the blink keeps working with the new look.
+- **Imported image sets** (weather icons, month names, hand-picked pictures) are
+  never regenerated — the panel says so instead of offering controls that would
+  do nothing.
+
+Glyph sets are **shared**: the digital-clock preset points hour, minute and
+second at one digit set (`font_1_*`), so restyling one layer would otherwise
+restyle all of them. Editing a layer that shares its set first gives that layer a
+**copy of its own** (a new `font_<n>_*` prefix) and leaves the others exactly as
+they were — the panel says `Shared with N other layers` beforehand. Selecting
+several glyph layers (or clicking a group) restyles them together in one pass,
+and they share the copy.
+
 ## AOD
 
 Layers have a **Show in** state: *Normal only*, *AOD only* or *Both* (plus
-*Edit only*, which is designer-only and never exported). The **AOD** preview
-button renders the AOD state over black, and **Check** enforces the spec rules:
-black background, no second hand, and under ~10% of the screen emitting light
-(near-black fills are not counted). Presets place the clock and date in *Both*
-and readings/arcs in *Normal only*, which is the usual starting point.
+*Edit only*, which is designer-only and never exported). A component added from
+the **Add ▾** menu starts in **Normal only** — AOD is opt-in — while the presets
+decide per layer: clock and date in *Both*, readings/arcs in *Normal only*, which
+is the usual starting point.
+
+The **AOD** preview button renders the AOD state over black, and **Check**
+enforces the spec rules: black background, no second hand, and under ~10% of the
+screen emitting light (near-black fills are not counted).
+
+**If the watch shows its own AOD face instead of yours**, there are three things
+to check:
+
+1. **`app.json` must declare the face's own lock-screen design.** The exported
+   package sets `module.watchface.lockscreen = 1` whenever the face has AOD
+   content (0 when it has none) — the docs' watchface-module table: *lockscreen,
+   default 0 = none*. With 0 the watch never looks at your AOD widgets, whatever
+   `show_level` they carry, so **rebuild and reinstall** after changing AOD
+   layers.
+2. **The face has AOD content.** At least one layer must be *Both* or *AOD only* —
+   a component added from **Add ▾** starts in *Normal only*, so a face built that
+   way has nothing to draw in AOD. **Check** warns (`Nothing is shown in AOD — the
+   watch will fall back to its own default AOD face`) and the AOD preview says so
+   too. With a group selected, `Show in` writes to every layer at once.
+3. **The watch's AOD style setting.** Zepp App → your device → *Screen-off style /
+   AOD style* has to follow the watch face; when it is set to the system style the
+   watch draws its own AOD face no matter what the package contains.
+
+**How the states are emitted.** A layer set to *Both* becomes **two widgets** in
+the generated code — one `show_level: ui.show_level.ONLY_NORMAL` and one
+`ui.show_level.ONLY_AOD` — rather than one widget with the combined bitmask
+(`ONLY_NORMAL | ONLY_AOD`, which is what the API docs' example shows). That is the
+structure every shipping watchface uses (checked against a working third-party
+package: 32 `ONLY_NORMAL` widgets, 10 `ONLY_AOD` widgets, not a single combined
+one) and the only one the watch's AOD path reliably picks up. A layer set to
+*Normal only* or *AOD only* is emitted once with that single value; *Edit only*
+never reaches the package.
 
 ## Export and build
 
@@ -196,7 +392,7 @@ and readings/arcs in *Normal only*, which is the usual starting point.
   app.js                               App({ onCreate() {} })
   README.md                            target, build commands, device links
   watchface/<target>/index.js          the generated WatchFace({ initView, build })
-  assets/<target>/images/              every PNG referenced by the code
+  assets/<target>/images/              every PNG referenced by the code (+ baked text layers)
   assets/<target>/images/preview.png   the app icon (always written, see below)
   assets/<target>/fonts/               fonts used by Text layers (+ OFL notice)
 ```
@@ -206,7 +402,11 @@ variant, each with an explicit `deviceSource` id from the official device list),
 `designWidth` = screen width, and a single `targets` key equal to the device
 target — which is also the asset folder name (`assets/<target>/`, as in the
 official `config-version-v3` watchface template; a `<target>.<st>` folder is not
-recognised by the build). The `apiVersion` triple is derived from the selected
+recognised by the build). Its `module.watchface` block sets **`lockscreen: 1`
+whenever the face has AOD content** (0 when it has none) — that is the flag that
+tells the watch the face brings its own lock-screen/AOD design; without it the
+watch draws its own AOD face no matter what `show_level` the widgets carry
+(`editable` stays 0: editable watchfaces are not supported). The `apiVersion` triple is derived from the selected
 device's Zepp OS level using the official template values (`1.0.x`, `2.0`, `3.0`,
 `3.6` for 3.5+, `4.0`), so an old watch is not asked for a runtime it never had;
 the build passes the matching `--APILevel` to the CLI, and with a single target
@@ -267,21 +467,38 @@ The server publishes:
 | `/health` | liveness + request count |
 
 The modal renders the URL as a QR code (generated in the main process with
-`qrcode`), switchable between the package URL — the one the Zepp App needs — and
-the landing page URL. Then: phone and computer on the same Wi-Fi → Zepp App →
-Profile → your device → **Developer Mode** → scan.
+`qrcode`), switchable between the package — the one the Zepp App needs — and the
+landing page. Then: phone and computer on the same Wi-Fi → Zepp App → Profile →
+your device → **Developer Mode** → scan.
 
-Two honest caveats: the Zepp App normally installs through the Zepp cloud, and
-`zeus preview` is what produces that cloud QR (it needs `zeus login` and a real
-account, and its link expires after seven days) — so a plain `http://` LAN URL
-is our own mechanism, not a documented Zepp protocol. If the app refuses the
-address, fall back to:
+**The package QR is not a plain web link.** The Zepp App's scanner only accepts
+its own scheme, so the payload is the package URL with `http://` swapped for
+`zpkd1://` (verified against a QR handed out by the community tools —
+`zpkd1://amazfitwatchfaces.com/dl/bip/zip/45655/x.zip?zpk=…&comp=Bip_6` — and
+confirmed by installing over this app's own LAN server with the official app):
+
+```
+http://192.168.1.24:7331/SmokeFace-1.0.0.zab   ← shown in the modal, Copy/Open
+zpkd1://192.168.1.24:7331/SmokeFace-1.0.0.zab  ← what the QR encodes (Copy too)
+```
+
+The app fetches that host/path, so a plain-HTTP LAN address with a port is fine.
+Zepp's own Watchface Maker uses a second scheme for the same scanner, pointing at
+its cloud instead of your machine:
+
+```
+watchface://api-mifit-cn2.huami.com/custom/tools/app-dial/download/<token>
+```
+
+The landing-page QR stays a plain `http://…/` link, because that one is meant for
+an ordinary camera/browser.
+
+The Zepp cloud route still needs `zeus login` and a real account, and its link
+expires after seven days — `zeus preview` produces that QR in the terminal:
 
 ```bash
 cd "<staging folder>" && zeus preview --target <target>
 ```
-
-which prints its own QR code in the terminal.
 
 ## Projects
 
@@ -329,6 +546,13 @@ tools              gen-masks.js, make-sample.js, smoke.js, shot.js
 - One device target per project (copy the `targets` block in `app.json` to add
   more in the exported project; *Change device…* retargets a project and scales
   the layout, but images keep their pixel size).
+- `TEXT` layers with a gradient/outline fill or with Bold/Italic are baked into
+  a PNG on export (see *Text styles*) — they stop being live text on the watch,
+  so they no longer follow i18n or a runtime font change.
+- Digit, weekday and reading layers are rasterised images: restyling one from
+  Properties re-renders its PNGs (see *Glyph size, colour and fill*). The
+  separator files (`colon.png`, `degree.png`, …) are shared by name, so styling
+  one colon layer styles every layer that points at that same file.
 - Animations preview statically outside the canvas tick; the export is exact.
 - `zeus preview`/`build` need the Zepp CLI and a network connection; the app
   only shells out to it.

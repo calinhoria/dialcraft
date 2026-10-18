@@ -28,7 +28,7 @@
           "path": "watchface/gtr-3-pro/index",
           "main": 1,
           "editable": 0,
-          "lockscreen": 0
+          "lockscreen": 1
         }
       },
       "platforms": [

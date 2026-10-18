@@ -63,6 +63,8 @@ input[type="checkbox"] { accent-color: var(--color-acc); }
 .row input[type="checkbox"] { width: auto; justify-self: start; }
 .small { font-size: 12px; color: var(--color-mut); }
 .muted { color: var(--color-mut); font-size: 12px; }
+/* explanatory line that spans both columns of the properties grid */
+.prop-note { color: var(--color-mut); font-size: 11px; line-height: 16px; margin: 2px 0 8px; }
 .mut-n { color: var(--color-mut); font-size: 11px; font-weight: 400; }
 
 /* layer rows */
@@ -87,6 +89,7 @@ input[type="checkbox"] { accent-color: var(--color-acc); }
 .group-row.collapsed .gchev { transform: rotate(-90deg); }
 .group-row .gcount { color: var(--color-mut); font-size: 11px; flex: none; }
 .group-row .gname { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: #cdd9ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.group-row .gname-edit { flex: 1; min-width: 0; padding: 2px 6px; font-size: 12px; }
 .group-row.drop-in { border-color: var(--color-acc); background: #5b8cff29; }
 .group-block { border-radius: 9px; margin: 4px 0 2px; }
 .group-block.collapsed .group-body { display: none; }
@@ -143,12 +146,17 @@ input[type="checkbox"] { accent-color: var(--color-acc); }
   background: #3a2a12; color: #ffc16b; font-size: 9px; text-transform: uppercase; letter-spacing: .04em;
 }
 
-.lbtns button {
-  background: #0d0f14; border: 1px solid var(--color-line); color: var(--color-mut);
-  padding: 2px 9px; font-size: 12px; border-radius: 7px; cursor: pointer;
+/* layers panel: the list scrolls, the actions sit at the bottom, flat */
+.layers-panel { display: flex; flex-direction: column; gap: 6px; }
+.layers-panel #layers { flex: 1; min-height: 0; overflow-y: auto; }
+.layers-toolbar { display: flex; gap: 4px; padding-top: 6px; border-top: 1px solid var(--color-line); }
+.layers-toolbar button {
+  flex: 1; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+  background: none; border: 0; border-radius: 8px; color: var(--color-mut); cursor: pointer;
 }
-.lbtns button:hover { color: var(--color-ink); border-color: #39415a; }
-.lbtns button:disabled { opacity: .35; cursor: default; }
+.layers-toolbar button:hover { background: #ffffff0f; color: var(--color-ink); }
+.layers-toolbar button:disabled { opacity: .3; cursor: default; background: none; color: var(--color-mut); }
+.layers-toolbar svg { width: 18px; height: 18px; }
 
 /* drag handles */
 .grip { cursor: grab; color: var(--color-mut); flex: none; width: 14px; height: 18px; display: inline-flex; align-items: center; justify-content: center; opacity: .55; }
@@ -382,6 +390,23 @@ canvas { display: block; background: #000; user-select: auto; touch-action: none
 .inst-url code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: #0d0f14; border: 1px solid var(--color-line); border-radius: 8px; padding: 6px 8px; font-size: 12px; }
 .inst-url button { padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; background: #0d0f14; border: 1px solid var(--color-line); color: var(--color-ink); }
 .inst-url button:disabled { opacity: .4; }
+/* image helper: thumbnail of the PNG a layer draws */
+.imgprev { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.imgprev img {
+  width: 38px; height: 38px; flex: none; object-fit: contain; border-radius: 6px;
+  border: 1px solid var(--color-line);
+  background: repeating-conic-gradient(#15181f 0 25%, #0d0f14 0 50%) 0 0/12px 12px;
+}
+.imgprev span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* group / align / distribute tools in Properties (multi-selection) */
+#props .group-box { border: 1px solid var(--color-line); background: #12151d; border-radius: 10px; padding: 8px 9px; margin: 8px 0; }
+.gb-head { color: var(--color-mut); text-transform: uppercase; letter-spacing: .06em; font-size: 10px; margin-bottom: 6px; }
+.aligntools { display: flex; flex-wrap: wrap; gap: 5px; }
+#props .aligntools button { flex: 1 1 auto; min-width: 52px; padding: 5px 6px; font-size: 11px; }
+/* the exact text the install QR encodes (zpkd1://…), monospace like the URL row */
+.qr-encoded { margin-top: 8px; }
+.qr-encoded code { font-size: 11px; }
 .inst-actions { display: flex; flex-wrap: wrap; gap: 6px; }
 .inst-actions button { padding: 7px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; background: #0d0f14; border: 1px solid var(--color-line); color: var(--color-ink); }
 .inst-actions button:disabled { opacity: .4; cursor: default; }
