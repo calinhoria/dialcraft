@@ -33,7 +33,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 app.whenReady().then(async () => {
   let win = null;
   for (let i = 0; i < 40 && !win; i++) { win = BrowserWindow.getAllWindows()[0]; if (!win) await sleep(200); }
-  const run = (code) => win.webContents.executeJavaScript(`(async () => { ${code} })()`, true);
+  const run = (code) => win.webContents.executeJavaScript(`(async () => { ${code} })()`, true)
+    .catch((err) => {   // a failed injection is otherwise just "Script failed to execute"
+      console.error(`[run failed] ${String(err && err.message).slice(0, 90)} :: ${code.trim().split('\n')[0].slice(0, 110)}`);
+      throw err;
+    });
   const sleep2 = (ms) => new Promise((r) => setTimeout(r, ms));
   await sleep2(1500); // let init() finish loading the metadata + masks
   const consoleErrors = [];
@@ -288,7 +292,216 @@ app.whenReady().then(async () => {
           check('zeus build packages the export', !!built, built || detail || 'zeus build failed');
         }
       }
+
+      // ---- IMG_ANIM: the widget addresses frames by name, not by file name ----
+      // <anim_path>/<prefix>_<i>.png is what the watch resolves, so the frames
+      // must be written under exactly those names whatever the designer calls them.
+      const animPng = (r, g, b) => {
+        const p = new (require('pngjs').PNG)({ width: 2, height: 2 });
+        for (let i = 0; i < 4; i++) { p.data[i * 4] = r; p.data[i * 4 + 1] = g; p.data[i * 4 + 2] = b; p.data[i * 4 + 3] = 255; }
+        return require('pngjs').PNG.sync.write(p).toString('base64');
+      };
+      const animProj = {
+        name: 'Anim probe', device: TARGET, appId: 2123456, vender: 'watchface-designer',
+        elements: [{ id: 'an1', kind: 'IMG_ANIM', name: 'Spectrum', x: 24, y: 207, w: 330, h: 84, fps: 10, frames: ['frame_a.png', 'frame_b.png'] }],
+      };
+      const animOut = path.join(SCRATCH, 'zeus-anim');
+      const animExp = await run(`return API.exportZeus({
+        project: ${JSON.stringify(animProj)},
+        images: [{ name: 'frame_a.png', dataBase64: '${animPng(255, 0, 0)}' }, { name: 'frame_b.png', dataBase64: '${animPng(0, 0, 255)}' }],
+        previewBase64: '', outDir: ${JSON.stringify(animOut)} });`);
+      const animJsFile = path.join(animOut, 'watchface', TARGET, 'index.js');
+      const animJs = fs.existsSync(animJsFile) ? fs.readFileSync(animJsFile, 'utf8') : '';
+      const animFramesDir = path.join(animOut, 'assets', TARGET, 'images', 'anim');
+      const animFrames = fs.existsSync(animFramesDir) ? fs.readdirSync(animFramesDir).sort() : [];
+      const animFlat = fs.existsSync(path.join(animOut, 'assets', TARGET, 'images', 'frame_a.png'));
+      check('IMG_ANIM frames are exported where the widget looks for them (images/anim/<prefix>_<i>.png)',
+        !!animExp && animExp.ok !== false
+        && /anim_path: 'images\/anim',/.test(animJs)
+        && /anim_prefix: 'spectrum',/.test(animJs)
+        && /anim_size: 2/.test(animJs)
+        && animFrames.join(',') === 'spectrum_0.png,spectrum_1.png'
+        && !animFlat,
+        animExp && animExp.ok === false ? animExp.error
+          : `anim_path ${(animJs.match(/anim_path: '[^']+'/) || ['?'])[0]} · ${animFrames.join(', ') || 'no frames written'}${animFlat ? ' · stale flat copy left behind' : ''}`);
+      // …and the designer's own export has to come back the same way (an import
+      // of an import), otherwise every export/import round would reshuffle them.
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const animBack = importFaceDir(animOut).project.elements.find((e) => e.kind === 'IMG_ANIM');
+      check('an exported animation imports back with the same frames and prefix',
+        !!animBack && animBack.animPrefix === 'spectrum' && animBack.frames.length === 2
+        && animBack.frames.join(',') === 'anim/spectrum_0.png,anim/spectrum_1.png',
+        animBack ? `${animBack.animPrefix} → ${animBack.frames.join(', ')}` : 'no IMG_ANIM came back');
     }
+
+    // ---- importing an existing watchface (Zeus project / Maker export) -----
+    // The designer's own export is a real Zeus project, so importing it back is
+    // the strongest test we have: the same layers must come back out.
+    const roundTrip = await run(`
+      const before = project.elements.map(e => e.kind).sort().join(',');
+      const appIdBefore = project.appId;
+      const res = await API.openProjectPath(${JSON.stringify(zeusDir)});
+      if (res.error) return { error: res.error };
+      const report = (res.report || []).join('\\n');
+      await loadProject(res);
+      $('logModal').hidden = true;
+      const refs = [];
+      for (const e of project.elements) {
+        if (e.src) refs.push(e.src);
+        for (const k of ['images', 'frames']) for (const n of (e[k] || [])) refs.push(n);
+      }
+      return {
+        before, imported: !!res.imported, source: res.source, report,
+        after: project.elements.map(e => e.kind).sort().join(','),
+        layers: project.elements.length, images: project.images.length,
+        unresolved: refs.filter((n) => n && !project.images.some((i) => i.name === n)),
+        savePath: project.savePath, dirty, name: project.name, device: project.device,
+        appIdBefore, appIdAfter: project.appId, vender: project.vender,
+        reportSaysLayers: /Layers: \\d+ imported/.test(report),
+      };`);
+    check('import a Zeus project folder', !roundTrip.error && roundTrip.imported && roundTrip.layers > 0,
+      roundTrip.error || `${roundTrip.layers} layers, ${roundTrip.images} images from ${roundTrip.source}`);
+    // A Text layer that needed baking (gradient/bold) exports as an IMG, so the
+    // round trip is compared with TEXT counted as IMG.
+    check('the imported layers match the exported ones (round trip)',
+      !roundTrip.error && roundTrip.after === roundTrip.before.replace(/\bTEXT\b/g, 'IMG').split(',').sort().join(',')
+      && roundTrip.reportSaysLayers,
+      roundTrip.error || `before ${roundTrip.before}\n    after  ${roundTrip.after}`);
+    check('every image an imported layer points at came along',
+      !roundTrip.error && roundTrip.unresolved.length === 0,
+      roundTrip.error || (roundTrip.unresolved.length ? roundTrip.unresolved.join(', ') : 'no dangling references'));
+    check('an import is unsaved, so Save asks where to put the designer project',
+      roundTrip.savePath === null && roundTrip.dirty === true,
+      `savePath ${JSON.stringify(roundTrip.savePath)}, dirty ${roundTrip.dirty}`);
+    check('importing this designer\'s own export keeps the app id',
+      !roundTrip.error && roundTrip.appIdAfter === roundTrip.appIdBefore && roundTrip.appIdAfter >= 1,
+      `${roundTrip.vender} → appId ${roundTrip.appIdBefore} ⇒ ${roundTrip.appIdAfter}`);
+
+    // A hand-written v2 project in the shape the watch actually runs: global
+    // hmUI, a Maker-style runtime, a widget call inside build(), a compressed
+    // image, a normal+AOD pair and two widgets the designer cannot author.
+    const v2Dir = path.join(SCRATCH, 'imported-v2');
+    fs.mkdirSync(path.join(v2Dir, 'watchface'), { recursive: true });
+    fs.mkdirSync(path.join(v2Dir, 'assets'), { recursive: true });
+    fs.writeFileSync(path.join(v2Dir, 'app.json'), JSON.stringify({
+      configVersion: 'v2',
+      app: { appId: 4242, appName: 'Imported V2', appType: 'watchface', vender: 'tester', version: { code: 1, name: '1.0.0' } },
+      module: { watchface: { path: 'watchface/index', main: 1, lockscreen: 1 } },
+      platforms: [{ name: 'Amazfit Bip 6', deviceSource: 9765120 }],
+      designWidth: 390,
+    }, null, 2));
+    // a 4×4 image in Zepp's compressed container: 64-byte header, 256 RGBA
+    // palette entries, one index byte per pixel
+    const somh = Buffer.alloc(1088 + 16);
+    somh[0] = 0x2e; somh[1] = 0x01; somh[2] = 0x01;
+    somh.writeUInt16LE(4, 12); somh.writeUInt16LE(4, 14);
+    Buffer.from('SOMH').copy(somh, 18);
+    // index 0 fully transparent, index 1 amber #ff8c00 — the byte order in the
+    // palette is what this check pins down
+    [0, 0, 0, 0, 0xff, 0x8c, 0x00, 0xff].forEach((v, i) => { somh[64 + i] = v; });
+    for (let i = 0; i < 16; i++) somh[1088 + i] = i % 2;
+    fs.writeFileSync(path.join(v2Dir, 'assets', 'dot.png'), somh);
+    // a plain PNG next to it, generated here so the check does not depend on the
+    // export above succeeding
+    const plainPng = new (require('pngjs').PNG)({ width: 2, height: 2 });
+    for (let i = 0; i < 4; i++) { plainPng.data[i * 4] = 20; plainPng.data[i * 4 + 1] = 200; plainPng.data[i * 4 + 2] = 20; plainPng.data[i * 4 + 3] = 255; }
+    fs.writeFileSync(path.join(v2Dir, 'assets', 'plain.png'), require('pngjs').PNG.sync.write(plainPng));
+    fs.writeFileSync(path.join(v2Dir, 'watchface', 'index.js'), `
+      const h = new DeviceRuntimeCore.WidgetFactory(new DeviceRuntimeCore.HmDomApi());
+      const logger = DeviceRuntimeCore.HmLogger.getLogger('probe');
+      DeviceRuntimeCore.WatchFace({
+        build() {
+          logger.log('build');
+          hmUI.createWidget(hmUI.widget.IMG, { x: 1, y: 2, src: 'dot.png' });
+          hmUI.createWidget(hmUI.widget.IMG, { x: 1, y: 2, src: 'plain.png', show_level: hmUI.show_level.ONLY_NORMAL });
+          hmUI.createWidget(hmUI.widget.IMG, { x: 1, y: 2, src: 'plain.png', show_level: hmUI.show_level.ONLY_AOD });
+          hmUI.createWidget(hmUI.widget.IMG_TIME, {
+            hour_startX: 10, hour_startY: 20, hour_array: ['plain.png'],
+            hour_zero: 1, hour_space: 3, hour_align: hmUI.align.CENTER_H,
+            show_level: hmUI.show_level.ONLY_AOD,
+          });
+          hmUI.createWidget(hmUI.widget.BUTTON, { x: 0, y: 0, w: 10, h: 10, text: 'tap' });
+          hmUI.createWidget(hmUI.widget.SCROLL_TEXT, { x: 0, y: 0 });
+        },
+      });
+    `);
+    const v2 = await run(`
+      const res = await API.openProjectPath(${JSON.stringify(v2Dir)});
+      if (res.error) return { error: res.error };
+      const report = (res.report || []).join('\\n');
+      await loadProject(res);
+      $('logModal').hidden = true;
+      const byKind = {};
+      for (const e of project.elements) byKind[e.kind] = (byKind[e.kind] || 0) + 1;
+      const hour = project.elements.find((e) => e.kind === 'IMG_TIME');
+      const both = project.elements.filter((e) => e.show === 'both').length;
+      const dot = project.images.find((i) => i.name === 'dot.png');
+      return {
+        report, byKind, layers: project.elements.length, both,
+        name: project.name, device: project.device, appId: project.appId,
+        hour: hour ? { part: hour.part, x: hour.x, y: hour.y, zero: hour.zero, space: hour.space, alignH: hour.alignH, show: hour.show, images: hour.images } : null,
+        dot: dot ? { width: dot.width, url: dot.url.slice(0, 30) } : null,
+        plain: !!project.images.find((i) => i.name === 'plain.png'),
+      };`);
+    check('import a hand-written v2 (hmUI) project', !v2.error && v2.layers === 3,
+      v2.error || `${v2.layers} layers ${JSON.stringify(v2.byKind)}`);
+    check('the v2 import keeps the container and the device, but not a foreign app id',
+      !v2.error && v2.name === 'Imported V2' && v2.device === 'bip-6'
+      && v2.appId >= 2000000 && v2.appId <= 2999999 && /App id: 4242 → \d+/.test(v2.report),
+      `${v2.name} · ${v2.device} · appId ${v2.appId} (reported: ${/App id: \d+ → \d+/.test(v2.report)})`);
+    // dot.png has no show_level (shown in both states on the watch) and the
+    // plain.png pair is one physical widget per state
+    check('a normal+AOD pair comes back as one layer, shown in both states',
+      !v2.error && v2.both === 2 && v2.byKind.IMG === 2, `both=${v2.both}, IMG=${v2.byKind.IMG}`);
+    check('IMG_TIME keeps its part, zero, spacing and alignment',
+      !v2.error && v2.hour && v2.hour.part === 'hour' && v2.hour.zero === 1 && v2.hour.space === 3
+      && v2.hour.alignH === 'CENTER_H' && v2.hour.show === 'aod' && v2.hour.images.length === 1,
+      JSON.stringify(v2.hour));
+    check('widgets the designer cannot author are listed, not dropped',
+      !v2.error && /BUTTON/.test(v2.report) && /SCROLL_TEXT/.test(v2.report),
+      (v2.report || '').split('\n').filter((l) => /BUTTON|SCROLL_TEXT/.test(l)).join(' · '));
+    check('a compressed Maker image imports as a real PNG (palette + byte order)',
+      !v2.error && v2.dot && v2.dot.width === 4 && /^data:image\/png;base64,iVBOR/.test(v2.dot.url),
+      v2.dot ? `${v2.dot.width}px, ${v2.dot.url}` : 'dot.png missing');
+    const dotRec = await run(`const i = project.images.find((x) => x.name === 'dot.png'); return i ? i.url : '';`);
+    let dotPx = null;
+    try {
+      const png = require('pngjs').PNG.sync.read(Buffer.from(String(dotRec).split(',')[1], 'base64'));
+      dotPx = [png.data[(1 * png.width + 1) * 4], png.data[(1 * png.width + 1) * 4 + 1], png.data[(1 * png.width + 1) * 4 + 2], png.data[(1 * png.width + 1) * 4 + 3]];
+    } catch (e) { dotPx = null; }
+    check('the compressed image decodes to the right pixels in the right order',
+      !!dotPx && dotPx.join(',') === '255,140,0,255', dotPx ? dotPx.join(',') : 'could not decode');
+
+    // the import checks above swapped the loaded project out; put the smoke's
+    // own back so the checks that follow keep working on it
+    const restored = await run(`
+      const res = await API.openProjectPath(${JSON.stringify(projectDir)});
+      if (res.error) return { error: res.error };
+      await loadProject(res);
+      $('logModal').hidden = true;
+      return { layers: project.elements.length, name: project.name };`);
+    check('the original project loads again after the imports',
+      !restored.error && restored.layers >= 9, restored.error || `${restored.name}: ${restored.layers} layers`);
+
+    // A folder can hold both a designer project and an app.json (this app's own
+    // sample/export layout): Open prefers the project, Import imports anyway.
+    fs.writeFileSync(path.join(v2Dir, 'Probe.wfproj.json'), JSON.stringify({
+      version: 1, name: 'Designer One', device: 'bip-6', appId: 4242, font: 'Orbitron',
+      fonts: [], groups: {}, elements: [],
+    }, null, 2));
+    const bothWays = await run(`
+      const asProject = await API.openProjectPath(${JSON.stringify(v2Dir)});
+      const forced = await API.openProjectPath(${JSON.stringify(v2Dir)}, { force: true });
+      return {
+        project: asProject.error ? asProject.error : { imported: !!asProject.imported, name: asProject.project.name, savePath: asProject.savePath },
+        forced: forced.error ? forced.error : { imported: !!forced.imported, name: forced.project.name, layers: forced.project.elements.length },
+      };`);
+    check('a folder with a project file and an app.json opens as the project',
+      !!(bothWays.project && bothWays.project.imported === false && bothWays.project.name === 'Designer One'),
+      JSON.stringify(bothWays.project));
+    check('Import imports that same folder anyway',
+      !!(bothWays.forced && bothWays.forced.imported === true && bothWays.forced.name === 'Imported V2' && bothWays.forced.layers === 3),
+      JSON.stringify(bothWays.forced));
 
     // ---- fonts: name table parser, import, glyphs, Text font file ----------
     const fonts = require(path.join(__dirname, '..', 'core', 'fonts'));
@@ -591,6 +804,174 @@ app.whenReady().then(async () => {
       && (glyphResize.next > glyphResize.cur ? glyphResize.h1 > glyphResize.h0 : glyphResize.h1 < glyphResize.h0),
       `${glyphResize.n} images kept their names · cell ${glyphResize.h0}px → ${glyphResize.h1}px when size went ${glyphResize.cur} → ${glyphResize.next}`);
 
+    // ---- language / names, and sets that came from another watchface --------
+    const weekNames2 = await run(`
+      const e = await addElement('IMG_WEEK', { name: 'Names test' });
+      selectedId = e.id; multiSel = new Set([e.id]); refreshPanels();
+      const rows = [...document.querySelectorAll('#props .row .lbl')].map((s) => s.textContent.trim());
+      const en = weekNames(e).slice();                       // default case is UPPERCASE
+      const enAs = weekNames(Object.assign({}, e, { labelCase: '' })).slice();
+      project.language = 'ro-RO';
+      const ro = weekNames(Object.assign({}, e, { labelCase: '' })).slice();
+      const roLong = monthNames(Object.assign({}, e, { labelForm: 'long', labelCase: '' })).slice();
+      project.language = 'en-US';
+      e.labelForm = 'long'; e.labelCase = 'upper';
+      const shout = weekNames(e).slice();
+      const files = (e.images || []).slice();
+      return { rows, en, enAs, ro, roLong, shout, files, known: localeKnown('ro-RO'), bad: localeKnown('xx-nope') };`);
+    check('weekday / month names come from the project language (Intl), with a form and a case',
+      weekNames2.known && !weekNames2.bad && weekNames2.en[0] === 'MON' && weekNames2.enAs[0] === 'Mon' && weekNames2.en.length === 7
+      && /^lun/i.test(weekNames2.ro[0]) && weekNames2.roLong[0] === 'ianuarie'
+      && weekNames2.shout[0] === 'MONDAY'
+      && ['Names', 'Case', 'Language'].every((l) => weekNames2.rows.includes(l))
+      && weekNames2.files.join(',') === 'week_w1.png,week_w2.png,week_w3.png,week_w4.png,week_w5.png,week_w6.png,week_w7.png',
+      `default ${weekNames2.en[0]} · as generated ${weekNames2.enAs[0]} · ro ${weekNames2.ro[0]} / ${weekNames2.roLong[0]} · ${weekNames2.shout[0]} · rows ${weekNames2.rows.filter((l) => /Names|Case|Language/.test(l)).join(',')}`);
+
+    const importedSet = await run(`
+      const el = await addElement('IMG_TIME', { name: 'Imported set' });
+      // pretend the pictures came from another watchface: private copies under
+      // foreign names, so nothing else in the project is touched
+      const original = el.images.slice();
+      const foreign = [];
+      for (let i = 0; i < original.length; i++) {
+        const im = imgFor(original[i]);
+        const cv = document.createElement('canvas');
+        cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+        cv.getContext('2d').drawImage(im, 0, 0);
+        addProjectImage('winamp_big_' + i + '.png', cv, { replace: true });
+        foreign.push('winamp_big_' + i + '.png');
+      }
+      el.images = foreign;
+      el.glyph = undefined;
+      selectedId = el.id; multiSel = new Set([el.id]); refreshPanels();
+      const spec0 = (glyphSpecForLayer(el) || []).map((g) => g.char).join('');
+      const imported0 = importedGlyphSet(el);
+      const sized = glyphStyle(el).size;
+      const note = [...document.querySelectorAll('#props .prop-note')].map((p) => p.textContent).join(' | ');
+      const url0 = imgMeta(foreign[0]).url;
+      const sh0 = imgMeta(foreign[0]).height;
+      el.glyph = { font: glyphFont, size: 96, color: glyphOpts.color, fill: 'solid' };
+      const done = await rerenderGlyphLayers([el]);
+      const after = imgMeta(foreign[0]);
+      // tidy up: the layer and its copies are this check's own
+      project.elements = project.elements.filter((x) => x !== el);
+      project.images = project.images.filter((i) => !foreign.includes(i.name));
+      selectedId = null; multiSel = new Set(); refreshPanels();
+      return { spec0, imported0, sized, done, sh0, sh1: after ? after.height : 0,
+        replaced: !after || after.url !== url0, note: /came with/.test(note),
+        keptNames: el.images.join(',') === foreign.join(',') };`);
+    check('a set imported from another watchface can be restyled in place',
+      importedSet.spec0 === '0123456789' && importedSet.imported0 && importedSet.note && importedSet.sized > 0
+      && importedSet.done === 1 && importedSet.keptNames && importedSet.replaced && importedSet.sh1 > importedSet.sh0,
+      `recognised as “${importedSet.spec0}” · default size ${importedSet.sized}px · re-rendered ${importedSet.done} · cell ${importedSet.sh0}px → ${importedSet.sh1}px`);
+
+    // a hand-built two-frame GIF (1×1, 100 ms then 200 ms) so the split is tested
+    // end to end without shipping a fixture file
+    const GIF_B64 = 'R0lGODlhAQABAPAAAAAAAP///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAAAAQABAAACAkQBACH5BAAUAAAALAAAAAABAAEAAAICRAEAOw==';
+    const frameImport = await run(`
+      // the row is one button for both cases: a run of pictures, or an animated
+      // GIF that is split into frames for you
+      const GIF = '${GIF_B64}';
+      const el = await addElement('IMG_ANIM', { name: 'GIF test' });
+      selectedId = el.id; multiSel = new Set([el.id]); refreshPanels();
+      const labels = [...document.querySelectorAll('#props .row .lbl')].map((s) => s.textContent.trim());
+      const prefix = animPrefixForLayer(el);
+      const cv = document.createElement('canvas'); cv.width = 8; cv.height = 8;
+      cv.getContext('2d').fillRect(0, 0, 8, 8);
+      const still = await new Promise((r) => cv.toBlob(r, 'image/png'));
+      const settle = async (want) => { for (let i = 0; i < 80; i++) { await new Promise((r) => setTimeout(r, 50)); if ((el.frames || []).length === want) return true; } return false; };
+      const feed = (files) => {
+        const dt = new DataTransfer();
+        for (const f of files) dt.items.add(f);
+        $('framesInput').files = dt.files;
+        framesTarget = el;                                  // what the button sets before clicking
+        $('framesInput').dispatchEvent(new Event('change'));
+      };
+      // a still picture is simply one frame
+      feed([new File([still], 'still.png', { type: 'image/png' })]);
+      const one = await settle(1);
+      // an animated GIF splits into one PNG per frame, fps from its own delays
+      const bytes = Uint8Array.from(atob(GIF), (ch) => ch.charCodeAt(0));
+      feed([new File([bytes], 'blink.gif', { type: 'image/gif' })]);
+      const two = await settle(2);
+      const out = { labels, one, two, names: (el.frames || []).slice(), fps: el.fps, prefix,
+        still: await splitGifInto(el, new File([still], 'still.png', { type: 'image/png' })),
+        hasDecoder: typeof ImageDecoder !== 'undefined',
+        anims: project.images.filter((i) => i.name.startsWith('anim/')).length };
+      project.elements = project.elements.filter((x) => x !== el);
+      project.images = project.images.filter((i) => !i.name.startsWith('anim/') || !i.name.includes(prefix));
+      selectedId = null; multiSel = new Set(); refreshPanels();
+      return out;`);
+    check('one Frames row: a picture run, and a GIF that splits itself with its own frame rate',
+      frameImport.hasDecoder && frameImport.labels.includes('Frames') && !frameImport.labels.includes('GIF')
+      && frameImport.one && frameImport.two
+      && frameImport.names.join(',') === `anim/${frameImport.prefix}_0.png,anim/${frameImport.prefix}_1.png`
+      && frameImport.fps === 7 && frameImport.still === 0,
+      `rows ${frameImport.labels.filter((l) => /Frames|GIF/.test(l)).join(',')} · still → 1 frame (${frameImport.one}) · 2-frame GIF → ${frameImport.names.length} frames at ${frameImport.fps} fps · splitGifInto(still)=${frameImport.still} · ImageDecoder=${frameImport.hasDecoder}`);
+
+    const modalGen = await run(`
+      selectedId = null; multiSel = new Set(); refreshPanels();
+      const before = project.images.length;
+      openFontModal();
+      const noTarget = $('fontTarget').textContent;
+      await fontGen('week');                    // must refuse: nothing selected
+      const refused = project.images.length === before;
+      $('fontModal').hidden = true;
+      const el = await addElement('IMG_WEEK', { name: 'Modal week' });
+      selectedId = el.id; multiSel = new Set([el.id]); refreshPanels();
+      openFontModal();
+      const target = $('fontTarget').textContent;
+      const targetName = el.name;
+      const seededFont = fontSelFamily, seededSize = $('fontSize').value;
+      const rowsShown = getComputedStyle($('fontNamesRow')).display !== 'none'
+        && getComputedStyle($('fontCaseRow')).display !== 'none';
+      const cases = [...$('fontCase').options].map((o) => o.value);
+      const weekBtn = $('fontGenWeek').textContent.trim();
+      const weekShown = getComputedStyle($('fontGenWeek')).display !== 'none'
+        && getComputedStyle($('fontGenSet')).display === 'none';
+      el.labelForm = 'long'; el.labelCase = 'upper';
+      await fontGen('week');
+      const meta = imgMeta((el.images || [])[0]);
+      // the same button follows the component: a digit set offers its 0-9 images,
+      // seeded with that layer's own size
+      const digit = elements().find((x) => x.kind === 'IMG_TIME') || await addElement('IMG_TIME');
+      selectedId = digit.id; multiSel = new Set([digit.id]); refreshPanels();
+      openFontModal();
+      const digitBtn = $('fontGenSet').textContent.trim();
+      const digitHidden = getComputedStyle($('fontGenWeek')).display === 'none';
+      const digitSeed = +$('fontSize').value;
+      const digitSize = glyphStyle(digit).size;
+      const out = { noTarget, refused, target, targetName, cases, seededFont, seededSize, rowsShown, weekBtn, weekShown,
+        digitBtn, digitHidden, digitSeed, digitSize,
+        char0: (glyphSpecForLayer(el) || [])[0].char, name0: (el.images || [])[0], w: meta && meta.width, h: meta && meta.height, size: (el.glyph || {}).size };
+      $('fontModal').hidden = true;
+      project.elements = project.elements.filter((x) => x !== el);
+      selectedId = null; multiSel = new Set(); refreshPanels(); render();
+      return out;`);
+    check('the font modal generates for the selected component (and says so without one)',
+      /Select a layer first/.test(modalGen.noTarget) && modalGen.refused
+      && modalGen.target.includes(modalGen.targetName) && /Weekday/.test(modalGen.target)
+      && modalGen.rowsShown && modalGen.cases[0] === 'upper'
+      && modalGen.weekBtn === 'Weekdays' && modalGen.weekShown
+      && modalGen.char0 === 'MONDAY' && modalGen.name0 === 'week_w1.png'
+      && modalGen.w > 0 && modalGen.h > 0
+      && modalGen.digitBtn === 'Digits 0-9' && modalGen.digitHidden && modalGen.digitSeed === modalGen.digitSize,
+      `“${modalGen.noTarget}” → refused=${modalGen.refused} · ${modalGen.target} · seed ${modalGen.seededFont} ${modalGen.seededSize}px · drew “${modalGen.char0}” → ${modalGen.name0} ${modalGen.w}×${modalGen.h} · digit layer: ${modalGen.digitBtn} (week button hidden: ${modalGen.digitHidden}, seed ${modalGen.digitSeed}px)`);
+
+    const animRate = await run(`
+      let added = null;
+      if (!project.elements.some((e) => e.kind === 'IMG_ANIM' && e.visible !== false)) {
+        added = await addElement('IMG_ANIM', { name: 'Preview pace' });
+      }
+      render();                       // the interval only redraws when an anim exists
+      animTick = 0;
+      await new Promise((r) => setTimeout(r, 600));
+      const tick = animTick;          // in 1/30 s units, so ~18 after 0.6 s
+      if (added) { project.elements = project.elements.filter((x) => x !== added); selectedId = null; multiSel = new Set(); refreshPanels(); render(); }
+      return { tick };`);
+    check('the animation preview advances in real time (~30 units/s, so fps is honest)',
+      animRate.tick > 12 && animRate.tick < 26, `${animRate.tick.toFixed(1)} units in 0.6 s`);
+
     const glyphGrad = await run(`
       const el = elements().find((e) => e.kind === 'IMG_TIME' && (e.glyph || {}).size === 96);
       const scan = (name) => {
@@ -802,13 +1183,18 @@ app.whenReady().then(async () => {
       const skipN = alignTargets([a.id, b.id]).xs.length;
       const oneN = alignTargets(a.id).xs.length;
       const union = unionBox([elBox(a), elBox(b)]);
+      // a reference widget a few px to the right: its edge is the nearest target
+      // for the group box's left edge, so the snap has to land exactly on it
+      const ref = await addElement('FILL_RECT', { w: 20, h: 20, color: '#202020' });
+      ref.x = Math.round(union.x) + 3; ref.y = 20;
       const s = snapBox(union.x + 3, union.y, union.w, union.h, [a.id, b.id]);
       const cands = [...alignTargets([a.id, b.id]).xs, dev().w / 2];
       const onTarget = cands.some((t) => Math.abs(t - s.x) < 0.6) || s.x % 20 === 0;
-      return { drop2: allN - skipN, drop1: allN - oneN, unionX: union.x, snapped: s.x, onTarget };`);
+      project.elements = project.elements.filter((x) => x !== ref);
+      return { drop2: allN - skipN, drop1: allN - oneN, unionX: union.x, refX: ref.x, snapped: s.x, onTarget };`);
     check('the snap aid uses the group box, and members are not their own snap targets',
-      snapAid.drop2 === 6 && snapAid.drop1 === 3 && snapAid.onTarget,
-      `two members excluded → ${snapAid.drop2} targets fewer (one → ${snapAid.drop1}) · group box left ${snapAid.unionX} +3 → snapped ${snapAid.snapped} (on a target: ${snapAid.onTarget})`);
+      snapAid.drop2 === 6 && snapAid.drop1 === 3 && snapAid.onTarget && snapAid.snapped === snapAid.refX,
+      `two members excluded → ${snapAid.drop2} targets fewer (one → ${snapAid.drop1}) · group box left ${snapAid.unionX} +3 → snapped ${snapAid.snapped} (reference edge ${snapAid.refX} · on a target: ${snapAid.onTarget})`);
 
     // the drag itself: grabbing one member must snap the GROUP box, not the box
     // under the cursor (the bug this fixes)
@@ -1266,6 +1652,44 @@ app.whenReady().then(async () => {
     const after = await get('/health');
     check('stopping the server closes the port', stopped.running === false && after.status === 0,
       `status=${stopped.running ? 'running' : 'stopped'} · later request: ${after.status || after.error}`);
+
+    // ---- recents: a project folder that went missing stays visible ----------
+    const recentsFile = path.join(app.getPath('userData'), 'recent-projects.json');
+    let recentsBackup = null;
+    try { recentsBackup = fs.readFileSync(recentsFile, 'utf8'); } catch (e) { recentsBackup = null; }
+    const goneDir = path.join(SCRATCH, 'moved-away');
+    fs.mkdirSync(goneDir, { recursive: true });
+    await run(`return API.saveProject({ project, images: projectImagesPayload(), savePath: ${JSON.stringify(goneDir)}, previewBase64: '' });`);
+    fs.rmSync(goneDir, { recursive: true, force: true });   // the user drags the folder to the Trash
+    const recents = await run(`
+      const list = await API.recentList();
+      const entry = list.find((r) => r.path === ${JSON.stringify(goneDir)});
+      const keep = project; project = null;
+      await renderRecents();
+      const row = [...document.querySelectorAll('#recentList .recent-item')].find((n) => n.title === ${JSON.stringify(goneDir)});
+      const out = {
+        listed: !!entry, exists: entry ? entry.exists : null,
+        missingClass: !!(row && row.classList.contains('missing')),
+        text: row ? row.querySelector('.ri-path').textContent : '',
+        disabled: row ? row.querySelector('.icon-only').disabled : null,
+      };
+      if (row) row.click();
+      out.status = $('meta').textContent; out.err = $('meta').classList.contains('err');
+      $('recentClear').click();
+      await new Promise((r) => setTimeout(r, 250));
+      out.left = document.querySelectorAll('#recentList .recent-item').length;
+      out.hidden = $('recentWrap').hidden;
+      project = keep;
+      return out;`);
+    check('a project folder that went missing stays listed, flagged in red',
+      recents.listed && recents.exists === false && recents.missingClass && recents.disabled === true
+      && /missing/.test(recents.text) && /gone/.test(recents.status) && recents.err === true,
+      `listed=${recents.listed} exists=${recents.exists} · row: “${recents.text}” · click → “${recents.status}”`);
+    check('Clear empties the recent list', recents.left === 0 && recents.hidden === true,
+      `${recents.left} row(s) left · panel ${recents.hidden ? 'hidden' : 'still open'}`);
+    // the smoke never keeps the user's own recents
+    if (recentsBackup === null) { try { fs.unlinkSync(recentsFile); } catch (e) { /* there was none */ } }
+    else fs.writeFileSync(recentsFile, recentsBackup);
 
     // the committed sample has to keep loading with the current model, images and all
     const sampleUi = await run(`

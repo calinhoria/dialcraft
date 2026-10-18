@@ -130,6 +130,7 @@ function restoreHistory(json) {
   project.groups = p.groups || {};
   project.name = p.name; project.description = p.description;
   project.appId = p.appId; project.font = p.font;
+  project.language = p.language || project.language;
   project.images = p.images || project.images;
   loadAllImages();
   if (selectedId && !elementById(selectedId)) selectedId = null;
@@ -1950,10 +1951,77 @@ const GLYPH_FILLS = [
 ];
 const DIGIT_FILE_RE = /^font_\d+_\d+\.png$/;
 const WEEK_FILE_RE = /^week_w\d+\.png$/;
+const MONTH_FILE_RE = /^month_m\d+\.png$/;
 const WEEK_CHARS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const SEPARATOR_CHARS = { colon: ':', dot: '.', percent: '%', negative: '-', degree: '°', slash: '/', am: 'A', pm: 'P' };
 const SEPARATOR_FILE_RE = /^(colon|dot|percent|negative|degree|slash|am|pm)(_\w+)?\.png$/i;
 const DEFAULT_GLYPH_CSS = 'linear-gradient(180deg, #ffd400, #ff2d55)';
+
+// ------------------------------------------------------------ localization --
+// Weekday and month names are asked of the browser instead of being written down
+// here, so a watchface can be generated in any language: `project.language` is
+// the project default and one layer may override it. The wording (Mon / Monday /
+// M) and its casing are per layer as well — both end up baked into the images.
+const LABEL_FORMS = [
+  { value: 'short', label: 'Short (Mon)' },
+  { value: 'long', label: 'Full (Monday)' },
+  { value: 'narrow', label: 'Narrow (M)' },
+];
+const LABEL_CASES = [
+  { value: 'upper', label: 'UPPERCASE' },
+  { value: '', label: 'As generated' },
+  { value: 'capitalize', label: 'Capitalize' },
+  { value: 'lower', label: 'lowercase' },
+];
+// a familiar list for the picker — any BCP-47 tag can simply be typed in
+const LANGUAGE_SUGGESTIONS = ['en-US', 'en-GB', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'pt-BR', 'nl-NL', 'pl-PL', 'cs-CZ', 'sk-SK', 'hu-HU', 'sv-SE', 'da-DK', 'fi-FI', 'nb-NO', 'tr-TR', 'ru-RU', 'uk-UA', 'el-GR', 'ja-JP', 'ko-KR', 'zh-CN', 'zh-TW', 'th-TH', 'vi-VN', 'id-ID', 'hi-IN', 'ar-EG', 'he-IL'];
+function projectLanguage() {
+  const l = project && project.language;
+  return l && String(l).trim() ? String(l).trim() : 'en-US';
+}
+function languageOf(e) {
+  const l = e && e.language;
+  return l && String(l).trim() ? String(l).trim() : projectLanguage();
+}
+function localeKnown(tag) {
+  if (!tag) return false;
+  try { return Intl.DateTimeFormat.supportedLocalesOf([tag]).length > 0; }
+  catch (err) { return false; }
+}
+function applyLabelCase(text, mode) {
+  if (mode === 'upper') return text.toLocaleUpperCase();
+  if (mode === 'lower') return text.toLocaleLowerCase();
+  if (mode === 'capitalize') return text.charAt(0).toLocaleUpperCase() + text.slice(1);
+  return text;
+}
+// an unset case means UPPERCASE: that is what the designer has always drawn for
+// weekday sets, so existing faces keep their look and the option can relax it
+function labelCaseOf(e) {
+  const c = e && e.labelCase;
+  return c == null ? 'upper' : c;
+}
+// 2024-01-01 is a Monday and the 15th sits mid-month: walking from those two
+// gives the seven weekdays and the twelve months in the order the widget wants.
+function localeNames(kind, tag, form) {
+  const loc = localeKnown(tag) ? tag : 'en-US';
+  try {
+    if (kind === 'week') {
+      const fmt = new Intl.DateTimeFormat(loc, { weekday: form || 'short', timeZone: 'UTC' });
+      return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(Date.UTC(2024, 0, 1 + i, 12))));
+    }
+    const fmt = new Intl.DateTimeFormat(loc, { month: form || 'short', timeZone: 'UTC' });
+    return Array.from({ length: 12 }, (_, i) => fmt.format(new Date(Date.UTC(2024, i, 15, 12))));
+  } catch (err) { /* fall back below */ }
+  return kind === 'week' ? WEEK_CHARS.slice() : [];
+}
+function weekNames(e) {
+  return localeNames('week', languageOf(e), (e && e.labelForm) || 'short')
+    .map((s) => applyLabelCase(s, labelCaseOf(e)));
+}
+function monthNames(e) {
+  return localeNames('month', languageOf(e), (e && e.labelForm) || 'short')
+    .map((s) => applyLabelCase(s, labelCaseOf(e)));
+}
 
 // colon.png → { : }, colon_off.png → a blank frame, degree.png → { ° }
 function separatorGlyphFor(name) {
@@ -1998,7 +2066,10 @@ function isGlyphLayer(e) {
 function glyphStyle(e) {
   const g = e.glyph || {};
   const sepOnly = (e.kind === 'IMG' || e.kind === 'IMG_ANIM') && isGlyphLayer(e);
-  const size = +g.size || ((e.kind === 'IMG_WEEK' || sepOnly) ? 40 : +glyphOpts.size) || 48;
+  // an imported set carries no style of its own: offer the size its pictures are
+  // drawn at, so the first re-render keeps their proportions
+  const keep = (!g.size && glyphSpecForLayer(e)) ? importedGlyphHeight(e) : 0;
+  const size = +g.size || keep || ((e.kind === 'IMG_WEEK' || sepOnly) ? 40 : +glyphOpts.size) || 48;
   return {
     font: g.font || glyphFont,
     size: Math.max(8, Math.round(size)),
@@ -2023,10 +2094,11 @@ function glyphSpecForLayer(e) {
   if (g.glyphs && g.glyphs.length) return g.glyphs.map((x) => ({ ...x }));
   const imgs = e.images || [];
   if (e.kind === 'IMG_WEEK') {
-    if (imgs.length >= 7 && imgs.slice(0, 7).every((n) => WEEK_FILE_RE.test(n))) {
-      return imgs.slice(0, 7).map((n, i) => ({ tag: `w${i + 1}`, char: WEEK_CHARS[i], name: n }));
-    }
-    if (!imgs.length) return WEEK_CHARS.map((l, i) => ({ tag: `w${i + 1}`, char: l }));
+    const labels = weekNames(e);
+    // a set the designer drew (week_w1.png …) and a whole imported one are both
+    // the seven weekdays in order, so either can be restyled
+    if (imgs.length >= 7) return imgs.slice(0, 7).map((n, i) => ({ tag: `w${i + 1}`, char: labels[i], name: n }));
+    if (!imgs.length) return labels.map((l, i) => ({ tag: `w${i + 1}`, char: l }));
     return null;
   }
   if (e.kind === 'IMG' || e.kind === 'IMG_ANIM') {
@@ -2038,12 +2110,57 @@ function glyphSpecForLayer(e) {
     return seps.length && seps.every(Boolean) ? seps : null;
   }
   if (!DIGIT_SET_KINDS.has(e.kind)) return null;
-  if (e.kind === 'IMG_DATE' && e.isCharacter) return null;   // month names, not digits
+  if (e.kind === 'IMG_DATE' && e.isCharacter) {
+    const labels = monthNames(e);
+    if (imgs.length >= 12) return imgs.slice(0, 12).map((n, i) => ({ tag: `m${i + 1}`, char: labels[i], name: n }));
+    if (!imgs.length) return labels.map((l, i) => ({ tag: `m${i + 1}`, char: l }));
+    return null;
+  }
   if (imgs.length >= 10 && imgs.slice(0, 10).every((n) => DIGIT_FILE_RE.test(n))) {
     return imgs.slice(0, 10).map((n, i) => ({ tag: String(i), char: String(i), name: n }));
   }
+  // The widget's own parameters say what its images are: a time/date/data part
+  // is the digits 0-9 in that order (the docs require it), so a set that came
+  // from another watchface can be restyled too. Level and progress sets are
+  // pictures of a level, not characters, so they stay untouched.
+  const digits = e.kind === 'IMG_TIME' || e.kind === 'TEXT_IMG' || (e.kind === 'IMG_DATE' && !e.isCharacter);
+  if (digits && imgs.length >= 10) {
+    return imgs.slice(0, 10).map((n, i) => ({ tag: String(i), char: String(i), name: n }));
+  }
   if (!imgs.length) return '0123456789'.split('').map((c, i) => ({ tag: String(i), char: c }));
-  return null;   // imported or hand-picked images are left alone
+  return null;   // hand-picked images are left alone
+}
+// true when this layer still draws the pictures it came with, so Properties can
+// say out loud that a style change will replace them
+function importedGlyphSet(e) {
+  const g = e.glyph || {};
+  if (g.glyphs && g.glyphs.length) return false;
+  if (e.kind === 'IMG' && layerSymbol(e)) return false;
+  const files = glyphLayerFiles(e);
+  if (!files.length) return false;
+  return !files.some((n) => DIGIT_FILE_RE.test(n) || WEEK_FILE_RE.test(n) || MONTH_FILE_RE.test(n) || SEPARATOR_FILE_RE.test(n));
+}
+// the em size that would draw a glyph cell as tall as these pictures are — the
+// cell is ascent + descent + padding (see genGlyphImages), so measuring a digit
+// at a probe size is enough to invert it. Best effort: a font that is not
+// loaded yet is measured in the fallback face, which is close enough to start.
+function importedGlyphHeight(e) {
+  const n = (e.images || [])[0] || (e.frames || [])[0];
+  const meta = n ? imgMeta(n) : null;
+  if (!meta || !meta.height) return 0;
+  const g = e.glyph || {};
+  const probe = 100;
+  let cell = 0;
+  try {
+    const ctx = document.createElement('canvas').getContext('2d');
+    setFontOn(ctx, g.font || glyphFont, probe,
+      g.weight == null ? glyphOpts.weight : g.weight,
+      g.variations == null ? glyphOpts.variations : g.variations);
+    const m = ctx.measureText('0');
+    const pad = Math.max(1, Math.round(probe / 28));
+    cell = Math.ceil((m.actualBoundingBoxAscent || probe * 0.8) + Math.ceil(m.actualBoundingBoxDescent || 0)) + pad * 2;
+  } catch (err) { cell = 0; }
+  return Math.max(8, Math.round(meta.height * (cell > 0 ? probe / cell : 1)));
 }
 // separator images attached to a layer (the temperature ° / −, a decimal dot,
 // AM/PM) — they are re-rendered with the layer, keeping their design names
@@ -2071,7 +2188,15 @@ function glyphUsersOf(names, ...except) {
 function glyphPrefixFor(e, spec) {
   const first = (spec[0] && spec[0].name) || (e.images || [])[0] || e.src || '';
   const m = /^(font_\d+)_\d+\.png$/.exec(first);
-  return (m && m[1]) || (e.kind === 'IMG_WEEK' ? 'week' : nextDigitPrefix());
+  if (m) return m[1];
+  if (e.kind === 'IMG_WEEK') return 'week';
+  if (e.kind === 'IMG_DATE' && e.isCharacter) return 'month';
+  return nextDigitPrefix();
+}
+// names the design owns (colon.png, week_w1.png, month_m3.png): layers share them
+// on purpose, so they are never forked into a private copy
+function designFixedName(n) {
+  return WEEK_FILE_RE.test(n) || MONTH_FILE_RE.test(n) || SEPARATOR_FILE_RE.test(n);
 }
 // Rasterise this layer's images again, in place, with its current style.
 // A digit set shared with a layer we are *not* restyling is copied first (the
@@ -2093,10 +2218,12 @@ async function regenerateGlyphs(e, { targets = [e] } = {}) {
   }
   const cur = spec.map((g) => g.name).filter(Boolean);
   let pre = glyphPrefixFor(e, spec);
-  // only a generated digit set can be forked; separators and weekdays carry
-  // design-fixed names (colon.png, week_w1.png) that other layers share on purpose
-  const fork = glyphUsersOf(cur, e).filter((x) => !targets.includes(x)).length > 0
-    && cur.length > 0 && DIGIT_FILE_RE.test(cur[0]);
+  // A set another layer draws too is copied first, so that layer keeps the
+  // glyphs it was designed with: that covers a generated digit set and a set the
+  // project imported, but never separators or weekday/month names, which carry
+  // design-fixed names (colon.png, week_w1.png) that layers share on purpose.
+  const shared = glyphUsersOf(cur, e).filter((x) => !targets.includes(x)).length > 0;
+  const fork = shared && cur.length > 0 && !cur.every(designFixedName);
   if (fork) pre = nextDigitPrefix();
   const names = await genGlyphImages(
     spec.map((g) => ({ tag: g.tag, char: g.char, name: (fork || !g.name) ? `${pre}_${g.tag}.png` : g.name })),
@@ -2229,6 +2356,67 @@ function withFocusKept(fn) {
     if (pos != null && next.setSelectionRange) next.setSelectionRange(pos, pos);
   }
 }
+// ------------------------------------------------- names & language rows ----
+// Weekday / month names are baked into images, so the layer picks the wording,
+// the casing and — if it differs from the project — the language.
+function labelRows(add, e, kind) {
+  add('Names', ctlSelect(e.labelForm || 'short', LABEL_FORMS, (v) => { e.labelForm = v; relabelGlyphs(e); }),
+    kind === 'week'
+      ? 'Mon, Monday or M — written in the language below and rasterised as images'
+      : 'Jan, January or J — written in the language below and rasterised as images');
+  add('Case', ctlSelect(labelCaseOf(e), LABEL_CASES, (v) => { e.labelCase = v; relabelGlyphs(e); }),
+    'UPPERCASE (the default), the language’s own casing, Capitalize or lowercase');
+  add('Language', langInput(e), `Empty uses the project language (${projectLanguage()})`);
+}
+function langInput(e) {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.value = e.language || '';
+  inp.placeholder = projectLanguage();
+  inp.title = 'BCP-47 tag for this layer only, e.g. ro-RO or de-DE';
+  inp.onchange = () => {
+    const v = inp.value.trim();
+    if (v && !localeKnown(v)) { status(`“${v}” is not a language tag this browser knows.`, true); inp.value = e.language || ''; return; }
+    pushHistory(); e.language = v;
+    relabelGlyphs(e); refreshPanels(); render(); scheduleCode();
+  };
+  return inp;
+}
+// names are baked into images: a set the designer drew is redrawn right away, an
+// imported one waits for “Re-render” so nobody loses their artwork by accident
+function relabelGlyphs(e) {
+  if (!glyphSpecForLayer(e)) { status('Names apply to a generated weekday or month set.', true); return; }
+  const first = (e.images || [])[0] || '';
+  if (WEEK_FILE_RE.test(first) || MONTH_FILE_RE.test(first)) scheduleGlyphGen([e]);
+  else status('The images take the new names on the next “Re-render” — until then the layer keeps its own pictures.');
+}
+function rememberGlyphStyle(e, size) {
+  e.glyph = {
+    font: glyphFont, size, color: glyphOpts.color,
+    weight: glyphOpts.weight, variations: glyphOpts.variations, fill: 'solid',
+  };
+}
+// Month names are their own 12-image set (the widget has no "month name" array to
+// fill with digits), so switching the mode on draws one straight away.
+function characterCheck(e) {
+  const inp = document.createElement('input');
+  inp.type = 'checkbox';
+  inp.checked = !!e.isCharacter;
+  inp.title = 'Month name instead of digits';
+  inp.onchange = async () => {
+    pushHistory();
+    e.isCharacter = !!inp.checked;
+    if (e.isCharacter) {
+      e.part = 'month';
+      if (!(e.images || []).length) {
+        try { e.images = await genMonthSet(e); rememberGlyphStyle(e, 40); }
+        catch (err) { status('Could not generate the month names: ' + (err.message || err), true); }
+      }
+    }
+    refreshPanels(); render(); scheduleCode();
+  };
+  return inp;
+}
 function glyphStyleRows(frag, add, e) {
   const spec = glyphSpecForLayer(e);
   const files = glyphLayerFiles(e);
@@ -2237,6 +2425,9 @@ function glyphStyleRows(frag, add, e) {
   // font); kinds that only draw imported sets cannot
   const canSymbol = e.kind === 'IMG';
   const sym = canSymbol ? layerSymbol(e) : null;
+  // the widget's own parameters say what the images are, so a set that came from
+  // another watchface is editable — but the style rows will redraw it
+  const imported = !!spec && importedGlyphSet(e);
   if (!spec && !canSymbol) {
     frag.appendChild(propNote(files.length
       ? `This layer's ${files.length} images were imported (or picked by hand), so the designer leaves them alone — their size and colour are in the pictures themselves.`
@@ -2325,13 +2516,15 @@ function glyphStyleRows(frag, add, e) {
     }));
   }
   // what the images actually are, and what a change will do to them
-  if (canSymbol && sym) {
+  if (imported) {
+    frag.appendChild(propNote(`These ${files.length} images are the ones this layer came with${meta ? ` (${meta.width}×${meta.height} px)` : ''}. The rows above redraw them from the chosen font and style — the pictures the layer has now are replaced.`));
+  } else if (canSymbol && sym) {
     frag.appendChild(propNote(`Draws “${sym.char}” with ${st.font} ${st.size}px — the image${files.length ? ` (${meta ? `${meta.width}×${meta.height}` : '?'})` : ''} is rasterised from that font, into ${sym.name || 'a file of its own'}, and re-rendered whenever the style changes.`));
   } else if (canSymbol) {
     frag.appendChild(propNote('This is a regular image layer. Fill in Symbol to rasterise the image from a font instead — it gets a file of its own and becomes this layer\'s image.'));
   }
   const count = `${spec ? spec.length : 0} image${!spec || spec.length === 1 ? '' : 's'}`;
-  frag.appendChild(propNote(files.length
+  if (!imported) frag.appendChild(propNote(files.length
     ? `The watch draws ${count}${meta ? ` (${meta.width}×${meta.height} px)` : ''}, not text: size, colour, fill, bold and italic are baked into the PNGs and re-rendered here.`
     : `No images yet — ${count} are rasterised from this style, and re-rendered whenever it changes.`));
   const attached = attachedSepGlyphs(e);
@@ -2474,7 +2667,9 @@ function propsKind(e) {
       glyphStyleRows(frag, add, e);
       break;
     case 'IMG_ANIM':
-      add('Frames', ctlButton(`${(e.frames || []).length} frame${(e.frames || []).length === 1 ? '' : 's'}…`, 'Import a frame sequence', () => openAnimFrames(e)));
+      // one row: a run of PNGs, or an animated GIF/WebP that is split for you
+      add('Frames', ctlButton(`${(e.frames || []).length} frame${(e.frames || []).length === 1 ? '' : 's'}…`,
+        'Pick several PNGs to use as frames — or pick an animated GIF / WebP and it is split into one PNG per frame, with the frame rate taken from the file', () => pickAnimFrames(e)));
       add('FPS', ctlNum(e, 'fps', { min: 1, max: 60 }));
       add('Repeat', ctlNum(e, 'repeat', { min: 0 }), '0 = forever');
       add('Step', ctlNum(e, 'step', { min: 1 }));
@@ -2543,20 +2738,26 @@ function propsKind(e) {
       glyphStyleRows(frag, add, e);
       break;
     case 'IMG_DATE':
-      add('Part', ctlSelect(e.part || 'day', [{ value: 'day', label: 'Day' }, { value: 'month', label: 'Month' }], (v) => { e.part = v; }));
+      add('Part', ctlSelect(e.part || 'day', [{ value: 'day', label: 'Day' }, { value: 'month', label: 'Month' }], (v) => {
+        e.part = v;
+        if (v !== 'month') e.isCharacter = false;   // only months have names
+      }));
       add('Leading 0', ctlCheck(e, 'zero'));
       if (!followSource(e)) add('Space', ctlNum(e, 'space'));
       add('Follow', ctlCheck(e, 'follow'),
         'Follow the previous date part (month → day, the spec\'s 12/04 order): the watch draws this value directly after it, with its spacing and alignment');
-      add('Character', ctlCheck(e, 'isCharacter', 'Month name instead of digits'));
+      add('Character', characterCheck(e), 'Month name instead of digits');
+      if (e.isCharacter) labelRows(add, e, 'month');
       if (!followSource(e)) add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
         'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it');
-      add('Digits', ctlButton(`${(e.images || []).length}…`, 'Edit the digit set', () => openImageSet(e)));
+      add(e.isCharacter ? 'Months' : 'Digits',
+        ctlButton(`${(e.images || []).length}…`, e.isCharacter ? 'Edit the 12 month-name images' : 'Edit the digit set', () => openImageSet(e)));
       frag.appendChild(propNote(digitPreviewNote(e)));
       glyphStyleRows(frag, add, e);
       break;
     case 'IMG_WEEK':
       add('Weekdays', ctlButton(`${(e.images || []).length}…`, 'Edit the 7 weekday images', () => openImageSet(e)));
+      labelRows(add, e, 'week');
       glyphStyleRows(frag, add, e);
       break;
     case 'TEXT_IMG':
@@ -2807,6 +3008,9 @@ function renderProjectPanel() {
   $('inpDesc').value = project.description || '';
   $('inpAppId').value = project.appId || '';
   $('projDevice').value = project.device;
+  $('projLang').value = project.language || '';
+  $('projLang').placeholder = 'en-US';
+  $('projLang').title = languageSample();
   const d = dev();
   $('screenInfo').textContent = `${d.w}×${d.h} px · designWidth ${d.designWidth} · ${d.shape === 'r' ? 'round' : d.shape === 's' ? 'square' : 'band'}`;
   $('targetInfo').textContent = `Zeus target ${d.target} · assets/${d.assetDir} · Zepp OS ${d.api}+`;
@@ -3044,19 +3248,19 @@ async function addElement(kindId, patch = {}) {
 async function attachDigitSet(e) {
   try {
     if (e.kind === 'IMG_WEEK') {
-      e.images = await genGlyphImages(WEEK_CHARS.map((l, i) => ({ tag: `w${i + 1}`, char: l })),
-        { prefix: 'week', mono: false, size: 40 });
+      e.images = await genWeekSet(e);
+      rememberGlyphStyle(e, 40);
+    } else if (e.kind === 'IMG_DATE' && e.isCharacter) {
+      e.images = await genMonthSet(e);
+      rememberGlyphStyle(e, 40);
     } else {
       const prefix = nextDigitPrefix();
       const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c })), { prefix });
       if (e.kind === 'IMG_LEVEL' || e.kind === 'IMG_PROGRESS') e.images = names.slice(0, 10);
       else e.images = names;
+      // remember what the set was drawn with, so Properties shows the real values
+      rememberGlyphStyle(e, +glyphOpts.size);
     }
-    // remember what the set was drawn with, so Properties shows the real values
-    e.glyph = {
-      font: glyphFont, size: e.kind === 'IMG_WEEK' ? 40 : +glyphOpts.size,
-      color: glyphOpts.color, weight: glyphOpts.weight, variations: glyphOpts.variations, fill: 'solid',
-    };
   } catch (err) {
     status('Could not generate a digit set: ' + (err.message || err), true);
   }
@@ -3098,8 +3302,13 @@ $('btnPresets').onclick = (e) => { e.stopPropagation(); togglePresets(); };
 $('btnGlyphs').onclick = (e) => { e.stopPropagation(); toggleGlyphs(); };
 
 // glyph helpers ------------------------------------------------------------
-async function genWeekSet() {
-  return genGlyphImages(WEEK_CHARS.map((l, i) => ({ tag: `w${i + 1}`, char: l })), { prefix: 'week', mono: false, size: 40 });
+async function genWeekSet(e) {
+  const names = weekNames(e).map((l, i) => ({ tag: `w${i + 1}`, char: l, name: `week_w${i + 1}.png` }));
+  return genGlyphImages(names, { prefix: 'week', mono: false, size: 40, replace: true });
+}
+async function genMonthSet(e) {
+  const names = monthNames(e).map((l, i) => ({ tag: `m${i + 1}`, char: l, name: `month_m${i + 1}.png` }));
+  return genGlyphImages(names, { prefix: 'month', mono: false, size: 40, replace: true });
 }
 // The height of a layer's digit cell. A separator (the colon, the degree sign)
 // is rasterised at that height so it keeps its proportions when the digits are
@@ -3192,13 +3401,35 @@ function buildGlyphsMenu() {
   glyphMenuItem(m, 'Font library & glyphs…', `${BUNDLED_FONTS.length} bundled · ${customFonts.length} imported`, async () => {
     openFontModal();
   });
-  glyphMenuItem(m, 'Digit set 0-9', `from ${glyphFont}`, async () => {
-    const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c })), { prefix: nextDigitPrefix() });
-    status(`Generated ${names.length} digit images from ${glyphFont}.`);
-    refreshPanels();
+  glyphMenuItem(m, 'Digit set 0-9', `the selected layer, else a loose set`, async () => {
+    const t = selection().find((x) => x.kind === 'IMG_TIME' || x.kind === 'TEXT_IMG' || x.kind === 'IMG_DATE' || x.kind === 'IMG_LEVEL' || x.kind === 'IMG_PROGRESS');
+    const prefix = nextDigitPrefix();
+    const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c, name: `${prefix}_${i}.png` })),
+      { prefix, replace: true });
+    if (t) {
+      pushHistory();
+      t.images = names.slice(0, 10);
+      rememberGlyphStyle(t, +glyphOpts.size);
+      selectedId = t.id; multiSel = new Set([t.id]);
+      status(`Generated the 0-9 set of “${t.name}” from ${glyphFont}.`);
+    } else {
+      status(`Generated ${names.length} loose digit images from ${glyphFont} — pick them under a layer's Images.`);
+    }
+    refreshPanels(); render(); scheduleCode();
   });
-  glyphMenuItem(m, 'Weekday set (MON-SUN)', '7 images', async () => {
-    await genWeekSet(); status('Generated the 7 weekday images.'); refreshPanels();
+  glyphMenuItem(m, 'Weekday set', 'the selected layer, else a loose set', async () => {
+    const t = selection().find((x) => x.kind === 'IMG_WEEK');
+    const names = await genWeekSet(t || null);
+    if (t) {
+      pushHistory();
+      t.images = names;
+      rememberGlyphStyle(t, 40);
+      selectedId = t.id; multiSel = new Set([t.id]);
+      status(`Generated “${t.name}”'s ${names.length} weekday images (${languageOf(t)}).`);
+    } else {
+      status(`Generated the ${names.length} loose weekday images (${projectLanguage()}).`);
+    }
+    refreshPanels(); render(); scheduleCode();
   });
   glyphMenuItem(m, 'Separators (: . % - ° /)', 'one image each', async () => {
     const entries = [['colon', ':'], ['dot', '.'], ['percent', '%'], ['negative', '-'], ['degree', '°'], ['slash', '/']];
@@ -3461,8 +3692,13 @@ function openImageSet(e) {
   const k = kindById(e.kind);
   $('ismTitle').textContent = `${k ? k.label : e.kind} · ${field}`;
   $('ismSub').textContent = e.kind === 'IMG_WEEK'
-    ? 'Seven images, index 0 = Monday (the watch picks one per weekday)'
+    ? `Seven images, index 0 = Monday (the watch picks one per weekday) · ${languageOf(e)}`
     : 'Drag the handle to reorder · index 0 is the first frame (digit 0, weather icon 0 …)';
+  // the generator buttons belong to the layer this dialog was opened from
+  const months = e.kind === 'IMG_DATE' && !!e.isCharacter;
+  $('ismGenDigits').textContent = months ? 'Month names' : 'Digits 0-9';
+  $('ismGenDigits').hidden = e.kind === 'IMG_WEEK';
+  $('ismGenWeek').hidden = e.kind !== 'IMG_WEEK';
   const hint = setHint(e.kind, { ...e, images: ismState.entries });
   $('ismHint').hidden = !hint;
   $('ismHint').textContent = hint || '';
@@ -3551,12 +3787,19 @@ $('ismUploadFile').onchange = async (ev) => {
 };
 $('ismGenDigits').onclick = async () => {
   try {
-    const prefix = nextDigitPrefix();
-    const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c })), { prefix });
-    ismState.entries = names;
+    const e = ismState.e;
+    if (e.kind === 'IMG_DATE' && e.isCharacter) {
+      ismState.entries = await genMonthSet(e);
+      status(`Generated the 12 month names in ${languageOf(e)} ${e.labelForm || 'short'} form.`);
+    } else {
+      const prefix = nextDigitPrefix();
+      const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c, name: `${prefix}_${i}.png` })),
+        { prefix, replace: true });
+      ismState.entries = names;
+      status(`Generated a 0-9 set from ${glyphFont} (${prefix}).`);
+    }
     ismRender(); refreshIsmPick(); refreshPanels();
-    status(`Generated a 0-9 set from ${glyphFont} (${prefix}).`);
-  } catch (e) { status(String(e.message || e), true); }
+  } catch (err) { status(String(err.message || err), true); }
 };
 $('ismGenWeather').onclick = () => {
   const names = weatherNamesIfAny();
@@ -3564,10 +3807,14 @@ $('ismGenWeather').onclick = () => {
   ismState.entries = names; ismRender();
 };
 $('ismGenWeek').onclick = async () => {
+  const e = ismState.e;
   const names = project.images.filter((i) => /^week_w\d/.test(i.name)).map((i) => i.name);
-  if (names.length === 7) { ismState.entries = names; ismRender(); return; }
-  try { ismState.entries = await genWeekSet(); ismRender(); refreshIsmPick(); refreshPanels(); }
-  catch (e) { status(String(e.message || e), true); }
+  if (names.length === 7 && names.every((n) => WEEK_FILE_RE.test(n))) { ismState.entries = names; ismRender(); return; }
+  try {
+    ismState.entries = await genWeekSet(e);
+    ismRender(); refreshIsmPick(); refreshPanels();
+    status(`Generated the 7 weekday names in ${languageOf(e)} ${e.labelForm || 'short'} form.`);
+  } catch (err) { status(String(err.message || err), true); }
 };
 $('ismCancel').onclick = () => { $('imgSetModal').hidden = true; ismState = null; };
 $('ismSave').onclick = () => {
@@ -3578,26 +3825,95 @@ $('ismSave').onclick = () => {
   ismState = null;
   refreshPanels(); render(); scheduleCode();
 };
-async function openAnimFrames(e) {
-  const imgs = await API.pickImages();
-  if (!imgs || !imgs.length) return;
-  pushHistory();
-  const prefix = (e.name || 'anim').toLowerCase().replace(/[^\w]+/g, '_');
-  const frames = [];
-  let i = 0;
-  for (const item of imgs) {
-    const url = 'data:image/png;base64,' + item.dataBase64;
-    const img = await loadImgEl(url);
-    if (!img) continue;
-    frames.push(`anim/${prefix}_${i}.png`);
-    const canvas = composeFit(img, 'asis', 0.5, 0.5, dev().w, dev().h);
-    addProjectImage(`anim/${prefix}_${i}.png`, canvas, { replace: false });
-    i++;
+// ---------------------------------------------- frame sequences / GIF split --
+// One row in Properties: a run of PNGs becomes the frame list, and an animated
+// GIF (or WebP) is split into one PNG per frame with the browser's own decoder,
+// so the frame rate comes from the file's own delays. A still picture — even one
+// saved as .gif — is simply a single frame.
+let framesTarget = null;
+function pickAnimFrames(e) {
+  framesTarget = e;
+  $('framesInput').click();
+}
+$('framesInput').onchange = async (ev) => {
+  const files = [...(ev.target.files || [])];
+  ev.target.value = '';
+  const e = framesTarget;
+  framesTarget = null;
+  if (!files.length || !e) return;
+  try {
+    const one = files.length === 1 ? files[0] : null;
+    const animated = !!one && (/^image\/(gif|webp|avif)/i.test(one.type || '') || /\.(gif|webp|avif)$/i.test(one.name || ''));
+    // an animated file splits itself; anything else is used as-is
+    if (!(animated && await splitGifInto(e, one))) await addFrameFiles(e, files);
+  } catch (err) { status('Could not import those frames: ' + (err.message || err), true); }
+};
+function animPrefixForLayer(e) {
+  return (e.animPrefix || String(e.name || 'anim')).toLowerCase().replace(/[^\w]+/g, '_') || 'anim';
+}
+// returns the number of frames it split out, 0 when the file holds a single one
+async function splitGifInto(e, file) {
+  if (typeof ImageDecoder === 'undefined') throw new Error('this build cannot decode animations');
+  const data = new Uint8Array(await file.arrayBuffer());
+  const dec = new ImageDecoder({ data, type: file.type || 'image/gif' });
+  await dec.tracks.ready;
+  const track = dec.tracks.selectedTrack;
+  const count = track ? track.frameCount : 0;
+  if (!count || count < 2) {
+    if (dec.close) dec.close();
+    return 0;                       // not an animation: the caller adds it as one frame
   }
+  pushHistory();
+  const prefix = animPrefixForLayer(e);
+  // frames this layer had before: those names are its own, so replace them in place
+  const prev = new Set(e.frames || []);
+  const frames = [];
+  let total = 0;
+  for (let i = 0; i < count; i++) {
+    const { image } = await dec.decode({ frameIndex: i });
+    total += +image.duration || 0;
+    const c = document.createElement('canvas');
+    c.width = image.displayWidth; c.height = image.displayHeight;
+    c.getContext('2d').drawImage(image, 0, 0);
+    if (image.close) image.close();
+    const name = `anim/${prefix}_${i}.png`;
+    frames.push(addProjectImage(name, c, { replace: prev.has(name) }).name);
+  }
+  if (dec.close) dec.close();
   await loadAllImages();
   e.animPrefix = prefix;
   e.frames = frames;
+  const ms = total / count / 1000;
+  if (ms > 0) e.fps = Math.max(1, Math.min(60, Math.round(1000 / ms)));
+  selectedId = e.id;
   refreshPanels(); render(); scheduleCode();
+  status(`Split ${file.name} into ${frames.length} frames · ${e.fps || 30} fps from the file's delays.`);
+  return frames.length;
+}
+async function addFrameFiles(e, files) {
+  const prefix = animPrefixForLayer(e);
+  const canvases = [];
+  for (const f of files) {
+    if (!/^image\//i.test(f.type || '')) continue;
+    const url = URL.createObjectURL(f);
+    const img = await loadImgEl(url);
+    URL.revokeObjectURL(url);
+    if (!img) continue;
+    canvases.push(composeFit(img, 'asis', 0.5, 0.5, dev().w, dev().h));
+  }
+  if (!canvases.length) { status('Those files are not images the designer can read.', true); return; }
+  pushHistory();
+  const prev = new Set(e.frames || []);
+  const frames = canvases.map((c, i) => {
+    const name = `anim/${prefix}_${i}.png`;
+    return addProjectImage(name, c, { replace: prev.has(name) }).name;
+  });
+  await loadAllImages();
+  e.animPrefix = prefix;
+  e.frames = frames;
+  selectedId = e.id;
+  refreshPanels(); render(); scheduleCode();
+  status(`“${e.name}” now has ${frames.length} frame${frames.length === 1 ? '' : 's'}.`);
 }
 
 // --------------------------------------------------------- import / fit dialog --
@@ -3970,6 +4286,7 @@ function freshProject(name, target) {
     vender: 'watchface-designer',
     description: '',
     font: glyphFont,
+    language: 'en-US',
     fonts: [],
     groups: {},
     elements: [],
@@ -4088,6 +4405,38 @@ $('btnCloseProject').onclick = () => {
 $('inpName').oninput = (ev) => { if (!project) return; project.name = ev.target.value; dirty = true; $('watchTitle').textContent = project.name || 'Watchface'; scheduleCode(); };
 $('inpDesc').oninput = (ev) => { if (!project) return; project.description = ev.target.value; dirty = true; scheduleCode(); };
 $('inpAppId').oninput = (ev) => { if (!project) return; project.appId = +ev.target.value || 0; dirty = true; scheduleCode(); };
+// The language decides how weekday and month names are written when a glyph set
+// is generated (Intl, so every locale the browser knows works — no table here).
+$('projLang').onchange = (ev) => {
+  if (!project) return;
+  const v = ev.target.value.trim();
+  if (v && !localeKnown(v)) {
+    status(`“${v}” is not a language tag this browser knows (try ro-RO, de-DE, ja-JP…).`, true);
+    ev.target.value = project.language || '';
+    return;
+  }
+  pushHistory();
+  project.language = v || 'en-US';
+  dirty = true;
+  refreshPanels();
+  status(`Project language: ${projectLanguage()} — ${languageSample()}. Existing sets keep their images until they are re-rendered.`);
+};
+function languageSample() {
+  const w = localeNames('week', projectLanguage(), 'short');
+  const m = localeNames('month', projectLanguage(), 'short');
+  return `Mon → ${w[0]}, January → ${m[0]}, Sunday → ${localeNames('week', projectLanguage(), 'long')[6]}`;
+}
+function buildLangSuggest() {
+  const list = $('langSuggest');
+  if (!list) return;
+  list.innerHTML = '';
+  for (const tag of LANGUAGE_SUGGESTIONS) {
+    const o = document.createElement('option');
+    o.value = tag;
+    list.appendChild(o);
+  }
+}
+buildLangSuggest();
 $('projFont').onchange = (ev) => { glyphFont = ev.target.value; if (project) { project.font = glyphFont; scheduleCode(); buildGlyphsMenu(); } };
 $('projDevice').onchange = (ev) => {
   if (!project || ev.target.value === project.device) return;
@@ -4125,6 +4474,18 @@ async function loadProject(res) {
   resetTestData();
   await loadAllImages();
   setEmptyState(); refreshPanels(); render(); scheduleCode();
+  if (res.imported) {
+    // An imported Zeus CLI / Watchface Maker folder keeps its source untouched:
+    // no save path, so Save asks where to put the designer project.
+    dirty = true;
+    const src = res.source || '';
+    $('watchTitle').textContent = project.name || 'Watchface';
+    status(`Imported “${project.name}” — ${project.elements.length} layers, ${project.images.length} images.`);
+    openLogModal(`Imported “${project.name}”`, src,
+      `${dev().name} · the source folder was not changed`);
+    appendLog((res.report || []).join('\n'));
+    return;
+  }
   status(`Opened “${project.name}” (${project.elements.length} layers, ${project.images.length} images).`);
 }
 $('btnOpen').onclick = async () => {
@@ -4133,6 +4494,21 @@ $('btnOpen').onclick = async () => {
   if (res.error) { status(res.error, true); return; }
   await loadProject(res);
 };
+// Import… is the same door with an import-shaped dialog; Open already accepts a
+// watchface folder, this just makes the feature findable.
+async function importFaceDialog() {
+  const res = await API.openProjectDialog({
+    title: 'Import a watchface folder',
+    buttonLabel: 'Import',
+    message: 'Pick a Zepp OS watchface project folder (app.json + watchface/ + assets/)',
+    force: true,
+  });
+  if (!res) return;
+  if (res.error) { status(res.error, true); return; }
+  await loadProject(res);
+}
+if ($('btnImport')) $('btnImport').onclick = importFaceDialog;
+if ($('btnEmptyImport')) $('btnEmptyImport').onclick = importFaceDialog;
 async function doSave() {
   if (!project) return;
   const payload = {
@@ -4184,9 +4560,13 @@ async function renderRecents() {
     };
     d.appendChild(open);
     if (r.exists) d.onclick = () => open.onclick(new Event('click'));
+    // a folder that was moved or deleted stays listed: say what is wrong instead
+    // of leaving a dead row behind
+    else d.onclick = () => status(`That project folder is gone: ${r.path}`, true);
     list.appendChild(d);
   }
 }
+$('recentClear').onclick = async () => { await API.recentClear(); renderRecents(); };
 
 // ------------------------------------------------------------------- export --
 let lastLogPath = null;
@@ -4399,13 +4779,110 @@ document.querySelectorAll('[data-panel-head]').forEach((head) => {
 
 // ------------------------------------------------------------ font library --
 let fontSelFamily = null;
-
+// The layers the font modal generates for: the selection, when it can carry
+// glyphs. Generation is per component — a digit set belongs to the layer it was
+// drawn for, never to the project as a whole.
+function glyphTargets() {
+  return selection().filter((e) => e.kind === 'IMG' || isGlyphLayer(e));
+}
+function updateFontTarget() {
+  const el = $('fontTarget');
+  if (!el) return;
+  const targets = glyphTargets();
+  el.className = 'row small';
+  if (!targets.length) {
+    el.textContent = 'Select a layer first — glyphs are generated for the selected component.';
+    return;
+  }
+  const first = targets[0];
+  const k = kindById(first.kind);
+  const label = targets.length === 1
+    ? `“${first.name}” (${k ? k.label : first.kind})`
+    : `${targets.length} selected layers`;
+  const names = first.kind === 'IMG_WEEK'
+    ? ` · names ${(first.labelForm || 'short')}, case ${labelCaseOf(first)}, language ${languageOf(first)}`
+    : (first.kind === 'IMG_DATE' && first.isCharacter ? ` · month names in ${languageOf(first)}` : '');
+  el.textContent = `Generating for ${label}${names}.`;
+}
+// weekday / month wording lives on the layer, so the modal offers it too, and the
+// generator button says what it will draw for this particular component
+function syncFontTargetRows() {
+  if (!$('fontNames')) return;
+  const targets = glyphTargets();
+  const t = targets[0];
+  const isWeek = !!t && t.kind === 'IMG_WEEK';
+  const isMonth = !!t && t.kind === 'IMG_DATE' && t.isCharacter;
+  const labeling = isWeek || isMonth;
+  // .row is a grid, so the `hidden` attribute cannot do this
+  $('fontNamesRow').style.display = labeling ? '' : 'none';
+  $('fontCaseRow').style.display = labeling ? '' : 'none';
+  $('fontGenWeek').style.display = isWeek ? '' : 'none';
+  $('fontGenSet').style.display = isWeek ? 'none' : '';
+  const setBtn = $('fontGenSet');
+  if (isMonth) { setBtn.textContent = 'Month names'; setBtn.title = 'Rasterize the 12 month names in the wording above'; }
+  else if (t && DIGIT_SET_KINDS.has(t.kind)) { setBtn.textContent = 'Digits 0-9'; setBtn.title = "Rasterize this set's 0-9 images from the typeface above"; }
+  else if (t) { setBtn.textContent = 'Redraw images'; setBtn.title = "Rasterize this layer's images (symbols, separators) from the typeface above"; }
+  else { setBtn.textContent = 'Digits 0-9'; setBtn.title = 'Select a layer first'; }
+  if (!labeling) return;
+  $('fontNames').value = t.labelForm || 'short';
+  $('fontCase').value = labelCaseOf(t);
+}
+function applyTargetLabels(patch) {
+  const targets = glyphTargets().filter((t) => t.kind === 'IMG_WEEK' || (t.kind === 'IMG_DATE' && t.isCharacter));
+  if (!targets.length) return;
+  pushHistory();
+  for (const t of targets) Object.assign(t, patch);
+  const first = (targets[0].images || [])[0] || '';
+  updateFontTarget();
+  refreshPanels(); render(); scheduleCode();
+  if (WEEK_FILE_RE.test(first) || MONTH_FILE_RE.test(first)) {
+    rerenderGlyphLayers(targets, { quiet: true }).then((n) => {
+      updateFontTarget(); refreshPanels(); render();
+      status(`Redrew ${n} layer${n === 1 ? '' : 's'} with the new names (${labelCaseOf(targets[0]) || 'as generated'}).`);
+    });
+  } else {
+    status('These images are kept until you press “Weekdays” — then they are drawn with the new names.');
+  }
+}
 function openFontModal() {
   $('fontModal').hidden = false;
+  const targets = glyphTargets();
+  const first = targets[0];
+  // seed the form with the component's own glyph style, so pressing a generator
+  // button reproduces what the layer already looks like
+  if (first) {
+    const st = glyphStyle(first);
+    $('fontSize').value = String(st.size);
+    $('fontColor').value = st.color;
+    if (fontWeightOption(st.weight)) $('fontWeight').value = String(st.weight);
+    $('fontVariation').value = st.variations || '';
+    if (fontFamilies().includes(st.font)) fontSelFamily = st.font;
+  }
   fontSelFamily = (fontSelFamily && fontFamilies().includes(fontSelFamily)) ? fontSelFamily : glyphFont;
   buildFontList();
   renderFontPreview();
+  updateFontTarget();
+  syncFontTargetRows();
 }
+function fontWeightOption(w) {
+  const sel = $('fontWeight');
+  return [...sel.options].some((o) => +o.value === +w);
+}
+function buildFontTargetSelects() {
+  const fill = (id, options) => {
+    const sel = $(id);
+    if (!sel) return;
+    sel.innerHTML = '';
+    for (const o of options) {
+      const opt = document.createElement('option');
+      opt.value = o.value; opt.textContent = o.label;
+      sel.appendChild(opt);
+    }
+  };
+  fill('fontNames', LABEL_FORMS);
+  fill('fontCase', LABEL_CASES);
+}
+buildFontTargetSelects();
 function buildFontList() {
   const wrap = $('fontList');
   wrap.innerHTML = '';
@@ -4524,37 +5001,57 @@ $('fontRemove').onclick = () => {
   fillFontSelect($('projFont'));
   buildFontList(); renderFontPreview(); refreshPanels(); render(); scheduleCode();
 };
-$('fontUseGlyph').onclick = () => { useGlyphFont(fontSelFamily); status(`Glyphs now come from ${glyphFont}.`); };
+$('fontUseGlyph').onclick = async () => {
+  const targets = glyphTargets();
+  if (targets.length) {
+    // per component: the selected layers draw their glyphs with this typeface
+    pushHistory();
+    for (const t of targets) t.glyph = { ...(t.glyph || {}), font: fontSelFamily };
+    const done = await rerenderGlyphLayers(targets, { quiet: true });
+    updateFontTarget(); refreshPanels(); render(); scheduleCode();
+    status(done ? `“${targets[0].name}” now draws its glyphs with ${fontSelFamily}.` : `${fontSelFamily} is set for ${targets.length} layer(s).`,
+      !done);
+    return;
+  }
+  useGlyphFont(fontSelFamily);
+  status(`Glyphs now come from ${glyphFont}.`);
+};
 for (const id of ['fontSize', 'fontColor', 'fontWeight', 'fontVariation']) {
-  // remember the settings so the Glyphs menu quick actions reuse them
+  // remember the settings so the loose-set actions reuse them
   $(id).oninput = () => { glyphOpts = fontForm(); renderFontPreview(); };
   $(id).onchange = () => { glyphOpts = fontForm(); renderFontPreview(); };
 }
+$('fontNames').onchange = () => applyTargetLabels({ labelForm: $('fontNames').value });
+$('fontCase').onchange = () => applyTargetLabels({ labelCase: $('fontCase').value });
 async function fontGen(what) {
   if (!fontSelFamily) return;
-  useGlyphFont(fontSelFamily);
   const o = fontForm();
-  const opts = { family: fontSelFamily, size: o.size, color: o.color, weight: o.weight, variations: o.variations };
+  // Analog hands and the dial are project artwork that a pointer links by name,
+  // so they stay project-wide. Everything else is drawn for the component.
+  if (what === 'hands') { await ensureHands(); status('Generated hour/minute/second hand images.'); refreshPanels(); render(); return; }
+  if (what === 'dial') { await ensureDial(); status('Generated dial.png.'); refreshPanels(); render(); return; }
+  const targets = glyphTargets();
+  if (!targets.length) {
+    status('Select a layer first — glyphs are generated for the selected component.', true);
+    return;
+  }
+  pushHistory();
+  for (const t of targets) {
+    // keep whatever else the layer's glyph style carries (outline, gradient …)
+    t.glyph = { ...(t.glyph || {}), font: fontSelFamily, size: o.size, color: o.color, weight: o.weight, variations: o.variations };
+    if (t.kind === 'IMG_WEEK' && !t.labelForm) t.labelForm = 'short';
+  }
   try {
-    if (what === 'digits') {
-      const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c })), { ...opts, prefix: nextDigitPrefix() });
-      status(`Generated ${names.length} digit images from ${fontSelFamily}.`);
-    } else if (what === 'week') {
-      await genWeekSet(); status('Generated the 7 weekday images.');
-    } else if (what === 'sep') {
-      for (const [tag, ch] of [['colon', ':'], ['dot', '.'], ['percent', '%'], ['negative', '-'], ['degree', '°'], ['slash', '/']]) await genUnit(tag, ch);
-      status('Generated the separator images.');
-    } else if (what === 'hands') {
-      await ensureHands(); status('Generated hour/minute/second hand images.');
-    } else if (what === 'dial') {
-      await ensureDial(); status('Generated dial.png.');
-    }
+    const done = await rerenderGlyphLayers(targets, { quiet: true });
+    updateFontTarget(); syncFontTargetRows(); refreshPanels(); render(); scheduleCode();
+    const what2 = targets[0].kind === 'IMG_WEEK' ? 'weekday images' : (targets[0].kind === 'IMG_DATE' && targets[0].isCharacter) ? 'month names' : 'glyphs';
+    status(done
+      ? `Drew ${targets.length === 1 ? `“${targets[0].name}”'s` : `${targets.length} layers'`} ${what2} from ${fontSelFamily} at ${o.size}px.`
+      : 'Nothing to draw here — a layer needs a digit/weekday set, a separator or a Symbol before glyphs can be rasterised for it.', !done);
   } catch (e) { status(String(e.message || e), true); }
-  refreshPanels(); render();
 }
-$('fontGenDigits').onclick = () => fontGen('digits');
+$('fontGenSet').onclick = () => fontGen('set');
 $('fontGenWeek').onclick = () => fontGen('week');
-$('fontGenSep').onclick = () => fontGen('sep');
 $('fontGenHands').onclick = () => fontGen('hands');
 $('fontGenDial').onclick = () => fontGen('dial');
 
@@ -4818,12 +5315,19 @@ async function init() {
     if ($('installModal').hidden) return;
     instLogLine(`${req.method} ${req.url} → ${req.status} ${req.label || ''}${req.ip ? '  (' + String(req.ip).replace(/^::ffff:/, '') + ')' : ''}`);
   });
-  // animation preview: re-draw only when an animation is on the canvas
+  // Animation preview: the draw code reads animTick in 1/30 s units, so advance
+  // it from the wall clock and sample at ~30 Hz. (Sampling at 120 ms made a
+  // 30 fps animation look like ~8 fps, next to nothing like the export.)
+  let animClock = 0;
   setInterval(() => {
     if (exportRender || !project) return;
-    animTick++;
-    if (elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false)) render();
-  }, 120);
+    const now = performance.now();
+    const dt = animClock ? Math.min(0.5, (now - animClock) / 1000) : 0;
+    animClock = now;
+    if (!elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false)) return;
+    animTick += dt * 30;
+    render();
+  }, 33);
 }
 init().catch((e) => {
   document.body.innerHTML = `<pre style="padding:24px;color:#ffb4b4">Failed to start: ${e && e.message ? e.message : e}</pre>`;

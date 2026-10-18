@@ -13,7 +13,8 @@
   <button id="btnUndo" title="Undo (Ctrl+Z)" disabled class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
   <button id="btnRedo" title="Redo (Ctrl+Shift+Z)" disabled class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
   <span class="hsep"></span>
-  <button id="btnOpen" title="Open a saved .wfproj project folder" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15.5 12.5h5M18 10v5"/></svg>Open</button>
+  <button id="btnOpen" title="Open a saved project folder, or a Zepp OS watchface folder (app.json) to import" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15.5 12.5h5M18 10v5"/></svg>Open</button>
+  <button id="btnImport" title="Import an existing watchface: a Zeus CLI project folder or a Watchface Maker export (app.json + watchface/ + assets/)" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg>Import</button>
   <button id="btnSave" title="Save project (Ctrl+S)" disabled class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l3 3v15H5z"/><path d="M9 3v6h6V3M8 15h8v6H8z"/></svg>Save</button>
 
   <!-- add tools group -->
@@ -57,6 +58,7 @@
   </button>
 
   <input id="fileUpload" type="file" accept="image/*" multiple hidden />
+  <input id="framesInput" type="file" accept="image/*,.gif,.webp,.avif" multiple hidden />
 </header>
 
 <main class="grid gap-3 p-3 grid-cols-[300px_minmax(0,1fr)_320px] empty">
@@ -69,6 +71,8 @@
         <div class="row"><span class="lbl">Description</span><input id="inpDesc" type="text" placeholder="Short store description" /></div>
         <div class="row"><span class="lbl">App id</span><input id="inpAppId" type="number" min="1" max="9999999" /></div>
         <div class="row"><span class="lbl">Glyph font</span><select id="projFont"></select></div>
+        <div class="row"><span class="lbl">Language</span><input id="projLang" type="text" list="langSuggest" placeholder="en-US" /></div>
+        <datalist id="langSuggest"></datalist>
         <div class="row"><span class="lbl">Fonts</span><button id="btnFonts" class="row-btn" title="Import your own fonts, preview them and rasterize glyph sets">Font library &amp; glyphs…</button></div>
         <div class="row small" id="screenInfo"></div>
         <div class="row small" id="targetInfo"></div>
@@ -99,13 +103,14 @@
   <section class="center flex flex-col items-center justify-center gap-2.5 min-w-0">
     <div id="emptyState" class="empty-state" hidden>
       <h2>No watchface open</h2>
-      <p class="muted">Start a new watchface, open a saved project, or read the Zepp OS docs at <code>docs.zepp.com</code>.</p>
+      <p class="muted">Start a new watchface, open a saved project, or import an existing one (Zeus CLI / Watchface Maker folder with an <code>app.json</code>).</p>
       <div class="es-btns">
         <button id="btnEmptyNew" class="es-primary">New watchface</button>
         <button id="btnEmptyOpenProject">Open project</button>
+        <button id="btnEmptyImport">Import watchface…</button>
       </div>
       <div id="recentWrap" class="recent" hidden>
-        <div class="recent-head">Recent projects</div>
+        <div class="recent-head"><span>Recent projects</span><button id="recentClear" type="button">Clear</button></div>
         <div id="recentList"></div>
       </div>
     </div>
@@ -261,14 +266,16 @@
         </select></div>
         <div class="row"><span class="lbl">Variation</span><input id="fontVariation" type="text" placeholder="e.g. 'wght' 700, 'ELSH' 6" /></div>
         <div class="row small" id="fontInfo"></div>
+        <div class="row" id="fontNamesRow" style="display:none"><span class="lbl">Names</span><select id="fontNames"></select></div>
+        <div class="row" id="fontCaseRow" style="display:none"><span class="lbl">Case</span><select id="fontCase"></select></div>
         <div class="glyph-actions">
-          <button id="fontGenDigits" title="Rasterize 0-9 into font_&lt;n&gt;_0.png … font_&lt;n&gt;_9.png">Digits 0-9</button>
-          <button id="fontGenWeek" title="Rasterize week_w1.png … week_w7.png">Weekdays</button>
-          <button id="fontGenSep" title="colon, dot, percent, negative, degree, slash">Separators</button>
-          <button id="fontGenHands" title="hour_hand / minute_hand / second_hand">Analog hands</button>
-          <button id="fontGenDial" title="dial.png ticks and rim">Analog dial</button>
+          <button id="fontGenSet" title="Rasterize the selected component's images from the typeface above">Digits 0-9</button>
+          <button id="fontGenWeek" style="display:none" title="Rasterize this layer's 7 weekday images (Monday first)">Weekdays</button>
+          <button id="fontGenHands" title="hour_hand / minute_hand / second_hand (project artwork)">Analog hands</button>
+          <button id="fontGenDial" title="dial.png ticks and rim (project artwork)">Analog dial</button>
         </div>
-        <div class="muted small">Glyph images are rendered with these settings. The selected typeface is also used for the canvas preview of Text layers, and any font in this list can be attached to a Text layer so the watch itself draws with it.</div>
+        <div class="row small" id="fontTarget"></div>
+        <div class="muted small">Glyphs are generated <b>for the selected component</b>: the layer keeps its own set, drawn with the typeface and size above. Analog hands and the dial are project artwork, so they are generated once and any pointer links them.</div>
       </div>
     </div>
     <div class="modal-btns">

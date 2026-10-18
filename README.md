@@ -51,14 +51,14 @@ Other scripts:
 | `npm run css` | Build `styles.css` from `styles-src.css` (Tailwind v4) |
 | `npm run masks` | Regenerate `assets/masks/*.svg` + `masks.json` from `core/devices.js` |
 | `npm run sample` | Write `samples/sample-digital/` — a designer project **and** a Zeus project |
-| `npm run smoke` | End-to-end test: boots the app and drives it (new face → presets → code → save → export → fonts → **real `zeus build`** → LAN install → layout audit). `SMOKE_BUILD=0 npm run smoke` skips the CLI build |
+| `npm run smoke` | End-to-end test: boots the app and drives it (new face → presets → code → save → export → **import round trip** → fonts → **real `zeus build`** → LAN install → layout audit). `SMOKE_BUILD=0 npm run smoke` skips the CLI build |
 | `npm run dist` | Package the app with electron-builder (`--mac` / `--win` / `--linux`) |
 | `node tools/shot.js` | Development helper: drive the UI and write PNG screenshots (`SHOTS=… STEP=…`) |
 
 ## The editor
 
 ```
-┌ header ─ New · undo/redo · Open · Save · Add ▾ · Presets ▾ · Grid Mask Upload · Glyphs ▾ · Check · Export Zeus · Build .zab · Install ┐
+┌ header ─ New · undo/redo · Open · Import · Save · Add ▾ · Presets ▾ · Grid Mask Upload · Glyphs ▾ · Check · Export Zeus · Build .zab · Install ┐
 ├ Watchface / Layers / Project images ─┬ device canvas (normal · AOD · live clock) ─┬ Properties / Test data / Generated code ┤
 ```
 
@@ -134,13 +134,13 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | Designer kind | hmUI widget | Notes |
 | --- | --- | --- |
 | Image | `IMG` | optional rotation around a centre point |
-| Animation | `IMG_ANIM` | frame images + fps/repeat/step |
+| Animation | `IMG_ANIM` | frame images + fps/repeat/step; frames are exported to `images/anim/<prefix>_<i>.png`, the only name the widget can resolve. **Frames** in Properties takes a run of PNGs — or an animated GIF/WebP, which is split into one PNG per frame with the frame rate taken from the file's own delays (a still picture, even one saved as `.gif`, is just one frame); the preview plays the frames at `fps` (sampled every 1/30 s) |
 | Image level | `IMG_LEVEL` | one image per level (battery, weather …) |
 | Image progress | `IMG_PROGRESS` | segmented progress bar |
 | Image pointer | `IMG_POINTER` | pointer image rotated by a data value or angle |
 | Time (digit images) | `IMG_TIME` | hour / hour12 / minute / second |
-| Weekday images | `IMG_WEEK` | 7 images |
-| Date images | `IMG_DATE` | day / month |
+| Weekday images | `IMG_WEEK` | 7 images, with a **Names** row (Mon / Monday / M), **Case** and, per layer, the language |
+| Date images | `IMG_DATE` | day / month; the **Character** switch turns the month into its 12 names |
 | Analog clock | `TIME_POINTER` | hour + minute + second hands, optional cover |
 | Data reading | `TEXT_IMG` | digits + unit/separator images for any `data_type` |
 | Text | `TEXT` | multiline, size, alignment, live font, solid/gradient/outline fill, bold + italic |
@@ -167,6 +167,7 @@ naming conventions from the design specification, so exports stay reviewable:
 | Digits | `font_<set>_<0-9>.png` (e.g. `font_1_0.png`) |
 | Time digits | `time_<0-9>.png` / `hour_<0-9>.png` |
 | Weekdays | `week_w1.png` … `week_w7.png` (Monday = w1) |
+| Month names | `month_m1.png` … `month_m12.png` (January = m1) |
 | Separators | `colon.png`, `dot.png`, `percent.png`, `negative.png`, `degree.png`, `slash.png` |
 | Hands | `hour_hand.png`, `minute_hand.png`, `second_hand.png` |
 | Animation frames | `anim/<prefix>_<i>.png` |
@@ -175,11 +176,41 @@ naming conventions from the design specification, so exports stay reviewable:
 **Glyphs ▾** renders those images from one of the 33 bundled fonts
 (`assets/fonts/`, all OFL): digit sets 0-9, weekday sets, separators, and
 programmatic analog hands and a dial. Regenerating a set overwrites the same file
-names, so it is idempotent.
+names, so it is idempotent. Generation is **per component**:
+
+- **Font library & glyphs…** (or a layer's *Re-render*) draws for **the selected
+  layer**: its size, colour, weight and variation are filled in from that layer,
+  and the generator button says what it will draw — *Digits 0-9*, *Weekdays*,
+  *Month names* or *Redraw images* (separators, symbols) — so it redraws that
+  layer's own set only. *Use for glyphs* switches that layer's typeface. With
+  nothing selected the modal says so and refuses; analog hands and the dial are
+  the exception, they are project artwork that any pointer links by name.
+- **Glyphs ▾ → Digit set / Weekday set** draws the selected layer's set, or drops
+  a loose set into the project for the Images panel when nothing is selected.
 
 Once a layer has a set, its **size, colour, fill, bold and italic are edited in
 Properties** and the glyphs are rasterised again in place — see *Glyph size,
 colour and fill* below.
+
+### Language and names
+
+Weekday and month names are not hard-coded: the project has a **Language**
+(BCP-47 tag, e.g. `en-US`, `ro-RO`, `ja-JP`) and every name is asked of the
+browser's `Intl` data, so any language Electron ships works — no table, no
+library. A layer can override the project language in its own **Language** row,
+and weekday/month layers add:
+
+| Row | Values |
+| --- | --- |
+| Names | *Short* (`Mon`), *Full* (`Monday`), *Narrow* (`M`) |
+| Case | `UPPERCASE` (the default, as the designer has always drawn weekday sets), the language's own casing (`Mon`), `Capitalize` or `lowercase` |
+| Language | empty = the project language, or a tag for this layer alone |
+
+Names are baked into the PNGs, so they follow the images: a set the designer drew
+is redrawn right away when you change the wording, while a layer that came from
+another watchface keeps its pictures until you press **Re-render**. The font
+library has the same two rows when a weekday or month layer is selected, next to
+the generator buttons.
 
 **Upload** (or dropping files) opens the import dialog with three fits:
 
@@ -330,9 +361,14 @@ shares those files between layers:
   up to date.
 - **A blinking colon** is a frame list: the `…_off` frames are re-rendered blank
   at the same cell size, so the blink keeps working with the new look.
-- **Imported image sets** (weather icons, month names, hand-picked pictures) are
-  never regenerated — the panel says so instead of offering controls that would
-  do nothing.
+- **Imported image sets.** A set that came from another watchface is editable when
+  the widget itself says what the images are: a time / date / reading part is the
+  digits 0-9 in order, `IMG_WEEK` is the seven weekdays, a month-name layer is the
+  twelve months. The panel says those pictures *are* the ones the layer came with,
+  and a style change replaces them with glyphs drawn from the font below — the
+  size row starts from the height of the pictures they came with, so the first
+  re-render keeps their scale. Sets the widget cannot read — weather icons, a
+  level or progress array, hand-picked pictures — are still never regenerated.
 
 Glyph sets are **shared**: the digital-clock preset points hour, minute and
 second at one digit set (`font_1_*`), so restyling one layer would otherwise
@@ -500,6 +536,56 @@ expires after seven days — `zeus preview` produces that QR in the terminal:
 cd "<staging folder>" && zeus preview --target <target>
 ```
 
+## Importing an existing watchface
+
+*Open* takes either a saved designer project or a real Zepp OS watchface folder —
+one with `app.json` + `watchface/` + `assets/`. *Import* is the same door with an
+import-flavoured dialog. Zeus CLI projects and Watchface Maker exports both work.
+
+The watchface code is *run* (in the main process, in a `vm` sandbox that captures
+every `hmUI.createWidget` call), so helpers, loops, constants and computed
+image arrays resolve exactly as they do on the watch:
+
+- `WatchFace({ … })` / `DeviceRuntimeCore.WatchFace({ … })` with the widgets
+  built in `build()` or `initView()`; the constants come from `hmUI.widget`,
+  `hmUI.show_level`, `hmUI.align`, `hmUI.data_type`, `hmUI.system_status`.
+- Both `app.json` shapes: the v3 `targets` map and the flat v2
+  `platforms`/`designWidth` document.
+- A layer the project emits as two widgets (`ONLY_NORMAL` + `ONLY_AOD`) comes
+  back as one layer shown in *both* states.
+- Images in Zepp's compressed container — Watchface Maker exports call them
+  `*.png` but they are not PNGs — are decoded to real PNGs (the container is
+  `2e 01 01 00`, a 16-bit width/height, a 256-entry palette and one index byte
+  per pixel; see `core/somh.js`).
+- Only the images the layers actually reference are imported; `fonts/<file>`
+  used by a `TEXT` layer is registered as a project font.
+- The *app id* is kept only when it came from this designer. A Maker export
+  carries its vendor's id (the Maker hands out `1000001`, `1000002`, …) and the
+  Zepp App installs a local package *as* that app, so an id that already belongs
+  to a published watchface makes the install fail; the import assigns one from
+  the designer's own range and says so in the report (type the old id back into
+  the project panel if you really want it).
+
+Each widget becomes the matching layer kind: `IMG`, `IMG_TIME` (split into
+*hour* / *hour (12h)* / *minute* / *second* from the `*_array` groups),
+`IMG_DATE` (*month* / *day*), `IMG_WEEK`, `IMG_LEVEL`, `IMG_PROGRESS`,
+`IMG_POINTER`, `IMG_ANIM` (frames), `TEXT`, `TEXT_IMG`, `IMG_STATUS`,
+`IMG_CLICK`, `TIME_POINTER`, `FILL_RECT`, `STROKE_RECT`, `CIRCLE`, `ARC` and
+`ARC_PROGRESS`.
+
+The import never writes to the source folder: the project opens **unsaved**, so
+*Save* asks where to put the designer project. A report opens in the log modal
+and lists what came across, what could not, and any notes. What does not survive:
+
+- Widgets the designer has no equivalent for (for example `BUTTON`,
+  `SCROLL_TEXT`, `CYCLE_LIST`, `WIDGET_DELEGATE`) are counted in the report and
+  left out.
+- A `TEXT` layer whose font was baked upstream arrives as an `IMG` layer.
+- Runtime `setProperty` logic is not replayed — the editor shows the value the
+  code sets while building. A face that ships two overlapping normal-state
+  variants and switches them at runtime imports as both layers, so the project
+  checker will report the overlap it cannot know about.
+
 ## Projects
 
 A designer project is `<name>.wfproj.json` next to its `images/` (and optional
@@ -530,6 +616,8 @@ core/devices.js    34-device catalog (target, shape, size, api, asset dir)
 core/kinds.js      widget metadata + defaults
 core/datatypes.js  data_type catalog, weather icons, status icons, preview values
 core/codegen.js    project model -> app.json / app.js / watchface code / README
+core/importface.js imports an existing watchface folder (runs its code, captures widgets)
+core/somh.js       decoder for Zepp's compressed image container (unsigned `*.png`)
 core/fonts.js      bundled font catalog, TTF/OTF name-table parser, apiVersion map
 core/icon.js       app icon: 248×248 circular PNG, built from the canvas render
 core/lanserver.js  LAN install server (package, preview, source.zip, landing page)
@@ -546,6 +634,9 @@ tools              gen-masks.js, make-sample.js, smoke.js, shot.js
 - One device target per project (copy the `targets` block in `app.json` to add
   more in the exported project; *Change device…* retargets a project and scales
   the layout, but images keep their pixel size).
+- An imported watchface is a good starting point, not a lossless round trip: see
+  *Importing an existing watchface* for what cannot come across (widgets with no
+  designer equivalent, baked text, runtime `setProperty` logic).
 - `TEXT` layers with a gradient/outline fill or with Bold/Italic are baked into
   a PNG on export (see *Text styles*) — they stop being live text on the watch,
   so they no longer follow i18n or a runtime font change.

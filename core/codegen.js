@@ -20,6 +20,10 @@ function hexToNum(hex) {
 function num(n) { return Number.isFinite(+n) ? Math.round(+n) : 0; }
 function p(n) { return `px(${num(n)})`; }
 function ident(s) { return String(s || 'x').replace(/[^\w]+/g, '_').replace(/^(\d)/, '_$1'); }
+// IMG_ANIM finds its frames by name: <anim_path>/<anim_prefix>_<index>.<anim_ext>.
+// The prefix is therefore also the frame file's stem, so keep it [\w] and stable
+// for a given layer; writeZeusProject() names the exported frames with it.
+function animPrefixFor(el) { return ident((el && el.animPrefix) || (el && el.name)).toLowerCase(); }
 // hmUI.show_level is a bitmask: ONLY_NORMAL 1, ONLY_AOD 2, ONLY_EDIT 4 (the docs
 // also spell the AOD bit ONAL_AOD — same value, the watchface typedefs and every
 // shipping face use ONLY_AOD)
@@ -339,9 +343,12 @@ function emitElement(el, ctx, out) {
     case 'IMG_ANIM': {
       const frames = el.frames || [];
       if (!frames.length) break;
-      const prefix = el.animPrefix || ident(el.name).toLowerCase();
+      const prefix = animPrefixFor(el);
       kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
-      kv(L, 'anim_path', `'images/anim/${prefix}'`);
+      // anim_path is the *folder*, the widget composes <anim_path>/<prefix>_<i>.<ext>
+      // (https://docs.zepp.com/docs/watchface/api/hmUI/widget/IMG_ANIM/), which is
+      // why writeZeusProject() puts the frames in images/anim/ under these names.
+      kv(L, 'anim_path', `'images/anim'`);
       kv(L, 'anim_prefix', `'${prefix}'`);
       kv(L, 'anim_ext', `'png'`);
       kv(L, 'anim_fps', num(el.fps || 30));
@@ -559,4 +566,4 @@ function generateProjectReadme(project, device) {
   return lines.join('\n');
 }
 
-module.exports = { generateWatchface, generateAppJson, generateAppJs, generateProjectReadme, hexToNum };
+module.exports = { generateWatchface, generateAppJson, generateAppJs, generateProjectReadme, hexToNum, animPrefixFor };

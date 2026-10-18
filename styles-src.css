@@ -222,13 +222,15 @@ main.empty .watch-head, main.empty .center-tools { display: none; }
 .empty-state h2 { margin: 0 0 6px; font-size: 20px; }
 .empty-state p { margin: 0 0 18px; font-size: 13px; }
 .empty-state code { background: #0d0f14; border: 1px solid var(--color-line); border-radius: 5px; padding: 1px 5px; }
-.es-btns { display: flex; gap: 10px; justify-content: center; }
+.es-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .es-btns button { background: #0d0f14; border: 1px solid var(--color-line); color: var(--color-ink); padding: 9px 16px; border-radius: 9px; font-size: 13px; cursor: pointer; }
 .es-btns button:hover { border-color: #39415a; background: #171b23; }
 .es-btns .es-primary { background: var(--color-acc); border-color: var(--color-acc); color: #fff; font-weight: 600; }
 .es-btns .es-primary:hover { background: var(--color-acc2); }
 .recent { margin-top: 22px; text-align: left; }
-.recent-head { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--color-mut); margin-bottom: 6px; }
+.recent-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--color-mut); margin-bottom: 6px; }
+.recent-head button { background: none; border: 0; color: var(--color-mut); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; padding: 0; }
+.recent-head button:hover { color: #ff9d9d; }
 .recent-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; cursor: pointer; border: 1px solid var(--color-line); border-radius: 9px; background: #0d0f14; margin-bottom: 6px; }
 .recent-item:hover { border-color: #39415a; background: #171b23; }
 .recent-item .ri-main { flex: 1; min-width: 0; }

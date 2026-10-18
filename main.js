@@ -14,9 +14,10 @@ const { DATA_TYPES, WEATHER_ICONS, SYSTEM_STATUS } = require('./core/datatypes')
 const { KINDS, SHOW_LEVELS } = require('./core/kinds');
 const { BUNDLED_FONTS, fontInfoFromBuffer, isFontFile, fontFormat, zeusApiLevel, FONT_VARIATIONS } = require('./core/fonts');
 const { LanServer, lanAddresses } = require('./core/lanserver');
+const { importFaceDir } = require('./core/importface');
 const { appIconPng } = require('./core/icon');
 const {
-  generateWatchface, generateAppJson, generateAppJs, generateProjectReadme,
+  generateWatchface, generateAppJson, generateAppJs, generateProjectReadme, animPrefixFor,
 } = require('./core/codegen');
 
 let win = null;
@@ -49,7 +50,7 @@ function createWindow() {
     console.error('[renderer gone]', JSON.stringify(details));
   });
 }
-app.whenReady().then(() => { pruneRecents(); createWindow(); });
+app.whenReady().then(() => { createWindow(); });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 
@@ -140,11 +141,9 @@ function pushRecent(dir, name, device) {
   list.unshift({ path: dir, name: name || path.basename(dir), device: device || '', at: Date.now() });
   writeRecents(list.slice(0, 5));
 }
-function pruneRecents() {
-  const list = loadRecents();
-  const kept = list.filter((r) => r && r.path && fs.existsSync(r.path));
-  if (kept.length !== list.length) writeRecents(kept.slice(0, 5));
-}
+// A recent entry is *kept* even when its folder is gone: "recent-list" flags it
+// (exists: false) and the empty state shows it in red, so a moved or deleted
+// project folder is visible instead of silently disappearing from the list.
 ipcMain.handle('recent-list', async () => loadRecents().map((r) => ({ ...r, exists: fs.existsSync(r.path) })));
 ipcMain.handle('recent-clear', async () => { writeRecents([]); return []; });
 
@@ -154,7 +153,17 @@ function findProjectFile(dir) {
     return f ? path.join(dir, f) : null;
   } catch (e) { return null; }
 }
-function loadProjectDir(dir) {
+// A Zepp OS watchface project (Zeus CLI / Watchface Maker export) has no
+// .wfproj.json — it is imported into the designer model instead of rejected.
+function importFaceDirOr(dir) {
+  let res;
+  try { res = importFaceDir(dir); } catch (e) {
+    return { error: `Could not import that watchface: ${String((e && e.message) || e)}` };
+  }
+  if (res.error) return { error: res.error };
+  return res;
+}
+function loadProjectDir(dir, opts = {}) {
   const root = findProjectFile(dir) ? dir : (() => {
     // allow picking a parent folder that contains the project
     try {
@@ -165,7 +174,11 @@ function loadProjectDir(dir) {
     } catch (e) { /* ignore */ }
     return null;
   })();
-  if (!root) return { error: 'No .wfproj.json project file in that folder.' };
+  // Not a designer project: a Zeus CLI / Watchface Maker folder opens by
+  // importing it (app.json + watchface code + assets) instead of erroring out.
+  // `force` is the Import button: a folder that holds both a designer project
+  // and an app.json (this app's own sample/export layout) is imported anyway.
+  if (opts.force || !root) return importFaceDirOr(dir);
   let project;
   try { project = JSON.parse(fs.readFileSync(findProjectFile(root), 'utf8')); } catch (e) {
     return { error: 'Could not read the project file: ' + String(e.message || e) };
@@ -212,17 +225,22 @@ function loadProjectDir(dir) {
   }
   return { project, images, fonts, savePath: root, base: path.basename(root) };
 }
-ipcMain.handle('open-project-dialog', async () => {
-  const r = await dialog.showOpenDialog(win, { title: 'Open watchface project', properties: ['openDirectory'] });
+ipcMain.handle('open-project-dialog', async (_e, opts = {}) => {
+  const r = await dialog.showOpenDialog(win, {
+    title: opts.title || 'Open a project or a watchface folder',
+    buttonLabel: opts.buttonLabel || 'Open',
+    message: opts.message || 'Pick a saved designer project, or a Zepp OS watchface folder (app.json) to import',
+    properties: ['openDirectory'],
+  });
   if (r.canceled || !r.filePaths.length) return null;
-  const res = loadProjectDir(r.filePaths[0]);
-  if (res && !res.error) pushRecent(res.savePath, res.project.name, res.project.device);
+  const res = loadProjectDir(r.filePaths[0], { force: !!opts.force });
+  if (res && !res.error) pushRecent(res.savePath || res.source, res.project.name, res.project.device);
   return res;
 });
-ipcMain.handle('open-project-path', async (_e, dir) => {
+ipcMain.handle('open-project-path', async (_e, dir, opts = {}) => {
   if (!dir || !fs.existsSync(dir)) return { error: 'Folder not found.' };
-  const res = loadProjectDir(dir);
-  if (res && !res.error) pushRecent(res.savePath, res.project.name, res.project.device);
+  const res = loadProjectDir(dir, { force: !!(opts && opts.force) });
+  if (res && !res.error) pushRecent(res.savePath || res.source, res.project.name, res.project.device);
   return res;
 });
 
@@ -298,17 +316,56 @@ function writeZeusProject(outDir, payload) {
     }
   } catch (e) { /* no assets dir yet */ }
   fs.mkdirSync(imgDir, { recursive: true });
+  // IMG_ANIM never sees the designer's image names: the watch looks the frames up
+  // as images/anim/<prefix>_<index>.png, so every animation writes its frames
+  // under exactly those names and a frame that nothing else uses lives only there.
+  const byName = new Map((images || []).map((i) => [i.name, i]));
+  const frames = new Map();
+  const frameNames = new Set();
+  for (const el of project.elements || []) {
+    if (!el || el.kind !== 'IMG_ANIM') continue;
+    const prefix = animPrefixFor(el);
+    (el.frames || []).forEach((name, i) => {
+      const im = byName.get(name);
+      if (!im) return;
+      frames.set(`anim/${prefix}_${i}.png`, im);
+      frameNames.add(name);
+    });
+  }
+  // names a layer references directly (everything an animation does not own)
+  const usedNames = new Set();
+  for (const el of project.elements || []) {
+    if (!el || el.kind === 'IMG_ANIM') continue;
+    for (const key of ['images', 'frames']) for (const n of el[key] || []) usedNames.add(n);
+    for (const key of ['src', 'unit', 'dot', 'negative', 'bg', 'cover', 'am', 'pm', 'hour', 'minute', 'second']) {
+      if (el[key]) usedNames.add(el[key]);
+    }
+  }
   const keep = new Set((images || []).map((i) => i.name));
+  for (const name of frameNames) if (!usedNames.has(name)) keep.delete(name); // lives in images/anim/
   for (const old of fs.readdirSync(imgDir)) {
     if (/\.png$/i.test(old) && !keep.has(old) && old !== 'preview.png') { try { fs.unlinkSync(path.join(imgDir, old)); } catch (e) { } }
   }
   for (const im of images || []) {
+    if (frameNames.has(im.name) && !usedNames.has(im.name)) continue; // exported under images/anim/
     const target = im.name.includes('anim/')
-      ? path.join(imgDir, im.name) // animation frames: images/anim/<prefix>_<i>.png
+      ? path.join(imgDir, im.name) // a frame that is also used as a plain image
       : path.join(imgDir, path.basename(im.name));
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, Buffer.from(im.dataBase64, 'base64'));
   }
+  for (const [rel, im] of frames) {
+    const target = path.join(imgDir, rel);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, Buffer.from(im.dataBase64, 'base64'));
+  }
+  try { // frames from an earlier export that no animation uses any more
+    const animDir = path.join(imgDir, 'anim');
+    for (const old of fs.readdirSync(animDir)) {
+      if (/\.png$/i.test(old) && !frames.has(`anim/${old}`)) fs.unlinkSync(path.join(animDir, old));
+    }
+    if (!fs.readdirSync(animDir).length) fs.rmdirSync(animDir);
+  } catch (e) { /* no animation exported yet */ }
   // The app icon is mandatory: app.json points at images/preview.png and zpm
   // fails the whole build (exit 7) if the file is missing. Always write one.
   const previewBuf = payload.previewBase64 ? Buffer.from(payload.previewBase64, 'base64') : null;
