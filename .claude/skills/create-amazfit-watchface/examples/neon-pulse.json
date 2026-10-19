@@ -1,0 +1,110 @@
+{
+  "name": "Neon Pulse",
+  "device": "bip-6",
+  "font": "Orbitron",
+  "out": "out/neon-pulse",
+  "preview": "preview.png",
+  "previewAod": "preview-aod.png",
+  "steps": [
+    {
+      "preset": "bg"
+    },
+    {
+      "preset": "clock"
+    },
+    {
+      "preset": "weekday"
+    },
+    {
+      "preset": "steps"
+    },
+    {
+      "preset": "hr"
+    },
+    {
+      "preset": "battery"
+    },
+    {
+      "edit": "Hour",
+      "glyph": {
+        "color": "#39ff14",
+        "size": 110
+      },
+      "set": {
+        "x": 36,
+        "y": 40
+      }
+    },
+    {
+      "edit": "Minute",
+      "glyph": {
+        "color": "#ffffff",
+        "size": 110
+      },
+      "set": {
+        "x": 36,
+        "y": 170
+      }
+    },
+    {
+      "remove": "Colon"
+    },
+    {
+      "edit": "Weekday",
+      "glyph": {
+        "color": "#39ff14",
+        "size": 34
+      },
+      "set": {
+        "x": 36,
+        "y": 320
+      }
+    },
+    {
+      "edit": "Steps",
+      "glyph": {
+        "color": "#ffffff",
+        "size": 34
+      },
+      "set": {
+        "x": 36,
+        "y": 372
+      }
+    },
+    {
+      "edit": "Heart rate",
+      "glyph": {
+        "color": "#ff4d6d",
+        "size": 34
+      },
+      "set": {
+        "x": 36,
+        "y": 414,
+        "unit": ""
+      }
+    },
+    {
+      "edit": "Battery",
+      "glyph": {
+        "color": "#39ff14",
+        "size": 34
+      },
+      "set": {
+        "x": 200,
+        "y": 320
+      }
+    },
+    {
+      "edit": "Hour",
+      "set": {
+        "show": "both"
+      }
+    },
+    {
+      "edit": "Minute",
+      "set": {
+        "show": "both"
+      }
+    }
+  ]
+}

@@ -29,7 +29,9 @@ widget and every parameter is documented there:
 
 - Node 18+ and npm (developed on Node 26 / npm 11)
 - macOS, Windows or Linux (Electron 33)
-- Optional: the Zeus CLI for preview/build — `npm i @zeppos/zeus-cli -g`
+- For building `.zab` packages: Node (with `npx`) on your PATH. A global Zeus CLI is used when
+  present (`npm i @zeppos/zeus-cli -g`), otherwise `npx` fetches it on each build (network needed).
+  The **Build tools** row in the Watchface panel shows what was found and can install Zeus.
 
 ## Getting started
 
@@ -63,10 +65,12 @@ Other scripts:
 ├ Watchface / Layers / Project images ─┬ device canvas (normal · AOD · live clock) ─┬ Properties / Test data / Generated code ┤
 ```
 
-- **Watchface** — name, description, App id, device, glyph font, and **Fonts →
-  Font library & glyphs…**. Clicking **Device** retargets the project and scales the
+- **Watchface** — name, description, App id, device, glyph font, **Colours → Colour themes…**,
+  **Fonts → Font library & glyphs…** and **Build tools** (Node / npx / Zeus status, *Install Zeus*).
+  The panel starts collapsed (its summary line and a **Close** button stay visible). Clicking **Device** retargets the project and scales the
   layout.
-- **Layers** — top-to-bottom paint order. Drag a row from anywhere to restack it
+- **Layers** — a view filter (**All / Normal / AOD / Edit**) dims the layers the chosen state does
+  not draw and makes them unselectable; Normal is the default. Top-to-bottom paint order. Drag a row from anywhere to restack it
   (above or below groups too), drag a group by its header to move it as one unit,
   or drop a layer into a group's body to add it. Eye = visibility, lock = not
   selectable on the canvas (a locked layer can still be reordered), badges mark
@@ -85,6 +89,9 @@ Other scripts:
   created (`Group 1`, …) and can be **renamed** by double-clicking its name in the
   panel (Enter saves, Esc cancels) or from the *Group name* row in Properties when
   the whole group is selected.
+- **Add ▾ and Presets ▾** open a menu with a search box (focused on open; Enter picks the first match,
+  Esc closes). Under the face: **Normal · AOD · Edit · Live clock**, and selectors for a colour theme,
+  a background variant and each complication slot when the face has them.
 - **Canvas** — drawn at device pixel size and CSS-scaled, so what you see is what
   the watch renders. Drag to move, corner handles to resize, the square on a
   circle's rim to change the radius. Snapping snaps to other layers, to the
@@ -140,16 +147,22 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | Designer kind | hmUI widget | Notes |
 | --- | --- | --- |
 | Image | `IMG` | optional rotation around a centre point |
-| Animation | `IMG_ANIM` | frame images + fps/repeat/step; frames are exported to `images/anim/<prefix>_<i>.png`, the only name the widget can resolve. **Frames** in Properties takes a run of PNGs — or an animated GIF/WebP, which is split into one PNG per frame with the frame rate taken from the file's own delays (a still picture, even one saved as `.gif`, is just one frame); the preview plays the frames at `fps` (sampled every 1/30 s) |
+| Animation | `IMG_ANIM` | frame images + fps/repeat/step, restart on resume, still frame; frames are exported to `images/anim/<prefix>_<i>.png`, the only name the widget can resolve. **Frames** in Properties takes a run of PNGs — or an animated GIF/WebP, which is split into one PNG per frame with the frame rate taken from the file's own delays (a still picture, even one saved as `.gif`, is just one frame); the preview plays the frames at `fps` (sampled every 1/30 s) |
 | Image level | `IMG_LEVEL` | one image per level (battery, weather …) |
-| Image progress | `IMG_PROGRESS` | segmented progress bar |
+| Image progress | `IMG_PROGRESS` | segmented progress bar; irregular positions from an import are kept per picture |
 | Image pointer | `IMG_POINTER` | pointer image rotated by a data value or angle |
 | Time (digit images) | `IMG_TIME` | hour / hour12 / minute / second |
 | Weekday images | `IMG_WEEK` | 7 images, with a **Names** row (Mon / Monday / M), **Case** and, per layer, the language |
-| Date images | `IMG_DATE` | day / month; the **Character** switch turns the month into its 12 names |
-| Analog clock | `TIME_POINTER` | hour + minute + second hands, optional cover |
-| Data reading | `TEXT_IMG` | digits + unit/separator images for any `data_type` |
-| Text | `TEXT` | multiline, size, alignment, live font, solid/gradient/outline fill, bold + italic |
+| Date images | `IMG_DATE` | day / month / year (two digits); the **Character** switch turns the month into its 12 names |
+| Analog clock | `TIME_POINTER` | hour + minute + second hands, optional caps (hour / minute / second) |
+| Date pointer | `DATE_POINTER` | a pointer that turns from a start to an end angle with the weekday, day or month; optional scale behind and cap above |
+| Data reading | `TEXT_IMG` | digits + unit / imperial unit / separator / invalid images for any `data_type`, or a fixed number (**Fixed text**) |
+| Text | `TEXT` | multiline, size, alignment, live font, **Overflow** (`text_style`: none / wrap / ellipsis), solid/gradient/outline fill, bold + italic |
+| Line chart | `GRADKIENT_POLYLINE` | the firmware-drawn heart-rate or sleep line chart (the widget is spelled that way in the docs) |
+| Sleep chart | `GROUP` | last night's stages, filled by a small reader in the generated code |
+| Progress bar | `FILL_RECT` | a linear bar that follows a reading (`FILL_RECT` + a sensor updater) |
+| Complication slot | `WATCHFACE_EDIT_GROUP` | an editable slot: the wearer picks what it shows; see *Complication slots* |
+| Tap zone / button | `BUTTON` | an invisible tap zone, or a visible button with a label and colours; see *Variants and tap zones* |
 | System status | `IMG_STATUS` | disconnect / DND / … icons |
 | Tap shortcut | `IMG_CLICK` | opens an app on tap |
 | Filled / stroked rect | `FILL_RECT`, `STROKE_RECT` | corner radius, optional rotation |
@@ -410,25 +423,19 @@ In **Glyph style**, a solid or gradient **Fill** shows a **Palette** picker with
 Material, Cyberpunk, Synthwave, Sunset, Ocean, Forest, Pastel, Rainbow, Game Boy, Monochrome, Neon).
 Choosing one fills the colours at once (solid: its first colour; gradient: its first two); a swatch sets a
 single colour (shift+click sets the gradient's end). **Apply to all text layers** gives every digit /
-weekday layer the palette — a quick theme.
+weekday layer, every level set and every small icon the palette — a quick theme.
 
 A set that came from another watchface is offered as **Imported Font**: the pictures it came with. Size
-scales them and the fill paints over them through their own alpha (shapes stay, colour and scale change).
-The originals are kept as hidden `…__src.png` copies (never exported), so **Restore originals** puts them
-back, and choosing a real typeface instead still keeps them.
+scales them and the fill paints over them. Pictures cut out on transparency keep their shape (the fill goes
+through their alpha); opaque artwork on a black ground — what the Maker exports — is multiplied by its
+brightness, so the ground stays black and the lit part takes the colour. The originals are kept as hidden
+`…__src.png` copies (never exported), so **Restore originals** puts them back, and choosing a real
+typeface instead still keeps them.
 
-## Colour themes
-
-One face, several colours. **Watchface → Colour themes…** finds the face's accent colour from its
-pictures (or take the hex you type) and moves it — hue, saturation, brightness — to every colour you
-tick (a Teenage-Engineering-style palette: orange, yellow, sky, green, pink, grey, white). Only
-pictures that carry the accent get a copy (`name__t1.png`, …); black / white / grey pictures stay shared.
-The **Theme** selector under the preview shows each one.
-
-A Tap zone set to **Next colour theme** switches them on the watch (one is added for you). The export
-builds the whole face in one function; a tap deletes the widgets it made and builds again with the next
-theme's pictures, and the choice is remembered. Every theme adds its pictures to the package — a face
-with 45 accent pictures and 4 themes ships 180 more files, so tick only the colours you want.
+The same **Colour** section (Fill, Color / From–To, Palette, Restore originals, Redraw now) is on **level
+sets** (the ring that fills up, a row of dots — the lit part takes the colour, the dim track stays dim) and
+on **single pictures** (icons on image layers, status icons, tap icons). Variants layers and layers drawn from
+a symbol are left out.
 
 ## Variants and tap zones
 
@@ -438,17 +445,68 @@ Zepp screen. Dialcraft models both.
 - **Variants.** An **Image** layer with two or more pictures (Properties → Variants) is a
   variants layer. Name the variants (“Yellow, Green, …”), then use the **Variant** selector
   under the face to preview each one.
-- **Tap zone** (Add → Tap zone). A rectangle that reacts to a tap and draws nothing. Its
-  action is **Cycle background variants** (steps the variants layers, shows the variant's
-  name as a toast and remembers the choice across restarts) or **Open a Zepp screen**
-  (`hmApp.startApp({ url, native: true })`, e.g. `ScheduleCalScreen`, `SportListScreen`).
-  Tap zones are drawn dashed in the editor only.
+- **Tap zone** (Add → Tap zone). A rectangle that reacts to a tap. Its **Action** is one of:
+  - **Cycle background variants** — steps the variants layers, shows the variant's name as a
+    toast and remembers the choice across restarts.
+  - **Next colour theme** — see *Colour themes*.
+  - **Open a system app** — a select of the 39 documented `SYSTEM_APP_*` apps (Activity, Heart rate,
+    Workout, Weather, Alarm, Camera remote, Music, Stopwatch, Timer, Settings, Compass, Sleep, Blood
+    oxygen, Breathe …), exported as `launchApp({ appId, native: true })` from `@zos/router`
+    (Zepp OS API 3.0+; older devices drop the zone with a warning). The import line is added only
+    when a face uses one. This path has not been tried on a watch: if a face ever shows a black
+    screen after adding it, remove the zone.
+  - **Open a Zepp screen (by name)** — `hmApp.startApp({ url, native: true })`. The field suggests 66
+    names (Calendar, Workouts, Heart rate, Weather, Sleep, Settings, Flashlight, Do not disturb,
+    World clock, …) collected from the community's ButtonFunctions list of SashaCX75's
+    Watch-face-editor; they are not officially published and a screen may not exist on every watch.
+    Any other name can be typed.
+  A zone with **no label and no fill** draws nothing and is shown dashed in the editor only. Give it
+  a **Label** and/or a **Fill** colour (with pressed colour, label colour and size, radius) and it
+  becomes a visible `BUTTON`.
 - **Import.** A Watchface Maker face with a *switch background* button comes in with its
-  background list as variants, and its buttons as tap zones. Buttons that ran other custom
-  code come in as a tap zone with the original code in its note (that code is not kept).
-- **Export.** Tap zones become `BUTTON` widgets over a transparent `tapzone.png`, and the
-  variants switcher uses `@zos/storage` and `@zos/interaction` (Zepp OS 3+). Built and
-  syntax-checked, but not run on a watch from here — test it on yours.
+  background list as variants, and its buttons as tap zones (named screens, system apps, and visible
+  buttons keep their text and colours). Buttons that ran other custom code come in as a tap zone with
+  the original code in its note (that code is not kept).
+- **Export.** Tap zones become `BUTTON` widgets (a transparent `tapzone.png` for an invisible one). The
+  variants switcher stores the pick through guarded legacy globals (`hmFS`, `hmUI.showToast`) so a
+  missing API can never stop the face from drawing. Built and syntax-checked, but not run on a
+  watch from here — test it on yours.
+
+## Complication slots and the Edit view
+
+A **Complication slot** (Add ▾ → Complication slot) is a `WATCHFACE_EDIT_GROUP`: the wearer
+long-presses the face, taps the slot, and picks what it shows (Steps, Heart rate, …). Properties
+holds its `edit_id`, size, default type, the list of choices with their picker previews, and the
+picker's background (`tips_*`).
+
+- **Layers per choice.** Any layer can be tied to one choice — Properties → **Complication** → “Complication 1
+  is STEP”. It is then drawn only when the slot shows that choice (a steps number and its icon, say);
+  “Any choice” draws it regardless. The export makes one `switch` on the picked type and creates the
+  layers of that choice.
+- **Edit masks.** Pictures shown only while customising (the dimming mask and the foreground mask) are
+  layers with **Show in → Edit**. They export as `WATCHFACE_EDIT_MASK` / `WATCHFACE_EDIT_FG_MASK`
+  widgets — a plain image with the edit state would also be drawn over the normal face.
+- **Preview.** The **Edit** button under the face previews the customise screen (the face plus the
+  masks); the selector under the face picks which choice a slot shows; the **Edit** filter in the layer
+  list focuses the edit layers and the slots.
+- **Export.** `app.json` gets `editable: 1`. The slot is created with the edit API of the legacy `hmUI`
+  global (the form every shipping face uses), falling back to `@zos/ui`, and sits in a `try/catch` that
+  prints the error on the face if creating it fails. The group must not carry a `show_level`, or it
+  would not exist in the customise state. Confirmed working on a watch.
+
+## Colour themes
+
+One face, several colours. **Watchface → Colour themes…** takes a **palette** (20 well-known ones, or
+*Custom colours only*), lets you tick the colours you want and **add your own** (a colour picker, an
+optional name), and moves the face's **accent colour** — found from its pictures, or the hex you type —
+to each of them (hue, saturation, brightness). Only pictures that carry the accent get a copy
+(`name__t1.png`, …); black, white and grey pictures stay shared. The **Theme** selector under the face
+previews each theme.
+
+A Tap zone set to **Next colour theme** switches them on the watch (one is added for you). The export
+builds the whole face in one function; a tap deletes the widgets it made and builds again with the next
+theme's pictures, and the choice is remembered. Every theme adds its pictures to the package — a face
+with 45 accent pictures and 4 themes ships 180 more files, so tick only the colours you want.
 
 ## AOD
 
@@ -518,7 +576,7 @@ recognised by the build). Its `module.watchface` block sets **`lockscreen: 1`
 whenever the face has AOD content** (0 when it has none) — that is the flag that
 tells the watch the face brings its own lock-screen/AOD design; without it the
 watch draws its own AOD face no matter what `show_level` the widgets carry
-(`editable` stays 0: editable watchfaces are not supported). The `apiVersion` triple is derived from the selected
+(`editable` is 1 when the face has a complication slot, else 0). The `apiVersion` triple is derived from the selected
 device's Zepp OS level using the official template values (`1.0.x`, `2.0`, `3.0`,
 `3.6` for 3.5+, `4.0`), so an old watch is not asked for a runtime it never had;
 the build passes the matching `--APILevel` to the CLI, and with a single target
@@ -540,7 +598,12 @@ code 7, `ENOENT … images/preview.png_origin`):
   fails the same way, so this is a CLI requirement, not a design choice.
 
 **Build .zab** exports and then runs the Zeus CLI (global `zeus`, else
-`npx --yes @zeppos/zeus-cli@latest`), streaming the log. Manual flow:
+`npx --yes @zeppos/zeus-cli@latest`), streaming the log. The app does not install Node; Node and
+`npx` must be on the machine. A packaged app started from the Dock / Finder has no shell PATH, so it asks
+your login shell for it and adds the usual folders (Homebrew, Volta, fnm, asdf, every nvm version) —
+`core/toolpath.js`; without that the build fails with `spawn npx ENOENT`. The **Build tools** row in the
+Watchface panel reports Node / npx / Zeus and offers **Install Zeus** (`npm install -g @zeppos/zeus-cli`),
+which avoids fetching Zeus on every build. Manual flow:
 
 ```bash
 npm i @zeppos/zeus-cli -g
@@ -614,9 +677,10 @@ cd "<staging folder>" && zeus preview --target <target>
 
 ## Importing an existing watchface
 
-*Open* takes either a saved designer project or a real Zepp OS watchface folder —
-one with `app.json` + `watchface/` + `assets/`. *Import* is the same door with an
-import-flavoured dialog. Zeus CLI projects and Watchface Maker exports both work.
+*Open* takes a saved designer project, a watchface `.zip` (extracted safely into a temporary folder;
+the zip stays the shown source) or a real Zepp OS watchface folder — one with `app.json` + `watchface/` +
+`assets/`. *Import* is the same door with an import-flavoured dialog. Zeus CLI projects and Watchface Maker
+exports both work.
 
 The watchface code is *run* (in the main process, in a `vm` sandbox that captures
 every `hmUI.createWidget` call), so helpers, loops, constants and computed
@@ -630,9 +694,9 @@ image arrays resolve exactly as they do on the watch:
 - A layer the project emits as two widgets (`ONLY_NORMAL` + `ONLY_AOD`) comes
   back as one layer shown in *both* states.
 - Images in Zepp's compressed container — Watchface Maker exports call them
-  `*.png` but they are not PNGs — are decoded to real PNGs (the container is
-  `2e 01 01 00`, a 16-bit width/height, a 256-entry palette and one index byte
-  per pixel; see `core/somh.js`).
+  `*.png` but they are not PNGs — are decoded to real PNGs: the 8-bit palette form (`2e 01 01`: a
+  256-entry palette and one index byte per pixel, cropped to the real width stored in the header) and
+  the 16-bit RGB565 form (`2e 00 02`); see `core/somh.js`.
 - Only the images the layers actually reference are imported; `fonts/<file>`
   used by a `TEXT` layer is registered as a project font.
 - The *app id* is kept only when it came from this designer. A Maker export
@@ -644,17 +708,27 @@ image arrays resolve exactly as they do on the watch:
 
 Each widget becomes the matching layer kind: `IMG`, `IMG_TIME` (split into
 *hour* / *hour (12h)* / *minute* / *second* from the `*_array` groups),
-`IMG_DATE` (*month* / *day*), `IMG_WEEK`, `IMG_LEVEL`, `IMG_PROGRESS`,
-`IMG_POINTER`, `IMG_ANIM` (frames), `TEXT`, `TEXT_IMG`, `IMG_STATUS`,
-`IMG_CLICK`, `TIME_POINTER`, `FILL_RECT`, `STROKE_RECT`, `CIRCLE`, `ARC` and
-`ARC_PROGRESS`.
+`IMG_DATE` (*month* / *day* / *year*), `IMG_WEEK`, `IMG_LEVEL`, `IMG_PROGRESS`,
+`IMG_POINTER`, `IMG_ANIM` (frames), `TEXT` / `TEXT_FONT`, `TEXT_IMG`, `IMG_STATUS`,
+`IMG_CLICK`, `TIME_POINTER`, `DATE_POINTER`, `FILL_RECT`, `STROKE_RECT`, `CIRCLE`, `ARC`,
+`ARC_PROGRESS`, `GRADKIENT_POLYLINE` (when the firmware draws it), `BUTTON` (tap zones and
+visible buttons), `GROUP` (the sleep chart) and the `WATCHFACE_EDIT_*` widgets (complication slots
+with the layers each choice adds, and the edit masks).
+
+The importer also reads what the code *does*: a refresh function that sets four digit pictures from the
+clock becomes Digital time layers (the code is run at twelve times to see which digit each picture follows);
+widgets a face hides or shows by the hour (lit AM / PM labels) become *Visible when* layers; a
+background switcher becomes variants; linear scales written as comments become progress bars; the slot's
+choices are traced by running the code once per choice.
 
 The import never writes to the source folder: the project opens **unsaved**, so
 *Save* asks where to put the designer project. A report opens in the log modal
 and lists what came across, what could not, and any notes. What does not survive:
 
-- Widgets the designer has no equivalent for (for example `BUTTON`,
-  `SCROLL_TEXT`, `CYCLE_LIST`) are counted in the report and left out.
+- Widgets the designer has no equivalent for (for example `SCROLL_TEXT`, `CYCLE_LIST`, `SLIDE_SWITCH`,
+  `WATCHFACE_EDIT_BG`) are counted in the report and left out; so is a line chart the face draws
+  itself with `addLine`.
+- Faces that start a widget hidden and show it on a tap come in with that layer switched off.
 - `WIDGET_DELEGATE` carries the watchface's *resume / pause* lifecycle callbacks
   and draws nothing, so it is not counted as a missing layer — the report notes
   it instead (the designer has no lifecycle hooks to attach the callbacks to).
@@ -699,12 +773,15 @@ core/somh.js       decoder for Zepp's compressed image container (unsigned `*.pn
 core/fonts.js      bundled font catalog, TTF/OTF name-table parser, apiVersion map
 core/icon.js       app icon: 248×248 circular PNG, built from the canvas render
 core/lanserver.js  LAN install server (package, preview, source.zip, landing page)
-core/zip.js        dependency-free ZIP writer for /source.zip
+core/zip.js        ZIP writer for /source.zip, and the safe extractor used to import a .zip
+core/toolpath.js   PATH for node / npx / zeus when the app is started from the Dock / Finder
 core/masks.js      per-device bezel mask generation
 assets/fonts       33 bundled OFL fonts for glyph generation
 assets/masks       generated per-device SVG masks + masks.json
 samples            output of npm run sample
-tools              gen-masks.js, make-sample.js, smoke.js, shot.js, make-icon.js, fonts-latin-ext.py
+tools              gen-masks.js, make-sample.js, smoke.js, shot.js, make-icon.js, fonts-latin-ext.py, adhoc-sign.js
+.github/workflows  release.yml — builds Windows / Linux / macOS on a v* tag and attaches them to a pre-release
+docs               GUIDE.md (this guide), ZEPP_COVERAGE.md (widget coverage), screenshots
 ```
 
 ## Limitations
@@ -712,6 +789,12 @@ tools              gen-masks.js, make-sample.js, smoke.js, shot.js, make-icon.js
 - One device target per project (copy the `targets` block in `app.json` to add
   more in the exported project; clicking **Device** retargets a project and scales
   the layout, but images keep their pixel size).
+- This is a **beta**. Generated code is checked with automated tests and a mock runtime; not every widget
+  has been tried on every watch. Complication slots and the clock-driven import were confirmed on a
+  watch; system-app taps (`@zos/router`), colour-theme switching, date pointers and the line chart were
+  not.
+- Release builds are unsigned (Windows SmartScreen, macOS Gatekeeper warn). The macOS ones are re-signed
+  ad hoc so the bundle is consistent, which does not make Gatekeeper trust them.
 - An imported watchface is a good starting point, not a lossless round trip: see
   *Importing an existing watchface* for what cannot come across (widgets with no
   designer equivalent, baked text, runtime `setProperty` logic).

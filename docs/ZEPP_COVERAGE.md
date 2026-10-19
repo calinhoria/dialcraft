@@ -86,11 +86,18 @@ WIDGET_DELEGATE and the edit widgets below come from the newer API / real Maker 
 `path` ✅ · `main` ✅ · `editable` ✅ (1 when a slot exists) · `lockscreen` ✅ (1 when the face has AOD
 layers) · **`photoscreen` ❌** (photo watchface) · `hightCost` (not in the docs page, used by Maker).
 
+## Opening screens and apps (tap zones)
+
+| Mechanism | Status | Notes |
+|---|---|---|
+| `hmApp.startApp({ url, native: true })` | ✅ 66 named screens | Names from the community ButtonFunctions list of SashaCX75's Watch-face-editor (Calendar, Workouts, Heart rate, Weather, Sleep, Settings, Flashlight, Do not disturb, World clock …); not officially published, a screen may be missing on some watches. Any name can be typed. Used on a Bip 6 face before. |
+| `launchApp({ appId: SYSTEM_APP_*, native: true })` (`@zos/router`) | 🟡 39 documented apps | The `SYSTEM_APP_*` constants of the official `launchApp` page (API 3.0+). Exported with a warning; **not yet tried on a watch** (new imports once caused a black screen — see the guide). |
+| `hmApp.startApp({ appid, url: 'page/…' })` (mini-apps) | ❌ | Separate mini-programs that must be installed (Calendar Plus, HRV, Weather Informer …); left out. |
+
 ## Not covered by this report
 
-Sensors and system APIs outside `hmUI` widgets (heart-rate zones, worlds clocks, alarms API
-beyond the data types), tap-to-open screens beyond the three listed in the Tap zone
-(ScheduleCal, SportList, PowerSaveHint, …), and anything in the Zepp OS app / mini-program API.
+Sensors and system APIs outside `hmUI` widgets (heart-rate zones, world clocks, the alarms API
+beyond the data types) and anything in the Zepp OS app / mini-program API.
 
 ## Done in the follow-up
 
@@ -98,6 +105,12 @@ DATE_POINTER, GRADKIENT_POLYLINE, TEXT `text_style`, TIME_POINTER minute / secon
 imperial units + fixed text + invalid image, IMG_ANIM `display_on_restart` / `default_frame_index`,
 BUTTON as a visible button, IMG_PROGRESS irregular positions. Each has a smoke test (import → export →
 syntax check); none has been run on a watch.
+
+## Also done since
+
+Tap zones open 66 named native screens and 39 documented system apps (table above); a Tap zone with a
+label or fill is a visible BUTTON; the Zeus build finds `npx` when the app is started from the Dock /
+Finder, and a Build tools row reports Node / npx / Zeus.
 
 ## Still open
 
