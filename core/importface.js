@@ -957,14 +957,16 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       if (src && !(size && size.w <= 2 && size.h <= 2)) out.push(mk('IMG', { ...base, name: 'Button', ...box, src }));
       const click = String(p._click || '');
       const app = /startApp\s*\(\s*\{[^}]*?url\s*:\s*['"]([^'"]+)['"]/.exec(click);
-      let action = 'none', appUrl = '', note = '';
+      const sys = /launchApp\s*\(\s*\{[^}]*?appId\s*:\s*(?:\w+\.)?(SYSTEM_APP_\w+)/.exec(click);
+      let action = 'none', appUrl = '', note = '', sysApp = '';
       if (/switchBackground\s*\(/.test(click)) action = 'variant';
+      else if (sys) { action = 'sysapp'; sysApp = sys[1]; }
       else if (app) { action = 'app'; appUrl = app[1]; }
       else if (click) { note = click.replace(/\s+/g, ' ').slice(0, 160); ctx.customTaps = (ctx.customTaps || 0) + 1; }
-      const tapName = action === 'variant' ? 'Tap: next background' : action === 'app' ? `Tap: ${appUrl.replace(/Screen$/, '')}` : 'Tap zone';
+      const tapName = action === 'variant' ? 'Tap: next background' : action === 'app' ? `Tap: ${appUrl.replace(/Screen$/, '')}` : action === 'sysapp' ? `Tap: ${sysApp.replace(/^SYSTEM_APP_/, '').toLowerCase()}` : 'Tap zone';
       const visible = (p.text && String(p.text).length) || p.normal_color != null;
       out.push(mk('TAP', {
-        ...base, name: tapName, ...box, action, appUrl, note,
+        ...base, name: tapName, ...box, action, appUrl, sysApp: sysApp || undefined, note,
         ...(visible ? {
           text: p.text == null ? '' : String(p.text), textColor: p.color != null ? hexOf(p.color) : undefined, textSize: num(p.text_size),
           normalColor: p.normal_color != null ? hexOf(p.normal_color) : undefined, pressColor: p.press_color != null ? hexOf(p.press_color) : undefined, radius: num(p.radius),

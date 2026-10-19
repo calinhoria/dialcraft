@@ -1975,7 +1975,7 @@ function drawOverlay(c, W, H) {
     c.fillStyle = 'rgba(255,200,120,0.95)';
     c.font = '600 10px system-ui, sans-serif';
     c.textBaseline = 'top';
-    c.fillText(e.action === 'variant' ? '↻ variant' : e.action === 'theme' ? '◐ theme' : e.action === 'app' ? '↗ ' + String(e.appUrl || 'app').replace(/Screen$/, '') : 'tap', b.x + 4, b.y + 3, Math.max(10, b.w - 8));
+    c.fillText(e.action === 'variant' ? '↻ variant' : e.action === 'theme' ? '◐ theme' : e.action === 'sysapp' ? '↗ ' + String((META.systemApps || []).find((a) => a.key === e.sysApp)?.label || 'app') : e.action === 'app' ? '↗ ' + String(e.appUrl || 'app').replace(/Screen$/, '') : 'tap', b.x + 4, b.y + 3, Math.max(10, b.w - 8));
     c.restore();
   }
   const sel = selection();
@@ -4448,9 +4448,16 @@ function propsKind(e) {
       add('Action', ctlSelect(e.action || 'none', [
         { value: 'variant', label: 'Cycle background variants' },
         { value: 'theme', label: 'Next colour theme' },
-        { value: 'app', label: 'Open a Zepp screen' },
+        { value: 'sysapp', label: 'Open a system app' },
+        { value: 'app', label: 'Open a Zepp screen (by name)' },
         { value: 'none', label: 'Nothing' },
       ], (v) => { e.action = v; refreshPanels(); render(); scheduleCode(); }));
+      if (e.action === 'sysapp') {
+        add('App', ctlSelect(e.sysApp || '', [{ value: '', label: 'Pick an app…' }, ...(META.systemApps || []).map((a) => ({ value: a.key, label: a.label }))],
+          (v) => { e.sysApp = v; render(); scheduleCode(); }),
+          'The documented system apps (launchApp from @zos/router, API 3.0+). Not yet tried on a watch');
+        frag.appendChild(propNote('Needs Zepp OS API 3.0 or newer. The export imports launchApp from @zos/router — if a face ever shows a black screen after adding this, remove the tap zone.'));
+      }
       if ((e.action || 'none') === 'app') {
         const inp = document.createElement('input');
         inp.type = 'text'; inp.value = e.appUrl || ''; inp.placeholder = 'ScheduleCalScreen';

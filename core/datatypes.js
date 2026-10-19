@@ -116,12 +116,91 @@ const SYSTEM_STATUS = [
 ];
 
 // Native Zepp screens a tap zone can open (hmApp.startApp({ url, native: true })).
-// The names are the ones shipping watchfaces use; anything else can be typed in.
+// The names are the ones shipping watchfaces use, collected in the ButtonFunctions list of SashaCX75's
+// Watch-face-editor for Zepp OS (https://github.com/SashaCX75/Watch-face-editor-for-Amazfit-watch-on-ZeppOS);
+// they are not officially published and a screen may not exist on every watch. Anything else can be typed in.
 const TAP_APPS = [
+  { key: 'activityAppScreen', label: 'Activity / steps' },
+  { key: 'activityWeekShowScreen', label: 'Activity, this week' },
+  { key: 'AlarmInfoScreen', label: 'Alarm' },
+  { key: 'Settings_standbyHomeScreen', label: 'AOD style settings' },
+  { key: 'Settings_standbyModelScreen', label: 'AOD time settings' },
+  { key: 'DragListScreen', label: 'App icons (drag list)' },
+  { key: 'AppListScreen', label: 'App list' },
+  { key: 'Settings_permissionAppsScreen', label: 'App permissions' },
+  { key: 'BaroAltimeterScreen', label: 'Barometer / altimeter' },
+  { key: 'LowBatteryScreen', label: 'Battery saver' },
+  { key: 'Settings_batteryManagerScreen', label: 'Battery usage' },
+  { key: 'BioChargeHomeScreen', label: 'BioCharge' },
+  { key: 'spo_HomeScreen', label: 'Blood oxygen' },
+  { key: 'BodyCompositionResultScreen', label: 'Body composition' },
+  { key: 'RespirationwidgetScreen', label: 'Breathing' },
+  { key: 'RespirationControlScreen', label: 'Breathing (control)' },
+  { key: 'Settings_lightAdjustScreen', label: 'Brightness' },
   { key: 'ScheduleCalScreen', label: 'Calendar' },
-  { key: 'SportListScreen', label: 'Workouts' },
-  { key: 'PowerSaveHintScreen', label: 'Power saving' },
+  { key: 'HidcameraScreen', label: 'Camera remote' },
+  { key: 'WatchFaceScreen', label: 'Choose watchface' },
+  { key: 'CompassScreen', label: 'Compass' },
+  { key: 'SportDiveCompassSetTargetScreen', label: 'Compass (vertical)' },
+  { key: 'PhoneContactsScreen', label: 'Contacts' },
+  { key: 'ControlCenterEditScreen', label: 'Control centre settings' },
+  { key: 'CountdownAppScreen', label: 'Countdown' },
+  { key: 'menstrualAppScreen', label: 'Cycle tracking' },
+  { key: 'DialCallScreen', label: 'Dial pad' },
+  { key: 'Settings_displayBrightScreen', label: 'Display' },
+  { key: 'Settings_dndScreen', label: 'Do not disturb' },
+  { key: 'FindPhoneScreen', label: 'Find my phone' },
+  { key: 'FlashLightScreen', label: 'Flashlight' },
+  { key: 'heart_app_Screen', label: 'Heart rate' },
+  { key: 'SportScreen', label: 'Last workout' },
+  { key: 'OfflineMapScreen', label: 'Map' },
+  { key: 'ClubCardsScreen', label: 'Membership cards' },
+  { key: 'MorningGreetingCoverScreen', label: 'Morning greeting' },
+  { key: 'PhoneMusicCtrlScreen', label: 'Music (on the phone)' },
+  { key: 'MusicCommonScreen', label: 'Music (on the phone, alt.)' },
+  { key: 'LocalMusicScreen', label: 'Music (on the watch)' },
+  { key: 'oneKeyAppScreen', label: 'One-tap measuring' },
+  { key: 'PAI_app_Screen', label: 'PAI' },
+  { key: 'PhoneHomeScreen', label: 'Phone' },
+  { key: 'PowerSaveHintScreen', label: 'Power consumption' },
+  { key: 'HmReStartScreen', label: 'Power off / restart' },
+  { key: 'readinessAppScreen', label: 'Readiness' },
+  { key: 'PhoneRecentCallScreen', label: 'Recent calls' },
+  { key: 'ScheduleListScreen', label: 'Schedule list' },
+  { key: 'Settings_homeScreen', label: 'Settings' },
+  { key: 'PowerSaveModeScreen', label: 'Simple watchface (power saving)' },
+  { key: 'Sleep_HomeScreen', label: 'Sleep' },
+  { key: 'oneKeyNightMonitorScreen', label: 'Sleep health monitoring' },
+  { key: 'SportListScreen', label: 'Start a workout' },
+  { key: 'StopWatchScreen', label: 'Stopwatch' },
+  { key: 'StressHomeScreen', label: 'Stress' },
+  { key: 'TideScreen', label: 'Sunrise / sunset' },
+  { key: 'Settings_systemScreen', label: 'System settings' },
+  { key: 'TomatoMainScreen', label: 'Timer (pomodoro)' },
+  { key: 'todoListScreen', label: 'To-do list' },
+  { key: 'SportStatusScreen', label: 'Training load' },
+  { key: 'VoiceMemoScreen', label: 'Voice memo' },
+  { key: 'WeatherScreen', label: 'Weather' },
+  { key: 'WidgetEditScreen', label: 'Widget settings' },
+  { key: 'SportRecordListScreen', label: 'Workout records' },
+  { key: 'WorldClockScreen', label: 'World clock' },
+  { key: 'ZeppPayScreen', label: 'Zepp Pay' },
+  { key: 'MoreListScreen', label: '“More” menu' },
 ];
+// The system apps launchApp({ appId, native: true }) opens — the documented SYSTEM_APP_* constants of
+// @zos/router (https://docs.zepp.com/docs/reference/device-app-api/newAPI/router/launchApp/, API level 3.0+).
+const SYSTEM_APPS = [
+  ['SYSTEM_APP_STATUS', 'Activity'], ['SYSTEM_APP_HR', 'Heart rate'], ['SYSTEM_APP_SPORT', 'Workout'], ['SYSTEM_APP_WEATHER', 'Weather'],
+  ['SYSTEM_APP_ALARM', 'Alarm'], ['SYSTEM_APP_CAMERA', 'Camera remote'], ['SYSTEM_APP_MUSIC', 'Music'], ['SYSTEM_APP_STOPWATCH', 'Stopwatch'],
+  ['SYSTEM_APP_COUNTDOWN', 'Timer'], ['SYSTEM_APP_FINE_PHONE', 'Find my phone'], ['SYSTEM_APP_CARD', 'Cards'], ['SYSTEM_APP_ALIPAY', 'Alipay'],
+  ['SYSTEM_APP_SETTING', 'Settings'], ['SYSTEM_APP_SPORT_HISTORY', 'Workout history'], ['SYSTEM_APP_COMPASS', 'Compass'], ['SYSTEM_APP_PAI', 'PAI'],
+  ['SYSTEM_APP_WORLD_CLOCK', 'World clock'], ['SYSTEM_APP_PRESSURE', 'Stress'], ['SYSTEM_APP_MENSTRUAL', 'Cycle tracking'], ['SYSTEM_APP_SPORT_STATUS', 'Workout status'],
+  ['SYSTEM_APP_CALENDAR', 'Calendar'], ['SYSTEM_APP_SLEEP', 'Sleep'], ['SYSTEM_APP_SPO2', 'Blood oxygen'], ['SYSTEM_APP_PHONE', 'Phone'],
+  ['SYSTEM_APP_NETEASE_MUSIC', 'NetEase Music'], ['SYSTEM_APP_WEPAY', 'Weixin Pay'], ['SYSTEM_APP_BREATH', 'Breathe'], ['SYSTEM_APP_POMODORO', 'Pomodoro timer'],
+  ['SYSTEM_APP_ALEAX', 'Alexa'], ['SYSTEM_APP_THERMOMETER', 'Thermometer'], ['SYSTEM_APP_TODO_LIST', 'To do'], ['SYSTEM_APP_ALTIMETER', 'Barometer'],
+  ['SYSTEM_APP_VOICE_MEMO', 'Voice memos'], ['SYSTEM_APP_SUN_AND_MOON', 'Sun & moon'], ['SYSTEM_APP_MEASUREMENT', 'One-tap measuring'], ['SYSTEM_APP_ZEPP_COACH', 'Zepp Coach'],
+  ['SYSTEM_APP_CLUB_CARD', 'Membership card'], ['SYSTEM_APP_BODY_COMPOSITION', 'Body composition'], ['SYSTEM_APP_READINESS', 'Readiness'],
+].map(([key, label]) => ({ key, label }));
 
 const DT_MAX = {
   STEP: 10000, STEP_TARGET: 12000, CAL: 500, CAL_TARGET: 600, DISTANCE: 10, STAND: 12,
@@ -136,4 +215,4 @@ const EDIT_TYPES = ['STEP', 'BATTERY', 'HEART', 'CAL', 'PAI_DAILY', 'DISTANCE', 
   'TRAINING_LOAD', 'VO2MAX', 'UVI', 'DATE', 'WEEK', 'WEATHER', 'TEMPERATURE', 'SUN', 'BIO_CHARGE', 'LTHR', 'LTPACE', 'SLEEP', 'ALTITUDE',
   'RECOVERY_TIME', 'HRV', 'FLOOR', 'MONTH_RUN_TIMES', 'MONTH_RUN_DISTANCE'];
 
-module.exports = { EDIT_TYPES, DT_MAX, TAP_APPS, DATA_TYPES, dataType, dtLabel, unitsFor, digitCount, WEATHER_ICONS, SYSTEM_STATUS };
+module.exports = { EDIT_TYPES, DT_MAX, TAP_APPS, SYSTEM_APPS, DATA_TYPES, dataType, dtLabel, unitsFor, digitCount, WEATHER_ICONS, SYSTEM_STATUS };

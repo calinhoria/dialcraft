@@ -189,6 +189,13 @@ function emitElement(el, ctx, out) {
         if (ctx.themed) body = 'cycleTheme()';
         else ctx.warnings.push(`${el.name}: no colour themes yet — generate them from the project panel first (left out)`);
       }
+      else if (el.action === 'sysapp' && ctx.api && ctx.api < 3) ctx.warnings.push(`${el.name}: system apps need Zepp OS API 3.0 or newer (this device is ${ctx.api}) — the tap zone is left out`);
+      else if (el.action === 'sysapp' && /^SYSTEM_APP_\w+$/.test(el.sysApp || '')) {
+        // the documented launchApp + SYSTEM_APP_* of @zos/router (API 3.0+); the import is added only when used
+        (ctx.routerApps = ctx.routerApps || new Set()).add(el.sysApp);
+        body = `try { launchApp({ appId: ${el.sysApp}, native: true }) } catch (e) {}`;
+        ctx.warnings.push(`${el.name}: opens a system app with launchApp from @zos/router — not yet tried on a watch; if the face shows a black screen, remove this tap zone`);
+      } else if (el.action === 'sysapp') ctx.warnings.push(`${el.name}: no system app chosen — the tap zone is left out`);
       else if (el.action === 'app' && el.appUrl) {
         body = `if (typeof hmApp !== 'undefined') hmApp.startApp({ url: ${JSON.stringify(String(el.appUrl))}, native: true })`;
       } else if (el.action === 'app') ctx.warnings.push(`${el.name}: no screen chosen — the tap zone is left out`);
@@ -589,6 +596,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   const th = project.themes;
   const themed = !!(th && Array.isArray(th.list) && th.list.length && Array.isArray(th.recolored) && th.recolored.length);
   ctx.themed = themed;
+  ctx.api = parseFloat(device && device.api) || 0;
   const els = (project.elements || []).filter((e) => e.visible !== false);
   // ---- declare the image arrays the widgets reference ----
   const decls = [];
@@ -637,6 +645,13 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
 
   if (ctx.sensors.size) {
     out.push(`import { ${[...ctx.sensors].sort().join(', ')} } from '@zos/sensor'`);
+  }
+  // the import line comes before the widgets, so the system apps the tap zones use are collected here
+  for (const e of els) {
+    if (e.kind === 'TAP' && e.action === 'sysapp' && e.show !== 'aod' && ctx.api >= 3 && /^SYSTEM_APP_\w+$/.test(e.sysApp || '')) (ctx.routerApps = ctx.routerApps || new Set()).add(e.sysApp);
+  }
+  if (ctx.routerApps && ctx.routerApps.size) {
+    out.push(`import { launchApp, ${[...ctx.routerApps].sort().join(', ')} } from '@zos/router'`);
   }
   out.push('');
   if (themed) {

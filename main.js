@@ -10,7 +10,7 @@ const { spawn } = require('child_process');
 const { PNG } = require('pngjs');
 const QRCode = require('qrcode');
 const { DEVICES, deviceByKey, deviceLabel } = require('./core/devices');
-const { DATA_TYPES, WEATHER_ICONS, SYSTEM_STATUS, TAP_APPS, DT_MAX, EDIT_TYPES } = require('./core/datatypes');
+const { DATA_TYPES, WEATHER_ICONS, SYSTEM_STATUS, TAP_APPS, SYSTEM_APPS, DT_MAX, EDIT_TYPES } = require('./core/datatypes');
 const { KINDS, SHOW_LEVELS } = require('./core/kinds');
 const { BUNDLED_FONTS, fontInfoFromBuffer, readCmapRanges, isFontFile, fontFormat, zeusApiLevel, FONT_VARIATIONS } = require('./core/fonts');
 const { LanServer, lanAddresses } = require('./core/lanserver');
@@ -145,6 +145,7 @@ ipcMain.handle('meta', async () => ({
   weatherIcons: WEATHER_ICONS,
   systemStatus: SYSTEM_STATUS,
   tapApps: TAP_APPS,
+  systemApps: SYSTEM_APPS,
   dtMax: DT_MAX,
   editTypes: EDIT_TYPES,
   masks: loadMaskManifest(),

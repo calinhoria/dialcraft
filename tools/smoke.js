@@ -2473,6 +2473,34 @@ app.whenReady().then(async () => {
       return { first, dracula, hasCustom, keepsCustom, chipEls, name: colorName('#ffc700') };`);
     check('the colour-theme dialog builds its colours from the chosen palette, keeps custom colours across palette changes',
       /Orange:#ff4a1c/.test(thUi.first) && /Pink:#ff7aa8/.test(thUi.first) && thUi.dracula === 6 && thUi.hasCustom && thUi.keepsCustom && thUi.chipEls && thUi.name === 'Yellow', JSON.stringify(thUi));
+    // tap zones that open a system app (launchApp + SYSTEM_APP_*) or a named screen
+    {
+      const dirT = path.join(SCRATCH, 'sysapp');
+      fs.cpSync(v2Dir, dirT, { recursive: true });
+      fs.writeFileSync(path.join(dirT, 'watchface', 'index.js'), `
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            hmUI.createWidget(hmUI.widget.BUTTON, { x: 10, y: 10, w: 80, h: 60, text: '', normal_src: 'plain.png', press_src: 'plain.png', click_func: () => { launchApp({ appId: SYSTEM_APP_HR, native: true }) } });
+            hmUI.createWidget(hmUI.widget.BUTTON, { x: 100, y: 10, w: 80, h: 60, text: '', normal_src: 'plain.png', press_src: 'plain.png', click_func: () => { hmApp.startApp({ url: 'heart_app_Screen', native: true }) } });
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const { SYSTEM_APPS, TAP_APPS } = require(path.join(__dirname, '..', 'core', 'datatypes'));
+      const impT = importFaceDir(dirT);
+      const taps = (impT.project ? impT.project.elements : []).filter((e) => e.kind === 'TAP');
+      const dev = require(path.join(__dirname, '..', 'core', 'devices'));
+      const outT = gen.generateWatchface(impT.project, dev.deviceByKey('bip-6'));
+      const oldT = gen.generateWatchface(impT.project, dev.deviceByKey('gtr-3-pro'));
+      let synT = true;
+      try { new Function(outT.code.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { synT = false; }
+      check('tap zones: 39 documented system apps + named screens; launchApp imported only when used; a pick imports back',
+        SYSTEM_APPS.length === 39 && TAP_APPS.length >= 60 && taps.length === 2 && taps[0].action === 'sysapp' && taps[0].sysApp === 'SYSTEM_APP_HR' && taps[1].action === 'app' && taps[1].appUrl === 'heart_app_Screen'
+        && /import \{ launchApp, SYSTEM_APP_HR \} from '@zos\/router'/.test(outT.code) && /launchApp\(\{ appId: SYSTEM_APP_HR, native: true \}\)/.test(outT.code)
+        && outT.warnings.some((w) => /@zos\/router/.test(w)) && !/@zos\/router/.test(oldT.code) && oldT.warnings.some((w) => /API 3\.0/.test(w)) && synT,
+        impT.error || JSON.stringify({ n: SYSTEM_APPS.length, a: TAP_APPS.length, taps: taps.map((t) => [t.action, t.sysApp, t.appUrl]), imp: (outT.code.match(/import .*router.*/) || [])[0], call: /launchApp\(\{ appId: SYSTEM_APP_HR, native: true \}\)/.test(outT.code), w: outT.warnings, old: /@zos\/router/.test(oldT.code), oldw: oldT.warnings, synT }));
+    }
     // GRADKIENT_POLYLINE: the firmware-drawn heart / sleep line chart
     {
       const dirG = path.join(SCRATCH, 'polyline');
