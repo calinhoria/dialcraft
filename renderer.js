@@ -48,6 +48,7 @@ async function guardUnsaved(detail) {
   return doSave();
 }
 
+let layerFocus = false;              // dim the layers the current preview doesn't draw
 let previewMode = 'normal';          // 'normal' | 'aod'
 let liveClock = false;
 let clockTimer = null;
@@ -227,7 +228,7 @@ window.addEventListener('keydown', (e) => {
   if (typing) return;
   if (mod && !e.shiftKey && e.key.toLowerCase() === 'a') {
     e.preventDefault();
-    const all = elements().filter((x) => !x.locked);
+    const all = elements().filter((x) => !x.locked && !offView(x));
     if (!all.length) return;
     multiSel = new Set(all.map((x) => x.id));
     if (!multiSel.has(selectedId)) selectedId = all[all.length - 1].id;
@@ -1854,16 +1855,19 @@ function kindIcon(kind) {
 }
 function aodBadge(e) {
   if (e.show === 'aod') return 'AOD';
+  if (e.show === 'both') return 'BOTH';
   if (e.show === 'edit') return 'EDIT';
   return null;
 }
 function layerLabel(e) {
   return e.name || (kindById(e.kind) ? kindById(e.kind).label : e.kind);
 }
+// dimmed in the layers list: the focused view (Normal / AOD) doesn't draw it
+const offView = (e) => layerFocus && !showAllowed(e.show, previewMode);
 function layerRow(e) {
   const row = document.createElement('div');
   row.className = 'layer' + (e.id === selectedId ? ' sel' : '') + (multiSel.has(e.id) && e.id !== selectedId ? ' multi' : '')
-    + (e.visible === false ? ' hid' : '') + (e.locked ? ' locked' : '');
+    + (e.visible === false ? ' hid' : '') + (e.locked ? ' locked' : '') + (offView(e) ? ' offview' : '');
   row.dataset.id = e.id;
   const left = document.createElement('span');
   left.className = 'lname';
@@ -1875,7 +1879,7 @@ function layerRow(e) {
   nm.className = 'nname'; nm.textContent = layerLabel(e);
   const badge = aodBadge(e);
   left.appendChild(grip); left.appendChild(icon);
-  if (badge) { const b = document.createElement('span'); b.className = 'grp'; b.textContent = badge; left.appendChild(b); }
+  if (badge) { const b = document.createElement('span'); b.className = 'grp ' + badge.toLowerCase(); b.textContent = badge; b.title = 'Shown in: ' + badge.toLowerCase(); left.appendChild(b); }
   left.appendChild(nm);
   const right = document.createElement('span');
   right.className = 'lrow-r';
@@ -1913,7 +1917,7 @@ function groupBlock(gid, members) {
   const allLocked = members.every((m) => m.locked);
   const wrap = mkEl('div', 'group-block' + (collapsed ? ' collapsed' : '') + (allSel ? ' sel' : ''));
   const head = mkEl('div', 'group-row' + (collapsed ? ' collapsed' : '') + (allSel ? ' sel' : someSel ? ' part' : '')
-    + (allHidden ? ' hid' : ''));
+    + (allHidden ? ' hid' : '') + (members.every(offView) ? ' offview' : ''));
   const grip = mkEl('span', 'grip'); grip.innerHTML = ICON.grip;
   grip.title = 'Drag to move the whole group';
   const chev = mkEl('button', 'gchev'); chev.type = 'button'; chev.innerHTML = ICON.chevron;
@@ -3505,7 +3509,7 @@ function propsGroupTools(sel) {
     label, `${tip} — relative to the selection's bounding box`, () => alignSel(sel, mode, D, 'box'),
   ])));
   frag.appendChild(tools('Align to device', ALIGN.map(([label, tip, mode]) => [
-    label, `${tip} — relative to the device screen`, () => alignSel(sel, mode, D, 'device'),
+    label, `${tip.replace(/ edges$/, '')} — moves the whole selection as one block, relative to the device screen`, () => alignSel(sel, mode, D, 'device'),
   ])));
   // Distribute mirrors the reference designer's row: Even spaces the gaps *and*
   // the device margins, Spread puts the first and last on the device edges,
@@ -3527,8 +3531,13 @@ function alignSel(sel, mode, D, ref = 'box') {
   if (sel.length < 2) return;
   pushHistory();
   const boxes = sel.map((e) => ({ e, b: elBox(e) }));
-  const R = ref === 'device' ? { x: 0, y: 0, w: D.w, h: D.h } : unionBox(boxes.map((x) => x.b));
-  for (const { e, b } of boxes) {
+  const U = unionBox(boxes.map((x) => x.b));
+  // to the device the selection moves as one block, keeping its inner layout;
+  // to its own box each layer lines up individually
+  const group = ref === 'device';
+  const R = group ? { x: 0, y: 0, w: D.w, h: D.h } : U;
+  for (const { e, b: own } of boxes) {
+    const b = group ? U : own;
     let dx = 0, dy = 0;
     if (mode === 'left') dx = R.x - b.x;
     else if (mode === 'right') dx = R.x + R.w - (b.x + b.w);
@@ -5165,12 +5174,25 @@ function setPreviewMode(mode) {
   previewMode = mode;
   $('btnPreviewNormal').classList.toggle('on', mode === 'normal');
   $('btnPreviewAod').classList.toggle('on', mode === 'aod');
-  if (project) render();
+  if (project) { render(); renderLayers(); }
+  syncLayerView();
   // an empty AOD is why a watch shows its own AOD face instead of yours
   if (project && mode === 'aod' && !elements().some((e) => e.visible !== false && showAllowed(e.show, 'aod'))) {
     status('Nothing is shown in AOD — the watch would use its own default AOD face. Set the layers that should stay on to “Both” (or “AOD only”).');
   }
 }
+function syncLayerView() {
+  const cur = layerFocus ? previewMode : 'all';
+  document.querySelectorAll('#layersView button').forEach((b) => b.classList.toggle('on', b.dataset.view === cur));
+}
+document.querySelectorAll('#layersView button').forEach((b) => {
+  b.onclick = () => {
+    const v = b.dataset.view;
+    layerFocus = v !== 'all';
+    if (layerFocus) setPreviewMode(v);
+    else { syncLayerView(); if (project) renderLayers(); }
+  };
+});
 $('btnPreviewNormal').onclick = () => setPreviewMode('normal');
 $('btnPreviewAod').onclick = () => setPreviewMode('aod');
 $('btnPreviewLive').onclick = () => setLiveClock(!liveClock);
@@ -5435,33 +5457,52 @@ async function renderRecents() {
     const d = document.createElement('div');
     d.className = 'recent-item' + (r.exists ? '' : ' missing');
     d.title = r.path;
+    const ico = document.createElement('span');
+    ico.className = 'ri-ico ' + r.kind; ico.innerHTML = ICON.folder;
     const main = document.createElement('div');
     main.className = 'ri-main';
-    const nm = document.createElement('div');
+    const top = document.createElement('div');
+    top.className = 'ri-top';
+    const nm = document.createElement('span');
     nm.className = 'ri-name'; nm.textContent = r.name || String(r.path).split(/[\\/]/).pop();
+    const badge = document.createElement('span');
+    badge.className = 'ri-badge ' + (r.exists ? r.kind : 'gone');
+    badge.textContent = !r.exists ? 'Missing' : r.kind === 'project' ? 'Project' : 'Imported';
+    badge.title = !r.exists ? 'The folder was moved or deleted'
+      : r.kind === 'project' ? 'A saved designer project (.wfproj.json) on disk'
+        : 'A Zepp OS / Watchface Maker folder opened as-is — Save it to keep it as a project';
+    top.appendChild(nm); top.appendChild(badge);
     const pth = document.createElement('div');
     pth.className = 'ri-path';
     const dv = DEVICES.find((x) => x.target === r.device);
-    pth.textContent = (dv ? dv.name + ' · ' : '') + r.path + (r.exists ? '' : ' · missing');
-    main.appendChild(nm); main.appendChild(pth);
-    d.appendChild(main);
-    const open = document.createElement('button');
-    open.className = 'icon-only';
-    open.textContent = r.exists ? 'Open' : '—';
-    open.disabled = !r.exists;
-    open.onclick = async (ev) => {
-      ev.stopPropagation();
+    const shown = r.home && String(r.path).startsWith(r.home) ? '~' + String(r.path).slice(r.home.length) : r.path;
+    pth.textContent = [dv && dv.name, r.at && ago(r.at), shown].filter(Boolean).join(' · ');
+    main.appendChild(top); main.appendChild(pth);
+    const rm = document.createElement('button');
+    rm.type = 'button'; rm.className = 'ri-x'; rm.innerHTML = ICON.x;
+    rm.title = 'Remove from this list (the folder is not deleted)';
+    rm.onclick = async (ev) => { ev.stopPropagation(); await API.recentRemove(r.path); renderRecents(); };
+    d.appendChild(ico); d.appendChild(main); d.appendChild(rm);
+    const open = async () => {
       const res = await API.openProjectPath(r.path);
       if (res && res.error) { status(res.error, true); return; }
       if (res) await loadProject(res);
     };
-    d.appendChild(open);
-    if (r.exists) d.onclick = () => open.onclick(new Event('click'));
     // a folder that was moved or deleted stays listed: say what is wrong instead
     // of leaving a dead row behind
-    else d.onclick = () => status(`That project folder is gone: ${r.path}`, true);
+    d.onclick = r.exists ? open : () => status(`That project folder is gone: ${r.path}`, true);
     list.appendChild(d);
   }
+}
+// "3 min ago", "2 days ago"
+function ago(t) {
+  const m = Math.max(0, Math.round((Date.now() - t) / 60000));
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h} h ago`;
+  const dd = Math.round(h / 24);
+  return dd < 30 ? `${dd} day${dd === 1 ? '' : 's'} ago` : new Date(t).toLocaleDateString();
 }
 $('recentClear').onclick = async () => { await API.recentClear(); renderRecents(); };
 

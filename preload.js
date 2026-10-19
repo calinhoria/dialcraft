@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('api', {
   openProjectDialog: (opts) => ipcRenderer.invoke('open-project-dialog', opts),
   openProjectPath: (dir, opts) => ipcRenderer.invoke('open-project-path', dir, opts),
   recentList: () => ipcRenderer.invoke('recent-list'),
+  recentRemove: (dir) => ipcRenderer.invoke('recent-remove', dir),
   recentClear: () => ipcRenderer.invoke('recent-clear'),
   saveProject: (payload) => ipcRenderer.invoke('save-project', payload),
   generateCode: (payload) => ipcRenderer.invoke('generate-code', payload),

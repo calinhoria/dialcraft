@@ -1353,15 +1353,34 @@ app.whenReady().then(async () => {
       alignSel(selection(), 'left', D, 'device');
       const devLeft = Math.round(selBox(selection()).x);
       alignSel(selection(), 'right', D, 'device');
-      const rights = selection().map((e) => Math.round(elBox(e).x + elBox(e).w));
+      const gap0 = Math.round(elBox(b).x - elBox(a).x);
+      alignSel(selection(), 'right', D, 'device');
+      const rights = [Math.round(selBox(selection()).x + selBox(selection()).w)];
+      const gap1 = Math.round(elBox(b).x - elBox(a).x);
       alignSel(selection(), 'vcenter', D, 'device');
-      const centres = selection().map((e) => Math.round(elBox(e).y + elBox(e).h / 2));
-      return { before, boxLeft, devLeft, rights, centres, devW: D.w, devH: D.h };`);
+      const centres = [Math.round(selBox(selection()).y + selBox(selection()).h / 2)];
+      return { before, boxLeft, devLeft, rights, centres, kept: gap0 === gap1, devW: D.w, devH: D.h };`);
     check('align to box keeps the group box, align to device uses the screen',
-      alignRun.boxLeft === alignRun.before && alignRun.devLeft === 0
+      alignRun.boxLeft === alignRun.before && alignRun.devLeft === 0 && alignRun.kept
       && alignRun.rights.every((r) => r === alignRun.devW)
       && alignRun.centres.every((c) => c === Math.round(alignRun.devH / 2)),
       `box-left ${alignRun.before}→${alignRun.boxLeft} · device-left ${alignRun.devLeft} · right edges ${alignRun.rights.join(',')} of ${alignRun.devW} · centres ${alignRun.centres.join(',')} of ${alignRun.devH / 2}`);
+
+    const viewRun = await run(`
+      const a = elementById(${JSON.stringify(groupUi.a)});
+      const b = elementById(${JSON.stringify(groupUi.b)});
+      a.show = 'normal'; b.show = 'both';
+      document.querySelector('#layersView [data-view="aod"]').click();
+      const dimmed = [...document.querySelectorAll('#layers .layer.offview')].map((n) => n.dataset.id);
+      const aodOn = previewMode === 'aod';
+      const badge = !!document.querySelector('#layers .layer[data-id="' + b.id + '"] .grp.both');
+      document.querySelector('#layersView [data-view="all"]').click();
+      const none = document.querySelectorAll('#layers .layer.offview').length;
+      document.querySelector('#layersView [data-view="normal"]').click();
+      document.querySelector('#layersView [data-view="all"]').click();
+      return { aInDim: dimmed.includes(a.id), bInDim: dimmed.includes(b.id), aodOn, badge, none };`);
+    check('layer view filter dims what the preview does not draw and tags Both',
+      viewRun.aInDim && !viewRun.bInDim && viewRun.aodOn && viewRun.badge && viewRun.none === 0, JSON.stringify(viewRun));
 
     const distRun = await run(`
       const D = dev();
@@ -1890,7 +1909,8 @@ app.whenReady().then(async () => {
         listed: !!entry, exists: entry ? entry.exists : null,
         missingClass: !!(row && row.classList.contains('missing')),
         text: row ? row.querySelector('.ri-path').textContent : '',
-        disabled: row ? row.querySelector('.icon-only').disabled : null,
+        badge: row ? row.querySelector('.ri-badge').textContent : '',
+        hasX: !!(row && row.querySelector('.ri-x')),
       };
       if (row) row.click();
       out.status = $('meta').textContent; out.err = $('meta').classList.contains('err');
@@ -1901,8 +1921,7 @@ app.whenReady().then(async () => {
       project = keep;
       return out;`);
     check('a project folder that went missing stays listed, flagged in red',
-      recents.listed && recents.exists === false && recents.missingClass && recents.disabled === true
-      && /missing/.test(recents.text) && /gone/.test(recents.status) && recents.err === true,
+      recents.listed && recents.exists === false && recents.missingClass && recents.badge === 'Missing' && recents.hasX && /gone/.test(recents.status) && recents.err === true,
       `listed=${recents.listed} exists=${recents.exists} · row: “${recents.text}” · click → “${recents.status}”`);
     check('Clear empties the recent list', recents.left === 0 && recents.hidden === true,
       `${recents.left} row(s) left · panel ${recents.hidden ? 'hidden' : 'still open'}`);

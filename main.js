@@ -210,12 +210,18 @@ function writeRecents(list) { try { fs.writeFileSync(recentsFile(), JSON.stringi
 function pushRecent(dir, name, device) {
   const list = loadRecents().filter((r) => r.path !== dir);
   list.unshift({ path: dir, name: name || path.basename(dir), device: device || '', at: Date.now() });
-  writeRecents(list.slice(0, 5));
+  writeRecents(list.slice(0, 8));
 }
 // A recent entry is *kept* even when its folder is gone: "recent-list" flags it
 // (exists: false) and the empty state shows it in red, so a moved or deleted
 // project folder is visible instead of silently disappearing from the list.
-ipcMain.handle('recent-list', async () => loadRecents().map((r) => ({ ...r, exists: fs.existsSync(r.path) })));
+// kind: 'project' = a saved designer project (has a .wfproj.json), 'imported' =
+// a Zepp OS / Watchface Maker folder opened as-is and not yet saved as a project
+ipcMain.handle('recent-list', async () => loadRecents().map((r) => {
+  const exists = fs.existsSync(r.path);
+  return { ...r, exists, kind: exists && findProjectFile(r.path) ? 'project' : 'imported', home: app.getPath('home') };
+}));
+ipcMain.handle('recent-remove', async (_e, dir) => { writeRecents(loadRecents().filter((r) => r.path !== dir)); return true; });
 ipcMain.handle('recent-clear', async () => { writeRecents([]); return []; });
 
 function findProjectFile(dir) {

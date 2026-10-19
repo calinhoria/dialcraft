@@ -82,6 +82,11 @@
     <div class="panel-c rounded-xl border border-line bg-panel p-3 min-w-0" data-panel>
       <h3 class="phead" data-panel-head>Layers <span id="wcount" class="mut-n"></span><span class="flex-1"></span><span class="chev">▾</span></h3>
       <div class="pbody layers-panel">
+        <div class="lt-view" id="layersView" role="group" aria-label="Show layers of">
+          <button type="button" data-view="all" title="Every layer at full strength">All</button>
+          <button type="button" data-view="normal" title="Focus the layers drawn in the normal face (also switches the preview)">Normal</button>
+          <button type="button" data-view="aod" title="Focus the layers drawn in AOD (also switches the preview)">AOD</button>
+        </div>
         <div class="layers-toolbar">
           <div class="lt-info" id="layersSelInfo">No selection</div>
           <div class="lt-row">
