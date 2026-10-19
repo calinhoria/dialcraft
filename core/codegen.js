@@ -43,6 +43,19 @@ function asset(el, key) {
 }
 function arrName(el) { return `img_${ident(el.name)}_${el.id.slice(-4)}`; }
 
+// A widget that has lost its picture would be built with a reference to an
+// image the package does not contain — the watch then fails to initialise the
+// face, taking every widget after it down as well. Those layers are reported
+// and left out of the code instead.
+function missingPicture(el) {
+  switch (el.kind) {
+    case 'IMG': case 'IMG_POINTER': return !el.src;
+    case 'IMG_ANIM': return !(el.frames || []).length;
+    case 'IMG_LEVEL': case 'IMG_PROGRESS': case 'TEXT_IMG': return !(el.images || []).length;
+    default: return false;
+  }
+}
+
 // The TEXT widget only takes a flat `color` (plus text_size / font / spacing —
 // see the docs link above). A gradient fill, an outline, bold or italic exist
 // only in the designer, so those layers are rasterised by the renderer into a
@@ -452,6 +465,10 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('    // no visible elements yet');
   }
   for (const el of els) {
+    if (missingPicture(el)) {
+      ctx.warnings.push(`${el.name}: no picture — left out of the export`);
+      continue;
+    }
     // A layer shown in both states becomes two widgets — one ONLY_NORMAL, one
     // ONLY_AOD — because the watch's AOD path only picks up widgets that carry
     // the AOD bit on its own (the combined bitmask is not honoured). This is the

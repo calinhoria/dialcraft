@@ -231,7 +231,7 @@ app.whenReady().then(async () => {
     const codegenMod = require(path.join(__dirname, '..', 'core', 'codegen'));
     const devicesMod = require(path.join(__dirname, '..', 'core', 'devices'));
     const aodDev = devicesMod.deviceByKey(TARGET);
-    const aodProj = { name: 'AOD probe', elements: [{ id: 'a1', kind: 'IMG', show: 'both' }, { id: 'a2', kind: 'TEXT', show: 'normal' }] };
+    const aodProj = { name: 'AOD probe', elements: [{ id: 'a1', kind: 'IMG', show: 'both', src: 'probe.png' }, { id: 'a2', kind: 'TEXT', show: 'normal' }] };
     const aodFlag = {
       withAod: JSON.parse(codegenMod.generateAppJson(aodProj, aodDev)).targets[aodDev.target].module.watchface.lockscreen,
       withoutAod: JSON.parse(codegenMod.generateAppJson({ ...aodProj, elements: aodProj.elements.map((e) => ({ ...e, show: 'normal' })) }, aodDev)).targets[aodDev.target].module.watchface.lockscreen,
@@ -400,21 +400,30 @@ app.whenReady().then(async () => {
     // palette is what this check pins down
     [0, 0, 0, 0, 0xff, 0x8c, 0x00, 0xff].forEach((v, i) => { somh[64 + i] = v; });
     for (let i = 0; i < 16; i++) somh[1088 + i] = i % 2;
-    fs.writeFileSync(path.join(v2Dir, 'assets', 'dot.png'), somh);
+    fs.mkdirSync(path.join(v2Dir, 'assets', 'img'), { recursive: true });
+    fs.writeFileSync(path.join(v2Dir, 'assets', 'img', 'dot.png'), somh);
     // a plain PNG next to it, generated here so the check does not depend on the
     // export above succeeding
     const plainPng = new (require('pngjs').PNG)({ width: 2, height: 2 });
     for (let i = 0; i < 4; i++) { plainPng.data[i * 4] = 20; plainPng.data[i * 4 + 1] = 200; plainPng.data[i * 4 + 2] = 20; plainPng.data[i * 4 + 3] = 255; }
     fs.writeFileSync(path.join(v2Dir, 'assets', 'plain.png'), require('pngjs').PNG.sync.write(plainPng));
+    // a numbered set a widget picks from at runtime, plus the three files the
+    // reference can only be understood through
+    for (let i = 0; i < 3; i++) {
+      fs.writeFileSync(path.join(v2Dir, 'assets', `lvl_${i}.png`), require('pngjs').PNG.sync.write(plainPng));
+    }
     fs.writeFileSync(path.join(v2Dir, 'watchface', 'index.js'), `
       const h = new DeviceRuntimeCore.WidgetFactory(new DeviceRuntimeCore.HmDomApi());
       const logger = DeviceRuntimeCore.HmLogger.getLogger('probe');
       DeviceRuntimeCore.WatchFace({
         build() {
           logger.log('build');
-          hmUI.createWidget(hmUI.widget.IMG, { x: 1, y: 2, src: 'dot.png' });
+          hmUI.createWidget(hmUI.widget.IMG, { x: 1, y: 2, src: 'img/dot.png' });
           hmUI.createWidget(hmUI.widget.IMG, { x: 1, y: 2, src: 'plain.png', show_level: hmUI.show_level.ONLY_NORMAL });
           hmUI.createWidget(hmUI.widget.IMG, { x: 1, y: 2, src: 'plain.png', show_level: hmUI.show_level.ONLY_AOD });
+          // the index comes from a reading the sandbox cannot know
+          const step = hmSensor.createSensor(hmSensor.id.STEP);
+          hmUI.createWidget(hmUI.widget.IMG, { x: 40, y: 50, src: 'lvl_' + Math.floor(step.getCurrent() / 10) + '.png' });
           hmUI.createWidget(hmUI.widget.IMG_TIME, {
             hour_startX: 10, hour_startY: 20, hour_array: ['plain.png'],
             hour_zero: 1, hour_space: 3, hour_align: hmUI.align.CENTER_H,
@@ -429,21 +438,24 @@ app.whenReady().then(async () => {
       const res = await API.openProjectPath(${JSON.stringify(v2Dir)});
       if (res.error) return { error: res.error };
       const report = (res.report || []).join('\\n');
+      const unresolved = (report.match(/could not be resolved:([\\s\\S]*?)(\\n\\n|$)/) || ['', ''])[1];
       await loadProject(res);
       $('logModal').hidden = true;
       const byKind = {};
       for (const e of project.elements) byKind[e.kind] = (byKind[e.kind] || 0) + 1;
       const hour = project.elements.find((e) => e.kind === 'IMG_TIME');
+      const lvl = project.elements.find((e) => e.kind === 'IMG_LEVEL');
       const both = project.elements.filter((e) => e.show === 'both').length;
       const dot = project.images.find((i) => i.name === 'dot.png');
       return {
-        report, byKind, layers: project.elements.length, both,
+        report, byKind, layers: project.elements.length, both, unresolved,
         name: project.name, device: project.device, appId: project.appId,
+        lvl: lvl ? { x: lvl.x, y: lvl.y, w: lvl.w, h: lvl.h, type: lvl.dataType, images: lvl.images } : null,
         hour: hour ? { part: hour.part, x: hour.x, y: hour.y, zero: hour.zero, space: hour.space, alignH: hour.alignH, show: hour.show, images: hour.images } : null,
         dot: dot ? { width: dot.width, url: dot.url.slice(0, 30) } : null,
         plain: !!project.images.find((i) => i.name === 'plain.png'),
       };`);
-    check('import a hand-written v2 (hmUI) project', !v2.error && v2.layers === 3,
+    check('import a hand-written v2 (hmUI) project', !v2.error && v2.layers === 4,
       v2.error || `${v2.layers} layers ${JSON.stringify(v2.byKind)}`);
     check('the v2 import keeps the container and the device, but not a foreign app id',
       !v2.error && v2.name === 'Imported V2' && v2.device === 'bip-6'
@@ -452,7 +464,13 @@ app.whenReady().then(async () => {
     // dot.png has no show_level (shown in both states on the watch) and the
     // plain.png pair is one physical widget per state
     check('a normal+AOD pair comes back as one layer, shown in both states',
-      !v2.error && v2.both === 2 && v2.byKind.IMG === 2, `both=${v2.both}, IMG=${v2.byKind.IMG}`);
+      !v2.error && v2.both === 3 && v2.byKind.IMG === 2, `both=${v2.both}, IMG=${v2.byKind.IMG}`);
+    // the picture is chosen from a step reading: the index never survives the
+    // sandbox, so the widget comes back as a level over the whole numbered set
+    check('a picture picked from a reading becomes a level over its whole set',
+      !v2.error && v2.lvl && v2.lvl.type === 'STEP' && v2.lvl.images.join(',') === 'lvl_0.png,lvl_1.png,lvl_2.png'
+      && v2.lvl.w === 2 && v2.lvl.h === 2 && !/lvl_NaN/.test(v2.unresolved),
+      v2.lvl ? `${v2.lvl.type} over ${v2.lvl.images.join(', ')} at ${v2.lvl.w}×${v2.lvl.h} (still reported missing: ${/lvl_NaN/.test(v2.unresolved)})` : 'no level layer');
     check('IMG_TIME keeps its part, zero, spacing and alignment',
       !v2.error && v2.hour && v2.hour.part === 'hour' && v2.hour.zero === 1 && v2.hour.space === 3
       && v2.hour.alignH === 'CENTER_H' && v2.hour.show === 'aod' && v2.hour.images.length === 1,
@@ -483,6 +501,24 @@ app.whenReady().then(async () => {
     check('the original project loads again after the imports',
       !restored.error && restored.layers >= 9, restored.error || `${restored.name}: ${restored.layers} layers`);
 
+    // A layer that lost its picture must never reach the watch: the generated
+    // code would open an image the package does not hold and the face would not
+    // come up. Such layers are reported and left out instead.
+    const codegen = require(path.join(__dirname, '..', 'core', 'codegen'));
+    const devices = require(path.join(__dirname, '..', 'core', 'devices'));
+    const stripped = codegen.generateWatchface({
+      name: 'Missing pictures', device: 'bip-6',
+      elements: [
+        { id: 'aaaa', kind: 'IMG', name: 'No picture', x: 1, y: 2, show: 'both' },
+        { id: 'bbbb', kind: 'IMG_LEVEL', name: 'Empty level', x: 3, y: 4, show: 'both', images: [] },
+      ],
+    }, devices.deviceByKey('bip-6'));
+    check('a layer whose picture is gone stays out of the export (and is reported)',
+      !/createWidget/.test(stripped.code)
+      && stripped.warnings.some((w) => /^No picture: no picture — left out of the export$/.test(w))
+      && stripped.warnings.some((w) => /^Empty level: no picture — left out of the export$/.test(w)),
+      `${stripped.warnings.length} warning(s): ${stripped.warnings.join(' · ')}`);
+
     // A folder can hold both a designer project and an app.json (this app's own
     // sample/export layout): Open prefers the project, Import imports anyway.
     fs.writeFileSync(path.join(v2Dir, 'Probe.wfproj.json'), JSON.stringify({
@@ -500,7 +536,7 @@ app.whenReady().then(async () => {
       !!(bothWays.project && bothWays.project.imported === false && bothWays.project.name === 'Designer One'),
       JSON.stringify(bothWays.project));
     check('Import imports that same folder anyway',
-      !!(bothWays.forced && bothWays.forced.imported === true && bothWays.forced.name === 'Imported V2' && bothWays.forced.layers === 3),
+      !!(bothWays.forced && bothWays.forced.imported === true && bothWays.forced.name === 'Imported V2' && bothWays.forced.layers === 4),
       JSON.stringify(bothWays.forced));
 
     // ---- fonts: name table parser, import, glyphs, Text font file ----------

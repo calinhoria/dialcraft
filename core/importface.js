@@ -38,6 +38,14 @@ const CONST_GROUPS = new Set(['widget', 'align', 'align_v', 'align_h', 'data_typ
 const TIME_PARTS = ['hour', 'minute', 'second'];
 const DATE_PARTS = ['month', 'day'];
 const IMAGE_EXT = /\.(png|jpe?g|webp|bmp|svg)$/i;
+// hmSensor.id.X -> designer data type, for a widget whose picture follows a
+// reading (only the ids that map onto a level-style image set are listed).
+const SENSOR_LEVEL = {
+  STEP: 'STEP', STEP_TOTAL: 'STEP', CALORIE: 'CAL', CAL: 'CAL', DISTANCE: 'DISTANCE',
+  HEART: 'HEART', HEART_RATE: 'HEART', BLOOD_OXYGEN: 'SPO2', SPO2: 'SPO2',
+  STRESS: 'STRESS', STAND: 'STAND', FAT_BURNING: 'FAT_BURNING', FLOOR: 'FLOOR',
+  BATTERY: 'BATTERY', PAI: 'PAI_DAILY', ALTITUDE: 'ALTITUDE',
+};
 
 // ---------------------------------------------------------------- utilities --
 function readJson(file) {
@@ -106,12 +114,20 @@ function showOf(v) {
 // widget call lands in `calls`.
 function makeShim(calls, notes) {
   const log = notes || [];
+  // the reading the code is currently looking at (hmSensor.createSensor(…)):
+  // a widget can pick its picture from it, which is how a runtime index is
+  // traced back to a data type
+  let sensor;
   const mk = (tag, name) => {
     const fn = function () { return mk(tag, name); };
     return new Proxy(fn, {
       get(_t, prop) {
         if (typeof prop === 'symbol') {
-          if (prop === Symbol.toPrimitive) return () => '';
+          // The shim stands for a value only the watch knows. Text stays empty
+          // so a name built around it does not turn to junk, but a *number*
+          // has to be NaN: `Math.floor(step / 10)` then reads `ring_NaN.png`
+          // instead of quietly picking index 0.
+          if (prop === Symbol.toPrimitive) return (hint) => (hint === 'number' ? NaN : '');
           // an empty iterator, so `for (… of shim)` walks nothing instead of
           // throwing inside the watchface's own try/catch
           if (prop === Symbol.iterator) return () => ({ next: () => ({ done: true, value: undefined }) });
@@ -129,14 +145,17 @@ function makeShim(calls, notes) {
         return mk(tag, `${name}.${key}`);
       },
       set() { return true; },
-      apply() { return mk(tag, `${name}()`); },
+      apply(_t, _this, args) {
+        if (/(^|\.)createSensor$/.test(name)) sensor = args && args.length ? args[0] : undefined;
+        return mk(tag, `${name}()`);
+      },
       construct() { return mk(tag, `new ${name}`); },
     });
   };
   const createWidget = (type, params) => {
     let p = {};
     try { p = JSON.parse(JSON.stringify(params || {})); } catch (e) { p = { ...(params || {}) }; }
-    calls.push({ type: nameOf(type) || String(type), params: p });
+    calls.push({ type: nameOf(type) || String(type), params: p, sensor });
     return mk('widgetInstance', 'widget');
   };
   const sandbox = {
@@ -176,7 +195,7 @@ function makeShim(calls, notes) {
   return {
     sandbox,
     getConfig: () => config,
-    reset() { calls.length = 0; config = null; },
+    reset() { calls.length = 0; config = null; sensor = undefined; },
     mk,
   };
 }
@@ -375,12 +394,71 @@ function importFaceDir(dir) {
   const primary = assetIndex(assetsRoot);
   const rootRel = path.relative(assetsBase, assetsRoot).split(path.sep).join('/');
 
+  // A face that picks its picture from a reading cycles a numbered set of files
+  // (ring_0.png … ring_10.png). The index comes out of a value only the watch
+  // has, so the reference arrives as `ring_NaN.png`; the set it belongs to is
+  // what the widget really showed. Sets are indexed both by the paths the
+  // references use and by every folder boundary, because the assets root can sit
+  // one folder above them (`assets/default/img/…` for `img/…`).
+  const sets = new Map();
+  const setsLoose = new Map();
+  const addSet = (map, rel, ref) => {
+    const m = /^(.*?)(\d+)(\.[A-Za-z0-9]+)$/.exec(ref);
+    if (!m) return;
+    const key = `${m[1]}\u0000${m[3].toLowerCase()}`;
+    if (!map.has(key)) map.set(key, []);
+    if (!map.get(key).some((e) => e.rel === rel)) map.get(key).push({ ref, rel, n: Number(m[2]) });
+  };
+  for (const rel of primary.byRel.keys()) addSet(sets, rel, rel);
+  for (const rel of tree.byRel.keys()) {
+    for (let i = 0; i < rel.length; i++) {
+      if (i && rel[i - 1] !== '/') continue;
+      addSet(setsLoose, rel, rel.slice(i));
+    }
+  }
+  for (const list of sets.values()) list.sort((a, b) => a.n - b.n);
+  for (const list of setsLoose.values()) list.sort((a, b) => a.n - b.n);
+
   const device = deviceFor(appJson, report);
   const images = new Map();          // designer name -> image record
   const missing = new Set();
   const ctx = {
     device,
     compressed: 0,
+    note: (line) => { if (!notes.includes(line)) notes.push(line); },
+    // The pictures behind a reference whose index the sandbox could not compute
+    // (…_NaN.png), lowest index first. Resolving them here also takes the
+    // reference off the "could not be resolved" list — it just arrived without
+    // its index.
+    dynamic(ref) {
+      const s = String(ref || '');
+      const dot = s.lastIndexOf('.');
+      if (dot <= 0) return [];
+      const stem = s.slice(0, dot);
+      const ext = s.slice(dot).toLowerCase();
+      // the index the sandbox could not work out is glued onto the stem, so the
+      // set is the longest prefix of it the package actually holds
+      const find = (map) => {
+        for (let k = stem.length; k > 0; k--) {
+          const hit = map.get(`${stem.slice(0, k)}\u0000${ext}`);
+          if (hit) return hit;
+        }
+        return null;
+      };
+      let list = find(sets);
+      if (!list) {
+        const loose = find(setsLoose);
+        if (!loose) return [];
+        // several device folders can hold the same set: keep the one the
+        // references are relative to
+        const own = rootRel ? loose.filter((e) => e.rel.startsWith(`${rootRel}/`)) : [];
+        list = own.length ? own : loose;
+      }
+      const names = list.map((e) => ctx.resolve(e.ref)).filter(Boolean);
+      if (names.length) missing.delete(s);
+      return names;
+    },
+    size(name) { const im = images.get(name); return im ? { w: im.width, h: im.height } : null; },
     resolve(ref) {
       let abs = null;
       let name = null;
@@ -424,7 +502,7 @@ function importFaceDir(dir) {
   // 5. map widgets -> designer elements
   const skipped = new Map();
   let elements = [];
-  for (const call of captured.calls) elements.push(...mapWidget(call.type, call.params, ctx, skipped));
+  for (const call of captured.calls) elements.push(...mapWidget(call.type, call.params, ctx, skipped, call.sensor));
   elements = mergeStates(elements);
 
   // 6. fonts the Text layers reference (assets/<target>/fonts/<file>)
@@ -525,23 +603,47 @@ function importFaceDir(dir) {
 // ------------------------------------------------------- widget -> element ---
 function layerName(base, suffix) { return suffix ? `${base} (${suffix})` : base; }
 
-function mapWidget(type, p, ctx, skipped) {
+function mapWidget(type, p, ctx, skipped, sensor) {
   const kindId = WIDGET_KIND[type];
   if (!kindId) { skipped.set(type || '?', (skipped.get(type || '?') || 0) + 1); return []; }
   const img = (ref) => ctx.resolve(ref);
   const imgs = (arr) => (Array.isArray(arr) ? arr.map(img).filter(Boolean) : []);
+  // A picture the face picked from a reading: the index never made it through
+  // the sandbox, but the whole set is in the package, so the widget comes in as
+  // a level widget over it instead of as a picture with a broken name.
+  const picked = (ref) => {
+    if (!ctx.dynamic || img(ref)) return null;
+    const names = ctx.dynamic(ref);
+    if (names.length < 2) return null;
+    const key = SENSOR_LEVEL[nameOf(sensor)];
+    ctx.note(`pictures picked at runtime (${ref}) came in as a set of ${names.length}` +
+      (key ? ` — the layer follows ${key}` : ' — pick the reading it should follow'));
+    return { names, dataType: key && dataType(key) ? key : undefined };
+  };
   const base = { show: showOf(p.show_level), alpha: num(p.alpha) };
   const box = { x: num(p.x), y: num(p.y), w: num(p.w), h: num(p.h) };
   const mk = (id, patch) => newElement(id, clean(patch));
   const el = (id, patch) => [mk(id, { ...base, ...patch })];
 
   switch (type) {
-    case 'IMG':
+    case 'IMG': {
+      const src = img(p.src);
+      const fromReading = src ? null : picked(p.src);
+      if (fromReading) {
+        const size = ctx.size(fromReading.names[0]);
+        return el('IMG_LEVEL', {
+          name: 'Level', ...box,
+          w: box.w === undefined && size ? size.w : undefined,
+          h: box.h === undefined && size ? size.h : undefined,
+          images: fromReading.names, dataType: fromReading.dataType,
+        });
+      }
       return el('IMG', {
-        name: 'Image', ...box, src: img(p.src),
+        name: 'Image', ...box, src,
         posX: num(p.pos_x), posY: num(p.pos_y), angle: num(p.angle),
         centerX: num(p.center_x), centerY: num(p.center_y),
       });
+    }
     case 'TEXT': {
       const font = typeof p.font === 'string' ? path.basename(p.font) : undefined;
       return el('TEXT', {

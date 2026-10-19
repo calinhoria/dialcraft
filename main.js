@@ -343,14 +343,26 @@ function writeZeusProject(outDir, payload) {
   }
   const keep = new Set((images || []).map((i) => i.name));
   for (const name of frameNames) if (!usedNames.has(name)) keep.delete(name); // lives in images/anim/
-  for (const old of fs.readdirSync(imgDir)) {
-    if (/\.png$/i.test(old) && !keep.has(old) && old !== 'preview.png') { try { fs.unlinkSync(path.join(imgDir, old)); } catch (e) { } }
-  }
+  // An image's name is the path the generated code asks for, so a name that
+  // carries a folder has to be written in that folder — flattening it would
+  // leave the widget pointing at a file the package does not hold. Sweep what
+  // an earlier export left behind at the same time.
+  const sweep = (dir, rel) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      const key = rel ? `${rel}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) {
+        sweep(full, key);
+        if (!fs.readdirSync(full).length) fs.rmdirSync(full);
+      } else if (/\.png$/i.test(entry.name) && !keep.has(key) && key !== 'preview.png') {
+        try { fs.unlinkSync(full); } catch (e) { /* ignore */ }
+      }
+    }
+  };
+  try { sweep(imgDir, ''); } catch (e) { /* no images dir yet */ }
   for (const im of images || []) {
     if (frameNames.has(im.name) && !usedNames.has(im.name)) continue; // exported under images/anim/
-    const target = im.name.includes('anim/')
-      ? path.join(imgDir, im.name) // a frame that is also used as a plain image
-      : path.join(imgDir, path.basename(im.name));
+    const target = path.join(imgDir, im.name);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, Buffer.from(im.dataBase64, 'base64'));
   }
