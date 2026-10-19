@@ -2746,7 +2746,7 @@ function renderPropsBody(host) {
     const gb = groupBox(`${sel.length} layers selected`);
     // the face variant helper sits first: picking which layers stay on in AOD
     // is the usual reason to select several at once
-    gb.appendChild(ctlRow('Show in', ctlShowIn(sel), `Applies to all ${sel.length} selected layers`));
+    gb.appendChild(stackRow('Show in', ctlShowIn(sel), `Applies to all ${sel.length} selected layers`));
     gb.appendChild(propNote('Show in, Alpha and the styles below apply to every selected layer.'));
     host.appendChild(gb);
     const gid = commonGroup(sel);
@@ -2764,7 +2764,7 @@ function renderPropsBody(host) {
   const targets = commonTargets(e);
   section(host, 'Layer');
   host.appendChild(ctlRow('Name', ctlText(e, 'name', layerLabel(e))));
-  if (!many) host.appendChild(ctlRow('Show in', ctlShowIn(targets)));
+  if (!many) host.appendChild(stackRow('Show in', ctlShowIn(targets)));
   host.appendChild(ctlRow('Alpha', ctlAlpha(targets),
     many ? `Applies to all ${sel.length} selected layers` : ''));
 
