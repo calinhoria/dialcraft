@@ -45,9 +45,13 @@
   instead of falling back to a system font.
 - **AOD (always-on) design**: preview the normal and screen-off states.
   *Check* measures the lit-pixel budget and the other Zepp design-spec rules.
-- **Import existing faces**: open a Zeus CLI project or a Watchface Maker export
-  and keep editing. Compressed Maker images are decoded, and runtime-picked image
-  sets are traced back to their data source.
+- **Import existing faces**: open a watchface `.zip`, a Zeus CLI project or a
+  Watchface Maker export and keep editing. Compressed Maker images (8-bit and
+  16-bit) are decoded, runtime-picked image sets are traced back to their data
+  source, digits the face sets from the clock become Digital time layers, and
+  AM/PM labels, background variants, tap zones, complication slots with their edit
+  masks, linear bars and sleep charts come across as real layers. Anything that
+  cannot be kept is listed in the import report.
 - **Ship it**: export a Zeus project, build the installable `.zab` with the Zeus
   CLI, or serve it on your LAN and install it with the Zepp App's developer-mode
   QR scanner.
