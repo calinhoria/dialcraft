@@ -135,7 +135,17 @@ function updateHistoryButtons() {
   $('btnUndo').disabled = !past.length;
   $('btnRedo').disabled = !future.length;
 }
+// While a gesture runs (scrubbing a number, a burst of wheel steps) every
+// change is held, and the whole gesture becomes one undo step at the end.
+let historyHold = null;
+function holdHistory() { if (historyHold == null) historyHold = snapshot(); }
+function releaseHistory() {
+  const before = historyHold;
+  historyHold = null;
+  if (before != null) commitHistory(before);
+}
 function pushHistory() {
+  if (historyHold != null) { setDirty(true); scheduleCode(); return; }
   const s = snapshot();
   if (s == null) return;
   if (past.length && past[past.length - 1] === s) return;
@@ -219,6 +229,12 @@ window.addEventListener('keydown', (e) => {
     const sel = selection();
     if (!sel.length) return;
     e.preventDefault(); deleteSelection(); return;
+  }
+  // face variant of the selection: Shift+N normal, Shift+A AOD, Shift+B both
+  if (e.shiftKey && !mod && /^[NAB]$/i.test(e.key) && selection().length) {
+    e.preventDefault();
+    setShowIn(selection(), { n: 'normal', a: 'aod', b: 'both' }[e.key.toLowerCase()]);
+    return;
   }
   if (e.key === 'Escape') { selectedId = null; multiSel = new Set(); refreshPanels(); render(); return; }
   if (e.key.startsWith('Arrow') && selection().length) {
@@ -757,9 +773,11 @@ function weekIndexS() { return Math.max(0, Math.min(6, (+dateParts.weekday || 1)
 function digitPreviewNote(e) {
   const t = digitTextFor(e);
   const isDate = e.kind === 'IMG_DATE';
-  const sample = isDate
-    ? `${dateParts.year}-${pad2(dateParts.month)}-${pad2(dateParts.day)}`
-    : `${pad2(clock.h)}:${pad2(clock.m)}:${pad2(clock.s)}`;
+  // with the live clock running the value changes every second, so the note
+  // describes the rule instead of quoting a value that is stale a second later
+  const sample = isDate ? `${dateParts.year}-${pad2(dateParts.month)}-${pad2(dateParts.day)}`
+      : `${pad2(clock.h)}:${pad2(clock.m)}:${pad2(clock.s)}`;
+  const what = liveClock ? 'the live time' : `“${t}” at ${sample}`;
   const hour12 = e.kind === 'IMG_TIME' && (e.part || 'hour') === 'hour12';
   const key = `${isDate ? (e.part === 'month' ? 'month' : 'day') : (e.part || 'hour')}_zero`;
   const zero = !!+e.zero;
@@ -770,7 +788,7 @@ function digitPreviewNote(e) {
   const cap = digitCapacity(e);
   const src = followSource(e);
   if (src) {
-    return `Preview draws “${t}” at ${sample} right after “${src.name || src.part}” (Follow) — ${zeroTxt}, with that layer's spacing and alignment.`;
+    return `Preview draws ${what} right after “${src.name || src.part}” (Follow) — ${zeroTxt}, with that layer's spacing and alignment.`;
   }
   const boxTxt = cap ? `a ${cap}-digit box ${Math.round(b.w)}×${Math.round(b.h)}` : `its ${Math.round(b.w)}px run`;
   const alignTxt = hour12 ? 'the run starts at the box'
@@ -778,7 +796,7 @@ function digitPreviewNote(e) {
       : e.alignH === 'RIGHT' ? 'Align Right puts the run at the box\'s right edge'
         : e.alignH === 'CENTER_H' ? 'Align Center centres the run in the box'
           : 'Align Left puts the run at the box\'s left edge';
-  return `Preview draws “${t}” at ${sample} in ${boxTxt} — ${zeroTxt} · ${alignTxt}.`;
+  return `Preview draws ${what} in ${boxTxt} — ${zeroTxt} · ${alignTxt}.`;
 }
 
 // digit string a widget shows in the preview. It has to mirror what the
@@ -1731,9 +1749,13 @@ function composePreviewB64() {
   const cv = document.createElement('canvas');
   cv.width = d.w; cv.height = d.h;
   const prev = exportRender;
+  // the store preview and app icon always read 10:09:36 (the design spec's
+  // reference time), whatever the live clock in the editor shows
+  const keep = { clock, dateParts };
+  clock = { ...REF_CLOCK }; dateParts = { ...REF_DATE };
   exportRender = true;
-  drawScene(cv.getContext('2d'), d.w, d.h, 'normal', false);
-  exportRender = prev;
+  try { drawScene(cv.getContext('2d'), d.w, d.h, 'normal', false); }
+  finally { exportRender = prev; clock = keep.clock; dateParts = keep.dateParts; }
   return cv.toDataURL('image/png').split(',')[1];
 }
 
@@ -2057,15 +2079,89 @@ function renderLayers() {
   host.querySelectorAll('.group-body').forEach((b) => makeSortable(b));
 }
 
+// ------------------------------------------------------------ number fields --
+// Number fields work the way design tools do:
+//   wheel        over a focused field steps it (Shift ×10) instead of scrolling
+//   ↑ / ↓        step it, Shift ×10
+//   drag label   scrub: drag a row's label — or the X / Y / W / H prefix — left
+//                or right, 1 unit per pixel (Shift ×10); a click still focuses
+// A whole drag or wheel burst is one undo step (holdHistory / releaseHistory).
+const NUM_SCOPE = '#props, #fontModal';
+function scopedNumber(el) {
+  return el && el.matches && el.matches('input[type="number"]') && el.closest(NUM_SCOPE) ? el : null;
+}
+function setNumber(inp, v) {
+  const step = +inp.step || 1;
+  if (inp.min !== '') v = Math.max(+inp.min, v);
+  if (inp.max !== '') v = Math.min(+inp.max, v);
+  v = +(Math.round(v / step) * step).toFixed(4);
+  if (String(v) === inp.value) return;
+  inp.value = String(v);
+  inp.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function stepNumber(inp, steps) { setNumber(inp, (+inp.value || 0) + steps * (+inp.step || 1)); }
+let wheelTimer = null;
+document.addEventListener('wheel', (ev) => {
+  const inp = scopedNumber(ev.target);
+  if (!inp || document.activeElement !== inp) return;   // unfocused: the panel scrolls
+  ev.preventDefault();                                   // also stops the native step
+  const d = ev.deltaY || ev.deltaX;                      // Shift+wheel turns into deltaX on macOS
+  if (!d) return;
+  holdHistory();
+  stepNumber(inp, (d < 0 ? 1 : -1) * (ev.shiftKey ? 10 : 1));
+  clearTimeout(wheelTimer);
+  wheelTimer = setTimeout(releaseHistory, 500);
+}, { passive: false });
+document.addEventListener('keydown', (ev) => {
+  const inp = scopedNumber(ev.target);
+  if (!inp || (ev.key !== 'ArrowUp' && ev.key !== 'ArrowDown') || ev.metaKey || ev.ctrlKey) return;
+  ev.preventDefault();
+  stepNumber(inp, (ev.key === 'ArrowUp' ? 1 : -1) * (ev.shiftKey ? 10 : 1));
+});
+// the number field a label scrubs: a prefix's own field, or the only one in its row
+function scrubTarget(lbl) {
+  if (lbl.classList.contains('pfx')) return lbl.parentElement.querySelector('input[type="number"]');
+  const all = lbl.parentElement.querySelectorAll('input[type="number"]');
+  return all.length === 1 ? all[0] : null;
+}
+document.addEventListener('pointerdown', (ev) => {
+  if (ev.button !== 0 || !ev.target.closest) return;
+  if (ev.target.closest('.info')) return;
+  const lbl = ev.target.closest('#props .pfx, #props .row > .lbl, #fontModal .row > .lbl');
+  const inp = lbl && scrubTarget(lbl);
+  if (!inp) return;
+  ev.preventDefault();
+  const start = +inp.value || 0, x0 = ev.clientX;
+  let moved = false;
+  try { lbl.setPointerCapture(ev.pointerId); } catch (e) { /* the window listeners still follow */ }
+  const move = (e) => {
+    const dx = e.clientX - x0;
+    if (!moved && Math.abs(dx) < 3) return;
+    if (!moved) { moved = true; holdHistory(); document.body.classList.add('scrubbing'); }
+    setNumber(inp, start + Math.round(dx) * (e.shiftKey ? 10 : 1) * (+inp.step || 1));
+  };
+  const end = () => {
+    window.removeEventListener('pointermove', move);
+    window.removeEventListener('pointerup', end);
+    window.removeEventListener('pointercancel', end);
+    document.body.classList.remove('scrubbing');
+    if (moved) { releaseHistory(); refreshPanels(); }
+    else { inp.focus(); inp.select(); }
+  };
+  window.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', end);
+  window.addEventListener('pointercancel', end);
+});
+
 // ----------------------------------------------------------------- properties --
 // What each property does, shown by the ⓘ next to its label. Keyed by
 // "<KIND>:<label>" for a kind-specific meaning, else by the label alone; a row
 // built with an explicit title uses that instead.
 const PROP_HELP = {
   'Name': 'The layer’s name in the designer and in the generated code comments. The watch never shows it.',
-  'Show in': 'When the watch draws this layer: Normal (screen on), AOD (always-on display, screen dimmed), both, or Edit (only while the wearer customises the face).',
+  'Show in': 'Which face variant draws this layer: Normal (screen on), AOD (always-on display, screen off), Both, or Edit (only while the wearer customises the face). Applies to every selected layer. Shortcuts: Shift+N / Shift+A / Shift+B.',
   'Alpha': 'Opacity from 0 (invisible) to 255 (solid).',
-  'Position': 'Top-left corner of the layer, in screen pixels from the top-left of the display.',
+  'Position': 'Top-left corner of the layer, in screen pixels from the top-left of the display. Drag the X / Y letters to scrub; the wheel steps a focused field (Shift ×10).',
   'Box': 'Width and height of the layer box, in pixels.',
   'IMG:Box': 'Size of the widget area. The watch draws the picture at its own pixel size — this does not stretch it. “Use image size” matches the two.',
   'Center': 'Centre point on the screen, in pixels.',
@@ -2540,6 +2636,42 @@ function pairRow(label, parts, title) {
   }
   return ctlRow(label, wrap, title);
 }
+// Which face variant a layer belongs to — Normal (screen on), AOD (screen off),
+// both, or Edit (only while the wearer customises the face) — as one-click
+// segments that set every selected layer at once. A mixed selection lights no
+// segment and says how it splits.
+const SHOW_SEGMENTS = [
+  ['normal', 'Normal', 'Only while the screen is on'],
+  ['aod', 'AOD', 'Only on the always-on (screen-off) display'],
+  ['both', 'Both', 'In the normal face and in AOD (exported as two widgets)'],
+  ['edit', 'Edit', 'Only while the wearer customises the face'],
+];
+function ctlShowIn(targets) {
+  const wrap = mkEl('div', 'seg');
+  const cur = new Set(targets.map((t) => t.show || 'normal'));
+  for (const [key, label, tip] of SHOW_SEGMENTS) {
+    const b = mkEl('button', 'seg-b' + (cur.size === 1 && cur.has(key) ? ' on' : ''), label);
+    b.type = 'button';
+    b.dataset.show = key;
+    b.title = targets.length > 1 ? `${tip} — all ${targets.length} selected layers` : tip;
+    b.onclick = () => setShowIn(targets, key);
+    wrap.appendChild(b);
+  }
+  if (cur.size > 1) {
+    const counts = SHOW_SEGMENTS.map(([k, l]) => [l, targets.filter((t) => (t.show || 'normal') === k).length]).filter(([, n]) => n);
+    wrap.title = `Mixed: ${counts.map(([l, n]) => `${n} ${l}`).join(', ')}`;
+    wrap.classList.add('mixed');
+  }
+  return wrap;
+}
+function setShowIn(targets, key) {
+  if (!targets.length || targets.every((t) => (t.show || 'normal') === key)) return;
+  pushHistory();
+  setOn(targets, 'show', key);
+  refreshPanels(); render(); scheduleCode();
+  const name = SHOW_SEGMENTS.find(([k]) => k === key)[1];
+  status(`${targets.length === 1 ? `“${layerLabel(targets[0])}”` : `${targets.length} layers`} → ${name === 'Both' ? 'Normal + AOD' : name}.`);
+}
 // opacity as a slider with its number beside it
 function ctlAlpha(targets) {
   const first = targets[0] || {};
@@ -2602,7 +2734,10 @@ function renderPropsBody(host) {
   const sel = selection();
   if (sel.length > 1) {
     const gb = groupBox(`${sel.length} layers selected`);
-    gb.appendChild(propNote('Show in and Alpha below apply to every selected layer.'));
+    // the face variant helper sits first: picking which layers stay on in AOD
+    // is the usual reason to select several at once
+    gb.appendChild(ctlRow('Show in', ctlShowIn(sel), `Applies to all ${sel.length} selected layers`));
+    gb.appendChild(propNote('Show in, Alpha and the styles below apply to every selected layer.'));
     host.appendChild(gb);
     const gid = commonGroup(sel);
     if (gid) host.appendChild(ctlRow('Group name', groupNameInput(gid), 'Rename this group (double-clicking its name in the layers panel works too)'));
@@ -2619,9 +2754,7 @@ function renderPropsBody(host) {
   const targets = commonTargets(e);
   section(host, 'Layer');
   host.appendChild(ctlRow('Name', ctlText(e, 'name', layerLabel(e))));
-  host.appendChild(ctlRow('Show in',
-    ctlSelect(e.show || 'normal', SHOW_LEVELS.map((s) => ({ value: s.key, label: s.label })), (v) => { setOn(targets, 'show', v); }),
-    many ? `Applies to all ${sel.length} selected layers` : ''));
+  if (!many) host.appendChild(ctlRow('Show in', ctlShowIn(targets)));
   host.appendChild(ctlRow('Alpha', ctlAlpha(targets),
     many ? `Applies to all ${sel.length} selected layers` : ''));
 
@@ -3724,10 +3857,11 @@ function setLiveClock(on) {
   $('btnPreviewLive').classList.toggle('on', liveClock);
   if (liveClock) {
     tickClock();
-    if (!clockTimer) clockTimer = setInterval(() => { tickClock(); scheduleCode(); render(); }, 1000);
+    if (!clockTimer) clockTimer = setInterval(() => { tickClock(); render(); }, 1000);
   } else if (clockTimer) {
     clearInterval(clockTimer); clockTimer = null;
   }
+  if (project) renderProps();     // the digit notes say "the live time" or quote the sample
   render();
 }
 $('tdCurrent').onchange = () => setLiveClock($('tdCurrent').checked);
@@ -3774,7 +3908,9 @@ function renderProjectPanel() {
   $('inpName').value = project.name || '';
   $('inpDesc').value = project.description || '';
   $('inpAppId').value = project.appId || '';
-  $('projDevice').value = project.device;
+  const dv = dev();
+  $('projDeviceName').textContent = dv.name;
+  $('projDevice').title = `${dv.label || dv.name} — click to retarget the project to another watch (scales the layout)`;
   $('projLang').value = project.language || '';
   $('projLang').placeholder = 'en-US';
   $('projLang').title = languageSample();
@@ -3982,7 +4118,7 @@ function newElement(kindId, patch = {}) {
     name: k ? k.label : kindId,
     x: 0, y: 0,
     // a component added from the menu starts in Normal only; AOD is opt-in
-    // (the presets decide it per layer: clock in AOD, readings normal only)
+    // (presets too — Show in / Shift+B opts the selection into AOD)
     show: 'normal',
     visible: true, locked: false, group: null, alpha: 255,
     ...(k ? k.defaults : {}),
@@ -4282,9 +4418,9 @@ async function applyPreset(id) {
   switch (id) {
     case 'bg': {
       pushHistory();
-      const e = newElement('FILL_RECT', { x: 0, y: 0, w: d.w, h: d.h, color: '#000000', radius: 0, name: 'Background', locked: true, show: 'both' });
+      const e = newElement('FILL_RECT', { x: 0, y: 0, w: d.w, h: d.h, color: '#000000', radius: 0, name: 'Background', locked: true, show: 'normal' });
       project.elements.unshift(e);
-      status('Added a black background (locked, in both states).');
+      status('Added a black background (locked).');
       break;
     }
     case 'clock': return clockPreset(false);
@@ -4295,7 +4431,7 @@ async function applyPreset(id) {
     case 'month': {
       pushHistory();
       const digits = await ensureDigitNames();
-      const e = newElement('IMG_DATE', { part: id, images: digits, zero: 0, show: 'both', x: cx - 30, y: cy, name: id === 'month' ? 'Month' : 'Day' });
+      const e = newElement('IMG_DATE', { part: id, images: digits, zero: 0, show: 'normal', x: cx - 30, y: cy, name: id === 'month' ? 'Month' : 'Day' });
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
       break;
     }
@@ -4383,9 +4519,9 @@ async function clockPreset(withSeconds) {
   for (const part of seq) {
     if (part.t === 'colon') {
       colonCount++;
-      els.push(newElement('IMG', { src: colon, show: 'both', x, y: Math.round((d.h - colonH) / 2), w: 0, h: 0, name: colonCount === 1 ? 'Colon' : 'Colon 2', glyph: glyphSpecFrom(style) }));
+      els.push(newElement('IMG', { src: colon, show: 'normal', x, y: Math.round((d.h - colonH) / 2), w: 0, h: 0, name: colonCount === 1 ? 'Colon' : 'Colon 2', glyph: glyphSpecFrom(style) }));
     } else {
-      els.push(newElement('IMG_TIME', { part: part.t, images: digits, zero: part.t === 'hour' ? 0 : 1, space: 0, show: part.t === 'second' ? 'normal' : 'both', x, y, name: part.t.charAt(0).toUpperCase() + part.t.slice(1), glyph: glyphSpecFrom(style) }));
+      els.push(newElement('IMG_TIME', { part: part.t, images: digits, zero: part.t === 'hour' ? 0 : 1, space: 0, show: 'normal', x, y, name: part.t.charAt(0).toUpperCase() + part.t.slice(1), glyph: glyphSpecFrom(style) }));
     }
     x += part.w + gap;
   }
@@ -4420,7 +4556,7 @@ async function analogPreset() {
 async function weekdayPreset() {
   pushHistory();
   const d = dev();
-  const e = newElement('IMG_WEEK', { images: [], show: 'both', y: Math.round(d.h * 0.2), name: 'Weekday' });
+  const e = newElement('IMG_WEEK', { images: [], show: 'normal', y: Math.round(d.h * 0.2), name: 'Weekday' });
   rememberGlyphStyle(e, 40);
   e.images = await genLabelSet(e, 'week');
   const m = imgMeta(e.images[0]);
@@ -5090,7 +5226,7 @@ function openConvertDialog() {
 $('btnNew').onclick = async () => { if (await guardUnsaved()) openNewFaceDialog(); };
 $('btnEmptyNew').onclick = openNewFaceDialog;
 $('btnEmptyOpenProject').onclick = () => $('btnOpen').click();
-$('btnConvert').onclick = openConvertDialog;
+$('projDevice').onclick = openConvertDialog;
 $('newFaceCancel').onclick = () => { $('newFaceModal').hidden = true; };
 $('newFaceCreate').onclick = async () => {
   const name = $('newFaceName').value.trim() || 'My watchface';
@@ -5193,12 +5329,6 @@ function buildLangSuggest() {
 }
 buildLangSuggest();
 $('projFont').onchange = (ev) => { glyphFont = ev.target.value; if (project) { project.font = glyphFont; scheduleCode(); buildGlyphsMenu(); } };
-$('projDevice').onchange = (ev) => {
-  if (!project || ev.target.value === project.device) return;
-  const target = ev.target.value;
-  $('projDevice').value = project.device;   // revert; use the Convert button instead
-  status('Use “Change device…” to retarget the project (it scales the layout).');
-};
 
 // ------------------------------------------------------------ open / save / recents --
 function setEmptyState() {
@@ -6081,7 +6211,6 @@ async function init() {
   for (const d of DATA_TYPES) DT_BY_KEY[d.key] = d;
   for (const k of KINDS) KIND_BY_ID[k.id] = k;
   fillFontSelect($('projFont'));
-  fillDeviceSelect($('projDevice'));
   fillDeviceSelect($('newFaceDevice'));
   $('newFaceDevice').value = DEVICES[0].target;
   glyphFont = $('projFont').value;
@@ -6091,7 +6220,7 @@ async function init() {
   resetTestData();
   renderTestData();
   setPreviewMode('normal');
-  setLiveClock(false);
+  setLiveClock(true);
   setEmptyState();
   API.onCloseRequest(async () => {
     // a failure in the prompt must never leave the window impossible to close

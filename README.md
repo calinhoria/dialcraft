@@ -71,7 +71,8 @@ Electron's install script. Run `npm install --foreground-scripts`.
 2. Select the hour layer and, in **Properties → Glyph style**, change the font,
    size or fill. The digits, the colon and any `°` follow along.
 3. **Presets ▾** adds weekday, date, steps, heart rate, battery, weather, arcs …
-4. Switch the preview to **AOD** and set *Show in* for the layers that stay on.
+4. Select the layers that should stay on in always-on mode and click **Both** under
+   *Show in* (or press `⇧B`), then check them with the **AOD** preview.
 5. Press **Check**, then **Build .zab**, or **Install** to scan the QR code with
    *Zepp App → Profile → your device → Developer Mode*.
 
@@ -94,6 +95,8 @@ property does on the watch.
 | Duplicate, group, ungroup | `⌘D`, `⌘G`, `⌘⇧G` |
 | Bring forward / send backward | `⌘]` / `⌘[` (add `⇧` for front / back) |
 | Nudge | arrow keys (`⇧` for 10 px) |
+| Face variant of the selection | `⇧N` Normal · `⇧A` AOD · `⇧B` Both |
+| Number fields | wheel or `↑`/`↓` on a focused field, or drag its label to scrub (`⇧` for ×10) |
 | Delete | `Delete` / `Backspace` |
 
 ## Documentation

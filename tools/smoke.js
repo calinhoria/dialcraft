@@ -53,7 +53,10 @@ app.whenReady().then(async () => {
     check('metadata loaded', meta.devices > 30 && meta.kinds > 15, `${meta.devices} devices, ${meta.kinds} kinds, ${meta.dataTypes} data types`);
 
     const created = await run(`
+      setLiveClock(false);   // checks below compare against the 10:09:36 reference time
       await createProject('Smoke Face', ${JSON.stringify(TARGET)}, 'digital');
+      // presets start in Normal; the clock opts into AOD through the variant helper
+      setShowIn(elements().filter((e) => (e.kind === 'IMG_TIME' && e.part !== 'second') || e.kind === 'IMG'), 'both');
       return { elements: project.elements.length, images: project.images.length, device: project.device };`);
     check('new watchface + digital clock preset', created.elements >= 3 && created.images >= 10,
       `${created.elements} layers, ${created.images} images on ${created.device}`);
@@ -279,6 +282,38 @@ app.whenReady().then(async () => {
       return { backFirst, dragFirst, groupBack, groupDraggable, count, expected: before.length + 5 };`);
     check('a layer goes below a group (Send to back and drag), a group moves as one unit',
       order.backFirst && order.dragFirst && order.groupBack && order.groupDraggable && order.count === order.expected, JSON.stringify(order));
+
+    // ---- number fields: wheel, arrows, scrub; device field; preview time ----
+    const numInput = await run(`
+      const e = await addElement('FILL_RECT', { name: 'Num test', x: 100, y: 100, w: 50, h: 50 });
+      selectedId = e.id; multiSel = new Set([e.id]); refreshPanels();
+      const x0 = e.x, y0 = e.y;
+      const xin = [...document.querySelectorAll('#props .pf')].find((f) => f.querySelector('.pfx').textContent === 'X').querySelector('input');
+      xin.focus();
+      xin.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, bubbles: true, cancelable: true }));
+      const afterWheel = e.x;
+      xin.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', shiftKey: true, bubbles: true, cancelable: true }));
+      const afterArrow = e.x;
+      const steps0 = past.length;
+      const pfx = [...document.querySelectorAll('#props .pfx')].find((p) => p.textContent === 'Y');
+      const r = pfx.getBoundingClientRect();
+      const at = (x) => ({ clientX: x, clientY: r.top + 4, bubbles: true, button: 0, pointerId: 1 });
+      pfx.dispatchEvent(new PointerEvent('pointerdown', at(r.left)));
+      window.dispatchEvent(new PointerEvent('pointermove', at(r.left + 10)));
+      window.dispatchEvent(new PointerEvent('pointermove', at(r.left + 25)));
+      window.dispatchEvent(new PointerEvent('pointerup', at(r.left + 25)));
+      const out = { afterWheel: afterWheel - x0, afterArrow: afterArrow - x0, afterScrub: e.y - y0, scrubSteps: past.length - steps0,
+        deviceField: $('projDevice').tagName, deviceText: $('projDeviceName').textContent };
+      // the saved preview reads 10:09:36 even with the live clock on
+      clock = { h: 3, m: 41, s: 7 };
+      const a = composePreviewB64(); clock = { ...REF_CLOCK }; const b = composePreviewB64();
+      out.previewAtRef = a === b;
+      deleteElements([e]);
+      return out;`);
+    check('number fields: wheel and Shift+arrow step a focused field, dragging a label scrubs (one undo step); device is a field; preview at 10:09:36',
+      numInput.afterWheel === 1 && numInput.afterArrow === 11 && numInput.afterScrub === 25 && numInput.scrubSteps === 1
+      && numInput.deviceField === 'BUTTON' && /\S/.test(numInput.deviceText) && numInput.previewAtRef,
+      JSON.stringify(numInput));
 
     // ---- IMG_POINTER: x/y is the pivot inside the image ---------------------
     const pointer = await run(`
@@ -1558,14 +1593,18 @@ app.whenReady().then(async () => {
     const showDefault = await run(`
       const fresh = await addElement('IMG_TIME', { name: 'Fresh clock' });
       const freshText = await addElement('TEXT', { text: 'X' });
-      const clockHour = project.elements.find((e) => e.kind === 'IMG_TIME' && e.part === 'hour');
+      const before = project.elements.length;
+      await applyPreset('clock');
+      const added = project.elements.slice(before);
+      const clockHour = added.find((e) => e.kind === 'IMG_TIME' && e.part === 'hour');
+      project.elements = project.elements.slice(0, before);
       const reading = project.elements.find((e) => e.kind === 'TEXT_IMG' && e.dataType === 'STEP');
       const labels = SHOW_LEVELS.map((s) => s.key + ':' + s.label);
       return { fresh: fresh.show, freshText: freshText.show, clockHour: clockHour && clockHour.show,
         reading: reading && reading.show, labels };`);
-    check('new components start in Normal only (presets still opt into AOD)',
+    check('new components and presets start in Normal only (AOD is opt-in)',
       showDefault.fresh === 'normal' && showDefault.freshText === 'normal'
-      && showDefault.clockHour === 'both' && showDefault.reading === 'normal',
+      && showDefault.clockHour === 'normal' && showDefault.reading === 'normal',
       `added IMG_TIME ${showDefault.fresh}, TEXT ${showDefault.freshText} · clock preset hour ${showDefault.clockHour}, step reading ${showDefault.reading} · levels ${showDefault.labels.join(', ')}`);
 
     // ---- the layers toolbar: duplicate / group / ungroup --------------------
@@ -1631,9 +1670,7 @@ app.whenReady().then(async () => {
       a.show = 'normal'; b.show = 'normal'; a.alpha = 255; b.alpha = 255;
       selectedId = a.id; multiSel = new Set([a.id, b.id]); refreshPanels();
       const rowOf = (lbl) => [...document.querySelectorAll('#props .row')].find((r) => ((r.querySelector('.lbl') || {}).textContent || '') === lbl);
-      const selShow = rowOf('Show in').querySelector('select');
-      selShow.value = 'aod';
-      selShow.onchange();
+      rowOf('Show in').querySelector('.seg-b[data-show="aod"]').click();
       const alphaInp = rowOf('Alpha').querySelector('input');
       alphaInp.value = '128';
       alphaInp.oninput();

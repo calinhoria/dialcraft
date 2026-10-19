@@ -64,7 +64,7 @@ Other scripts:
 ```
 
 - **Watchface** — name, description, App id, device, glyph font, and **Fonts →
-  Font library & glyphs…**. *Change device…* retargets the project and scales the
+  Font library & glyphs…**. Clicking **Device** retargets the project and scales the
   layout.
 - **Layers** — top-to-bottom paint order. Drag a row from anywhere to restack it
   (above or below groups too), drag a group by its header to move it as one unit,
@@ -405,15 +405,19 @@ and they share the copy.
 
 ## AOD
 
-Layers have a **Show in** state: *Normal only*, *AOD only* or *Both* (plus
-*Edit only*, which is designer-only and never exported). A component added from
-the **Add ▾** menu starts in **Normal only** — AOD is opt-in — while the presets
-decide per layer: clock and date in *Both*, readings/arcs in *Normal only*, which
-is the usual starting point.
+Every layer belongs to a face variant — **Show in**: *Normal*, *AOD*, *Both*
+(plus *Edit*, shown only while the wearer customises the face). Everything you
+add — from **Add ▾** or a preset — starts in **Normal**; AOD is opt-in.
+
+To build the AOD variant, select the layers that should stay on (the clock, say)
+and click **Both** (or **AOD**) in the *Show in* segments of Properties, or press
+**Shift+B** / **Shift+A** (**Shift+N** puts them back to Normal). The segments act
+on the whole selection; a mixed selection lights no segment and its tooltip says
+how it splits.
 
 The **AOD** preview button renders the AOD state over black, and **Check**
-enforces the spec rules: black background, no second hand, and under ~10% of the
-screen emitting light (near-black fills are not counted).
+enforces the spec rules: no second hand, and under 10% of the screen lit — measured
+from the rendered AOD frame.
 
 **If the watch shows its own AOD face instead of yours**, there are three things
 to check:
@@ -425,8 +429,8 @@ to check:
    `show_level` they carry, so **rebuild and reinstall** after changing AOD
    layers.
 2. **The face has AOD content.** At least one layer must be *Both* or *AOD only* —
-   a component added from **Add ▾** starts in *Normal only*, so a face built that
-   way has nothing to draw in AOD. **Check** warns (`Nothing is shown in AOD — the
+   everything starts in *Normal*, so a face nobody opted in has nothing to draw
+   in AOD. **Check** warns (`Nothing is shown in AOD — the
    watch will fall back to its own default AOD face`) and the AOD preview says so
    too. With a group selected, `Show in` writes to every layer at once.
 3. **The watch's AOD style setting.** Zepp App → your device → *Screen-off style /
@@ -659,7 +663,7 @@ tools              gen-masks.js, make-sample.js, smoke.js, shot.js, make-icon.js
 ## Limitations
 
 - One device target per project (copy the `targets` block in `app.json` to add
-  more in the exported project; *Change device…* retargets a project and scales
+  more in the exported project; clicking **Device** retargets a project and scales
   the layout, but images keep their pixel size).
 - An imported watchface is a good starting point, not a lossless round trip: see
   *Importing an existing watchface* for what cannot come across (widgets with no
