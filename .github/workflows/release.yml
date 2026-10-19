@@ -1,0 +1,73 @@
+# Builds Dialcraft on Windows, Linux and macOS and attaches the installers to a GitHub pre-release.
+#
+#   git tag v0.2.1 && git push origin v0.2.1
+#
+# The tag must match "version" in package.json. Runs only on tags (and by hand, which builds and
+# keeps the files as workflow artifacts without publishing). Unsigned: no certificates are used.
+name: release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            args: --linux AppImage deb --x64
+          - os: windows-latest
+            args: --win nsis portable --x64
+          - os: macos-latest
+            args: --mac dmg zip --arm64 --x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx electron-builder ${{ matrix.args }} --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'   # never look for a signing identity
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dialcraft-${{ matrix.os }}
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.exe
+            dist/*.dmg
+            dist/*-mac.zip
+            dist/*-arm64-mac.zip
+          if-no-files-found: error
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - name: Create or update the pre-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          ls -la out
+          if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            gh release upload "$TAG" out/* --repo "$REPO" --clobber
+          else
+            gh release create "$TAG" out/* --repo "$REPO" --prerelease --title "Dialcraft ${TAG#v} (beta)" \
+              --notes "Beta release. Windows and macOS builds are not code-signed (SmartScreen / Gatekeeper will warn; on macOS right-click → Open, or run xattr -cr /Applications/Dialcraft.app). See the README."
+          fi

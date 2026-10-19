@@ -65,6 +65,12 @@
       "category": "Development",
       "maintainer": "Calin Belut <calinhoria@users.noreply.github.com>"
     },
-    "icon": "build/icon.png"
+    "icon": "build/icon.png",
+    "nsis": {
+      "artifactName": "Dialcraft-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "Dialcraft-${version}-portable.${ext}"
+    }
   }
 }
