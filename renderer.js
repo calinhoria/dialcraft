@@ -48,7 +48,7 @@ async function guardUnsaved(detail) {
   return doSave();
 }
 
-let layerFocus = false;              // dim the layers the current preview doesn't draw
+let layerFocus = true;               // dim the layers the current preview doesn't draw
 let previewMode = 'normal';          // 'normal' | 'aod'
 let liveClock = false;
 let clockTimer = null;
@@ -580,6 +580,11 @@ function languageChars(tag) {
 }
 function fillFontSelect(sel) {
   sel.innerHTML = '';
+  if (sel.id === 'projFont') {
+    const o = document.createElement('option');
+    o.value = ''; o.textContent = `Not set (new glyphs use ${DEFAULT_GLYPH_FONT})`;
+    sel.appendChild(o);
+  }
   const cats = [];
   const addTo = (label, f) => {
     let g = cats.find((x) => x.label === label);
@@ -590,8 +595,9 @@ function fillFontSelect(sel) {
   };
   for (const f of customFonts) addTo('Project fonts', f);
   for (const f of BUNDLED_FONTS) addTo(f.cat || 'Bundled', f);
-  sel.value = glyphFont;
+  sel.value = sel.id === 'projFont' ? ((project && project.font) || '') : glyphFont;
 }
+const DEFAULT_GLYPH_FONT = 'Orbitron';
 
 // font_#_0-9 style asset naming rules from the watchface specification
 let glyphSetSeq = 1;
@@ -3929,6 +3935,7 @@ function refreshPanels() {
 function renderProjectPanel() {
   if (!project) return;
   $('inpName').value = project.name || '';
+  $('wfSummary').textContent = `${project.name || 'Untitled'} · ${dev().name}`;
   $('inpDesc').value = project.description || '';
   $('inpAppId').value = project.appId || '';
   const dv = dev();
@@ -5389,7 +5396,10 @@ function buildLangSuggest() {
   }
 }
 buildLangSuggest();
-$('projFont').onchange = (ev) => { glyphFont = ev.target.value; if (project) { project.font = glyphFont; scheduleCode(); buildGlyphsMenu(); } };
+$('projFont').onchange = (ev) => {
+  glyphFont = ev.target.value || DEFAULT_GLYPH_FONT;
+  if (project) { project.font = ev.target.value; scheduleCode(); buildGlyphsMenu(); }
+};
 
 // ------------------------------------------------------------ open / save / recents --
 function setEmptyState() {
@@ -5412,9 +5422,8 @@ async function loadProject(res) {
   for (const f of res.fonts || []) await registerCustomFont(f, { quiet: true });
   fillFontSelect($('projFont'));
   buildFontList();
-  glyphFont = project.font || glyphFont;
-  if (!fontFamilies().includes(glyphFont)) glyphFont = 'Orbitron';
-  $('projFont').value = glyphFont;
+  glyphFont = project.font && fontFamilies().includes(project.font) ? project.font : DEFAULT_GLYPH_FONT;
+  $('projFont').value = project.font && fontFamilies().includes(project.font) ? project.font : '';
   selectedId = null; multiSel = new Set(); groupCollapsed = new Set();
   past = []; future = []; updateHistoryButtons(); setDirty(false);
   resetTestData();
@@ -6293,7 +6302,7 @@ async function init() {
   fillFontSelect($('projFont'));
   fillDeviceSelect($('newFaceDevice'));
   $('newFaceDevice').value = DEVICES[0].target;
-  glyphFont = $('projFont').value;
+  glyphFont = $('projFont').value || DEFAULT_GLYPH_FONT;
   buildComponentsMenu();
   buildPresetsMenu();
   buildGlyphsMenu();

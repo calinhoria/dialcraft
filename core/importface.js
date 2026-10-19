@@ -555,9 +555,11 @@ function importFaceDir(dir) {
     appId,
     vender: app.vender || 'dialcraft',
     description: app.description || '',
-    font: fonts.length ? fonts[0].family : 'Orbitron',
-    // weekday / month names stay in English until the project language is set
-    language: 'en-US',
+    // '' = the face ships no font (its digits are ready-made images); the
+    // designer then rasterizes new glyphs with its default and says so
+    font: fonts.length ? fonts[0].family : '',
+    // what the face declares; weekday / month names follow it
+    language: app.defaultLanguage || Object.keys(appJson.i18n || {})[0] || 'en-US',
     groups: {},
     elements,
   };

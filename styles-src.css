@@ -129,6 +129,8 @@ input[type="checkbox"] { accent-color: var(--color-acc); }
   letter-spacing: .07em; color: var(--color-mut); font-weight: 600; margin-bottom: 8px; cursor: pointer;
 }
 .panel-c .pbody { max-height: 600px; overflow-y: auto; }
+.phead-sum { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 11px; color: var(--color-ink); opacity: .75; }
+.panel-c:not(.collapsed) .phead-sum { display: none; }
 .panel-c .chev { display: inline-block; transition: transform .15s; margin-left: 4px; color: var(--color-mut); }
 .panel-c.collapsed .pbody { display: none !important; }
 .panel-c.collapsed .chev { transform: rotate(-90deg); }

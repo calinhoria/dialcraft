@@ -63,8 +63,8 @@
 
 <main class="grid gap-3 p-3 grid-cols-[300px_minmax(0,1fr)_320px] empty">
   <section class="left flex flex-col gap-3 min-w-0">
-    <div class="panel-c rounded-xl border border-line bg-panel p-3" data-panel>
-      <h3 class="phead" data-panel-head>Watchface <span class="flex-1"></span><span class="chev">▾</span></h3>
+    <div class="panel-c collapsed rounded-xl border border-line bg-panel p-3" data-panel>
+      <h3 class="phead" data-panel-head>Watchface <span id="wfSummary" class="phead-sum"></span><span class="flex-1"></span><span class="chev">▾</span></h3>
       <div class="pbody">
         <div class="row"><span class="lbl">Name</span><input id="inpName" type="text" placeholder="My watchface" /></div>
         <div class="row"><span class="lbl">Device</span><button id="projDevice" type="button" class="field-btn"><span id="projDeviceName"></span><span class="fb-act">Change…</span></button></div>
