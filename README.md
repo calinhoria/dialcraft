@@ -56,7 +56,7 @@ Requirements: **Node 18+** and npm, on macOS, Windows or Linux. The **Zeus CLI**
 is optional and only needed to build `.zab` packages (`npm i -g @zeppos/zeus-cli`).
 
 ```bash
-git clone https://github.com/calinhoria/amazfit-watchface-designer.git dialcraft
+git clone https://github.com/calinhoria/dialcraft.git
 cd dialcraft
 npm install
 npm start
