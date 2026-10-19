@@ -1,7 +1,10 @@
 # Bundled fonts (SIL Open Font License 1.1)
 
 Digit-friendly faces for watch numbers. Google Fonts TTFs come from the
-fontsource CDN, DSEG from the `dseg` npm package (the DSEG repo ships no
+fontsource CDN — the `latin` and `latin-ext` subsets merged into one file by
+`tools/fonts-latin-ext.py`, so weekday/month names in Romanian, Polish, Czech,
+Turkish … draw natively (Orbitron and Share Tech Mono have no latin-ext upstream;
+the designer composes their missing accented letters from their own glyphs), DSEG from the `dseg` npm package (the DSEG repo ships no
 prebuilt TTFs), Handjet from the google/fonts repo (variable-only).
 
 `node tools/fontcheck.js` verifies every file is a real TTF and carries 0-9

@@ -27,6 +27,26 @@ let selectedId = null;
 let multiSel = new Set();
 let groupCollapsed = new Set();      // group ids collapsed in the Layers panel
 let dirty = false;
+const APP_TITLE = 'Dialcraft';
+// the unsaved-changes marker: a dot after the face name and in the window title
+function updateTitle() {
+  const name = project ? (project.name || 'Watchface') : '';
+  if (project) $('watchTitle').textContent = name + (dirty ? ' •' : '');
+  document.title = project ? `${dirty ? '• ' : ''}${name} — ${APP_TITLE}` : APP_TITLE;
+}
+function setDirty(v) {
+  dirty = !!v;
+  updateTitle();
+}
+// Before anything replaces or closes the open project: Save / Don't save /
+// Cancel. Resolves true when it is fine to go ahead.
+async function guardUnsaved(detail) {
+  if (!project || !dirty) return true;
+  const answer = await API.confirmUnsaved({ name: project.name, detail });
+  if (answer === 'cancel') return false;
+  if (answer === 'discard') return true;
+  return doSave();
+}
 
 let previewMode = 'normal';          // 'normal' | 'aod'
 let liveClock = false;
@@ -53,7 +73,9 @@ let glyphFont = 'Orbitron';
 // geometric kinds whose anchor is a centre rather than a top-left corner
 const CENTER_KINDS = new Set(['CIRCLE', 'ARC_PROGRESS', 'TIME_POINTER']);
 // kinds whose box is driven by the w/h fields (resizable from the corners)
-const WH_KINDS = new Set(['IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_POINTER', 'IMG_ANIM',
+// (not IMG_POINTER: the watch draws the pointer at its image size, pivoting on
+// its own x/y — see pointerBox)
+const WH_KINDS = new Set(['IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_ANIM',
   'IMG_STATUS', 'IMG_CLICK', 'TEXT', 'FILL_RECT', 'STROKE_RECT', 'ARC']);
 // kinds that draw digit images and therefore take an image array + metrics
 const SET_KINDS = new Set(['IMG_TIME', 'IMG_WEEK', 'IMG_DATE', 'TEXT_IMG', 'IMG_LEVEL', 'IMG_PROGRESS']);
@@ -120,12 +142,36 @@ function pushHistory() {
   past.push(s);
   if (past.length > 80) past.shift();
   future = [];
-  dirty = true;
+  setDirty(true);
   updateHistoryButtons();
   scheduleCode();
 }
+// Record a step only when something actually changed since `before` (a
+// snapshot taken when a gesture started) — a click that moves nothing must not
+// leave a no-op step behind for the next Ctrl+Z.
+function commitHistory(before) {
+  if (before == null || before === snapshot()) return false;
+  if (!(past.length && past[past.length - 1] === before)) past.push(before);
+  if (past.length > 80) past.shift();
+  future = [];
+  setDirty(true);
+  updateHistoryButtons();
+  scheduleCode();
+  return true;
+}
+// The Undo button of a delete toast: the same step as Ctrl+Z, offered only while
+// that step is still the latest one (afterwards Ctrl+Z walks back to it).
+function undoToast(message) {
+  const after = snapshot();
+  showUndoToast(message, () => {
+    if (project && snapshot() === after) undo();
+    else status('The project changed since — use Undo (Ctrl/Cmd+Z) to step back to it.', true);
+  });
+}
 function restoreHistory(json) {
   const p = JSON.parse(json);
+  // the device goes with the layout: "Change device" rescales every layer
+  if (p.device) project.device = p.device;
   project.elements = p.elements;
   project.groups = p.groups || {};
   project.name = p.name; project.description = p.description;
@@ -135,7 +181,7 @@ function restoreHistory(json) {
   loadAllImages();
   if (selectedId && !elementById(selectedId)) selectedId = null;
   multiSel = new Set([...multiSel].filter((id) => elementById(id)));
-  dirty = true;
+  setDirty(true);
   refreshPanels(); render(); scheduleCode();
 }
 function undo() {
@@ -158,6 +204,13 @@ window.addEventListener('keydown', (e) => {
   if (mod && e.key.toLowerCase() === 's') { e.preventDefault(); doSave(); return; }
   if (mod && e.key.toLowerCase() === 'g') { e.preventDefault(); e.shiftKey ? ungroup() : groupSelection(); return; }
   if (mod && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicateSelection(); return; }
+  // layer order: ] / [ forward / backward, with Shift to the front / back
+  if (mod && (e.code === 'BracketRight' || e.code === 'BracketLeft')) {
+    e.preventDefault();
+    const up = e.code === 'BracketRight';
+    reorderSelection(e.shiftKey ? (up ? 'front' : 'back') : (up ? 'forward' : 'backward'));
+    return;
+  }
   // typing in a field (renaming a group, editing a value) must not nudge or
   // deselect layers
   const typing = document.activeElement && /input|select|textarea/i.test(document.activeElement.tagName);
@@ -286,6 +339,7 @@ async function registerCustomFont(rec, { quiet } = {}) {
     ext: rec.ext || ('.' + (baseName(rec.name).split('.').pop() || 'ttf')),
     format: rec.format || 'truetype',
     url, dataBase64: rec.dataBase64 || '',
+    coverage: rec.coverage || null,
   };
   const at = customFonts.findIndex((f) => f.name === entry.name);
   if (at >= 0) customFonts[at] = entry; else customFonts.push(entry);
@@ -320,6 +374,183 @@ async function ensureFont(family, weight) {
     return true;
   } catch (e) { return false; }
 }
+// ---------------------------------------------------- glyph coverage --
+// A canvas never says a font lacks a character: it quietly draws it with a
+// system font, so "SÂMBĂTĂ" in a font without Ă came out in two typefaces. The
+// main process reads each font's cmap (core/fonts.js readCmapRanges); here a
+// missing letter is drawn from the font's *own* glyphs instead:
+//   1. the other Romanian form (ș ↔ ş, ț ↔ ţ — comma below vs cedilla);
+//   2. the base letter plus its accent, the accent taken from the font's
+//      spacing mark (ˆ ¸ ´ ¨ …) or, for a breve the font does not have,
+//      drawn as a crescent the thickness of the font's stems;
+//   3. only when the base letter is missing too does the system font step in —
+//      and the caller is told, so the panel can say so.
+function fontCoverage(family) {
+  const c = customFont(family);
+  if (c) return c.coverage || null;
+  const b = bundledFont(family);
+  return b ? b.coverage || null : null;
+}
+function fontHas(family, ch) {
+  const r = fontCoverage(family);
+  if (!r || !ch) return true;                // unknown coverage (woff): trust the font
+  const cp = ch.codePointAt(0);
+  if (cp <= 0x20) return true;
+  let lo = 0, hi = r.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (cp < r[mid][0]) hi = mid - 1;
+    else if (cp > r[mid][1]) lo = mid + 1;
+    else return true;
+  }
+  return false;
+}
+const GLYPH_ALTERNATES = { 'ș': 'ş', 'ş': 'ș', 'ț': 'ţ', 'ţ': 'ț', 'Ș': 'Ş', 'Ş': 'Ș', 'Ț': 'Ţ', 'Ţ': 'Ț' };
+// combining mark -> the font's spacing form of the same accent
+const MARK_SPACING = {
+  '\u0300': ['`'], '\u0301': ['\u00B4'], '\u0302': ['\u02C6', '^'], '\u0303': ['\u02DC', '~'],
+  '\u0304': ['\u00AF'], '\u0306': ['\u02D8'], '\u0307': ['\u02D9'], '\u0308': ['\u00A8'],
+  '\u030A': ['\u02DA', '\u00B0'], '\u030B': ['\u02DD'], '\u030C': ['\u02C7'],
+  '\u0326': [','], '\u0327': ['\u00B8', ','], '\u0328': ['\u02DB'],
+};
+const MARK_BELOW = new Set(['\u0326', '\u0327', '\u0328']);
+// how one character is drawn with this family: as itself, as an alternate form,
+// composed from base + accent, or (last resort) by the system font
+function glyphPlan(family, ch) {
+  if (fontHas(family, ch)) return { how: 'native', ch };
+  const alt = GLYPH_ALTERNATES[ch];
+  if (alt && fontHas(family, alt)) return { how: 'alternate', ch: alt };
+  const parts = [...ch.normalize('NFD')];
+  if (parts.length > 1 && fontHas(family, parts[0])) {
+    const marks = parts.slice(1).map((m) => {
+      const spacing = (MARK_SPACING[m] || []).find((g) => fontHas(family, g));
+      return { mark: m, glyph: spacing || null, below: MARK_BELOW.has(m) };
+    });
+    if (marks.every((m) => m.glyph || m.mark === '\u0306')) return { how: 'composed', base: parts[0], marks };
+  }
+  return { how: 'system', ch };
+}
+// the characters of `text` this family cannot draw natively, by how they end up
+function coverageReport(family, text) {
+  const out = { alternate: [], composed: [], system: [] };
+  for (const ch of new Set([...String(text || '')])) {
+    if (/\s/.test(ch)) continue;
+    const p = glyphPlan(family, ch);
+    if (p.how !== 'native') out[p.how].push(ch);
+  }
+  return out;
+}
+function coverageSummary(family, text) {
+  const r = coverageReport(family, text);
+  const bits = [];
+  if (r.alternate.length) bits.push(`${r.alternate.join(' ')} drawn in its other form`);
+  if (r.composed.length) bits.push(`${r.composed.join(' ')} composed from the font's own letter + accent`);
+  if (r.system.length) bits.push(`${r.system.join(' ')} not in the font — a system font fills in`);
+  return { ...r, native: !bits.length, text: bits.join(' · ') };
+}
+// Lay a string out with the current ctx.font (textAlign left, alphabetic
+// baseline): plain runs stay one fillText (kerning kept), a composed letter is
+// its base glyph plus accent pieces. Returns the pieces and the ink box.
+const runCache = new Map();
+function layoutRun(c, family, text) {
+  const key = `${c.font}|${c.fontVariationSettings || ''}|${family}|${text}`;
+  const hit = runCache.get(key);
+  if (hit) return hit;
+  const px = /(\d+(?:\.\d+)?)px/.exec(c.font);
+  const size = (px && parseFloat(px[1])) || 32;
+  const pieces = [];
+  let x = 0, buf = '';
+  let L = 0, R = 0, A = 0, D = 0, any = false;
+  const ink = (l, r, a, d) => {
+    if (!any) { L = l; R = r; A = a; D = d; any = true; return; }
+    L = Math.min(L, l); R = Math.max(R, r); A = Math.max(A, a); D = Math.max(D, d);
+  };
+  const flush = () => {
+    if (!buf) return;
+    const m = c.measureText(buf);
+    pieces.push({ kind: 'text', s: buf, x, y: 0 });
+    ink(x - (m.actualBoundingBoxLeft || 0), x + (m.actualBoundingBoxRight || 0), m.actualBoundingBoxAscent || 0, m.actualBoundingBoxDescent || 0);
+    x += m.width;
+    buf = '';
+  };
+  let stem = 0;
+  const stemWidth = () => {
+    if (!stem) {
+      const m = c.measureText('l');
+      stem = Math.max(1, Math.min(size * 0.2, (m.actualBoundingBoxLeft || 0) + (m.actualBoundingBoxRight || 0) || size * 0.1));
+    }
+    return stem;
+  };
+  for (const ch of [...String(text == null ? '' : text)]) {
+    const plan = glyphPlan(family, ch);
+    if (plan.how !== 'composed') { buf += plan.ch; continue; }
+    flush();
+    const bm = c.measureText(plan.base);
+    pieces.push({ kind: 'text', s: plan.base, x, y: 0 });
+    const bl = x - (bm.actualBoundingBoxLeft || 0), br = x + (bm.actualBoundingBoxRight || 0);
+    let top = -(bm.actualBoundingBoxAscent || size * 0.7), bottom = bm.actualBoundingBoxDescent || 0;
+    ink(bl, br, -top, bottom);
+    const cx = (bl + br) / 2;
+    const gap = Math.max(1, size * 0.06);
+    for (const mk of plan.marks) {
+      if (mk.glyph) {
+        const mm = c.measureText(mk.glyph);
+        const mw = (mm.actualBoundingBoxRight || 0) - (mm.actualBoundingBoxLeft || 0);
+        const gx = cx - mw / 2;
+        const gy = mk.below
+          ? bottom + gap + (mm.actualBoundingBoxAscent || 0)
+          : top - gap - (mm.actualBoundingBoxDescent || 0);
+        pieces.push({ kind: 'text', s: mk.glyph, x: gx, y: gy });
+        const a = -(gy - (mm.actualBoundingBoxAscent || 0)), d = gy + (mm.actualBoundingBoxDescent || 0);
+        ink(gx - (mm.actualBoundingBoxLeft || 0), gx + (mm.actualBoundingBoxRight || 0), a, d);
+        if (mk.below) bottom = d; else top = -a;
+      } else {
+        // a breve: a crescent as wide as half the letter, as thick as its stems
+        const t = stemWidth() * 0.8;
+        const rx = Math.max(t * 1.6, (br - bl) * 0.28), ry = Math.max(t * 1.2, rx * 0.55);
+        const yb = top - gap;                  // bottom of the crescent
+        const yc = yb - ry;                    // centre line of the ellipse
+        const path = new Path2D();
+        path.ellipse(cx, yc, rx, ry, 0, 0, Math.PI, false);
+        path.ellipse(cx, yc, Math.max(0.5, rx - t), Math.max(0.5, ry - t), 0, Math.PI, 0, true);
+        path.closePath();
+        pieces.push({ kind: 'path', path });
+        ink(cx - rx, cx + rx, -(yc - t * 0.2), yc + ry);
+        top = yc - t * 0.2;
+      }
+    }
+    x += bm.width;
+  }
+  flush();
+  const run = { pieces, width: x, left: any ? -L : 0, right: any ? R : 0, asc: any ? A : 0, desc: any ? D : 0 };
+  if (runCache.size > 2000) runCache.clear();
+  runCache.set(key, run);
+  return run;
+}
+function runFill(c, run, ox = 0, oy = 0) {
+  for (const p of run.pieces) {
+    if (p.kind === 'text') c.fillText(p.s, ox + p.x, oy + p.y);
+    else { c.save(); c.translate(ox, oy); c.fill(p.path); c.restore(); }
+  }
+}
+function runStroke(c, run, ox = 0, oy = 0) {
+  for (const p of run.pieces) {
+    if (p.kind === 'text') c.strokeText(p.s, ox + p.x, oy + p.y);
+    else { c.save(); c.translate(ox, oy); c.stroke(p.path); c.restore(); }
+  }
+}
+// every non-ASCII letter a language writes in its weekday and month names
+function languageChars(tag) {
+  const out = new Set();
+  for (const kind of ['week', 'month']) {
+    for (const form of ['short', 'long']) {
+      for (const n of localeNames(kind, tag, form)) {
+        for (const ch of [...n.toLocaleUpperCase(tag), ...n.toLocaleLowerCase(tag)]) if (ch.codePointAt(0) > 0x7e) out.add(ch);
+      }
+    }
+  }
+  return [...out].join('');
+}
 function fillFontSelect(sel) {
   sel.innerHTML = '';
   const cats = [];
@@ -352,7 +583,9 @@ function nextDigitPrefix() {
 // stroke of the same paint, so single-weight fonts get a real bold) and italic
 // (a 0.212 slant, applied by the caller as a transform). `gx`/`gy` place the
 // gradient back over the glyph cell when the context is already translated.
-function paintGlyph(c, st, ch, cellW, cellH, gx, gy) {
+// `run` is the layoutRun() of the text, so a letter the font lacks is drawn from
+// the font's own glyphs (see glyphPlan) in every one of these passes.
+function paintGlyph(c, st, run, cellW, cellH, gx, gy) {
   const t = st.fill || 'solid';
   const color = st.color || '#ffffff';
   const box = { x: gx, y: gy, w: cellW, h: cellH };
@@ -367,14 +600,14 @@ function paintGlyph(c, st, ch, cellW, cellH, gx, gy) {
     const w = Math.max(1, +st.outlineWidth || 2) + (st.bold ? Math.max(1, Math.round((st.size || 48) / 18)) : 0);
     c.save();
     c.fillStyle = st.outlineColor || color;
-    c.fillText(ch, 0, 0);
+    runFill(c, run);
     const steps = Math.max(8, Math.min(24, Math.round(w * 8)));
     for (let i = 0; i < steps; i++) {
       const a2 = (i / steps) * Math.PI * 2;
-      c.fillText(ch, Math.cos(a2) * w, Math.sin(a2) * w);
+      runFill(c, run, Math.cos(a2) * w, Math.sin(a2) * w);
     }
     c.globalCompositeOperation = 'destination-out';
-    c.fillText(ch, 0, 0);
+    runFill(c, run);
     c.restore();
     return;
   }
@@ -383,9 +616,9 @@ function paintGlyph(c, st, ch, cellW, cellH, gx, gy) {
     c.miterLimit = 2;
     c.lineWidth = Math.max(1, Math.round((st.size || 48) / 18));
     c.strokeStyle = c.fillStyle;
-    c.strokeText(ch, 0, 0);
+    runStroke(c, run);
   }
-  c.fillText(ch, 0, 0);
+  runFill(c, run);
 }
 
 // Draw a set of glyphs from one font into transparent PNGs and register them.
@@ -393,11 +626,17 @@ function paintGlyph(c, st, ch, cellW, cellH, gx, gy) {
 // `style` carries the glyph styling (fill type, gradient, outline, bold,
 // italic); `replace` keeps the existing file names so a layer can be
 // restyled in place instead of piling up a new set.
+//   metricsRef  extra strings whose height the cell must also fit — separators
+//               pass the digits, so colon.png gets the digits' exact cell
+//               height and baseline and lines up when placed at the same Y
+//   align       where the ink sits in a shared (mono) cell: center/left/right
+// The returned names carry `.coverage`: the characters the font could not
+// draw natively (see coverageReport).
 async function genGlyphImages(entries, opts = {}) {
   const {
     size = glyphOpts.size, color = glyphOpts.color, prefix = null, mono = true,
     family = null, weight = glyphOpts.weight, variations = glyphOpts.variations,
-    replace = false, style = null, cellH = 0,
+    replace = false, style = null, cellH = 0, metricsRef = null, align = 'center',
   } = opts;
   const st = { fill: 'solid', color, size, ...(style || {}) };
   const fam = family || glyphFont;
@@ -409,19 +648,22 @@ async function genGlyphImages(entries, opts = {}) {
   // An outline ring is drawn outside the glyph, so the cell always reserves room
   // for it — that also keeps the cell size the same when the fill type changes,
   // so toggling Solid/Outline never shifts the digits around.
-  const pad = Math.max(1, Math.round(size / 28), Math.round(+st.outlineWidth || 0) + 1);
+  // (2 is the outline width a style starts with — the same default for a set
+  // generated from the font library, so every cell of a size has one height)
+  const pad = Math.max(1, Math.round(size / 28), Math.round(st.outlineWidth != null ? +st.outlineWidth : 2) + 1);
   const info = entries.map((e) => {
-    const m = meas.measureText(e.char);
+    const run = layoutRun(meas, fam, e.char);
     return {
-      e,
-      left: m.actualBoundingBoxLeft || 0,
-      right: m.actualBoundingBoxRight || 0,
-      asc: m.actualBoundingBoxAscent || size * 0.8,
-      desc: m.actualBoundingBoxDescent || 0,
+      e, run,
+      left: run.left,
+      right: run.right,
+      asc: run.asc || (/\S/.test(e.char) ? size * 0.8 : 0),
+      desc: run.desc,
     };
   });
-  const ascent = Math.ceil(Math.max(...info.map((i) => i.asc)));
-  const descent = Math.ceil(Math.max(...info.map((i) => i.desc)));
+  const refs = (metricsRef || []).map((t) => layoutRun(meas, fam, t));
+  const ascent = Math.ceil(Math.max(0, ...info.map((i) => i.asc), ...refs.map((r) => r.asc)));
+  const descent = Math.ceil(Math.max(0, ...info.map((i) => i.desc), ...refs.map((r) => r.desc)));
   // cellH forces a taller cell while keeping the ink where it is (at the top):
   // that is how the degree sign is rasterised as a superscript.
   const H = cellH ? Math.max(1, Math.round(cellH)) : Math.max(1, ascent + descent + pad * 2);
@@ -438,12 +680,14 @@ async function genGlyphImages(entries, opts = {}) {
     c.textAlign = 'left'; c.textBaseline = 'alphabetic';
     const inkW = Math.max(0, i.left + i.right);
     c.save();
-    const tx = (cw - inkW - slant) / 2 + i.left + slant;
+    const free = cw - inkW - slant - pad * 2;
+    const lead = align === 'left' ? 0 : align === 'right' ? free : free / 2;
+    const tx = pad + lead + i.left + slant;
     const ty = pad + ascent;
     c.translate(tx, ty);
     if (st.italic) c.transform(1, 0, -0.212, 1, 0, 0);
     // paint after the transform, offsetting the gradient so it still spans the cell
-    paintGlyph(c, st, i.e.char, cw, H, -tx, -ty);
+    paintGlyph(c, st, i.run, cw, H, -tx, -ty);
     c.restore();
     // an in-place re-render must keep the existing file names (`replace`), a
     // fresh set must never overwrite one that is already in the project
@@ -453,6 +697,7 @@ async function genGlyphImages(entries, opts = {}) {
     names.push(name);
   }
   await loadAllImages();
+  names.coverage = coverageReport(fam, entries.map((e) => e.char).join(''));
   return names;
 }
 
@@ -681,8 +926,8 @@ function elBox(e) {
       return { x: num(e.centerX) - r, y: num(e.centerY) - r, w: r * 2, h: r * 2 };
     }
     case 'TIME_POINTER': return { x: 0, y: 0, w: W, h: H };
+    case 'IMG_POINTER': return pointerBox(e);
     case 'IMG':
-    case 'IMG_POINTER':
     case 'IMG_ANIM':
     case 'IMG_STATUS':
     case 'IMG_CLICK': {
@@ -715,6 +960,14 @@ function elBox(e) {
     default: return { x: num(e.x), y: num(e.y), w: num(e.w, 100), h: num(e.h, 100) };
   }
 }
+// IMG_POINTER (docs: hmUI.widget.IMG_POINTER): center_x/center_y is the pivot on
+// the screen, x/y the pivot *inside the pointer image* — so the unrotated image
+// sits with its own (x, y) on the screen's (centerX, centerY).
+function pointerBox(e) {
+  const m = imgMeta(e.src);
+  const w = m ? m.width : 20, h = m ? m.height : 60;
+  return { x: devNum(e.centerX) - devNum(e.x), y: devNum(e.centerY) - devNum(e.y), w, h };
+}
 // Bounding box of several boxes / of the current selection. Align, distribute
 // and group dragging all work on this box, so what the panel promises is what
 // the canvas shows.
@@ -731,7 +984,7 @@ function moveEl(e, dx, dy) {
     e.centerY = Math.round((+e.centerY || 0) + dy);
     return;
   }
-  if (e.kind === 'TIME_POINTER') {
+  if (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER') {
     e.centerX = Math.round((+e.centerX || 0) + dx);
     e.centerY = Math.round((+e.centerY || 0) + dy);
     return;
@@ -832,6 +1085,15 @@ function bakeReason(e) {
   if (e.bold) why.push('bold');
   if (e.italic) why.push('italic');
   return why.join(' + ') || 'styled text';
+}
+// A Text layer is drawn live on the watch with the font file it ships, so a
+// letter that file lacks cannot appear there (the designer can only compose
+// missing letters into glyph images). '' when the font has every character.
+function textMissingChars(e) {
+  const fam = e && e.fontFile ? familyForFontFile(e.fontFile) : null;
+  if (!fam) return '';
+  const r = coverageReport(fam, e.text);
+  return [...r.alternate, ...r.composed, ...r.system].join(' ');
 }
 // the watch has no fake-bold either: pick the heavy end of the family
 function textWeight(e) { const w = +e.weight || 400; return e.bold ? Math.max(700, w) : w; }
@@ -1118,7 +1380,7 @@ function drawElement(c, e) {
         const frac = levelFraction(e.dataType, e.level);
         ang = (+e.startAngle || 0) + frac * ((+e.endAngle || 360) - (+e.startAngle || 0));
       }
-      putRot(c, e.src, b.x, b.y, b.w, b.h, ang, +e.centerX || b.x + b.w / 2, +e.centerY || b.y + b.h / 2);
+      putRot(c, e.src, b.x, b.y, b.w, b.h, ang, devNum(e.centerX), devNum(e.centerY));
       break;
     }
     case 'IMG_TIME':
@@ -1317,7 +1579,7 @@ function drawOverlay(c, W, H) {
       c.arc(b.x + b.w, b.y + b.h / 2, 4, 0, Math.PI * 2);
       c.fill();
     }
-    if (primary && e.kind === 'TIME_POINTER') {
+    if (primary && (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER')) {
       c.fillStyle = '#ff78dc';
       c.beginPath();
       c.arc(+e.centerX || 0, +e.centerY || 0, 4, 0, Math.PI * 2);
@@ -1415,7 +1677,7 @@ function render() {
   cv.style.width = Math.round(W * scale) + 'px';
   cv.style.height = Math.round(H * scale) + 'px';
   drawScene(cv.getContext('2d'), W, H, previewMode, true);
-  $('watchTitle').textContent = project.name || 'Watchface';
+  updateTitle();
   const shape = d.shape === 'r' ? 'round' : d.shape === 's' ? 'square' : 'band';
   $('watchSub').textContent = `${d.name} · ${W}×${H} ${shape} · ${previewMode === 'aod' ? 'AOD preview' : 'normal preview'}`;
   applyDeviceMask();
@@ -1543,6 +1805,14 @@ const ICON = {
   text: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6V4h16v2M12 4v16M8 20h8"/></svg>',
   dup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="8.5" y="8.5" width="12" height="12" rx="2.6"/><path d="M15.5 5.4A2.6 2.6 0 0 0 12.9 3H5.6A2.6 2.6 0 0 0 3 5.6v7.3A2.6 2.6 0 0 0 5.4 15.5"/></svg>',
   group: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="19" height="19" rx="3.2" stroke-dasharray="3.4 2.6"/><rect x="6" y="6" width="7" height="7" rx="1.7" fill="currentColor" stroke="none"/><rect x="11.5" y="11.5" width="7" height="7" rx="1.7" fill="currentColor" stroke="none"/></svg>',
+  upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 20h16"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  toFront: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14"/><path d="M12 20V9m0 0-4 4m4-4 4 4"/></svg>',
+  forward: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6m0 0-5 5m5-5 5 5"/></svg>',
+  backward: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v13m0 0-5-5m5 5 5-5"/></svg>',
+  toBack: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20h14"/><path d="M12 4v11m0 0-4-4m4 4 4-4"/></svg>',
+  folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
   ungroup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 8.5V5.7A3.2 3.2 0 0 1 5.7 2.5h2.8M15.5 2.5h2.8a3.2 3.2 0 0 1 3.2 3.2v2.8M21.5 15.5v2.8a3.2 3.2 0 0 1-3.2 3.2h-2.8M8.5 21.5H5.7a3.2 3.2 0 0 1-3.2-3.2v-2.8"/><rect x="5.5" y="5.5" width="6.5" height="6.5" rx="1.7" fill="currentColor" stroke="none"/><rect x="13.5" y="13.5" width="5.5" height="5.5" rx="1.6" fill="currentColor" stroke="none"/></svg>',
 };
 function kindIcon(kind) {
@@ -1600,63 +1870,161 @@ function layerRow(e) {
   };
   return row;
 }
+// A group in the Layers panel: a header that selects the whole group (and
+// drags it as one unit), with its own show / lock switches acting on every
+// member, and an indented body holding the members.
 function groupBlock(gid, members) {
-  const wrap = document.createElement('div');
-  wrap.className = 'group-block' + (groupCollapsed.has(gid) ? ' collapsed' : '');
-  const head = document.createElement('div');
-  head.className = 'group-row' + (groupCollapsed.has(gid) ? ' collapsed' : '');
-  const chev = document.createElement('span'); chev.className = 'gchev'; chev.textContent = '▾';
+  const collapsed = groupCollapsed.has(gid);
+  const allSel = members.length > 0 && members.every((m) => multiSel.has(m.id));
+  const someSel = !allSel && members.some((m) => multiSel.has(m.id));
+  const allHidden = members.every((m) => m.visible === false);
+  const allLocked = members.every((m) => m.locked);
+  const wrap = mkEl('div', 'group-block' + (collapsed ? ' collapsed' : '') + (allSel ? ' sel' : ''));
+  const head = mkEl('div', 'group-row' + (collapsed ? ' collapsed' : '') + (allSel ? ' sel' : someSel ? ' part' : '')
+    + (allHidden ? ' hid' : ''));
+  const grip = mkEl('span', 'grip'); grip.innerHTML = ICON.grip;
+  grip.title = 'Drag to move the whole group';
+  const chev = mkEl('button', 'gchev'); chev.type = 'button'; chev.innerHTML = ICON.chevron;
+  chev.title = collapsed ? 'Expand' : 'Collapse';
   chev.onclick = (ev) => {
     ev.stopPropagation();
     if (groupCollapsed.has(gid)) groupCollapsed.delete(gid); else groupCollapsed.add(gid);
     refreshPanels();
   };
-  const nm = document.createElement('span'); nm.className = 'gname'; nm.textContent = groupName(gid);
+  const icon = mkEl('span', 'gicon'); icon.innerHTML = ICON.folder;
+  const nm = mkEl('span', 'gname', groupName(gid));
   nm.title = 'Double-click to rename this group';
   nm.ondblclick = (ev) => { ev.stopPropagation(); startGroupRename(gid, nm); };
-  const cnt = document.createElement('span'); cnt.className = 'gcount'; cnt.textContent = `${members.length}`;
-  head.appendChild(chev); head.appendChild(nm); head.appendChild(cnt);
+  const cnt = mkEl('span', 'gcount', String(members.length));
+  cnt.title = `${members.length} layer${members.length === 1 ? '' : 's'}`;
+  const right = mkEl('span', 'lrow-r');
+  const btn = (cls, html, title, fn) => {
+    const b = mkEl('button', 'lb ' + cls); b.type = 'button'; b.innerHTML = html; b.title = title;
+    b.onclick = (ev) => { ev.stopPropagation(); fn(); };
+    return b;
+  };
+  right.appendChild(btn('vis', allHidden ? ICON.eyeOff : ICON.eye, allHidden ? 'Show the group' : 'Hide the group', () => {
+    pushHistory(); for (const m of members) m.visible = allHidden; refreshPanels(); render(); scheduleCode();
+  }));
+  right.appendChild(btn('lock' + (allLocked ? ' on' : ''), allLocked ? ICON.lock : ICON.unlock, allLocked ? 'Unlock the group' : 'Lock the group', () => {
+    pushHistory(); for (const m of members) m.locked = !allLocked; refreshPanels(); render();
+  }));
+  head.appendChild(grip); head.appendChild(chev); head.appendChild(icon); head.appendChild(nm); head.appendChild(cnt); head.appendChild(right);
   head.onclick = () => {
     selectedId = members.length ? members[0].id : null;
     multiSel = new Set(members.map((m) => m.id));
     refreshPanels(); render();
   };
-  const body = document.createElement('div');
-  body.className = 'group-body';
+  const body = mkEl('div', 'group-body');
   body.dataset.gid = gid;
   for (const m of members) body.appendChild(layerRow(m));
   wrap.appendChild(head); wrap.appendChild(body);
   return wrap;
 }
-function makeSortable(container) {
+// Rows drag from anywhere (the buttons excepted). A group block drags as one
+// unit in the top-level list; a group body takes layers but never another
+// group, so groups stay one level deep.
+function makeSortable(container, { root = false } = {}) {
   if (typeof Sortable === 'undefined') return;
   Sortable.create(container, {
-    group: 'wf-layers', handle: '.grip', animation: 120,
+    group: root ? { name: 'wf-layers' } : { name: 'wf-layers', put: (_to, _from, dragEl) => !dragEl.classList.contains('group-block') },
+    draggable: root ? '.layer, .group-block' : '.layer',
+    filter: '.lb, .gchev, .gname-edit, input', preventOnFilter: false,
+    animation: 120, fallbackTolerance: 4,
     ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', fallbackClass: 'sortable-fallback',
     fallbackOnBody: true,
     onEnd: applyLayerOrder,
   });
 }
+// The panel lists layers top (front) to bottom (back); read it back in exactly
+// that order — a group block contributes its members where it sits — and
+// store the reverse as the paint order.
 function applyLayerOrder() {
-  const containers = document.querySelectorAll('#layers .layers-list, #layers .group-body');
+  const rootList = document.querySelector('#layers .layers-list');
+  if (!rootList || !project) return;
   const order = [];
   const usedGroups = new Set();
-  containers.forEach((container) => {
-    const gid = container.dataset.gid || null;
-    if (gid) usedGroups.add(gid);
-    container.querySelectorAll(':scope > .layer').forEach((row) => {
-      const e = elementById(row.dataset.id);
-      if (!e) return;
-      e.group = gid;
-      order.push(e);
-    });
-  });
+  const take = (row, gid) => {
+    const e = elementById(row.dataset.id);
+    if (!e) return;
+    e.group = gid;
+    order.push(e);
+  };
+  for (const child of rootList.children) {
+    if (child.classList.contains('layer')) take(child, null);
+    else if (child.classList.contains('group-block')) {
+      const body = child.querySelector('.group-body');
+      const gid = body && body.dataset.gid;
+      if (!gid) continue;
+      body.querySelectorAll(':scope > .layer').forEach((row) => { take(row, gid); usedGroups.add(gid); });
+    }
+  }
+  if (order.length !== elements().length) { refreshPanels(); return; }   // never lose a layer to a stray drop
+  const before = snapshot();
   for (const gid of Object.keys(project.groups || {})) {
     if (!usedGroups.has(gid)) delete project.groups[gid];
   }
-  order.reverse();
-  project.elements = order;
-  dirty = true;
+  project.elements = order.reverse();
+  commitHistory(before);
+  refreshPanels(); render(); scheduleCode();
+}
+// Paint order as the panel shows it: top-level units (a layer, or a whole
+// group) from front to back, a group's members in their own order.
+function layerUnits() {
+  const units = [];
+  const byGroup = new Map();
+  for (const e of [...elements()].reverse()) {
+    if (e.group) {
+      if (!byGroup.has(e.group)) { const u = { gid: e.group, members: [] }; byGroup.set(e.group, u); units.push(u); }
+      byGroup.get(e.group).members.push(e);
+    } else units.push({ el: e });
+  }
+  return units;
+}
+function unitsToElements(units) {
+  const front = [];
+  for (const u of units) front.push(...(u.members || [u.el]));
+  return front.reverse();
+}
+// move the marked items of a front-to-back list: front / back / forward / backward
+function moveMarked(list, marked, how) {
+  const on = list.map((x) => marked(x));
+  if (how === 'front') return [...list.filter((_, i) => on[i]), ...list.filter((_, i) => !on[i])];
+  if (how === 'back') return [...list.filter((_, i) => !on[i]), ...list.filter((_, i) => on[i])];
+  const out = list.slice(), flags = on.slice();
+  if (how === 'forward') {
+    for (let i = 1; i < out.length; i++) {
+      if (flags[i] && !flags[i - 1]) { [out[i - 1], out[i]] = [out[i], out[i - 1]]; [flags[i - 1], flags[i]] = [flags[i], flags[i - 1]]; }
+    }
+  } else {
+    for (let i = out.length - 2; i >= 0; i--) {
+      if (flags[i] && !flags[i + 1]) { [out[i + 1], out[i]] = [out[i], out[i + 1]]; [flags[i + 1], flags[i]] = [flags[i], flags[i + 1]]; }
+    }
+  }
+  return out;
+}
+// Bring forward / send backward / to front / to back. Part of one group moves
+// inside that group; anything else moves whole units (a selected member takes
+// its group along), so the panel and the paint order never disagree.
+function reorderSelection(how) {
+  const sel = selection();
+  if (!project || !sel.length) return;
+  const ids = new Set(sel.map((e) => e.id));
+  const before = snapshot();
+  const units = layerUnits();
+  const gid = sel[0].group;
+  const unit = gid ? units.find((u) => u.gid === gid) : null;
+  if (unit && sel.every((e) => e.group === gid) && sel.length < unit.members.length) {
+    unit.members = moveMarked(unit.members, (e) => ids.has(e.id), how);
+    project.elements = unitsToElements(units);
+  } else {
+    const hit = (u) => (u.members ? u.members.some((e) => ids.has(e.id)) : ids.has(u.el.id));
+    project.elements = unitsToElements(moveMarked(units, hit, how));
+  }
+  if (!commitHistory(before)) {
+    status(`Already at the ${how === 'front' || how === 'forward' ? 'front' : 'back'}.`);
+    return;
+  }
   refreshPanels(); render(); scheduleCode();
 }
 function renderLayers() {
@@ -1685,19 +2053,129 @@ function renderLayers() {
   }
   host.appendChild(rootList);
   $('wcount').textContent = String(elements().length);
-  makeSortable(rootList);
-  host.querySelectorAll('.group-body').forEach(makeSortable);
+  makeSortable(rootList, { root: true });
+  host.querySelectorAll('.group-body').forEach((b) => makeSortable(b));
 }
 
 // ----------------------------------------------------------------- properties --
+// What each property does, shown by the ⓘ next to its label. Keyed by
+// "<KIND>:<label>" for a kind-specific meaning, else by the label alone; a row
+// built with an explicit title uses that instead.
+const PROP_HELP = {
+  'Name': 'The layer’s name in the designer and in the generated code comments. The watch never shows it.',
+  'Show in': 'When the watch draws this layer: Normal (screen on), AOD (always-on display, screen dimmed), both, or Edit (only while the wearer customises the face).',
+  'Alpha': 'Opacity from 0 (invisible) to 255 (solid).',
+  'Position': 'Top-left corner of the layer, in screen pixels from the top-left of the display.',
+  'Box': 'Width and height of the layer box, in pixels.',
+  'IMG:Box': 'Size of the widget area. The watch draws the picture at its own pixel size — this does not stretch it. “Use image size” matches the two.',
+  'Center': 'Centre point on the screen, in pixels.',
+  'TIME_POINTER:Center': 'The point every hand turns around — normally the middle of the screen.',
+  'IMG_POINTER:Center': 'Where the needle’s pivot sits on the screen.',
+  'Pivot': 'The rotation centre inside the pointer image (from its top-left corner) — the point that sits on Center.',
+  'Pivot X': 'Rotation centre inside the hand image, from its left edge. Usually half the image width.',
+  'Pivot Y': 'Rotation centre inside the hand image, from its top edge. Usually near the bottom of the hand.',
+  'Radius': 'Radius of the circle / arc in pixels — also draggable with the dot on the canvas.',
+  'Helpers': 'Quick layout actions for this layer.',
+  'Angle': 'Rotation in degrees, clockwise. 0 points at 12 o’clock.',
+  'Pos X': 'Horizontal offset of the picture inside the widget box.',
+  'Pos Y': 'Vertical offset of the picture inside the widget box.',
+  'Image': 'The PNG this layer draws. Click to pick from the project with previews, or upload a new one.',
+  'Pointer': 'The needle image, drawn pointing at 12 o’clock.',
+  'Data': 'The sensor reading that drives this widget on the watch. The canvas previews it with the value from Test data.',
+  'Level': 'A fixed value from 0 to 100, used when no data is bound.',
+  'Spread': 'Horizontal distance between the progress images, in pixels.',
+  'Part': 'Which part of the time this layer shows. A clock is usually an hour layer, a colon image and a minute layer.',
+  'Leading 0': 'Draw 09 instead of 9.',
+  'Space': 'Extra gap between digits, in pixels (negative tightens).',
+  'Spacing': 'Extra gap between digits, in pixels.',
+  'Align': 'Where the value sits inside its fixed-width box: left, centred or right. The box stays put while the value grows or shrinks.',
+  'Follow': 'Draw this value right after the previous part (hour → minute, month → day), using its spacing and alignment.',
+  'Unit': 'An image drawn right after the value — °, %, km, bpm.',
+  'Decimal': 'The image used for the decimal point (distance: 5.30).',
+  'Negative': 'The image used for the minus sign (temperature below zero).',
+  'AM': 'Image shown before noon in the 12-hour form.',
+  'PM': 'Image shown after noon in the 12-hour form.',
+  'Character': 'Show the month as a name (JAN, IANUARIE) instead of digits.',
+  'Text': 'The text to draw. Use a new line for several lines.',
+  'Size': 'The height the glyphs are drawn at, in pixels.',
+  'TEXT:Size': 'Font size in pixels.',
+  'Fill': 'How the glyphs are painted: a flat colour, a 2-colour gradient, a CSS gradient or a hollow outline.',
+  'Color': 'Fill colour.',
+  'Outline': 'Colour of the outline ring.',
+  'Outline width': 'Thickness of the outline in pixels.',
+  'From': 'Gradient start colour.',
+  'To': 'Gradient end colour.',
+  'Angle°': 'Gradient direction in CSS degrees: 0 = up, 90 = right, 180 = down.',
+  'Gradient': 'A CSS gradient, e.g. linear-gradient(180deg, #ffd400, #ff2d55).',
+  'Bold': 'Thicker glyphs. The watch has no bold, so a bold layer is shipped as an image.',
+  'Italic': 'Slanted glyphs. Shipped as an image, like bold.',
+  'Font': 'The typeface. “composes” = letters the font lacks are built from its own glyphs; “lacks” = a system font would fill in.',
+  'Weight': 'Font weight. Only fonts with several weights change; otherwise use Bold.',
+  'Align H': 'Horizontal alignment of the text inside its box.',
+  'Align V': 'Vertical alignment of the text inside its box.',
+  'Line space': 'Extra space between lines, in pixels.',
+  'Char space': 'Extra space between characters, in pixels.',
+  'Status': 'The system state that shows this icon (Bluetooth disconnected, do-not-disturb, alarm, lock).',
+  'Action': 'The app the watch opens when this area is tapped.',
+  'Icon': 'The image shown for this widget.',
+  'Line width': 'Stroke thickness in pixels.',
+  'Start': 'Start angle in degrees (0 = 12 o’clock, clockwise).',
+  'End': 'End angle in degrees. The value fills from Start towards End.',
+  'Background': 'An image drawn behind the arc — the empty track.',
+  'Cover': 'An image drawn on top of the hands’ pivot (the centre cap).',
+  'FPS': 'Frames per second.',
+  'Repeat': 'How many times the animation plays; 0 loops forever.',
+  'Step': 'Advance this many frames per tick (2 = every other frame).',
+  'Symbol': 'Type a character (°, :, ♥, A) and the image is drawn from the font below instead of picked.',
+  'Redraw': 'Rasterise the images again with the style above (it also happens by itself a moment after a change).',
+  'Names': 'The wording of the names: short (MON), full (MONDAY) or narrow (M).',
+  'Case': 'UPPERCASE, the language’s own casing, Capitalize or lowercase.',
+  'Language': 'The language the names are written in, as a tag like ro-RO or de-DE. Empty uses the project language.',
+  'Label align': 'Every name sits in one cell as wide as the longest; this places each name inside it, so the label never jumps.',
+  'Group name': 'A designer label for the group. The watch never sees groups.',
+};
+let propsHelpKind = null;      // the kind whose Properties are being built
+function helpFor(label) {
+  return PROP_HELP[`${propsHelpKind}:${label}`] || PROP_HELP[label] || '';
+}
 function mkRow(lbl, title) {
   const r = document.createElement('div');
   r.className = 'row';
   const s = document.createElement('span');
   s.className = 'lbl'; s.textContent = lbl;
-  if (title) s.title = title;
+  const help = title || helpFor(lbl);
+  if (help) {
+    // the ⓘ is drawn by CSS, so the label's text stays just the label
+    const i = document.createElement('span');
+    i.className = 'info';
+    i.dataset.help = help;
+    i.setAttribute('aria-label', help);
+    s.appendChild(i);
+  }
   r.appendChild(s);
   return r;
+}
+// One tooltip for every ⓘ: shown on hover, kept inside the window.
+{
+  const tip = document.createElement('div');
+  tip.className = 'help-tip';
+  tip.hidden = true;
+  document.body.appendChild(tip);
+  document.addEventListener('mouseover', (ev) => {
+    const i = ev.target.closest && ev.target.closest('.info');
+    if (!i) return;
+    tip.textContent = i.dataset.help;
+    tip.hidden = false;
+    const r = i.getBoundingClientRect();
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    const left = Math.max(8, Math.min(r.left - 10, window.innerWidth - w - 8));
+    const top = r.bottom + 6 + h > window.innerHeight - 8 ? r.top - h - 6 : r.bottom + 6;
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top}px`;
+  });
+  document.addEventListener('mouseout', (ev) => {
+    if (ev.target.closest && ev.target.closest('.info')) tip.hidden = true;
+  });
 }
 // Rows about the layer as a whole (Show in, Alpha) write to every selected
 // layer — the primary first, so the panel still shows that layer's values.
@@ -1741,7 +2219,9 @@ function ctlText(obj, key, placeholder) {
   const inp = document.createElement('input');
   inp.type = 'text'; inp.value = first[key] == null ? '' : first[key];
   if (placeholder) inp.placeholder = placeholder;
-  inp.oninput = () => { pushHistory(); setOn(targets, key, inp.value); refreshPanels(); render(); scheduleCode(); };
+  // refreshPanels() rebuilds this field, so carry the focus and caret across
+  inp.dataset.keepFocus = `text:${key}`;
+  inp.oninput = () => { pushHistory(); setOn(targets, key, inp.value); withFocusKept(() => refreshPanels()); render(); scheduleCode(); };
   return inp;
 }
 function ctlColor(obj, key) {
@@ -1785,20 +2265,223 @@ function imageOptions(includeEmpty) {
   for (const im of project.images) out.push({ value: im.name, label: im.name });
   return out;
 }
-function rowSingleImage(label, obj, key) {
-  const row = mkRow(label);
-  const img = imgFor(obj[key]);
-  const wrap = document.createElement('div');
-  wrap.className = 'imgbtn' + (obj[key] ? (img ? '' : ' missing') : ' empty');
-  if (obj[key] && img) {
-    const th = document.createElement('img');
-    th.className = 'imgthumb-sm'; th.src = img.src;
-    wrap.appendChild(th);
+// ------------------------------------------------------------ image fields --
+// One image control for every picture a layer points at (an Image's src, a
+// unit, AM/PM, hands, icons …): a thumbnail on a checkerboard, the file name
+// and size, and Choose / Upload / Clear. Choosing opens a grid of the
+// project's images with previews instead of a bare list of file names.
+function mkEl(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+const IMAGE_KEYS = ['src', 'unit', 'dot', 'negative', 'hour', 'minute', 'second', 'cover', 'bg', 'am', 'pm'];
+function imageUseCount(name) {
+  if (!name) return 0;
+  return elements().filter((x) => IMAGE_KEYS.some((k) => x[k] === name)
+    || ['images', 'frames'].some((k) => (x[k] || []).includes(name))).length;
+}
+function thumbEl(name, cls = 'thumb') {
+  const t = mkEl('span', cls);
+  const meta = name ? imgMeta(name) : null;
+  if (meta) { const im = document.createElement('img'); im.src = meta.url; im.alt = name; t.appendChild(im); }
+  else t.classList.add(name ? 'missing' : 'none');
+  return t;
+}
+function imageField(obj, key, { onChange } = {}) {
+  const name = obj[key] || '';
+  const meta = name ? imgMeta(name) : null;
+  const wrap = mkEl('div', 'imgfield' + (!name ? ' empty' : meta ? '' : ' missing'));
+  const set = (v) => {
+    if ((obj[key] || '') === v) return;
+    pushHistory();
+    obj[key] = v;
+    if (onChange) onChange(v);
+    refreshPanels(); render(); scheduleCode();
+  };
+  const pick = mkEl('button', 'if-pick');
+  pick.type = 'button';
+  pick.title = name ? `${name} — click to choose another image` : 'Choose a project image';
+  pick.appendChild(thumbEl(name, 'if-thumb'));
+  const txt = mkEl('span', 'if-text');
+  txt.appendChild(mkEl('span', 'if-name', name || 'None'));
+  const uses = imageUseCount(name);
+  txt.appendChild(mkEl('span', 'if-sub', meta
+    ? `${meta.width}×${meta.height}${uses > 1 ? ` · ${uses} layers` : ''}`
+    : name ? 'not in the project' : 'choose…'));
+  pick.appendChild(txt);
+  pick.onclick = () => openImagePicker(pick, { value: name, onPick: set });
+  wrap.appendChild(pick);
+  const up = mkEl('button', 'if-btn');
+  up.type = 'button'; up.title = 'Upload an image for this';
+  up.innerHTML = ICON.upload;
+  up.onclick = async () => {
+    const imgs = await API.pickImages();
+    if (!imgs || !imgs.length) return;
+    const it = await importOneImage(imgs[0]);
+    if (it) set(it.name);
+  };
+  wrap.appendChild(up);
+  if (name) {
+    const clr = mkEl('button', 'if-btn');
+    clr.type = 'button'; clr.title = 'Clear';
+    clr.innerHTML = ICON.x;
+    clr.onclick = () => set('');
+    wrap.appendChild(clr);
   }
-  const sel = ctlSelect(obj[key] || '', imageOptions(true), (v) => { obj[key] = v; });
-  wrap.appendChild(sel);
-  row.appendChild(wrap);
-  return row;
+  return wrap;
+}
+// An image set (digits, weekdays, levels, frames): every picture in order as a
+// strip of thumbnails with its index, the count against what the widget
+// expects, and the editor one click away.
+function imageSetField(e, { buttons = [] } = {}) {
+  const field = setFieldOf(e);
+  const list = e[field] || [];
+  const wrap = mkEl('div', 'setfield');
+  const strip = mkEl('div', 'sf-strip');
+  const shown = list.slice(0, 40);
+  const labels = e.kind === 'IMG_WEEK' ? weekNames(e) : labelKind(e) === 'month' ? monthNames(e) : null;
+  shown.forEach((n, i) => {
+    const c = thumbEl(n, 'sf-cell');
+    c.dataset.i = String(i);
+    // a wide picture (a weekday name) gets a wide cell, so it stays readable
+    const m = imgMeta(n);
+    if (m && m.height) c.style.width = `${Math.min(110, Math.max(24, Math.round(34 * m.width / m.height)))}px`;
+    c.title = `${i}${labels && labels[i] ? ` · ${labels[i]}` : ''} · ${n}${imgMeta(n) ? '' : ' (missing)'}`;
+    c.onclick = () => openImageSet(e);
+    strip.appendChild(c);
+  });
+  if (list.length > shown.length) strip.appendChild(mkEl('span', 'sf-more', `+${list.length - shown.length}`));
+  if (!list.length) {
+    const none = mkEl('button', 'sf-empty', 'No images yet — add or generate a set');
+    none.type = 'button';
+    none.onclick = () => openImageSet(e);
+    strip.appendChild(none);
+  }
+  wrap.appendChild(strip);
+  const foot = mkEl('div', 'sf-foot');
+  const first = list.map(imgMeta).find(Boolean);
+  foot.appendChild(mkEl('span', 'sf-count', `${list.length} image${list.length === 1 ? '' : 's'}${first ? ` · ${first.width}×${first.height}` : ''}`));
+  const hint = setHint(e.kind, e);
+  if (hint) foot.appendChild(mkEl('span', 'sf-hint', hint));
+  foot.appendChild(mkEl('span', 'flex-1'));
+  for (const b of buttons) foot.appendChild(b);
+  const edit = ctlButton('Edit…', 'Reorder, add, remove or generate the images', () => openImageSet(e));
+  foot.appendChild(edit);
+  wrap.appendChild(foot);
+  return wrap;
+}
+// a titled section inside Properties
+function section(host, title) {
+  const h = mkEl('div', 'psec', title);
+  host.appendChild(h);
+  return h;
+}
+// a row whose control takes the full width under its label
+function stackRow(label, control, title) {
+  const r = ctlRow(label, control, title);
+  r.classList.add('stack');
+  return r;
+}
+
+// ------------------------------------------------------------ image picker --
+// A popover grid of the project's images with previews. Single mode picks one
+// (or None); multi mode collects several, in click order, for an image set.
+let pickerEl = null;
+function closeImagePicker() {
+  if (!pickerEl) return;
+  pickerEl.remove();
+  pickerEl = null;
+  document.removeEventListener('mousedown', pickerOutside, true);
+  document.removeEventListener('keydown', pickerKey, true);
+}
+function pickerOutside(ev) { if (pickerEl && !pickerEl.contains(ev.target)) closeImagePicker(); }
+function pickerKey(ev) { if (ev.key === 'Escape') { ev.stopPropagation(); closeImagePicker(); } }
+function openImagePicker(anchor, { value = '', multi = false, onPick } = {}) {
+  closeImagePicker();
+  const box = mkEl('div', 'imgpicker');
+  const head = mkEl('div', 'ip-head');
+  const search = document.createElement('input');
+  search.type = 'text';
+  search.placeholder = `Search ${project.images.length} images`;
+  head.appendChild(search);
+  box.appendChild(head);
+  const grid = mkEl('div', 'ip-grid');
+  box.appendChild(grid);
+  const foot = mkEl('div', 'ip-foot');
+  const upload = ctlButton('Upload…', 'Import images from disk', async () => {
+    closeImagePicker();
+    const imgs = await API.pickImages();
+    if (!imgs || !imgs.length) return;
+    const added = await importImages(multi ? imgs : imgs.slice(0, 1));
+    if (added.length) onPick(multi ? added.map((a) => a.name) : added[0].name);
+  });
+  foot.appendChild(upload);
+  foot.appendChild(mkEl('span', 'flex-1'));
+  const chosen = [];
+  let addBtn = null;
+  if (multi) {
+    addBtn = ctlButton('Add', '', () => { const v = chosen.slice(); closeImagePicker(); if (v.length) onPick(v); });
+    addBtn.className = 'primary';
+    foot.appendChild(addBtn);
+  }
+  box.appendChild(foot);
+  const sync = () => {
+    if (!addBtn) return;
+    addBtn.disabled = !chosen.length;
+    addBtn.textContent = chosen.length ? `Add ${chosen.length}` : 'Add';
+    grid.querySelectorAll('.ip-cell[data-name]').forEach((c) => {
+      const at = chosen.indexOf(c.dataset.name);
+      c.classList.toggle('on', at >= 0);
+      c.dataset.order = at >= 0 ? String(at + 1) : '';
+    });
+  };
+  const cell = (name) => {
+    const b = mkEl('button', 'ip-cell' + (!multi && name === value ? ' on' : ''));
+    b.type = 'button';
+    if (name) b.dataset.name = name;
+    b.appendChild(thumbEl(name, 'ip-thumb'));
+    const meta = name ? imgMeta(name) : null;
+    b.appendChild(mkEl('span', 'ip-name', name || 'None'));
+    b.appendChild(mkEl('span', 'ip-sub', meta ? `${meta.width}×${meta.height}` : name ? '' : 'no image'));
+    b.title = name || 'No image';
+    b.onclick = () => {
+      if (!multi) { closeImagePicker(); onPick(name); return; }
+      const at = chosen.indexOf(name);
+      if (at >= 0) chosen.splice(at, 1); else chosen.push(name);
+      sync();
+    };
+    return b;
+  };
+  const fill = () => {
+    const q = search.value.trim().toLowerCase();
+    grid.innerHTML = '';
+    if (!multi && !q) grid.appendChild(cell(''));
+    const list = project.images.filter((i) => !q || i.name.toLowerCase().includes(q));
+    for (const im of list) grid.appendChild(cell(im.name));
+    if (!list.length) grid.appendChild(mkEl('div', 'ip-empty', project.images.length ? 'No image matches.' : 'The project has no images yet — upload some.'));
+    sync();
+  };
+  search.oninput = fill;
+  search.onkeydown = (ev) => {
+    if (ev.key !== 'Enter') return;
+    const firstCell = grid.querySelector('.ip-cell[data-name]');
+    if (firstCell) firstCell.click();
+  };
+  fill();
+  document.body.appendChild(box);
+  pickerEl = box;
+  // below the anchor, kept inside the window (above it when there is no room)
+  const r = anchor.getBoundingClientRect();
+  const bw = box.offsetWidth, bh = box.offsetHeight;
+  const left = Math.max(8, Math.min(r.left, window.innerWidth - bw - 8));
+  const below = r.bottom + 6 + bh <= window.innerHeight - 8;
+  box.style.left = `${left}px`;
+  box.style.top = `${below ? r.bottom + 6 : Math.max(8, r.top - bh - 6)}px`;
+  setTimeout(() => search.focus(), 0);
+  document.addEventListener('mousedown', pickerOutside, true);
+  document.addEventListener('keydown', pickerKey, true);
 }
 function setHint(kind, e) {
   const n = (e.images || []).length;
@@ -1807,12 +2490,6 @@ function setHint(kind, e) {
   if (e.dataType === 'WEATHER') return n === 29 ? '' : `the weather set uses 29 icons in the spec order (have ${n})`;
   if (kind === 'IMG_LEVEL' || kind === 'IMG_PROGRESS') return n ? '' : 'add an image per level';
   return '';
-}
-function rowImageSet(label, e) {
-  const row = mkRow(label);
-  const btn = ctlButton(`${(e.images || []).length} image${(e.images || []).length === 1 ? '' : 's'}…`, 'Edit the image set', () => openImageSet(e));
-  row.appendChild(btn);
-  return row;
 }
 function dtOptions(forClick) {
   const groups = [];
@@ -1835,22 +2512,79 @@ function groupBox(title) {
   box.appendChild(head);
   return box;
 }
-function infoBlock(e) {
+// The top of Properties: what this layer is, its box, and a link to the Zepp
+// docs page of the widget it becomes.
+function propsHeader(e) {
   const k = kindById(e.kind);
   const b = elBox(e);
-  const box = document.createElement('div');
-  box.className = 'pinfo';
-  const rows = [
-    ['kind', k ? k.label : e.kind],
-    ['docs', k ? `hmUI.widget.${e.kind}` : e.kind],
-    ['box', `${Math.round(b.x)}, ${Math.round(b.y)} · ${Math.round(b.w)}×${Math.round(b.h)}`],
-  ];
-  for (const [k2, v] of rows) {
-    const a = document.createElement('div'); a.className = 'k'; a.textContent = k2;
-    const b2 = document.createElement('div'); b2.className = 'v'; b2.textContent = v;
-    box.appendChild(a); box.appendChild(b2);
+  const h = mkEl('div', 'phdr');
+  const ic = mkEl('span', 'ph-icon'); ic.innerHTML = kindIcon(e.kind);
+  const main = mkEl('div', 'ph-main');
+  main.appendChild(mkEl('div', 'ph-kind', k ? k.label : e.kind));
+  main.appendChild(mkEl('div', 'ph-sub', `${Math.round(b.x)}, ${Math.round(b.y)} · ${Math.round(b.w)}×${Math.round(b.h)}${e.locked ? ' · locked' : ''}${e.visible === false ? ' · hidden' : ''}`));
+  const docs = mkEl('button', 'ph-docs', `${(k && k.docs) || e.kind} ↗`);
+  docs.type = 'button';
+  docs.title = `Open the Zepp OS docs for hmUI.widget.${(k && k.docs) || e.kind}`;
+  docs.onclick = () => API.openExternal(`https://docs.zepp.com/docs/watchface/api/hmUI/widget/${(k && k.docs) || e.kind}/`);
+  h.appendChild(ic); h.appendChild(main); h.appendChild(docs);
+  return h;
+}
+// a row with two short number fields side by side (X / Y, W / H)
+function pairRow(label, parts, title) {
+  const wrap = mkEl('div', 'pair');
+  for (const [pfx, ctl] of parts) {
+    const f = mkEl('label', 'pf');
+    f.appendChild(mkEl('span', 'pfx', pfx));
+    f.appendChild(ctl);
+    wrap.appendChild(f);
   }
-  return box;
+  return ctlRow(label, wrap, title);
+}
+// opacity as a slider with its number beside it
+function ctlAlpha(targets) {
+  const first = targets[0] || {};
+  const v0 = Number.isFinite(+first.alpha) ? +first.alpha : 255;
+  const wrap = mkEl('div', 'rowctl');
+  const range = document.createElement('input');
+  range.type = 'range'; range.min = 0; range.max = 255; range.value = v0;
+  const n = document.createElement('input');
+  n.type = 'number'; n.min = 0; n.max = 255; n.value = v0; n.className = 'num-sm';
+  const set = (v) => {
+    v = Math.max(0, Math.min(255, Math.round(+v || 0)));
+    pushHistory(); setOn(targets, 'alpha', v);
+    range.value = v; n.value = v;
+    render(); scheduleCode();
+  };
+  range.oninput = () => set(range.value);
+  n.oninput = () => set(n.value);
+  wrap.appendChild(range); wrap.appendChild(n);
+  return wrap;
+}
+// Quick layout actions: centre on the screen, match the picture's own size.
+function geoHelpers(e) {
+  const d = dev();
+  const wrap = mkEl('div', 'rowctl wrap');
+  const center = (axis) => {
+    pushHistory();
+    if (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER') {
+      if (axis !== 'y') e.centerX = Math.round(d.w / 2);
+      if (axis !== 'x') e.centerY = Math.round(d.h / 2);
+    } else {
+      const b = elBox(e);
+      moveEl(e, axis !== 'y' ? Math.round(d.w / 2 - (b.x + b.w / 2)) : 0, axis !== 'x' ? Math.round(d.h / 2 - (b.y + b.h / 2)) : 0);
+    }
+    refreshPanels(); render(); scheduleCode();
+  };
+  wrap.appendChild(ctlButton('Center ↔', 'Centre horizontally on the screen', () => center('x')));
+  wrap.appendChild(ctlButton('Center ↕', 'Centre vertically on the screen', () => center('y')));
+  const pic = ['IMG', 'IMG_STATUS', 'IMG_CLICK', 'IMG_LEVEL'].includes(e.kind)
+    ? imgMeta(e.kind === 'IMG_LEVEL' ? (e.images || [])[0] : e.src) : null;
+  if (pic && (+e.w !== pic.width || +e.h !== pic.height)) {
+    wrap.appendChild(ctlButton('Use image size', `Set W×H to the picture's ${pic.width}×${pic.height}`, () => {
+      pushHistory(); e.w = pic.width; e.h = pic.height; refreshPanels(); render(); scheduleCode();
+    }));
+  }
+  return wrap;
 }
 // Rebuilding the panel empties it for a moment, which clamps the panel's own
 // scroll to the top — remember where it was and put it back, so typing in a
@@ -1878,33 +2612,33 @@ function renderPropsBody(host) {
     if (sel.length <= 1) host.innerHTML = '<p class="muted">Select a layer.</p>';
     return;
   }
-  host.appendChild(infoBlock(e));
+  propsHelpKind = e.kind;
+  host.appendChild(propsHeader(e));
   // common
   const many = sel.length > 1;
   const targets = commonTargets(e);
+  section(host, 'Layer');
   host.appendChild(ctlRow('Name', ctlText(e, 'name', layerLabel(e))));
   host.appendChild(ctlRow('Show in',
     ctlSelect(e.show || 'normal', SHOW_LEVELS.map((s) => ({ value: s.key, label: s.label })), (v) => { setOn(targets, 'show', v); }),
-    many ? `Applies to all ${sel.length} selected layers` : 'When this layer is drawn: normal, AOD, both or edit-only'));
-  host.appendChild(ctlRow('Alpha', ctlNum(targets, 'alpha', { min: 0, max: 255 }),
-    many ? `Applies to all ${sel.length} selected layers` : 'Layer opacity, 0-255'));
+    many ? `Applies to all ${sel.length} selected layers` : ''));
+  host.appendChild(ctlRow('Alpha', ctlAlpha(targets),
+    many ? `Applies to all ${sel.length} selected layers` : ''));
 
-  const geo = document.createElement('div');
-  geo.className = 'prop-sep';
-  host.appendChild(geo);
+  section(host, 'Position & size');
   if (CENTER_KINDS.has(e.kind)) {
-    host.appendChild(ctlRow('Center X', ctlNum(e, 'centerX')));
-    host.appendChild(ctlRow('Center Y', ctlNum(e, 'centerY')));
-    host.appendChild(ctlRow('Radius', ctlNum(e, 'radius', { min: 0 })));
+    host.appendChild(pairRow('Center', [['X', ctlNum(e, 'centerX')], ['Y', ctlNum(e, 'centerY')]]));
+    if (e.kind !== 'TIME_POINTER') host.appendChild(ctlRow('Radius', ctlNum(e, 'radius', { min: 0 })));
+  } else if (e.kind === 'IMG_POINTER') {
+    host.appendChild(pairRow('Center', [['X', ctlNum(e, 'centerX')], ['Y', ctlNum(e, 'centerY')]]));
+    host.appendChild(pairRow('Pivot', [['X', ctlNum(e, 'x')], ['Y', ctlNum(e, 'y')]]));
   } else if (WH_KINDS.has(e.kind)) {
-    host.appendChild(ctlRow('X', ctlNum(e, 'x')));
-    host.appendChild(ctlRow('Y', ctlNum(e, 'y')));
-    host.appendChild(ctlRow('W', ctlNum(e, 'w', { min: 0 })));
-    host.appendChild(ctlRow('H', ctlNum(e, 'h', { min: 0 })));
+    host.appendChild(pairRow('Position', [['X', ctlNum(e, 'x')], ['Y', ctlNum(e, 'y')]]));
+    host.appendChild(pairRow('Box', [['W', ctlNum(e, 'w', { min: 0 })], ['H', ctlNum(e, 'h', { min: 0 })]]));
   } else {
-    host.appendChild(ctlRow('X', ctlNum(e, 'x')));
-    host.appendChild(ctlRow('Y', ctlNum(e, 'y')));
+    host.appendChild(pairRow('Position', [['X', ctlNum(e, 'x')], ['Y', ctlNum(e, 'y')]]));
   }
+  host.appendChild(ctlRow('Helpers', geoHelpers(e)));
   host.appendChild(propsKind(e));
   const del = ctlButton('Delete layer', '', () => deleteElements([e]));
   del.className = 'row-btn';
@@ -1950,8 +2684,12 @@ const GLYPH_FILLS = [
   { value: 'outline', label: 'Outline' },
 ];
 const DIGIT_FILE_RE = /^font_\d+_\d+\.png$/;
-const WEEK_FILE_RE = /^week_w\d+\.png$/;
-const MONTH_FILE_RE = /^month_m\d+\.png$/;
+// a weekday / month set is owned by its layer (week_w1…, week2_w1… for a second
+// layer in another language or style), so two layers never overwrite each other
+const WEEK_FILE_RE = /^week\d*_w\d+\.png$/;
+const MONTH_FILE_RE = /^month\d*_m\d+\.png$/;
+const LABEL_FILE_RE = { week: /^(week\d*)_w\d+\.png$/, month: /^(month\d*)_m\d+\.png$/ };
+const DIGIT_METRICS = ['0123456789'];
 const WEEK_CHARS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const SEPARATOR_CHARS = { colon: ':', dot: '.', percent: '%', negative: '-', degree: '°', slash: '/', am: 'A', pm: 'P' };
 const SEPARATOR_FILE_RE = /^(colon|dot|percent|negative|degree|slash|am|pm)(_\w+)?\.png$/i;
@@ -2064,12 +2802,14 @@ function isGlyphLayer(e) {
 }
 // what the panel edits, with the values the layer's images were drawn with
 function glyphStyle(e) {
-  const g = e.glyph || {};
-  const sepOnly = (e.kind === 'IMG' || e.kind === 'IMG_ANIM') && isGlyphLayer(e);
+  const sepOnly = (e.kind === 'IMG' || e.kind === 'IMG_ANIM') && isGlyphLayer(e) && !(e.symbol && e.symbol.char);
+  // a colon / blink layer with no style of its own draws like the clock digits
+  // next to it, so restyling it keeps it in step with them
+  const g = e.glyph || (sepOnly ? ((digitLayerFor(e) || {}).glyph) : null) || {};
   // an imported set carries no style of its own: offer the size its pictures are
   // drawn at, so the first re-render keeps their proportions
   const keep = (!g.size && glyphSpecForLayer(e)) ? importedGlyphHeight(e) : 0;
-  const size = +g.size || keep || ((e.kind === 'IMG_WEEK' || sepOnly) ? 40 : +glyphOpts.size) || 48;
+  const size = +g.size || keep || (labelKind(e) ? 40 : +glyphOpts.size) || 48;
   return {
     font: g.font || glyphFont,
     size: Math.max(8, Math.round(size)),
@@ -2185,18 +2925,73 @@ function glyphUsersOf(names, ...except) {
   const set = new Set(names.filter(Boolean));
   return elements().filter((x) => !except.includes(x) && glyphLayerFiles(x).some((n) => set.has(n)));
 }
+function labelKind(e) {
+  if (!e) return null;
+  if (e.kind === 'IMG_WEEK') return 'week';
+  if (e.kind === 'IMG_DATE' && e.isCharacter) return 'month';
+  return null;
+}
+// week, week2, week3 … — the first whose files are not in the project yet
+function nextLabelPrefix(kind) {
+  const taken = new Set(project.images.map((i) => i.name));
+  const first = kind === 'week' ? 'w1' : 'm1';
+  for (let n = 1; ; n++) {
+    const p = n === 1 ? kind : `${kind}${n}`;
+    if (!taken.has(`${p}_${first}.png`)) return p;
+  }
+}
+// the prefix of a label set this layer owns alone (null: none, or shared)
+function ownLabelPrefix(e, kind) {
+  const imgs = (e && e.images) || [];
+  const m = imgs.length ? LABEL_FILE_RE[kind].exec(imgs[0]) : null;
+  if (!m) return null;
+  return glyphUsersOf(imgs, e).length ? null : m[1];
+}
+function freshPrefixFor(e) {
+  const lk = labelKind(e);
+  return lk ? nextLabelPrefix(lk) : nextDigitPrefix();
+}
 function glyphPrefixFor(e, spec) {
   const first = (spec[0] && spec[0].name) || (e.images || [])[0] || e.src || '';
   const m = /^(font_\d+)_\d+\.png$/.exec(first);
   if (m) return m[1];
-  if (e.kind === 'IMG_WEEK') return 'week';
-  if (e.kind === 'IMG_DATE' && e.isCharacter) return 'month';
+  const lk = labelKind(e);
+  if (lk) {
+    const lm = LABEL_FILE_RE[lk].exec(first);
+    return lm ? lm[1] : nextLabelPrefix(lk);
+  }
   return nextDigitPrefix();
 }
-// names the design owns (colon.png, week_w1.png, month_m3.png): layers share them
-// on purpose, so they are never forked into a private copy
+// names the design owns (colon.png, degree.png …): layers share them on
+// purpose, so they are never forked into a private copy
 function designFixedName(n) {
-  return WEEK_FILE_RE.test(n) || MONTH_FILE_RE.test(n) || SEPARATOR_FILE_RE.test(n);
+  return SEPARATOR_FILE_RE.test(n);
+}
+// The clock digits a separator belongs to: a digit layer in the same group,
+// else the nearest one on the canvas.
+function digitLayerFor(e) {
+  if (!project || !e) return null;
+  const digits = elements().filter((x) => x !== e && (x.kind === 'IMG_TIME' || x.kind === 'IMG_DATE' || x.kind === 'TEXT_IMG')
+    && (x.images || []).length);
+  if (!digits.length) return null;
+  const mates = e.group ? digits.filter((x) => x.group === e.group) : [];
+  const pool = mates.length ? mates : digits;
+  const b = elBox(e);
+  const dist = (x) => { const o = elBox(x); return Math.hypot(o.x + o.w / 2 - b.x - b.w / 2, o.y + o.h / 2 - b.y - b.h / 2); };
+  return pool.slice().sort((a, c) => dist(a) - dist(c))[0];
+}
+// the style a digit set was drawn with — the layer that owns it, else the
+// font library defaults those sets are generated from
+function digitStyleOf(names) {
+  const first = (names || []).find(Boolean);
+  const owner = first ? elements().find((x) => x.glyph && (x.images || []).includes(first)) : null;
+  return glyphStyle(owner || { kind: 'IMG_TIME', glyph: { font: glyphFont, size: +glyphOpts.size || 48, color: glyphOpts.color,
+    weight: glyphOpts.weight, variations: glyphOpts.variations, fill: 'solid' } });
+}
+// what a layer stores as its glyph spec: the style, nothing derived
+function glyphSpecFrom(st) {
+  const { font, size, weight, variations, fill, color, from, to, angle, css, outlineColor, outlineWidth, bold, italic } = st;
+  return { font, size, weight, variations, fill, color, from, to, angle, css, outlineColor, outlineWidth, bold, italic };
 }
 // Rasterise this layer's images again, in place, with its current style.
 // A digit set shared with a layer we are *not* restyling is copied first (the
@@ -2224,11 +3019,16 @@ async function regenerateGlyphs(e, { targets = [e] } = {}) {
   // design-fixed names (colon.png, week_w1.png) that layers share on purpose.
   const shared = glyphUsersOf(cur, e).filter((x) => !targets.includes(x)).length > 0;
   const fork = shared && cur.length > 0 && !cur.every(designFixedName);
-  if (fork) pre = nextDigitPrefix();
+  if (fork) pre = freshPrefixFor(e);
+  // digits and separators share one cell height and baseline (DIGIT_METRICS), so
+  // a colon generated beside a digit set lines up with it at the same Y
+  const digitLike = DIGIT_SET_KINDS.has(e.kind) || (!e.symbol || !e.symbol.char) && spec.every((g) => separatorGlyphFor(g.name));
   const names = await genGlyphImages(
     spec.map((g) => ({ tag: g.tag, char: g.char, name: (fork || !g.name) ? `${pre}_${g.tag}.png` : g.name })),
     { prefix: pre, mono: spec.length > 1, replace: true, size: st.size,
-      family: st.font, weight: st.weight, variations: st.variations, style: st },
+      family: st.font, weight: st.weight, variations: st.variations, style: st,
+      metricsRef: digitLike && !labelKind(e) ? DIGIT_METRICS : null,
+      align: e.labelAlign || 'center' },
   );
   if (e.kind === 'IMG') e.src = names[0];
   else if (e.kind === 'IMG_ANIM') e.frames = names;
@@ -2236,13 +3036,11 @@ async function regenerateGlyphs(e, { targets = [e] } = {}) {
   for (const key of GLYPH_ATTACHED) {
     const g = separatorGlyphFor(e[key]);
     if (!g) continue;
-    // separators keep the digits' proportions, and the degree sign keeps the
-    // digits' cell height so it reads as a superscript
-    const cell = digitCellHeight(e);
+    // the same size and the digits' cell height and baseline: a font draws its
+    // ° high and its − at the digits' mid-height, so they land where the
+    // typeface designer put them next to these digits
     const [n] = await genGlyphImages([{ tag: g.tag, char: g.char, name: g.name }],
-      { prefix: g.tag, mono: false, replace: true,
-        size: g.tag === 'degree' ? Math.max(8, Math.round((cell || st.size) * 0.8)) : (cell || st.size),
-        cellH: g.tag === 'degree' ? cell : 0,
+      { prefix: g.tag, mono: false, replace: true, size: st.size, metricsRef: DIGIT_METRICS,
         family: st.font, weight: st.weight, variations: st.variations, style: st });
     e[key] = n;
   }
@@ -2289,32 +3087,6 @@ function glyphFamilyOptions() {
   const cur = glyphStyle(selEl() || {}).font;
   push(cur, cur);
   return out;
-}
-// Properties rows for one glyph layer; every control writes to *all* selected
-// glyph layers, so selecting a group restyles the whole clock in one go.
-// a thumbnail of the image a layer draws, so the panel shows what the export
-// will ship
-function imagePreview(name) {
-  const wrap = document.createElement('div');
-  wrap.className = 'imgprev';
-  const meta = name ? imgMeta(name) : null;
-  if (meta) {
-    const im = document.createElement('img');
-    im.src = meta.url;
-    im.alt = name;
-    im.title = name;
-    wrap.appendChild(im);
-    const t = document.createElement('span');
-    t.className = 'muted small';
-    t.textContent = `${name} · ${meta.width}×${meta.height}`;
-    wrap.appendChild(t);
-  } else {
-    const t = document.createElement('span');
-    t.className = 'muted small';
-    t.textContent = 'no image yet — pick one above, or generate one from a symbol below';
-    wrap.appendChild(t);
-  }
-  return wrap;
 }
 // The character an image is drawn from. Works for any image layer: type a symbol
 // and the PNG is rasterised from the font and set as this layer's image (a
@@ -2367,6 +3139,10 @@ function labelRows(add, e, kind) {
   add('Case', ctlSelect(labelCaseOf(e), LABEL_CASES, (v) => { e.labelCase = v; relabelGlyphs(e); }),
     'UPPERCASE (the default), the language’s own casing, Capitalize or lowercase');
   add('Language', langInput(e), `Empty uses the project language (${projectLanguage()})`);
+  add('Label align', ctlSelect(e.labelAlign || 'center', [
+    { value: 'left', label: 'Left' }, { value: 'center', label: 'Center' }, { value: 'right', label: 'Right' },
+  ], (v) => { e.labelAlign = v; relabelGlyphs(e); }),
+  'Every name is drawn in one cell as wide as the longest; this places each name inside it, so the label never jumps between days');
 }
 function langInput(e) {
   const inp = document.createElement('input');
@@ -2392,8 +3168,9 @@ function relabelGlyphs(e) {
 }
 function rememberGlyphStyle(e, size) {
   e.glyph = {
+    ...(e.glyph || {}),
     font: glyphFont, size, color: glyphOpts.color,
-    weight: glyphOpts.weight, variations: glyphOpts.variations, fill: 'solid',
+    weight: glyphOpts.weight, variations: glyphOpts.variations, fill: (e.glyph && e.glyph.fill) || 'solid',
   };
 }
 // Month names are their own 12-image set (the widget has no "month name" array to
@@ -2409,7 +3186,7 @@ function characterCheck(e) {
     if (e.isCharacter) {
       e.part = 'month';
       if (!(e.images || []).length) {
-        try { e.images = await genMonthSet(e); rememberGlyphStyle(e, 40); }
+        try { rememberGlyphStyle(e, 40); e.images = await genLabelSet(e, 'month'); }
         catch (err) { status('Could not generate the month names: ' + (err.message || err), true); }
       }
     }
@@ -2417,27 +3194,30 @@ function characterCheck(e) {
   };
   return inp;
 }
+// Properties rows for one glyph layer; every control writes to *all* selected
+// glyph layers, so selecting a group restyles the whole clock in one go.
 function glyphStyleRows(frag, add, e) {
   const spec = glyphSpecForLayer(e);
   const files = glyphLayerFiles(e);
-  const meta = files[0] ? imgMeta(files[0]) : null;
   // any image layer can be *generated* from a symbol (a character drawn with a
   // font); kinds that only draw imported sets cannot
   const canSymbol = e.kind === 'IMG';
   const sym = canSymbol ? layerSymbol(e) : null;
+  const sepOnly = (e.kind === 'IMG' || e.kind === 'IMG_ANIM') && !!spec && !(e.symbol && e.symbol.char);
   // the widget's own parameters say what the images are, so a set that came from
   // another watchface is editable — but the style rows will redraw it
   const imported = !!spec && importedGlyphSet(e);
   if (!spec && !canSymbol) {
-    frag.appendChild(propNote(files.length
-      ? `This layer's ${files.length} images were imported (or picked by hand), so the designer leaves them alone — their size and colour are in the pictures themselves.`
-      : 'No images yet — add a set under Images above, then the size and colour become editable here.'));
+    if (files.length) {
+      frag.appendChild(propNote(`These ${files.length} images were imported or picked by hand, so the designer leaves them alone — size and colour are in the pictures themselves.`));
+    }
     return;
   }
+  section(frag, spec ? 'Glyph style' : 'Draw from a symbol');
   const T = targetsWhere(e, isGlyphLayer);
   const st = glyphStyle(e);
   const apply = (key, value) => {
-    for (const t of T) { const g = (t.glyph = t.glyph || {}); g[key] = value; }
+    for (const t of T) { const g = (t.glyph = t.glyph || glyphSpecFrom(glyphStyle(t))); g[key] = value; }
     scheduleGlyphGen(T);
   };
   const num = (key, { min = null, max = null } = {}) => {
@@ -2482,65 +3262,76 @@ function glyphStyleRows(frag, add, e) {
   if (canSymbol) {
     add('Symbol', symbolInput(e), 'The character this image is drawn from — a letter, a separator like ° or :, an emoji. Fill it in and the image is rasterised from the font below, into a file of its own');
   }
-  // the font rows belong to a symbol: without one this is a regular image layer
   if (spec) {
-  add('Font', ctlSelect(st.font, glyphFamilyOptions(), (v) => {
-    apply('font', v);
-    ensureFont(v, st.weight).then(() => render());
-  }), 'Typeface these images are rasterised from');
-  add('Size', num('size', { min: 8 }), 'Height the glyphs are rasterised at, in px');
-  add('Fill', ctlSelect(st.fill, GLYPH_FILLS, (v) => apply('fill', v)));
-  if (st.fill === 'solid') add('Color', color('color'));
-  if (st.fill === 'outline') {
-    // the outline is a hollow ring: the fill colour is not used
-    add('Outline', color('outlineColor'), 'Colour of the outline ring');
-    add('Outline width', num('outlineWidth', { min: 1, max: 24 }));
+    // the characters this layer draws decide which fonts can draw it natively
+    const need = spec.map((g) => g.char).join('');
+    const fontOpts = glyphFamilyOptions().map((o) => {
+      const cov = coverageReport(o.value, need);
+      const tag = cov.system.length ? ` · lacks ${cov.system.join('')}`
+        : (cov.composed.length || cov.alternate.length) ? ` · composes ${[...cov.composed, ...cov.alternate].join('')}` : '';
+      return { value: o.value, label: o.label + tag };
+    });
+    add('Font', ctlSelect(st.font, fontOpts, (v) => {
+      apply('font', v);
+      ensureFont(v, st.weight).then(() => render());
+    }), 'Typeface these images are rasterised from');
+    const cov = coverageSummary(st.font, need);
+    if (!cov.native) {
+      const n = propNote(`${st.font}: ${cov.text}.${cov.system.length ? ' Pick a font marked without “lacks” to keep one typeface.' : ''}`);
+      n.classList.add(cov.system.length ? 'warn' : 'info');
+      frag.appendChild(n);
+    }
+    add('Size', num('size', { min: 8 }), 'Height the glyphs are rasterised at, in px');
+    add('Fill', ctlSelect(st.fill, GLYPH_FILLS, (v) => apply('fill', v)));
+    if (st.fill === 'solid') add('Color', color('color'));
+    if (st.fill === 'outline') {
+      // the outline is a hollow ring: the fill colour is not used
+      add('Outline', color('outlineColor'), 'Colour of the outline ring');
+      add('Outline width', num('outlineWidth', { min: 1, max: 24 }));
+    }
+    if (st.fill === 'gradient') {
+      add('From', color('from'));
+      add('To', color('to'));
+      add('Angle°', num('angle'), '0 = up, 90 = right (CSS degrees)');
+    }
+    if (st.fill === 'css') {
+      add('Gradient', text('css', 'linear-gradient(180deg, #ffd400, #ff2d55)'));
+      frag.appendChild(propNote(parseCssGradient(st.css)
+        ? 'linear / radial / conic, e.g. linear-gradient(180deg, #ffd400 0%, #ff2d55 100%)'
+        : 'not parsed — the glyphs fall back to the flat colour'));
+    }
+    add('Bold', check('bold', 'Thickens every glyph — works with single-weight fonts too'));
+    add('Italic', check('italic', 'Slants every glyph 12°'));
+    const btns = mkEl('div', 'rowctl wrap');
+    btns.appendChild(ctlButton(files.length ? 'Redraw now' : (spec.length > 1 ? 'Generate images' : 'Generate image'),
+      files.length ? 'Rasterise these images again now' : 'Rasterise from this style now', () => {
+        pushHistory();
+        rerenderGlyphLayers(T);
+      }));
+    const digitsSrc = sepOnly ? digitLayerFor(e) : null;
+    if (digitsSrc) {
+      btns.appendChild(ctlButton('Match digits', `Take the font, size and fill of “${digitsSrc.name}”`, () => {
+        pushHistory();
+        e.glyph = glyphSpecFrom(glyphStyle(digitsSrc));
+        refreshPanels();
+        rerenderGlyphLayers([e], { quiet: true });
+      }));
+    }
+    add('Redraw', btns);
   }
-  if (st.fill === 'gradient') {
-    add('From', color('from'));
-    add('To', color('to'));
-    add('Angle°', num('angle'), '0 = up, 90 = right (CSS degrees)');
-  }
-  if (st.fill === 'css') {
-    add('Gradient', text('css', 'linear-gradient(180deg, #ffd400, #ff2d55)'));
-    frag.appendChild(propNote(parseCssGradient(st.css)
-      ? 'linear / radial / conic, e.g. linear-gradient(180deg, #ffd400 0%, #ff2d55 100%)'
-      : 'not parsed — the glyphs fall back to the flat colour'));
-  }
-  add('Bold', check('bold', 'Thickens every glyph — works with single-weight fonts too'));
-  add('Italic', check('italic', 'Slants every glyph 12°'));
-  add('Re-render', ctlButton(files.length ? 'Apply size & colour' : (spec.length > 1 ? 'Generate images' : 'Generate image'),
-    files.length ? 'Rasterise these images again now' : 'Rasterise a set from this style now', () => {
-      pushHistory();
-      rerenderGlyphLayers(T);
-    }));
-  }
-  // what the images actually are, and what a change will do to them
-  if (imported) {
-    frag.appendChild(propNote(`These ${files.length} images are the ones this layer came with${meta ? ` (${meta.width}×${meta.height} px)` : ''}. The rows above redraw them from the chosen font and style — the pictures the layer has now are replaced.`));
-  } else if (canSymbol && sym) {
-    frag.appendChild(propNote(`Draws “${sym.char}” with ${st.font} ${st.size}px — the image${files.length ? ` (${meta ? `${meta.width}×${meta.height}` : '?'})` : ''} is rasterised from that font, into ${sym.name || 'a file of its own'}, and re-rendered whenever the style changes.`));
-  } else if (canSymbol) {
-    frag.appendChild(propNote('This is a regular image layer. Fill in Symbol to rasterise the image from a font instead — it gets a file of its own and becomes this layer\'s image.'));
-  }
-  const count = `${spec ? spec.length : 0} image${!spec || spec.length === 1 ? '' : 's'}`;
-  if (!imported) frag.appendChild(propNote(files.length
-    ? `The watch draws ${count}${meta ? ` (${meta.width}×${meta.height} px)` : ''}, not text: size, colour, fill, bold and italic are baked into the PNGs and re-rendered here.`
-    : `No images yet — ${count} are rasterised from this style, and re-rendered whenever it changes.`));
+  // one line on what the images are and what a change does to them
+  const notes = [];
+  if (imported) notes.push(`Restyling redraws the ${files.length} pictures this layer came with.`);
+  else if (canSymbol && sym) notes.push(`Draws “${sym.char}” into ${sym.name || 'a file of its own'}.`);
+  else if (canSymbol) notes.push('A regular image layer — type a character in Symbol to draw it from a font instead.');
   const attached = attachedSepGlyphs(e);
-  if (attached.length) {
-    frag.appendChild(propNote(`Separator images follow the same style: ${attached.map((a) => a.name).join(', ')} — that is how a temperature layer's ° (and −) glyph keeps in step with its digits.`));
-  }
-  if (e.kind === 'IMG_ANIM' && (e.frames || []).some((n) => /(_off|_empty|_blank)\.png$/i.test(n))) {
-    frag.appendChild(propNote('Blink frames: the `…_off` images are kept blank, so the colon keeps blinking with the new look.'));
-  }
+  if (attached.length) notes.push(`${attached.map((a) => a.name).join(', ')} follow${attached.length === 1 ? 's' : ''} this style.`);
+  if (e.kind === 'IMG_ANIM' && (e.frames || []).some((n) => /(_off|_empty|_blank)\.png$/i.test(n))) notes.push('The …_off blink frames stay blank.');
   const shared = glyphUsersOf((spec || []).map((g) => g.name).filter(Boolean), e);
-  if (shared.length) {
-    frag.appendChild(propNote(`Shared with ${shared.length} other layer${shared.length === 1 ? '' : 's'} — restyling this one gives it a copy of its own, the others keep theirs.`));
-  }
-  if (T.filter((t) => !!glyphSpecForLayer(t)).length > 1) {
-    frag.appendChild(propNote(`Styles are applied to all ${T.filter((t) => !!glyphSpecForLayer(t)).length} selected image layers.`));
-  }
+  if (shared.length) notes.push(`Shared with ${shared.length} other layer${shared.length === 1 ? '' : 's'} — restyling gives this one its own copy.`);
+  const nT = T.filter((t) => !!glyphSpecForLayer(t)).length;
+  if (nT > 1) notes.push(`Styles are applied to all ${nT} selected image layers.`);
+  if (notes.length) frag.appendChild(propNote(notes.join(' ')));
 }
 function propsGroupTools(sel) {
   const D = dev();
@@ -2655,10 +3446,14 @@ function distributeSel(sel, axis, mode, D) {
 function propsKind(e) {
   const frag = document.createElement('div');
   const add = (label, ctl, title) => frag.appendChild(ctlRow(label, ctl, title));
+  const img = (label, key, title) => add(label, imageField(e, key), title);
+  const set = (title, label, opts) => { section(frag, title); frag.appendChild(stackRow(label, imageSetField(e, opts))); };
+  const k = kindById(e.kind);
+  if (!['IMG', 'TIME_POINTER', 'IMG_WEEK'].includes(e.kind)) section(frag, k ? k.label : 'Widget');
   switch (e.kind) {
     case 'IMG':
-      add('Image', buildSingle(e, 'src'));
-      add('Preview', imagePreview(e.src), 'The PNG this layer draws, as the export ships it');
+      section(frag, 'Image');
+      img('Image', 'src');
       add('Angle', ctlNum(e, 'angle', { min: -360, max: 360 }));
       add('Pos X', ctlNum(e, 'posX'));
       add('Pos Y', ctlNum(e, 'posY'));
@@ -2667,76 +3462,66 @@ function propsKind(e) {
       glyphStyleRows(frag, add, e);
       break;
     case 'IMG_ANIM':
-      // one row: a run of PNGs, or an animated GIF/WebP that is split for you
-      add('Frames', ctlButton(`${(e.frames || []).length} frame${(e.frames || []).length === 1 ? '' : 's'}…`,
-        'Pick several PNGs to use as frames — or pick an animated GIF / WebP and it is split into one PNG per frame, with the frame rate taken from the file', () => pickAnimFrames(e)));
       add('FPS', ctlNum(e, 'fps', { min: 1, max: 60 }));
       add('Repeat', ctlNum(e, 'repeat', { min: 0 }), '0 = forever');
       add('Step', ctlNum(e, 'step', { min: 1 }));
+      // a run of PNGs, or an animated GIF/WebP that is split for you
+      set('Frames', 'Frames', { buttons: [ctlButton('Import…',
+        'Pick several PNGs to use as frames — or pick an animated GIF / WebP and it is split into one PNG per frame, with the frame rate taken from the file', () => pickAnimFrames(e))] });
       // a blinking colon is a frame list of separator glyphs
       if (isGlyphLayer(e)) glyphStyleRows(frag, add, e);
       break;
     case 'IMG_LEVEL':
-      add('Data', ctlSelect(e.dataType || '', [{ value: '', label: '— static level —' }, ...dtOptions(false)], (v) => {
-        e.dataType = v || null;
-      }));
-      if (!e.dataType) add('Level', ctlNum(e, 'level', { min: 0, max: 100 }));
-      add('Images', ctlButton(`${(e.images || []).length}…`, 'Edit the image set', () => openImageSet(e)));
-      glyphStyleRows(frag, add, e);
-      break;
     case 'IMG_PROGRESS':
       add('Data', ctlSelect(e.dataType || '', [{ value: '', label: '— static level —' }, ...dtOptions(false)], (v) => {
         e.dataType = v || null;
       }));
       if (!e.dataType) add('Level', ctlNum(e, 'level', { min: 0, max: 100 }));
-      add('Spread', ctlNum(e, 'spread', { min: 0 }));
-      add('Images', ctlButton(`${(e.images || []).length}…`, 'Edit the image set', () => openImageSet(e)));
+      if (e.kind === 'IMG_PROGRESS') add('Spread', ctlNum(e, 'spread', { min: 0 }));
+      set('Images', 'One image per level');
       glyphStyleRows(frag, add, e);
       break;
-    case 'IMG_POINTER': {
-      add('Image', buildSingle(e, 'src'));
+    case 'IMG_POINTER':
       add('Data', ctlSelect(e.dataType || '', [{ value: '', label: '— fixed angle —' }, ...dtOptions(false)], (v) => { e.dataType = v || null; }));
       add('Angle', ctlNum(e, 'angle', { min: -360, max: 360 }));
       add('Start', ctlNum(e, 'startAngle', { min: -360, max: 360 }));
       add('End', ctlNum(e, 'endAngle', { min: -360, max: 360 }));
-      add('Center X', ctlNum(e, 'centerX'));
-      add('Center Y', ctlNum(e, 'centerY'));
+      section(frag, 'Image');
+      img('Pointer', 'src', 'The needle, drawn pointing at 12 o’clock; Pivot X/Y is its rotation centre inside this image');
       break;
-    }
-    case 'IMG_TIME':
+    case 'IMG_TIME': {
       add('Part', ctlSelect(e.part || 'hour', [
         { value: 'hour', label: 'Hour' }, { value: 'hour12', label: 'Hour (12h)' },
         { value: 'minute', label: 'Minute' }, { value: 'second', label: 'Second' },
       ], (v) => { e.part = v; }));
-      {
-        const src = followSource(e);
-        if ((e.part || 'hour') !== 'hour12') {
-          add('Leading 0', ctlCheck(e, 'zero'));
-          if (!src) {
-            add('Space', ctlNum(e, 'space'));
-            add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
-              'Where the value sits inside the widget box (hour/minute/second/day/month are 2 digits, a reading is as wide as its data type): Left, centred, or Right — the box stays put, the value moves inside it');
-          }
-        }
-        add('Follow', ctlCheck(e, 'follow'),
-          'Follow the previous time part: the watch draws this value directly after it, with its spacing and alignment — so the export sends no startX, space or align for this layer');
-        add('Digits', ctlButton(`${(e.images || []).length}…`, 'Edit the digit set', () => openImageSet(e)));
-        add('Unit', buildSingle(e, 'unit'));
-        if ((e.part || 'hour') === 'hour12') {
-          add('AM image', buildSingle(e, 'am'));
-          add('AM X', ctlNum(e, 'amX'));
-          add('AM Y', ctlNum(e, 'amY'));
-          add('PM image', buildSingle(e, 'pm'));
-          add('PM X', ctlNum(e, 'pmX'));
-          add('PM Y', ctlNum(e, 'pmY'));
-        }
-        if (src) {
-          frag.appendChild(propNote(`Follows “${src.name || src.part}”: the watch places this value right after it and takes that layer's spacing and alignment — Space and Align are hidden here because the export sends no startX, space or align for a following part.`));
+      const src = followSource(e);
+      if ((e.part || 'hour') !== 'hour12') {
+        add('Leading 0', ctlCheck(e, 'zero'));
+        if (!src) {
+          add('Space', ctlNum(e, 'space'));
+          add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
+            'Where the value sits inside the widget box (hour/minute/second/day/month are 2 digits, a reading is as wide as its data type): Left, centred, or Right — the box stays put, the value moves inside it');
         }
       }
+      add('Follow', ctlCheck(e, 'follow'),
+        'Follow the previous time part: the watch draws this value directly after it, with its spacing and alignment — so the export sends no startX, space or align for this layer');
+      if (src) {
+        frag.appendChild(propNote(`Follows “${src.name || src.part}”: placed right after it, with its spacing and alignment.`));
+      }
       frag.appendChild(propNote(digitPreviewNote(e)));
+      set('Digits', 'Digits 0-9');
+      img('Unit', 'unit');
+      if ((e.part || 'hour') === 'hour12') {
+        img('AM', 'am');
+        add('AM X', ctlNum(e, 'amX'));
+        add('AM Y', ctlNum(e, 'amY'));
+        img('PM', 'pm');
+        add('PM X', ctlNum(e, 'pmX'));
+        add('PM Y', ctlNum(e, 'pmY'));
+      }
       glyphStyleRows(frag, add, e);
       break;
+    }
     case 'IMG_DATE':
       add('Part', ctlSelect(e.part || 'day', [{ value: 'day', label: 'Day' }, { value: 'month', label: 'Month' }], (v) => {
         e.part = v;
@@ -2747,28 +3532,31 @@ function propsKind(e) {
       add('Follow', ctlCheck(e, 'follow'),
         'Follow the previous date part (month → day, the spec\'s 12/04 order): the watch draws this value directly after it, with its spacing and alignment');
       add('Character', characterCheck(e), 'Month name instead of digits');
-      if (e.isCharacter) labelRows(add, e, 'month');
       if (!followSource(e)) add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
         'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it');
-      add(e.isCharacter ? 'Months' : 'Digits',
-        ctlButton(`${(e.images || []).length}…`, e.isCharacter ? 'Edit the 12 month-name images' : 'Edit the digit set', () => openImageSet(e)));
       frag.appendChild(propNote(digitPreviewNote(e)));
+      if (e.isCharacter) {
+        set('Month names', '12 images, January first');
+        labelRows(add, e, 'month');
+      } else {
+        set('Digits', 'Digits 0-9');
+      }
       glyphStyleRows(frag, add, e);
       break;
     case 'IMG_WEEK':
-      add('Weekdays', ctlButton(`${(e.images || []).length}…`, 'Edit the 7 weekday images', () => openImageSet(e)));
+      set('Weekdays', '7 images, Monday first');
       labelRows(add, e, 'week');
       glyphStyleRows(frag, add, e);
       break;
     case 'TEXT_IMG':
       add('Data', ctlSelect(e.dataType || 'STEP', dtOptions(false), (v) => { e.dataType = v; }));
-      add('Digits', ctlButton(`${(e.images || []).length}…`, 'Edit the digit set', () => openImageSet(e)));
       add('Spacing', ctlNum(e, 'hSpace', { min: 0 }));
       add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
         'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it');
-      add('Unit', buildSingle(e, 'unit'));
-      add('Decimal', buildSingle(e, 'dot'));
-      add('Negative', buildSingle(e, 'negative'));
+      set('Digits', 'Digits 0-9');
+      img('Unit', 'unit');
+      img('Decimal', 'dot');
+      img('Negative', 'negative');
       glyphStyleRows(frag, add, e);
       break;
     case 'TEXT': {
@@ -2805,6 +3593,14 @@ function propsKind(e) {
         if (fam) ensureFont(fam, e.weight).then(() => render());
         else render();
       }));
+      const missing = textMissingChars(e);
+      if (missing) {
+        const n = propNote(`${familyForFontFile(e.fontFile)} has no ${missing} — ${needsTextBake(e)
+          ? 'they are drawn from a system font in the baked image.'
+          : 'the watch cannot draw them with this font. Pick a font that has them.'}`);
+        n.classList.add('warn');
+        frag.appendChild(n);
+      }
       add('Weight', ctlSelect(String(e.weight || 400), [
         { value: '300', label: '300 light' }, { value: '400', label: '400 regular' },
         { value: '500', label: '500 medium' }, { value: '600', label: '600 semi bold' },
@@ -2828,11 +3624,11 @@ function propsKind(e) {
     }
     case 'IMG_STATUS':
       add('Status', ctlSelect(e.status || 'DISCONNECT', SYSTEM_STATUS.map((s) => ({ value: s.key, label: s.label })), (v) => { e.status = v; }));
-      add('Icon', buildSingle(e, 'src'));
+      img('Icon', 'src');
       break;
     case 'IMG_CLICK':
       add('Action', ctlSelect(e.dataType || 'OUTDOOR_RUNNING', dtOptions(true), (v) => { e.dataType = v; }));
-      add('Icon', buildSingle(e, 'src'));
+      img('Icon', 'src');
       break;
     case 'FILL_RECT':
     case 'STROKE_RECT':
@@ -2857,32 +3653,20 @@ function propsKind(e) {
       add('Start', ctlNum(e, 'startAngle', { min: -360, max: 360 }));
       add('End', ctlNum(e, 'endAngle', { min: -360, max: 360 }));
       add('Line width', ctlNum(e, 'lineWidth', { min: 1 }));
-      add('Background', buildSingle(e, 'bg'));
+      img('Background', 'bg');
       break;
     case 'TIME_POINTER': {
-      add('Center X', ctlNum(e, 'centerX'));
-      add('Center Y', ctlNum(e, 'centerY'));
-      add('Hour hand', buildSingle(e, 'hour'));
-      add('Hour pivot X', ctlNum(e, 'hourPivotX'));
-      add('Hour pivot Y', ctlNum(e, 'hourPivotY'));
-      add('Minute hand', buildSingle(e, 'minute'));
-      add('Minute pivot X', ctlNum(e, 'minutePivotX'));
-      add('Minute pivot Y', ctlNum(e, 'minutePivotY'));
-      add('Second hand', buildSingle(e, 'second'));
-      add('Second pivot X', ctlNum(e, 'secondPivotX'));
-      add('Second pivot Y', ctlNum(e, 'secondPivotY'));
-      add('Cover', buildSingle(e, 'cover'));
+      for (const [key, label] of [['hour', 'Hour'], ['minute', 'Minute'], ['second', 'Second']]) {
+        section(frag, `${label} hand`);
+        img('Image', key);
+        add('Pivot X', ctlNum(e, `${key}PivotX`));
+        add('Pivot Y', ctlNum(e, `${key}PivotY`));
+      }
+      section(frag, 'Centre cap');
+      img('Cover', 'cover');
       break;
     }
     default: break;
-  }
-  const hint = setHint(e.kind, e);
-  if (hint) {
-    const h = document.createElement('div');
-    h.className = 'ilm-hint';
-    h.style.marginTop = '8px';
-    h.textContent = hint;
-    frag.appendChild(h);
   }
   return frag;
 }
@@ -2893,23 +3677,6 @@ function alignOptions() {
     { value: 'RIGHT', label: 'Right' },
   ];
 }
-// image field with a "…" upload helper (single-image widgets)
-function buildSingle(obj, key) {
-  const wrap = document.createElement('div');
-  wrap.className = 'imgpick';
-  const sel = ctlSelect(obj[key] || '', imageOptions(true), (v) => { obj[key] = v; });
-  wrap.appendChild(sel);
-  const b = ctlButton('…', 'Import an image', async () => {
-    const imgs = await API.pickImages();
-    if (!imgs || !imgs.length) return;
-    const it = await importOneImage(imgs[0]);
-    if (it) { pushHistory(); obj[key] = it.name; refreshPanels(); render(); scheduleCode(); }
-  });
-  b.className = 'grow-btn';
-  wrap.appendChild(b);
-  return wrap;
-}
-
 // --------------------------------------------------------------- test data --
 function renderTestData() {
   const host = $('testData');
@@ -3053,7 +3820,7 @@ function collectUsedImages(set) {
   }
 }
 function deleteImage(name) {
-  const before = project.images.slice();
+  pushHistory();
   project.images = project.images.filter((i) => i.name !== name);
   const scrub = (e) => {
     for (const key of ['src', 'unit', 'dot', 'negative', 'hour', 'minute', 'second', 'cover', 'bg', 'am', 'pm']) if (e[key] === name) e[key] = '';
@@ -3061,11 +3828,8 @@ function deleteImage(name) {
   };
   for (const e of elements()) scrub(e);
   imgCache.delete(name);
-  dirty = true;
-  showUndoToast(`Deleted ${name} (and cleared the layers that used it).`, () => {
-    project.images = before;
-    loadAllImages().then(() => { refreshPanels(); render(); scheduleCode(); });
-  });
+  setDirty(true);
+  undoToast(`Deleted ${name} (and cleared the layers that used it).`);
   refreshPanels(); render(); scheduleCode();
 }
 $('btnPruneImages').onclick = () => {
@@ -3073,13 +3837,10 @@ $('btnPruneImages').onclick = () => {
   collectUsedImages(used);
   const unused = project.images.filter((i) => !used.has(i.name));
   if (!unused.length) { status('No unused images.'); return; }
-  const before = project.images.slice();
+  pushHistory();
   project.images = project.images.filter((i) => used.has(i.name));
-  dirty = true;
-  showUndoToast(`Removed ${unused.length} unused image${unused.length === 1 ? '' : 's'}.`, () => {
-    project.images = before;
-    loadAllImages().then(() => { refreshPanels(); render(); });
-  });
+  setDirty(true);
+  undoToast(`Removed ${unused.length} unused image${unused.length === 1 ? '' : 's'}.`);
   refreshPanels(); render(); scheduleCode();
 };
 
@@ -3087,18 +3848,13 @@ $('btnPruneImages').onclick = () => {
 function deleteElements(list) {
   if (!list.length) return;
   const ids = new Set(list.map((e) => e.id));
-  const before = project.elements.slice();
-  const imagesBefore = project.images.map((i) => i.name);
+  pushHistory();
   project.elements = project.elements.filter((e) => !ids.has(e.id));
   if (ids.has(selectedId)) selectedId = null;
   multiSel = new Set([...multiSel].filter((id) => !ids.has(id)));
-  dirty = true;
+  setDirty(true);
   const names = list.map(layerLabel).join(', ');
-  showUndoToast(`Deleted ${list.length} layer${list.length === 1 ? '' : 's'} (${names}).`, () => {
-    project.elements = before;
-    project.images = project.images.filter((i) => imagesBefore.includes(i.name));
-    refreshPanels(); render(); scheduleCode();
-  });
+  undoToast(`Deleted ${list.length} layer${list.length === 1 ? '' : 's'} (${names}).`);
   refreshPanels(); render(); scheduleCode();
 }
 function deleteSelection() { deleteElements(selection()); }
@@ -3189,16 +3945,31 @@ function ungroup() {
 function syncLayersToolbar() {
   if (!$('btnDup')) return;
   const sel = selection();
-  $('btnDup').disabled = !sel.length;
+  for (const id of ['btnToFront', 'btnForward', 'btnBackward', 'btnToBack', 'btnDup', 'btnDelLayers']) $(id).disabled = !sel.length;
   $('btnGroup').disabled = sel.length < 2;
   $('btnUngroup').disabled = !sel.some((e) => e.group);
+  $('layersSelInfo').textContent = sel.length > 1 ? `${sel.length} selected` : sel.length ? layerLabel(sel[0]) : 'No selection';
 }
-$('btnDup').innerHTML = ICON.dup;
-$('btnGroup').innerHTML = ICON.group;
-$('btnUngroup').innerHTML = ICON.ungroup;
-$('btnDup').onclick = duplicateSelection;
-$('btnGroup').onclick = groupSelection;
-$('btnUngroup').onclick = ungroup;
+{
+  const mod = /Mac/i.test(navigator.platform) ? '⌘' : 'Ctrl+';
+  const tools = [
+    ['btnToFront', ICON.toFront, `Bring to front (${mod}Shift+])`, () => reorderSelection('front')],
+    ['btnForward', ICON.forward, `Bring forward (${mod}])`, () => reorderSelection('forward')],
+    ['btnBackward', ICON.backward, `Send backward (${mod}[)`, () => reorderSelection('backward')],
+    ['btnToBack', ICON.toBack, `Send to back (${mod}Shift+[)`, () => reorderSelection('back')],
+    ['btnDup', ICON.dup, `Duplicate (${mod}D)`, duplicateSelection],
+    ['btnGroup', ICON.group, `Group (${mod}G)`, groupSelection],
+    ['btnUngroup', ICON.ungroup, `Ungroup (${mod}Shift+G)`, ungroup],
+    ['btnDelLayers', ICON.trash, 'Delete (Delete / Backspace)', deleteSelection],
+  ];
+  for (const [id, icon, title, fn] of tools) {
+    const b = $(id);
+    b.innerHTML = icon;
+    b.title = title;
+    b.setAttribute('aria-label', title);
+    b.onclick = fn;
+  }
+}
 
 // ---------------------------------------------------------------- new element --
 // Mirror of core/kinds.js newElement() — the renderer has no require(), so the
@@ -3228,7 +3999,10 @@ async function addElement(kindId, patch = {}) {
   const d = dev();
   const n = elements().length;
   // stagger so successive widgets do not stack exactly
-  if (CENTER_KINDS.has(kindId)) {
+  if (kindId === 'IMG_POINTER') {
+    e.centerX = Math.round(d.w / 2);
+    e.centerY = Math.round(d.h / 2);
+  } else if (CENTER_KINDS.has(kindId)) {
     e.centerX = Math.round(d.w / 2) + (n % 3) * 10;
     e.centerY = Math.round(d.h / 2) + (n % 4) * 10;
   } else {
@@ -3247,12 +4021,9 @@ async function addElement(kindId, patch = {}) {
 }
 async function attachDigitSet(e) {
   try {
-    if (e.kind === 'IMG_WEEK') {
-      e.images = await genWeekSet(e);
+    if (labelKind(e)) {
       rememberGlyphStyle(e, 40);
-    } else if (e.kind === 'IMG_DATE' && e.isCharacter) {
-      e.images = await genMonthSet(e);
-      rememberGlyphStyle(e, 40);
+      e.images = await genLabelSet(e, labelKind(e));
     } else {
       const prefix = nextDigitPrefix();
       const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c })), { prefix });
@@ -3302,36 +4073,31 @@ $('btnPresets').onclick = (e) => { e.stopPropagation(); togglePresets(); };
 $('btnGlyphs').onclick = (e) => { e.stopPropagation(); toggleGlyphs(); };
 
 // glyph helpers ------------------------------------------------------------
-async function genWeekSet(e) {
-  const names = weekNames(e).map((l, i) => ({ tag: `w${i + 1}`, char: l, name: `week_w${i + 1}.png` }));
-  return genGlyphImages(names, { prefix: 'week', mono: false, size: 40, replace: true });
+// Weekday / month names, drawn with the layer's own glyph style. The seven (or
+// twelve) images share one cell — as wide as the widest name, as tall as the
+// tallest accent — with each name placed by the layer's label alignment, so
+// switching days never makes the label jump. A layer that owns its set
+// redraws it in place; otherwise it gets a set of its own (week2_w1.png …).
+async function genLabelSet(e, kind) {
+  const el = e || { kind: kind === 'week' ? 'IMG_WEEK' : 'IMG_DATE', isCharacter: kind === 'month' };
+  const labels = kind === 'week' ? weekNames(el) : monthNames(el);
+  const t = kind === 'week' ? 'w' : 'm';
+  const pre = ownLabelPrefix(el, kind) || nextLabelPrefix(kind);
+  const st = glyphStyle(el);
+  return genGlyphImages(labels.map((l, i) => ({ tag: `${t}${i + 1}`, char: l, name: `${pre}_${t}${i + 1}.png` })), {
+    prefix: pre, mono: true, replace: true, size: st.size, family: st.font, weight: st.weight,
+    variations: st.variations, style: st, align: el.labelAlign || 'center',
+  });
 }
-async function genMonthSet(e) {
-  const names = monthNames(e).map((l, i) => ({ tag: `m${i + 1}`, char: l, name: `month_m${i + 1}.png` }));
-  return genGlyphImages(names, { prefix: 'month', mono: false, size: 40, replace: true });
-}
-// The height of a layer's digit cell. A separator (the colon, the degree sign)
-// is rasterised at that height so it keeps its proportions when the digits are
-// big — and the layer's own set wins over whatever set the project has first.
-function digitCellHeight(e) {
-  const own = e && (e.images || [])[0] ? imgMeta((e.images || [])[0]) : null;
-  const any = project && project.images.find((i) => /^font_\d+_\d+\.png$/.test(i.name));
-  const m = own || any;
-  return m ? m.height : 0;
-}
-async function genUnit(tag, char, { cellH = 0, size = 0 } = {}) {
-  // the design specification names separators after the glyph itself
-  // (colon.png, dot.png, negative.png …), so use the tag as the file name.
-  // Separators are drawn at the digits' cell height (that is what the fixed
-  // "size 40" always was, for the default 48px digits), and the degree sign is
-  // additionally a superscript: three quarters of that size, in a cell as tall
-  // as the digits with its ink kept at the top, so the PNG itself carries the
-  // offset (the watch draws the unit image as it is, and so does the preview).
-  const cell = cellH || digitCellHeight();
-  const base = size || (cell || 40);
-  const s = tag === 'degree' ? Math.max(8, Math.round(base * 0.8)) : base;
-  const h = tag === 'degree' ? (cell || 0) : 0;
-  const names = await genGlyphImages([{ tag, char, name: `${tag.replace(/[^\w\-]+/g, '_')}.png` }], { mono: false, size: s, cellH: h });
+// A separator (colon.png, degree.png …) drawn with the digits' style and in
+// their exact cell: same font size, same cell height, same baseline. Placed at
+// the digits' Y it sits where the typeface puts it — no guessed offsets.
+async function genUnit(tag, char, { style = null } = {}) {
+  const st = style || digitStyleOf([]);
+  const names = await genGlyphImages([{ tag, char, name: `${tag.replace(/[^\w\-]+/g, '_')}.png` }], {
+    mono: false, size: st.size, family: st.font, weight: st.weight, variations: st.variations,
+    style: st, metricsRef: DIGIT_METRICS,
+  });
   return names[0];
 }
 async function ensureDigitNames() {
@@ -3419,7 +4185,7 @@ function buildGlyphsMenu() {
   });
   glyphMenuItem(m, 'Weekday set', 'the selected layer, else a loose set', async () => {
     const t = selection().find((x) => x.kind === 'IMG_WEEK');
-    const names = await genWeekSet(t || null);
+    const names = await genLabelSet(t || null, 'week');
     if (t) {
       pushHistory();
       t.images = names;
@@ -3433,7 +4199,10 @@ function buildGlyphsMenu() {
   });
   glyphMenuItem(m, 'Separators (: . % - ° /)', 'one image each', async () => {
     const entries = [['colon', ':'], ['dot', '.'], ['percent', '%'], ['negative', '-'], ['degree', '°'], ['slash', '/']];
-    for (const [tag, ch] of entries) await genUnit(tag, ch);
+    // in the style of the selected digit layer, so they match it out of the box
+    const src = selection().find((x) => DIGIT_SET_KINDS.has(x.kind) && (x.images || []).length);
+    const style = src ? glyphStyle(src) : null;
+    for (const [tag, ch] of entries) await genUnit(tag, ch, { style });
     status('Generated the separator images (colon, dot, percent, negative, degree, slash).'); refreshPanels();
   });
   glyphMenuItem(m, 'Analog hands', 'hour / minute / second', async () => {
@@ -3524,6 +4293,7 @@ async function applyPreset(id) {
     case 'weekday': return weekdayPreset();
     case 'day':
     case 'month': {
+      pushHistory();
       const digits = await ensureDigitNames();
       const e = newElement('IMG_DATE', { part: id, images: digits, zero: 0, show: 'both', x: cx - 30, y: cy, name: id === 'month' ? 'Month' : 'Day' });
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
@@ -3552,8 +4322,8 @@ async function applyPreset(id) {
       break;
     }
     case 'level': {
-      const digits = await ensureDigitNames();
       pushHistory();
+      const digits = await ensureDigitNames();
       const e = newElement('IMG_LEVEL', { dataType: 'BATTERY', images: digits, show: 'normal', w: 0, h: 0, x: cx - 40, y: cy, name: 'Battery level' });
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
       break;
@@ -3593,7 +4363,8 @@ async function clockPreset(withSeconds) {
   pushHistory();
   const d = dev();
   const digits = await ensureDigitNames();
-  const colon = await genUnit('colon', ':');
+  const style = digitStyleOf(digits);
+  const colon = await genUnit('colon', ':', { style });
   const cell = imgMeta(digits.find(Boolean));
   const cw = cell ? cell.width : 40, ch = cell ? cell.height : 60;
   const colonMeta = imgMeta(colon);
@@ -3612,9 +4383,9 @@ async function clockPreset(withSeconds) {
   for (const part of seq) {
     if (part.t === 'colon') {
       colonCount++;
-      els.push(newElement('IMG', { src: colon, show: 'both', x, y: Math.round((d.h - colonH) / 2), w: 0, h: 0, name: colonCount === 1 ? 'Colon' : 'Colon 2' }));
+      els.push(newElement('IMG', { src: colon, show: 'both', x, y: Math.round((d.h - colonH) / 2), w: 0, h: 0, name: colonCount === 1 ? 'Colon' : 'Colon 2', glyph: glyphSpecFrom(style) }));
     } else {
-      els.push(newElement('IMG_TIME', { part: part.t, images: digits, zero: 0, space: 0, show: part.t === 'second' ? 'normal' : 'both', x, y, name: part.t.charAt(0).toUpperCase() + part.t.slice(1) }));
+      els.push(newElement('IMG_TIME', { part: part.t, images: digits, zero: part.t === 'hour' ? 0 : 1, space: 0, show: part.t === 'second' ? 'normal' : 'both', x, y, name: part.t.charAt(0).toUpperCase() + part.t.slice(1), glyph: glyphSpecFrom(style) }));
     }
     x += part.w + gap;
   }
@@ -3649,10 +4420,11 @@ async function analogPreset() {
 async function weekdayPreset() {
   pushHistory();
   const d = dev();
-  let names = project.images.filter((i) => /^week_w\d/.test(i.name)).map((i) => i.name);
-  if (names.length !== 7) names = await genWeekSet();
-  const m = imgMeta(names[0]);
-  const e = newElement('IMG_WEEK', { images: names, show: 'both', x: Math.round(d.w / 2) - (m ? Math.round(m.width / 2) : 30), y: Math.round(d.h * 0.2), name: 'Weekday' });
+  const e = newElement('IMG_WEEK', { images: [], show: 'both', y: Math.round(d.h * 0.2), name: 'Weekday' });
+  rememberGlyphStyle(e, 40);
+  e.images = await genLabelSet(e, 'week');
+  const m = imgMeta(e.images[0]);
+  e.x = Math.round(d.w / 2) - (m ? Math.round(m.width / 2) : 30);
   project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
   refreshPanels(); render(); scheduleCode();
 }
@@ -3665,11 +4437,11 @@ async function dataTextPreset(dataType, label, unit, negative, useDot) {
   // separators are generated after the digits, at the digits' cell height, so a
   // colon/degree keeps the reading's proportions (a [tag, char] spec defers the
   // rasterisation until the height is known; a plain string is an existing file)
-  const cellH = ch;
-  const asUnit = async (spec) => (Array.isArray(spec) ? genUnit(spec[0], spec[1], { cellH }) : spec);
+  const style = digitStyleOf(digits);
+  const asUnit = async (spec) => (Array.isArray(spec) ? genUnit(spec[0], spec[1], { style }) : spec);
   const unitName = await asUnit(unit);
   const negativeName = await asUnit(negative);
-  const dotName = useDot ? await genUnit('dot', '.', { cellH }) : '';
+  const dotName = useDot ? await genUnit('dot', '.', { style }) : '';
   const e = newElement('TEXT_IMG', {
     dataType, images: digits, hSpace: Math.max(1, Math.round(cw * 0.06)),
     unit: unitName || '', negative: negativeName || '', dot: dotName,
@@ -3703,26 +4475,7 @@ function openImageSet(e) {
   $('ismHint').hidden = !hint;
   $('ismHint').textContent = hint || '';
   ismRender();
-  refreshIsmPick();
   $('imgSetModal').hidden = false;
-}
-function refreshIsmPick() {
-  const sel = $('ismPick');
-  sel.innerHTML = '';
-  const o0 = document.createElement('option');
-  o0.value = ''; o0.textContent = '— pick a project image —';
-  sel.appendChild(o0);
-  for (const im of project.images) {
-    const o = document.createElement('option');
-    o.value = im.name; o.textContent = im.name;
-    sel.appendChild(o);
-  }
-  sel.onchange = () => {
-    $('ismPreview').hidden = true;
-    if (!sel.value) return;
-    const im = imgFor(sel.value);
-    if (im) { $('ismPreview').src = im.src; $('ismPreview').hidden = false; }
-  };
 }
 function ismRender() {
   const host = $('ismList');
@@ -3741,10 +4494,13 @@ function ismRender() {
     const nm = document.createElement('span');
     nm.className = 'nm'; nm.textContent = name;
     nm.title = name;
+    const meta = imgMeta(name);
+    const dims = mkEl('span', 'dims', meta ? `${meta.width}×${meta.height}` : 'missing');
+    if (!meta) row.classList.add('missing');
     const rm = document.createElement('button');
     rm.className = 'rm'; rm.textContent = '×'; rm.title = 'Remove';
     rm.onclick = () => { ismState.entries.splice(i, 1); ismRender(); };
-    row.appendChild(grip); row.appendChild(idx); row.appendChild(thumb); row.appendChild(nm); row.appendChild(rm);
+    row.appendChild(grip); row.appendChild(idx); row.appendChild(thumb); row.appendChild(nm); row.appendChild(dims); row.appendChild(rm);
     host.appendChild(row);
   });
   $('ismCount').textContent = `${ismState.entries.length}`;
@@ -3761,10 +4517,10 @@ function ismRender() {
   }
 }
 $('ismAdd').onclick = () => {
-  const v = $('ismPick').value;
-  if (!v) return;
-  ismState.entries.push(v);
-  ismRender();
+  openImagePicker($('ismAdd'), {
+    multi: true,
+    onPick: (names) => { if (!ismState) return; ismState.entries.push(...names); ismRender(); },
+  });
 };
 $('ismUpload').onclick = () => $('ismUploadFile').click();
 $('ismUploadFile').onchange = async (ev) => {
@@ -3781,7 +4537,6 @@ $('ismUploadFile').onchange = async (ev) => {
     addProjectImage(name, canvas, { replace: false });
     await loadAllImages();
     ismState.entries.push(name);
-    refreshIsmPick();
   }
   ismRender(); refreshPanels();
 };
@@ -3789,7 +4544,7 @@ $('ismGenDigits').onclick = async () => {
   try {
     const e = ismState.e;
     if (e.kind === 'IMG_DATE' && e.isCharacter) {
-      ismState.entries = await genMonthSet(e);
+      ismState.entries = await genLabelSet(e, 'month');
       status(`Generated the 12 month names in ${languageOf(e)} ${e.labelForm || 'short'} form.`);
     } else {
       const prefix = nextDigitPrefix();
@@ -3798,7 +4553,7 @@ $('ismGenDigits').onclick = async () => {
       ismState.entries = names;
       status(`Generated a 0-9 set from ${glyphFont} (${prefix}).`);
     }
-    ismRender(); refreshIsmPick(); refreshPanels();
+    ismRender(); refreshPanels();
   } catch (err) { status(String(err.message || err), true); }
 };
 $('ismGenWeather').onclick = () => {
@@ -3808,11 +4563,9 @@ $('ismGenWeather').onclick = () => {
 };
 $('ismGenWeek').onclick = async () => {
   const e = ismState.e;
-  const names = project.images.filter((i) => /^week_w\d/.test(i.name)).map((i) => i.name);
-  if (names.length === 7 && names.every((n) => WEEK_FILE_RE.test(n))) { ismState.entries = names; ismRender(); return; }
   try {
-    ismState.entries = await genWeekSet(e);
-    ismRender(); refreshIsmPick(); refreshPanels();
+    ismState.entries = await genLabelSet(e, 'week');
+    ismRender(); refreshPanels();
     status(`Generated the 7 weekday names in ${languageOf(e)} ${e.labelForm || 'short'} form.`);
   } catch (err) { status(String(err.message || err), true); }
 };
@@ -4163,8 +4916,7 @@ $('cv').addEventListener('mousedown', (ev) => {
   if (handle && selEl()) {
     const e = selEl();
     const b = elBox(e);
-    pushHistory();
-    drag = { mode: 'resize', handle, e, px: p.x, py: p.y, startX: +e.x || 0, startY: +e.y || 0, startW: b.w, startH: b.h, startRadius: +e.radius || 60, cx: +e.centerX || 0, cy: +e.centerY || 0 };
+    drag = { mode: 'resize', before: snapshot(), handle, e, px: p.x, py: p.y, startX: +e.x || 0, startY: +e.y || 0, startW: b.w, startH: b.h, startRadius: +e.radius || 60, cx: +e.centerX || 0, cy: +e.centerY || 0 };
     return;
   }
   const hit = hitElement(ev);
@@ -4175,10 +4927,9 @@ $('cv').addEventListener('mousedown', (ev) => {
   }
   if (!(selectedId === hit.id || multiSel.has(hit.id))) { selectedId = hit.id; multiSel = new Set([hit.id]); }
   else selectedId = hit.id;
-  pushHistory();
   refreshPanels(); render();
   drag = {
-    mode: 'move', e: hit, px: p.x, py: p.y,
+    mode: 'move', before: snapshot(), e: hit, px: p.x, py: p.y,
     startBox: elBox(hit),
     mates: selection().filter((m) => m.id !== hit.id && !m.locked).map((m) => ({ el: m, box: elBox(m) })),
   };
@@ -4228,7 +4979,9 @@ window.addEventListener('mousemove', (ev) => {
 });
 window.addEventListener('mouseup', () => {
   if (!drag) return;
+  const before = drag.before;
   drag = null;
+  if (project) commitHistory(before);
   guides = { v: [], h: [] };
   if (project) { refreshPanels(); render(); scheduleCode(); }
 });
@@ -4283,7 +5036,7 @@ function freshProject(name, target) {
     name: name || 'My watchface',
     device: target,
     appId: 2000000 + Math.floor(Math.random() * 900000),
-    vender: 'watchface-designer',
+    vender: 'dialcraft',
     description: '',
     font: glyphFont,
     language: 'en-US',
@@ -4334,7 +5087,7 @@ function openConvertDialog() {
   $('newFaceDevice').value = project.device;
   $('newFaceModal').hidden = false;
 }
-$('btnNew').onclick = openNewFaceDialog;
+$('btnNew').onclick = async () => { if (await guardUnsaved()) openNewFaceDialog(); };
 $('btnEmptyNew').onclick = openNewFaceDialog;
 $('btnEmptyOpenProject').onclick = () => $('btnOpen').click();
 $('btnConvert').onclick = openConvertDialog;
@@ -4354,7 +5107,7 @@ async function createProject(name, target, template) {
   imgCache.clear();
   clearBakeCache();
   selectedId = null; multiSel = new Set();
-  past = []; future = []; updateHistoryButtons(); dirty = true;
+  past = []; future = []; updateHistoryButtons(); setDirty(true);
   resetTestData();
   glyphFont = project.font;
   $('projFont').value = glyphFont;
@@ -4378,7 +5131,8 @@ function convertProject(target, name) {
   const s = (v) => Math.round((+v || 0) * sx);
   const t = (v) => Math.round((+v || 0) * sy);
   for (const e of elements()) {
-    if (e.kind === 'CIRCLE' || e.kind === 'ARC_PROGRESS' || e.kind === 'TIME_POINTER') {
+    if (e.kind === 'CIRCLE' || e.kind === 'ARC_PROGRESS' || e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER') {
+      // a pointer's x/y is the pivot inside its image, which keeps its size
       e.centerX = s(e.centerX); e.centerY = t(e.centerY);
       if (e.radius) e.radius = Math.round(e.radius * Math.min(sx, sy));
     } else {
@@ -4395,16 +5149,17 @@ function convertProject(target, name) {
   refreshPanels(); render(); scheduleCode();
   status(`Converted “${project.name}” from ${from.name} to ${to.name}. Images keep their size — check the layout.`);
 }
-$('btnCloseProject').onclick = () => {
+$('btnCloseProject').onclick = async () => {
+  if (!await guardUnsaved()) return;
   project = null; selectedId = null; multiSel = new Set();
   imgCache.clear();
   past = []; future = []; updateHistoryButtons();
-  setEmptyState(); refreshPanels(); renderRecents();
+  setEmptyState(); refreshPanels(); renderRecents(); updateTitle();
   status('');
 };
-$('inpName').oninput = (ev) => { if (!project) return; project.name = ev.target.value; dirty = true; $('watchTitle').textContent = project.name || 'Watchface'; scheduleCode(); };
-$('inpDesc').oninput = (ev) => { if (!project) return; project.description = ev.target.value; dirty = true; scheduleCode(); };
-$('inpAppId').oninput = (ev) => { if (!project) return; project.appId = +ev.target.value || 0; dirty = true; scheduleCode(); };
+$('inpName').oninput = (ev) => { if (!project) return; project.name = ev.target.value; setDirty(true); scheduleCode(); };
+$('inpDesc').oninput = (ev) => { if (!project) return; project.description = ev.target.value; setDirty(true); scheduleCode(); };
+$('inpAppId').oninput = (ev) => { if (!project) return; project.appId = +ev.target.value || 0; setDirty(true); scheduleCode(); };
 // The language decides how weekday and month names are written when a glyph set
 // is generated (Intl, so every locale the browser knows works — no table here).
 $('projLang').onchange = (ev) => {
@@ -4417,7 +5172,7 @@ $('projLang').onchange = (ev) => {
   }
   pushHistory();
   project.language = v || 'en-US';
-  dirty = true;
+  setDirty(true);
   refreshPanels();
   status(`Project language: ${projectLanguage()} — ${languageSample()}. Existing sets keep their images until they are re-rendered.`);
 };
@@ -4470,16 +5225,15 @@ async function loadProject(res) {
   if (!fontFamilies().includes(glyphFont)) glyphFont = 'Orbitron';
   $('projFont').value = glyphFont;
   selectedId = null; multiSel = new Set(); groupCollapsed = new Set();
-  past = []; future = []; updateHistoryButtons(); dirty = false;
+  past = []; future = []; updateHistoryButtons(); setDirty(false);
   resetTestData();
   await loadAllImages();
   setEmptyState(); refreshPanels(); render(); scheduleCode();
   if (res.imported) {
     // An imported Zeus CLI / Watchface Maker folder keeps its source untouched:
     // no save path, so Save asks where to put the designer project.
-    dirty = true;
+    setDirty(true);
     const src = res.source || '';
-    $('watchTitle').textContent = project.name || 'Watchface';
     status(`Imported “${project.name}” — ${project.elements.length} layers, ${project.images.length} images.`);
     openLogModal(`Imported “${project.name}”`, src,
       `${dev().name} · the source folder was not changed`);
@@ -4489,6 +5243,7 @@ async function loadProject(res) {
   status(`Opened “${project.name}” (${project.elements.length} layers, ${project.images.length} images).`);
 }
 $('btnOpen').onclick = async () => {
+  if (!await guardUnsaved()) return;
   const res = await API.openProjectDialog();
   if (!res) return;
   if (res.error) { status(res.error, true); return; }
@@ -4497,6 +5252,7 @@ $('btnOpen').onclick = async () => {
 // Import… is the same door with an import-shaped dialog; Open already accepts a
 // watchface folder, this just makes the feature findable.
 async function importFaceDialog() {
+  if (!await guardUnsaved()) return;
   const res = await API.openProjectDialog({
     title: 'Import a watchface folder',
     buttonLabel: 'Import',
@@ -4510,7 +5266,7 @@ async function importFaceDialog() {
 if ($('btnImport')) $('btnImport').onclick = importFaceDialog;
 if ($('btnEmptyImport')) $('btnEmptyImport').onclick = importFaceDialog;
 async function doSave() {
-  if (!project) return;
+  if (!project) return false;
   const payload = {
     // bakedImage/bakedKey are derived at export time and must not be persisted
     project: { ...project, fonts: projectFontsPayload(), elements: elements().map(stripBakeKeys) },
@@ -4520,11 +5276,12 @@ async function doSave() {
     previewBase64: composePreviewB64(),
   };
   const res = await API.saveProject(payload);
-  if (!res) return;
+  if (!res) return false;
   project.savePath = res.savePath;
-  dirty = false;
+  setDirty(false);
   status(`Saved → ${res.savePath}`);
   renderRecents();
+  return true;
 }
 $('btnSave').onclick = doSave;
 async function renderRecents() {
@@ -4625,18 +5382,22 @@ $('btnBuild').onclick = async () => {
 };
 
 // -------------------------------------------------------------------- lint --
-function hexLuminance(hex) {
-  const s = String(hex || '').replace('#', '');
-  if (s.length !== 3 && s.length !== 6) return null;
-  const n = parseInt(s.length === 3 ? s.split('').map((c) => c + c).join('') : s, 16);
-  if (!Number.isFinite(n)) return null;
-  const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-}
-// a shape painted with a near-black colour costs no AOD pixels
-function elemLuminance(e) {
-  if (['FILL_RECT', 'STROKE_RECT', 'CIRCLE', 'ARC', 'ARC_PROGRESS', 'TEXT'].includes(e.kind)) return hexLuminance(e.color);
-  return null;
+// The AOD pixel budget, measured rather than estimated: draw the screen-off
+// state and count the pixels that are not (near) black. Summing layer boxes
+// double-counted overlaps and dark pictures (a face could read "156% lit").
+function aodLitFraction() {
+  const d = dev();
+  const cv = document.createElement('canvas');
+  cv.width = d.w; cv.height = d.h;
+  const c = cv.getContext('2d', { willReadFrequently: true });
+  const prev = exportRender;
+  exportRender = true;
+  drawScene(c, d.w, d.h, 'aod', false);
+  exportRender = prev;
+  const px = c.getImageData(0, 0, d.w, d.h).data;
+  let lit = 0;
+  for (let i = 0; i < px.length; i += 4) if (Math.max(px[i], px[i + 1], px[i + 2]) > 40) lit++;
+  return lit / (d.w * d.h);
 }
 function lintProject() {
   const out = [];
@@ -4646,7 +5407,6 @@ function lintProject() {
   if (!project.appId || project.appId < 1) add('error', 'Set an App id (1 … 9999999) before exporting.');
   if (!project.elements.length) add('warn', 'There are no layers yet.');
   const taken = new Set();
-  let aodArea = 0;
   for (const e of project.elements) {
     const b = elBox(e);
     const label = e.name || e.kind;
@@ -4696,6 +5456,10 @@ function lintProject() {
       if (!known) add('error', `“${label}” uses the font ${e.fontFile}, which is not in the project — re-import it.`);
       else if (!fam) add('info', `“${label}”: ${e.fontFile} will be copied into assets/${d.assetDir}/fonts/ for the build.`);
     }
+    if (e.kind === 'TEXT' && textMissingChars(e)) {
+      add(needsTextBake(e) ? 'info' : 'warn', `“${label}”: ${familyForFontFile(e.fontFile)} has no ${textMissingChars(e)} — ${needsTextBake(e)
+        ? 'a system font fills them in in the baked image' : 'the watch cannot draw them with this font'}.`);
+    }
     if (e.kind === 'IMG_ANIM' && showAllowed(e.show, 'aod')) add('warn', `“${label}” is an animation shown in AOD — the spec discourages that.`);
     if (e.kind === 'TIME_POINTER' && e.second && showAllowed(e.show, 'aod')) {
       add('error', `“${label}” shows the second hand in AOD — the spec forbids it.`);
@@ -4703,13 +5467,9 @@ function lintProject() {
     if (e.kind === 'ARC_PROGRESS' && e.dataType && !(dtByKey(e.dataType) && dtByKey(e.dataType).reader)) {
       add('info', `“${label}”: ${e.dataType} has no automatic reader instance in the generated code — set the level by hand.`);
     }
-    if (showAllowed(e.show, 'aod')) {
-      const lum = elemLuminance(e);
-      if (lum == null || lum > 0.18) aodArea += Math.min(b.w * b.h, d.w * d.h);
-    }
   }
-  const ratio = aodArea / (d.w * d.h);
-  if (ratio > 0.10) add('warn', `Roughly ${Math.round(ratio * 100)}% of the screen is lit in AOD — the spec asks for under 10%.`);
+  const ratio = aodLitFraction();
+  if (ratio > 0.10) add('warn', `${Math.round(ratio * 100)}% of the screen is lit in AOD — the spec asks for under 10%.`);
   // Digit / reading layers that overlap: the usual cause is a glyph size raised
   // after the preset placed the layers, so each cell grew and the parts now run
   // into each other — which reads as stray strokes from the neighbouring glyph.
@@ -4893,6 +5653,9 @@ function buildFontList() {
     h.textContent = label;
     wrap.appendChild(h);
   };
+  // how each font copes with the letters of the project language (ă ș ț …)
+  const lang = projectLanguage();
+  const need = project ? languageChars(lang) : '';
   const row = (family, meta) => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -4900,6 +5663,13 @@ function buildFontList() {
     const n = document.createElement('span'); n.className = 'f-name'; n.textContent = family;
     const s = document.createElement('span'); s.className = 'f-meta'; s.textContent = meta;
     b.appendChild(n); b.appendChild(s);
+    if (need) {
+      const cov = coverageSummary(family, need);
+      const badge = mkEl('span', 'f-cov ' + (cov.native ? 'ok' : cov.system.length ? 'miss' : 'comp'),
+        cov.native ? '✓' : cov.system.length ? '✕' : '≈');
+      badge.title = cov.native ? `Draws every ${lang} letter (${need})` : `${lang}: ${cov.text}`;
+      b.appendChild(badge);
+    }
     ensureFont(family).then((ok) => { if (ok) n.style.fontFamily = `"${family}"`; });
     b.onclick = () => { fontSelFamily = family; buildFontList(); renderFontPreview(); };
     wrap.appendChild(b);
@@ -4948,20 +5718,33 @@ function renderFontPreview() {
   c.textBaseline = 'middle';
   setFontOn(c, family, big, weight, variations);
   c.fillText('10:09', 14, 64);
+  const w1 = c.measureText('10:09').width;      // in the specimen font, before the label font
   c.font = '11px -apple-system, sans-serif';
   c.fillStyle = '#5b6b80';
-  const w1 = c.measureText('10:09').width;
   c.fillText(`← ${Math.round(w1)}px wide`, Math.min(14 + w1 + 10, cv.width - 110), 64);
   // digit row + accents
   c.fillStyle = color;
   setFontOn(c, family, row, weight, variations);
   c.fillText('0123456789', 14, 128);
+  // the project's own weekday / month words, drawn the way the glyph images
+  // will be (letters the font lacks composed from its own glyphs)
   setFontOn(c, family, small, weight, variations);
-  c.fillText('SAT 17 OCT · 08670', 14, 172);
-  c.fillText(': . % - ° /  STEP 75%', 14, 206);
-  $('fontInfo').textContent = active
-    ? `Rasterizing glyphs with ${family}. A Text layer can also ship this file so the watch draws live text with it.`
-    : `${family} could not be loaded in this session.`;
+  c.textBaseline = 'alphabetic';
+  const lang = projectLanguage();
+  const wk = weekNames({}), mo = monthNames({});
+  const longDay = applyLabelCase(localeNames('week', lang, 'long')[5] || '', 'upper');
+  const line1 = `${wk[5]} 17 ${mo[9]} · ${longDay}`;
+  const need = languageChars(lang);
+  const line2 = `${need ? need + '  ' : ''}: . % - ° /  75%`;
+  runFill(c, layoutRun(c, family, line1), 14, 172 + small * 0.35);
+  runFill(c, layoutRun(c, family, line2), 14, 206 + small * 0.35);
+  const cov = need ? coverageSummary(family, need) : { native: true };
+  $('fontInfo').textContent = !active
+    ? `${family} could not be loaded in this session.`
+    : cov.native
+      ? `Rasterizing glyphs with ${family}${need ? ` — every ${lang} letter is in the font` : ''}. A Text layer can also ship this file so the watch draws live text with it.`
+      : `${family} · ${lang}: ${cov.text}.`;
+  $('fontInfo').classList.toggle('warn', !cov.native);
 }
 function useGlyphFont(family) {
   glyphFont = family || fontSelFamily || glyphFont;
@@ -5310,6 +6093,12 @@ async function init() {
   setPreviewMode('normal');
   setLiveClock(false);
   setEmptyState();
+  API.onCloseRequest(async () => {
+    // a failure in the prompt must never leave the window impossible to close
+    let ok = true;
+    try { ok = await guardUnsaved(); } catch (e) { ok = true; }
+    if (ok) API.closeConfirmed(); else API.closeCancelled();
+  });
   API.onBuildLog((line) => { appendLog(line); if (!$('installModal').hidden) instLogLine(line); });
   API.onLanRequest((req) => {
     if ($('installModal').hidden) return;

@@ -31,6 +31,13 @@ const WIDGET_KIND = {
   FILL_RECT: 'FILL_RECT', STROKE_RECT: 'STROKE_RECT', CIRCLE: 'CIRCLE', ARC: 'ARC',
   ARC_PROGRESS: 'ARC_PROGRESS',
 };
+// Widget calls that create no layer: WIDGET_DELEGATE carries the watchface
+// lifecycle callbacks (resume_call / pause_call), so there is nothing to draw
+// and nothing to map. They are counted on their own instead of being listed
+// with the widgets the designer cannot author.
+const NON_VISUAL = {
+  WIDGET_DELEGATE: 'the watchface refresh on resume / pause',
+};
 // constants handed to widgets; the shim turns `ui.show_level.ONLY_AOD` into the
 // string "show_level.ONLY_AOD" so the name survives the capture
 const CONST_GROUPS = new Set(['widget', 'align', 'align_v', 'align_h', 'data_type', 'show_level',
@@ -501,9 +508,14 @@ function importFaceDir(dir) {
 
   // 5. map widgets -> designer elements
   const skipped = new Map();
+  const lifecycle = new Map();
+  ctx.lifecycle = lifecycle;
   let elements = [];
   for (const call of captured.calls) elements.push(...mapWidget(call.type, call.params, ctx, skipped, call.sensor));
   elements = mergeStates(elements);
+  for (const [type, n] of lifecycle) {
+    notes.push(`the watchface registers ${type} ×${n} for ${NON_VISUAL[type]} — not a layer, so there is nothing to design`);
+  }
 
   // 6. fonts the Text layers reference (assets/<target>/fonts/<file>)
   const fonts = [];
@@ -515,8 +527,9 @@ function importFaceDir(dir) {
       try {
         const buf = fs.readFileSync(f);
         const ext = path.extname(base).toLowerCase();
+        const info = fontInfoFromBuffer(buf, base);
         fonts.push({
-          name: base, family: fontInfoFromBuffer(buf, base).family, ext, format: fontFormat(ext),
+          name: base, family: info.family, coverage: info.coverage, ext, format: fontFormat(ext),
           size: buf.length, dataBase64: buf.toString('base64'),
         });
       } catch (e) { notes.push(`could not read the font ${base}`); }
@@ -532,14 +545,15 @@ function importFaceDir(dir) {
   // Zepp App installs a local package *as* that app, so an id that is already
   // taken by a published watchface makes the install fail. A designer id is
   // free by construction — and it is only an id, the layer keeps everything else.
-  const keepAppId = app.vender === 'watchface-designer' && sourceAppId >= 1;
+  // ('watchface-designer' is the id this app exported under before it was Dialcraft)
+  const keepAppId = ['dialcraft', 'watchface-designer'].includes(app.vender) && sourceAppId >= 1;
   const appId = keepAppId ? sourceAppId : 2000000 + Math.floor(Math.random() * 900000);
   const project = {
     version: 1,
     name: app.appName || path.basename(dir),
     device: device.target,
     appId,
-    vender: app.vender || 'watchface-designer',
+    vender: app.vender || 'dialcraft',
     description: app.description || '',
     font: fonts.length ? fonts[0].family : 'Orbitron',
     // weekday / month names stay in English until the project language is set
@@ -604,6 +618,10 @@ function importFaceDir(dir) {
 function layerName(base, suffix) { return suffix ? `${base} (${suffix})` : base; }
 
 function mapWidget(type, p, ctx, skipped, sensor) {
+  if (NON_VISUAL[type]) {
+    ctx.lifecycle.set(type, (ctx.lifecycle.get(type) || 0) + 1);
+    return [];
+  }
   const kindId = WIDGET_KIND[type];
   if (!kindId) { skipped.set(type || '?', (skipped.get(type || '?') || 0) + 1); return []; }
   const img = (ref) => ctx.resolve(ref);
@@ -820,4 +838,4 @@ function mergeStates(elements) {
   return out;
 }
 
-module.exports = { importFaceDir, stripModule, WIDGET_KIND, collectRefs };
+module.exports = { importFaceDir, stripModule, WIDGET_KIND, NON_VISUAL, collectRefs };

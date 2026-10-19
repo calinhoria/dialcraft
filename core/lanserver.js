@@ -166,7 +166,7 @@ class LanServer {
     <li><a href="/source.zip"><b>source.zip</b></a><span>the whole Zeus project</span></li>
     <li><a href="/manifest.json"><b>manifest.json</b></a><span>machine readable listing</span></li>
   </ul></div>
-  <p class="muted">Served by Amazfit Watchface Designer · ${escapeHtml(this.baseUrl() || '')}</p>
+  <p class="muted">Served by Dialcraft · ${escapeHtml(this.baseUrl() || '')}</p>
 </main></body></html>`;
   }
 

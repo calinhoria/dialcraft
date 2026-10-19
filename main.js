@@ -12,7 +12,7 @@ const QRCode = require('qrcode');
 const { DEVICES, deviceByKey, deviceLabel } = require('./core/devices');
 const { DATA_TYPES, WEATHER_ICONS, SYSTEM_STATUS } = require('./core/datatypes');
 const { KINDS, SHOW_LEVELS } = require('./core/kinds');
-const { BUNDLED_FONTS, fontInfoFromBuffer, isFontFile, fontFormat, zeusApiLevel, FONT_VARIATIONS } = require('./core/fonts');
+const { BUNDLED_FONTS, fontInfoFromBuffer, readCmapRanges, isFontFile, fontFormat, zeusApiLevel, FONT_VARIATIONS } = require('./core/fonts');
 const { LanServer, lanAddresses } = require('./core/lanserver');
 const { importFaceDir } = require('./core/importface');
 const { appIconPng } = require('./core/icon');
@@ -20,7 +20,27 @@ const {
   generateWatchface, generateAppJson, generateAppJs, generateProjectReadme, animPrefixFor,
 } = require('./core/codegen');
 
+// The app was "Amazfit Watchface Designer" before it became Dialcraft; its
+// settings folder moves with the name, so carry the recent-projects list over
+// once instead of starting empty.
+function migrateUserData() {
+  try {
+    const now = app.getPath('userData');
+    const recent = path.join(now, 'recent-projects.json');
+    if (fs.existsSync(recent)) return;
+    for (const old of ['Amazfit Watchface Designer', 'amazfit-watchface-designer']) {
+      const prev = path.join(app.getPath('appData'), old, 'recent-projects.json');
+      if (fs.existsSync(prev)) {
+        fs.mkdirSync(now, { recursive: true });
+        fs.copyFileSync(prev, recent);
+        return;
+      }
+    }
+  } catch (e) { /* a fresh list is fine */ }
+}
 let win = null;
+// tools/make-icon.js renders it
+const APP_ICON = path.join(__dirname, 'build', 'icon.png');
 function createWindow() {
   win = new BrowserWindow({
     width: 1440, height: 940,
@@ -32,7 +52,8 @@ function createWindow() {
       // the canvas runs a live clock; keep the renderer ticking when unfocused
       backgroundThrottling: false,
     },
-    title: 'Amazfit Watchface Designer',
+    title: 'Dialcraft',
+    icon: APP_ICON,
   });
   win.loadFile(path.join(__dirname, 'index.html'));
   // Surface renderer errors on the terminal — the designer does all its work in
@@ -48,9 +69,46 @@ function createWindow() {
   });
   win.webContents.on('render-process-gone', (_e, details) => {
     console.error('[renderer gone]', JSON.stringify(details));
+    rendererGone = true;
+  });
+  // Closing asks the renderer first: it owns the editing model and knows
+  // whether there are unsaved changes (it answers with 'close-confirmed').
+  rendererGone = false;
+  closeConfirmed = false;
+  win.on('close', (e) => {
+    if (closeConfirmed || rendererGone || win.webContents.isLoading()) return;
+    e.preventDefault();
+    win.webContents.send('close-request');
   });
 }
-app.whenReady().then(() => { createWindow(); });
+let closeConfirmed = false;
+let rendererGone = false;
+let quitting = false;
+app.on('before-quit', () => { quitting = true; });
+ipcMain.handle('close-confirmed', async () => {
+  closeConfirmed = true;
+  if (win && !win.isDestroyed()) win.close();
+  if (quitting) app.quit();
+});
+// the renderer cancelled the close (it chose to keep editing)
+ipcMain.handle('close-cancelled', async () => { quitting = false; });
+// Save / Don't save / Cancel before work would be thrown away
+ipcMain.handle('confirm-unsaved', async (_e, opts = {}) => {
+  const r = await dialog.showMessageBox(win, {
+    type: 'warning',
+    buttons: ['Save', "Don't save", 'Cancel'],
+    defaultId: 0, cancelId: 2,
+    message: `Save the changes to “${opts.name || 'this watchface'}”?`,
+    detail: opts.detail || 'Your changes will be lost if you don\'t save them.',
+  });
+  return ['save', 'discard', 'cancel'][r.response] || 'cancel';
+});
+app.whenReady().then(() => {
+  migrateUserData();
+  // a packaged app takes build/icon.icns; a dev run would show Electron's own
+  if (process.platform === 'darwin' && app.dock && fs.existsSync(APP_ICON)) app.dock.setIcon(APP_ICON);
+  createWindow();
+});
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 
@@ -66,6 +124,18 @@ function loadMaskManifest() {
     return JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'masks', 'masks.json'), 'utf8'));
   } catch (e) { return {}; }
 }
+// which characters each bundled font draws (see readCmapRanges) — read once
+let bundledWithCoverage = null;
+function bundledFonts() {
+  if (!bundledWithCoverage) {
+    bundledWithCoverage = BUNDLED_FONTS.map((f) => {
+      let coverage = null;
+      try { coverage = readCmapRanges(fs.readFileSync(path.join(__dirname, f.file))); } catch (e) { /* unknown */ }
+      return { ...f, coverage };
+    });
+  }
+  return bundledWithCoverage;
+}
 ipcMain.handle('meta', async () => ({
   devices: DEVICES.map((d) => ({ ...d, label: deviceLabel(d) })),
   dataTypes: DATA_TYPES,
@@ -74,7 +144,7 @@ ipcMain.handle('meta', async () => ({
   weatherIcons: WEATHER_ICONS,
   systemStatus: SYSTEM_STATUS,
   masks: loadMaskManifest(),
-  fonts: BUNDLED_FONTS,
+  fonts: bundledFonts(),
   fontVariations: FONT_VARIATIONS,
   addresses: lanAddresses(),
 }));
@@ -99,6 +169,7 @@ ipcMain.handle('pick-font', async () => {
       subfamily: info.subfamily,
       full: info.full,
       guessed: info.guessed,
+      coverage: info.coverage,
       ext, format: fontFormat(ext),
       size: buf.length,
       dataBase64: buf.toString('base64'),
@@ -216,6 +287,7 @@ function loadProjectDir(dir, opts = {}) {
           name: f,
           family: (rec && rec.family) || info.family,
           subfamily: info.subfamily,
+          coverage: info.coverage,
           ext, format: fontFormat(ext),
           size: buf.length,
           dataBase64: buf.toString('base64'),

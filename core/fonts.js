@@ -128,6 +128,84 @@ function readNameTable(buf) {
   return out;
 }
 
+// Which characters a font really draws, from its cmap table (formats 4 and 12,
+// the two every TrueType/OpenType font carries). The renderer needs this because
+// a canvas silently borrows a missing glyph from a system font — a weekday like
+// "SÂMBĂTĂ" in a font without Â/Ă would come out in two typefaces. Returned as
+// sorted [first, last] code point ranges, compact enough for the IPC payload.
+// WOFF/WOFF2 are compressed and return null (coverage unknown).
+function readCmapRanges(buf) {
+  if (!buf || buf.length < 12) return null;
+  const tag = buf.toString('latin1', 0, 4);
+  if (tag === 'wOFF' || tag === 'wOF2' || tag === 'ttcf') return null;
+  const numTables = buf.readUInt16BE(4);
+  let cmap = 0;
+  for (let i = 0; i < numTables; i++) {
+    const off = 12 + i * 16;
+    if (off + 16 > buf.length) break;
+    if (buf.toString('latin1', off, off + 4) === 'cmap') { cmap = buf.readUInt32BE(off + 8); break; }
+  }
+  if (!cmap || cmap + 4 > buf.length) return null;
+  const n = buf.readUInt16BE(cmap + 2);
+  // prefer a full-repertoire subtable (format 12), else the BMP one (format 4)
+  let best = null;
+  for (let i = 0; i < n; i++) {
+    const r = cmap + 4 + i * 8;
+    if (r + 8 > buf.length) break;
+    const platform = buf.readUInt16BE(r), encoding = buf.readUInt16BE(r + 2);
+    const sub = cmap + buf.readUInt32BE(r + 4);
+    if (sub + 2 > buf.length) continue;
+    const format = buf.readUInt16BE(sub);
+    const unicode = platform === 0 || (platform === 3 && (encoding === 1 || encoding === 10));
+    if (!unicode || (format !== 4 && format !== 12)) continue;
+    if (!best || (format === 12 && best.format !== 12)) best = { format, sub };
+  }
+  if (!best) return null;
+  const ranges = [];
+  const { sub } = best;
+  try {
+    if (best.format === 12) {
+      const groups = buf.readUInt32BE(sub + 12);
+      for (let i = 0; i < groups; i++) {
+        const g = sub + 16 + i * 12;
+        const start = buf.readUInt32BE(g), end = buf.readUInt32BE(g + 4), glyph = buf.readUInt32BE(g + 8);
+        if (glyph === 0 && start === end) continue;
+        ranges.push([start, end]);
+      }
+    } else {
+      const segX2 = buf.readUInt16BE(sub + 6);
+      const ends = sub + 14, starts = ends + segX2 + 2, deltas = starts + segX2, offsets = deltas + segX2;
+      for (let i = 0; i < segX2 / 2; i++) {
+        const end = buf.readUInt16BE(ends + i * 2), start = buf.readUInt16BE(starts + i * 2);
+        const delta = buf.readUInt16BE(deltas + i * 2), roff = buf.readUInt16BE(offsets + i * 2);
+        if (start === 0xffff) continue;
+        // a code point only counts when it maps to a real glyph (not .notdef)
+        let runStart = -1;
+        for (let c = start; c <= end; c++) {
+          let glyph;
+          if (!roff) glyph = (c + delta) & 0xffff;
+          else {
+            const at = offsets + i * 2 + roff + (c - start) * 2;
+            glyph = at + 2 <= buf.length ? buf.readUInt16BE(at) : 0;
+            if (glyph) glyph = (glyph + delta) & 0xffff;
+          }
+          if (glyph && runStart < 0) runStart = c;
+          if (!glyph && runStart >= 0) { ranges.push([runStart, c - 1]); runStart = -1; }
+        }
+        if (runStart >= 0) ranges.push([runStart, end]);
+      }
+    }
+  } catch (e) { return null; }
+  ranges.sort((a, b) => a[0] - b[0]);
+  const merged = [];
+  for (const r of ranges) {
+    const last = merged[merged.length - 1];
+    if (last && r[0] <= last[1] + 1) last[1] = Math.max(last[1], r[1]);
+    else merged.push([r[0], r[1]]);
+  }
+  return merged;
+}
+
 function fontInfoFromBuffer(buf, fileName) {
   const fallback = guessFamily(fileName);
   const names = readNameTable(buf);
@@ -136,6 +214,7 @@ function fontInfoFromBuffer(buf, fileName) {
     subfamily: names.subfamily || '',
     full: names.full || '',
     guessed: !names.family,
+    coverage: readCmapRanges(buf),
   };
 }
 
@@ -172,6 +251,7 @@ module.exports = {
   fontFormat,
   guessFamily,
   fontInfoFromBuffer,
+  readCmapRanges,
   apiVersionFor,
   zeusApiLevel,
 };

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Amazfit Watchface Designer</title>
+<title>Dialcraft</title>
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="bg-bg text-ink select-none">
@@ -83,12 +83,21 @@
     <div class="panel-c rounded-xl border border-line bg-panel p-3 min-w-0" data-panel>
       <h3 class="phead" data-panel-head>Layers <span id="wcount" class="mut-n"></span><span class="flex-1"></span><span class="chev">▾</span></h3>
       <div class="pbody layers-panel">
-        <div id="layers"></div>
         <div class="layers-toolbar">
-          <button id="btnDup" title="Duplicate the selection (Ctrl/Cmd+D)"></button>
-          <button id="btnGroup" title="Group the selected layers (Ctrl/Cmd+G)"></button>
-          <button id="btnUngroup" title="Ungroup the selection (Ctrl/Cmd+Shift+G)"></button>
+          <div class="lt-info" id="layersSelInfo">No selection</div>
+          <div class="lt-row">
+            <div class="lt-grp" aria-label="Order">
+              <button id="btnToFront"></button><button id="btnForward"></button><button id="btnBackward"></button><button id="btnToBack"></button>
+            </div>
+            <div class="lt-grp" aria-label="Arrange">
+              <button id="btnDup"></button><button id="btnGroup"></button><button id="btnUngroup"></button>
+            </div>
+            <div class="lt-grp" aria-label="Delete">
+              <button id="btnDelLayers" class="danger"></button>
+            </div>
+          </div>
         </div>
+        <div id="layers"></div>
       </div>
     </div>
     <div class="panel-c collapsed rounded-xl border border-line bg-panel p-3 min-w-0" data-panel id="imagesPanel">
@@ -178,9 +187,7 @@
     <div id="ismHint" class="ilm-hint" hidden></div>
     <div id="ismList" class="ilm-list"></div>
     <div class="ilm-add">
-      <img id="ismPreview" class="imgthumb-sm" alt="" hidden />
-      <select id="ismPick"></select>
-      <button id="ismAdd">Add</button>
+      <button id="ismAdd" title="Pick images from the project, with previews">Add from project…</button>
       <button id="ismUpload">Upload…</button>
       <input id="ismUploadFile" type="file" accept="image/*" multiple hidden />
     </div>

@@ -1,7 +1,7 @@
 {
-  "name": "amazfit-watchface-designer",
+  "name": "dialcraft",
   "version": "0.1.0",
-  "description": "Zepp OS (Amazfit) watchface designer for Electron — visual editor + Zeus CLI project export",
+  "description": "Dialcraft \u2014 a watchface designer for Zepp OS / Amazfit watches: visual editor, Zeus CLI export, .zab build and Wi-Fi install",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -14,7 +14,8 @@
     "masks": "node tools/gen-masks.js",
     "sample": "node tools/make-sample.js",
     "smoke": "electron tools/smoke.js",
-    "shots": "electron tools/shot.js"
+    "shots": "electron tools/shot.js",
+    "icon": "electron tools/make-icon.js"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
@@ -28,9 +29,10 @@
     "qrcode": "^1.5.4"
   },
   "build": {
-    "appId": "com.amazfit.watchface.designer",
-    "productName": "Amazfit Watchface Designer",
+    "appId": "com.dialcraft.app",
+    "productName": "Dialcraft",
     "files": [
+      "build/icon.png",
       "main.js",
       "preload.js",
       "index.html",
@@ -46,7 +48,8 @@
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "icon": "build/icon.icns"
     },
     "win": {
       "target": [
@@ -60,6 +63,7 @@
         "deb"
       ],
       "category": "Development"
-    }
+    },
+    "icon": "build/icon.png"
   }
 }

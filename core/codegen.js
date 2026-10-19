@@ -37,9 +37,13 @@ function showLevel(show) {
 }
 // image names are stored as `images/<name>` in the model; the watch reads them
 // relative to the target asset root, so the code uses a tiny path helper
+// image names come from uploads and imported faces, so they are quoted as JS
+// string literals — a stray quote must never break the generated code
+function q(s) { return `'${String(s).replace(/[\\']/g, '\\$&').replace(/\r/g, '\\r').replace(/\n/g, '\\n')}'`; }
+function A(name) { return `A(${q(name)})`; }
 function asset(el, key) {
   const name = el[key];
-  return name ? `A('${name}')` : null;
+  return name ? A(name) : null;
 }
 function arrName(el) { return `img_${ident(el.name)}_${el.id.slice(-4)}`; }
 
@@ -233,9 +237,9 @@ function emitElement(el, ctx, out) {
         if (!src) continue;
         kv(L, `${name}_centerX`, p(el.centerX)); kv(L, `${name}_centerY`, p(el.centerY));
         kv(L, `${name}_posX`, p(px_)); kv(L, `${name}_posY`, p(py));
-        kv(L, `${name}_path`, `A('${src}')`);
+        kv(L, `${name}_path`, A(src));
       }
-      if (el.cover) { kv(L, 'hour_cover_path', `A('${el.cover}')`); kv(L, 'hour_cover_x', p(el.centerX)); kv(L, 'hour_cover_y', p(el.centerY)); }
+      if (el.cover) { kv(L, 'hour_cover_path', A(el.cover)); kv(L, 'hour_cover_x', p(el.centerX)); kv(L, 'hour_cover_y', p(el.centerY)); }
       kv(L, 'show_level', showLevel(el.show));
       out.push(`  ui.createWidget(ui.widget.TIME_POINTER, {\n${L.join('\n')}\n  })`);
       break;
@@ -285,12 +289,12 @@ function emitElement(el, ctx, out) {
       kv(L, 'end_angle', num(el.endAngle));
       kv(L, 'line_width', p(el.lineWidth));
       kv(L, 'color', `0x${hexToNum(el.color).toString(16).padStart(6, '0')}`);
-      if (el.bg) kv(L, 'src_bg', `A('${el.bg}')`);
+      if (el.bg) kv(L, 'src_bg', A(el.bg));
       kv(L, 'level', num(el.level || 0));
       kv(L, 'show_level', showLevel(el.show));
       const needsVar = readerFor(el, ctx);
       out.push(`  ${needsVar ? `const ${needsVar.varName} = ` : ''}ui.createWidget(ui.widget.ARC_PROGRESS, {\n${L.join('\n')}\n  })`);
-      if (needsVar) out.push(needsVar.code);
+      if (needsVar) { out.push(needsVar.code); ctx.declared.add(needsVar.sensorVar); }
       break;
     }
     case 'ARC': {
@@ -386,7 +390,9 @@ function readerFor(el, ctx) {
   const dt = dataType(el.dataType);
   if (!dt || !dt.reader) return null;
   const { cls, get } = dt.reader;
-  const varName = `w_${ident(el.name)}_${el.id.slice(-4)}${el._emitState ? `_${el._emitState}` : ''}`;
+  const suffix = `${ident(el.name)}_${el.id.slice(-4)}${el._emitState ? `_${el._emitState}` : ''}`;
+  const varName = `w_${suffix}`;
+  const updName = `upd_${suffix}`;
   const sensorVar = `s_${ident(el.dataType).toLowerCase()}`;
   ctx.sensors.add(cls);
   const targetCls = cls;
@@ -395,20 +401,24 @@ function readerFor(el, ctx) {
   const body = pct
     ? `    const value = ${sensorVar}.getCurrent()\n    const target = ${sensorVar}.getTarget() || 1\n    ${varName}.setProperty(ui.prop.LEVEL, Math.min(100, Math.round((value / target) * 100)))`
     : `    ${varName}.setProperty(ui.prop.LEVEL, Math.min(100, ${sensorVar}.${get}()))`;
-  const code = [
-    `  // ${dt.label} progress (${targetCls}.${get})`,
-    `  const ${sensorVar} = new ${targetCls}()`,
-    `  const upd_${ident(el.name)}_${el.id.slice(-4)} = () => {`,
+  // One sensor instance per data type: a layer shown in both states (or two
+  // layers on the same reading) shares it, since a second `const` with the same
+  // name is a syntax error that takes the whole face down.
+  const declare = !ctx.declared.has(sensorVar);
+  const lines = [`  // ${dt.label} progress (${targetCls}.${get})`];
+  if (declare) lines.push(`  const ${sensorVar} = new ${targetCls}()`);
+  lines.push(
+    `  const ${updName} = () => {`,
     body,
     '  }',
-    `  ${sensorVar}.onChange(upd_${ident(el.name)}_${el.id.slice(-4)})`,
-    `  upd_${ident(el.name)}_${el.id.slice(-4)}()`,
-  ].join('\n');
-  return { varName, code };
+    `  ${sensorVar}.onChange(${updName})`,
+    `  ${updName}()`,
+  );
+  return { varName, code: lines.join('\n'), sensorVar };
 }
 
 function generateWatchface(project, device = deviceByKey(project.device)) {
-  const ctx = { sensors: new Set(), arrays: {}, warnings: [] };
+  const ctx = { sensors: new Set(), declared: new Set(), arrays: {}, warnings: [] };
   const els = (project.elements || []).filter((e) => e.visible !== false);
   // ---- declare the image arrays the widgets reference ----
   const decls = [];
@@ -427,7 +437,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     const id = arrName(el);
     arrayByContent.set(key, id);
     ctx.arrays[id] = id;
-    decls.push(`const ${id} = [\n${names.map((n) => `  A('${n}')`).join(',\n')},\n]`);
+    decls.push(`const ${id} = [\n${names.map((n) => `  ${A(n)}`).join(',\n')},\n]`);
   }
   for (const el of els) {
     if (el.kind !== 'ARC_PROGRESS') continue;
@@ -437,7 +447,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
 
   const out = [];
   out.push('// ---------------------------------------------------------------------------');
-  out.push(`// ${project.name || 'watchface'} — generated by Amazfit Watchface Designer`);
+  out.push(`// ${project.name || 'watchface'} — generated by Dialcraft`);
   out.push(`// target: ${device.name} (${device.target}, ${device.w}×${device.h}, ${device.shape})`);
   out.push('//');
   out.push('// Built against the Zepp OS watchface API:');
@@ -508,7 +518,7 @@ function generateAppJson(project, device, opts = {}) {
       appType: 'watchface',
       version: { code: 1, name: '1.0.0' },
       icon: 'images/preview.png',
-      vender: opts.vender || 'watchface-designer',
+      vender: opts.vender || 'dialcraft',
       description: (project.description || `${project.name || 'watchface'} watchface`).slice(0, 120),
     },
     permissions: [],
@@ -554,7 +564,7 @@ function generateProjectReadme(project, device) {
   const lines = [
     `# ${project.name || 'Watchface'}`,
     '',
-    `Zeus CLI watchface project exported by **Amazfit Watchface Designer**.`,
+    `Zeus CLI watchface project exported by **Dialcraft**.`,
     '',
     `- Target: ${device.name} (\`${device.target}\`, ${device.w}×${device.h})`,
     `- designWidth: ${device.designWidth}`,

@@ -1,6 +1,6 @@
 # Sample Digital
 
-Zeus CLI watchface project exported by **Amazfit Watchface Designer**.
+Zeus CLI watchface project exported by **Dialcraft**.
 
 - Target: Amazfit GTR 3 Pro (`gtr-3-pro`, 480×480)
 - designWidth: 480

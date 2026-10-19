@@ -184,6 +184,142 @@ app.whenReady().then(async () => {
     check('delete + undo', hist.afterDelete === hist.before - 1 && hist.afterUndo === hist.before,
       `${hist.before} → ${hist.afterDelete} → ${hist.afterUndo}`);
 
+    // ---- codegen: shared sensor + quoted names ------------------------------
+    const sensorCode = await run(`
+      const arc = (id, name, show) => ({ id, kind: 'ARC_PROGRESS', name, dataType: 'STEP', show, visible: true,
+        centerX: 100, centerY: 100, radius: 50, startAngle: 0, endAngle: 360, lineWidth: 5, color: '#ff0000' });
+      const tmp = { ...project, elements: [arc('elaaaa1', 'Steps', 'both'), arc('elbbbb2', 'Steps 2', 'normal'),
+        { id: 'elcccc3', kind: 'IMG', name: 'Quote', src: "it's.png", show: 'normal', visible: true }] };
+      const res = await API.generateCode({ project: tmp });
+      let parsed = true, err = '';
+      try { new Function(res.code.replace(/^import .*$/gm, '')); } catch (e) { parsed = false; err = e.message; }
+      return { parsed, err, decls: (res.code.match(/const s_step /g) || []).length };`);
+    check('two step arcs (one in both states) share one sensor and the code parses; a quote in an image name is escaped',
+      sensorCode.parsed && sensorCode.decls === 1, `parsed ${sensorCode.parsed}${sensorCode.err ? ' (' + sensorCode.err + ')' : ''} · ${sensorCode.decls} sensor declaration(s)`);
+
+    // ---- glyphs: diacritics, separator metrics, per-layer label sets --------
+    const glyphLang = await run(`
+      // Orbitron's file has Â and Î but no Ă, Ș or Ț: they must come from the
+      // font's own glyphs (alternate form or base + accent), never a system font
+      const plans = [...'ăâîșțĂÂÎȘȚ'].map((ch) => glyphPlan('Orbitron', ch).how);
+      const inter = coverageReport('Inter', 'ăâîșțĂÂÎȘȚ');
+      await ensureFont('Orbitron');
+      const [a, abreve] = await genGlyphImages([{ tag: 'A', char: 'A', name: 't_A.png' }, { tag: 'Ab', char: 'Ă', name: 't_Ab.png' }],
+        { family: 'Orbitron', size: 60, mono: false, replace: true });
+      const inkTop = (name) => {
+        const im = imgFor(name); const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+        const g = c.getContext('2d'); g.drawImage(im, 0, 0); const d = g.getImageData(0, 0, c.width, c.height).data;
+        for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 64) return y;
+        return -1;
+      };
+      // a separator generated for a digit set shares its cell height (same Y = aligned)
+      const digits = await ensureDigitNames();
+      const style = digitStyleOf(digits);
+      const colon = await genUnit('colon', ':', { style });
+      // two weekday layers in two languages keep two sets
+      const w1 = await addElement('IMG_WEEK', { name: 'Week EN' });
+      const w2 = await addElement('IMG_WEEK', { name: 'Week RO', language: 'ro-RO' });
+      w2.labelForm = 'long'; w2.images = await genLabelSet(w2, 'week');
+      const out = { plans, inter: inter.system.length + inter.composed.length + inter.alternate.length,
+        accentAbove: inkTop('t_Ab.png') < inkTop('t_A.png'),
+        cov: abreve && genGlyphImages.length >= 0, colonH: imgMeta(colon).height, digitH: imgMeta(digits[0]).height,
+        w1: w1.images[0], w2: w2.images[0], w2Untouched: !!imgMeta(w1.images[0]) && w1.images[0] !== w2.images[0] };
+      project.images = project.images.filter((i) => !/^t_A/.test(i.name));
+      deleteElements([w1, w2]);
+      return out;`);
+    check('Romanian letters a font lacks are drawn from its own glyphs (composed / alternate), never a system font',
+      glyphLang.plans.every((h) => h !== 'system') && glyphLang.plans.includes('composed') && glyphLang.inter === 0
+      && glyphLang.accentAbove,
+      `Orbitron: ${glyphLang.plans.join(',')} · Inter non-native: ${glyphLang.inter} · Ă ink above A: ${glyphLang.accentAbove}`);
+    check('a separator shares the digits\' cell height; two weekday layers keep separate sets',
+      glyphLang.colonH === glyphLang.digitH && glyphLang.w2Untouched,
+      `colon ${glyphLang.colonH}px vs digits ${glyphLang.digitH}px · ${glyphLang.w1} / ${glyphLang.w2}`);
+
+    const picker = await run(`
+      const e = await addElement('IMG', { name: 'Picker test' });
+      selectedId = e.id; multiSel = new Set([e.id]); refreshPanels();
+      document.querySelector('#props .imgfield .if-pick').click();
+      const cells = document.querySelectorAll('.imgpicker .ip-cell');
+      const thumbs = document.querySelectorAll('.imgpicker .ip-cell img').length;
+      const target = [...cells].find((c) => c.dataset.name);
+      const name = target.dataset.name;
+      target.click();
+      const out = { cells: cells.length, thumbs, picked: e.src === name, closed: !document.querySelector('.imgpicker') };
+      deleteElements([e]);
+      return out;`);
+    check('the image picker shows project images with previews and sets the layer\'s image',
+      picker.cells > 1 && picker.thumbs > 0 && picker.picked && picker.closed, JSON.stringify(picker));
+
+    // ---- layer order: below a group, groups as units -------------------------
+    const order = await run(`
+      const before = project.elements.slice();
+      const a = await addElement('FILL_RECT', { name: 'Ord A' });
+      const b = await addElement('FILL_RECT', { name: 'Ord B' });
+      const g1 = await addElement('FILL_RECT', { name: 'Ord G1' });
+      const g2 = await addElement('FILL_RECT', { name: 'Ord G2' });
+      selectedId = g1.id; multiSel = new Set([g1.id, g2.id]); groupSelection();
+      const bg = await addElement('IMG', { name: 'Ord BG' });
+      // 1. Send to back puts a layer under everything, groups included
+      selectedId = bg.id; multiSel = new Set([bg.id]); reorderSelection('back');
+      const backFirst = project.elements[0] === bg;
+      // 2. a drag in the panel: move the row to the very bottom of the list
+      reorderSelection('front');
+      const list = document.querySelector('#layers .layers-list');
+      list.appendChild(list.querySelector('.layer[data-id="' + bg.id + '"]'));
+      applyLayerOrder();
+      const dragFirst = project.elements[0] === bg;
+      // 3. a group moves as one unit and its members stay together
+      selectedId = g1.id; multiSel = new Set([g1.id, g2.id]); reorderSelection('back');
+      const ids = project.elements.map((e) => e.id);
+      const groupBack = ids.indexOf(g1.id) <= 1 && ids.indexOf(g2.id) <= 1;
+      const groupDraggable = !!document.querySelector('#layers .group-block .group-row .grip');
+      const count = project.elements.length;
+      project.elements = before; project.groups = Object.fromEntries(Object.entries(project.groups).filter(([k]) => before.some((e) => e.group === k)));
+      selectedId = null; multiSel = new Set(); refreshPanels(); render();
+      return { backFirst, dragFirst, groupBack, groupDraggable, count, expected: before.length + 5 };`);
+    check('a layer goes below a group (Send to back and drag), a group moves as one unit',
+      order.backFirst && order.dragFirst && order.groupBack && order.groupDraggable && order.count === order.expected, JSON.stringify(order));
+
+    // ---- IMG_POINTER: x/y is the pivot inside the image ---------------------
+    const pointer = await run(`
+      const img = project.images[0];
+      const e = await addElement('IMG_POINTER', { src: img.name, x: 3, y: 5 });
+      const b0 = elBox(e);
+      moveEl(e, 10, 20);
+      const out = { boxAtPivot: b0.x === e.centerX - 10 - 3 && b0.y === e.centerY - 20 - 5,
+        moved: { cx: e.centerX, cy: e.centerY, x: e.x, y: e.y }, w: b0.w === img.width && b0.h === img.height };
+      deleteElements([e]);
+      return out;`);
+    check('an image pointer pivots on its own x/y at the screen centre (and moves by its centre)',
+      pointer.boxAtPivot && pointer.w && pointer.moved.x === 3 && pointer.moved.y === 5, JSON.stringify(pointer));
+
+    // ---- undo: no-op clicks, device, focus ----------------------------------
+    const undoFix = await run(`
+      pushHistory();
+      const steps0 = past.length;
+      const cv = $('cv'); const r = cv.getBoundingClientRect(); const s = r.width / cv.width;
+      const t = project.elements.find((x) => !x.locked && x.visible !== false && x.kind !== 'TIME_POINTER');
+      const b = elBox(t);
+      const at = { clientX: r.left + (b.x + b.w / 2) * s, clientY: r.top + (b.y + b.h / 2) * s, bubbles: true };
+      cv.dispatchEvent(new MouseEvent('mousedown', at));
+      window.dispatchEvent(new MouseEvent('mouseup', at));
+      const clickSteps = past.length - steps0;
+      const dev0 = project.device;
+      const other = DEVICES.find((d) => d.target !== dev0 && d.w !== dev().w);
+      convertProject(other.target, project.name);
+      const converted = project.device;
+      undo();
+      const back = project.device;
+      selectedId = t.id; multiSel = new Set([t.id]); refreshPanels();
+      const name = [...document.querySelectorAll('#props input[data-keep-focus="text:name"]')][0];
+      name.focus(); name.value = t.name + 'x'; name.dispatchEvent(new Event('input'));
+      const focusKept = document.activeElement && document.activeElement.dataset.keepFocus === 'text:name';
+      undo();
+      return { clickSteps, dev0, converted, back, focusKept };`);
+    check('a click that moves nothing adds no undo step; undoing Change device restores the device; typing a name keeps focus',
+      undoFix.clickSteps === 0 && undoFix.converted !== undoFix.dev0 && undoFix.back === undoFix.dev0 && undoFix.focusKept,
+      JSON.stringify(undoFix));
+
     const lint = await run(`const items = lintProject(); return { errors: items.filter(i => i.level === 'error').length, warnings: items.filter(i => i.level === 'warn').length, info: items.filter(i => i.level === 'info').length, msgs: items.map(i => i.level + ': ' + i.message) };`);
     check('project check runs', lint.errors + lint.warnings + lint.info >= 0, `${lint.errors} errors, ${lint.warnings} warnings, ${lint.info} notes${lint.msgs.length ? '\n    ' + lint.msgs.join('\n    ') : ''}`);
 
@@ -429,6 +565,8 @@ app.whenReady().then(async () => {
             hour_zero: 1, hour_space: 3, hour_align: hmUI.align.CENTER_H,
             show_level: hmUI.show_level.ONLY_AOD,
           });
+          // not a layer: the watchface lifecycle hook
+          hmUI.createWidget(hmUI.widget.WIDGET_DELEGATE, { resume_call: function () {} });
           hmUI.createWidget(hmUI.widget.BUTTON, { x: 0, y: 0, w: 10, h: 10, text: 'tap' });
           hmUI.createWidget(hmUI.widget.SCROLL_TEXT, { x: 0, y: 0 });
         },
@@ -478,6 +616,13 @@ app.whenReady().then(async () => {
     check('widgets the designer cannot author are listed, not dropped',
       !v2.error && /BUTTON/.test(v2.report) && /SCROLL_TEXT/.test(v2.report),
       (v2.report || '').split('\n').filter((l) => /BUTTON|SCROLL_TEXT/.test(l)).join(' · '));
+    // WIDGET_DELEGATE draws nothing — it only carries the resume/pause hook, so
+    // it is a note, not a widget that was "left out"
+    const delegateLeftOut = ((v2.report || '').match(/Not in the designer[\s\S]*?(?:\n\n|$)/) || [''])[0];
+    check('a lifecycle delegate is a note, not an unsupported layer',
+      !v2.error && /WIDGET_DELEGATE ×1/.test(v2.report) && !/WIDGET_DELEGATE/.test(delegateLeftOut)
+      && v2.layers === 4,
+      `layers=${v2.layers} · ${(v2.report || '').split('\n').filter((l) => /WIDGET_DELEGATE/.test(l)).join(' · ') || 'no delegate note'}`);
     check('a compressed Maker image imports as a real PNG (palette + byte order)',
       !v2.error && v2.dot && v2.dot.width === 4 && /^data:image\/png;base64,iVBOR/.test(v2.dot.url),
       v2.dot ? `${v2.dot.width}px, ${v2.dot.url}` : 'dot.png missing');
@@ -812,12 +957,12 @@ app.whenReady().then(async () => {
       const labels = rows.map((r) => (r.querySelector('.lbl') || {}).textContent || '');
       const spill = rows.filter((r) => r.scrollWidth > r.clientWidth + 2).map((r) => (r.querySelector('.lbl') || {}).textContent || '?');
       return { labels, spill, imgs: (el.images || []).length,
+        cells: document.querySelectorAll('#props .setfield .sf-cell img').length,
         notes: [...document.querySelectorAll('#props .prop-note')].map((p) => p.textContent) };`);
     check('digit layer properties expose font / size / colour / fill / bold / italic rows',
-      ['Font', 'Size', 'Fill', 'Color', 'Bold', 'Italic', 'Re-render'].every((l) => glyphRows.labels.includes(l))
-      && glyphRows.spill.length === 0 && glyphRows.imgs >= 10
-      && glyphRows.notes.some((t) => /not text/.test(t)),
-      `${glyphRows.labels.length} rows, ${glyphRows.imgs} images, spill: ${glyphRows.spill.join(', ') || 'none'}`);
+      ['Font', 'Size', 'Fill', 'Color', 'Bold', 'Italic', 'Redraw'].every((l) => glyphRows.labels.includes(l))
+      && glyphRows.spill.length === 0 && glyphRows.imgs >= 10 && glyphRows.cells >= 10,
+      `${glyphRows.labels.length} rows, ${glyphRows.imgs} images, ${glyphRows.cells} set thumbnails, spill: ${glyphRows.spill.join(', ') || 'none'}`);
 
     const glyphResize = await run(`
       const el = await addElement('IMG_TIME', { name: 'Glyph test' });
@@ -860,7 +1005,8 @@ app.whenReady().then(async () => {
       && /^lun/i.test(weekNames2.ro[0]) && weekNames2.roLong[0] === 'ianuarie'
       && weekNames2.shout[0] === 'MONDAY'
       && ['Names', 'Case', 'Language'].every((l) => weekNames2.rows.includes(l))
-      && weekNames2.files.join(',') === 'week_w1.png,week_w2.png,week_w3.png,week_w4.png,week_w5.png,week_w6.png,week_w7.png',
+      && /^week\d*_w1\.png$/.test(weekNames2.files[0])
+      && weekNames2.files.join(',') === [1, 2, 3, 4, 5, 6, 7].map((i) => weekNames2.files[0].replace('_w1.', `_w${i}.`)).join(','),
       `default ${weekNames2.en[0]} · as generated ${weekNames2.enAs[0]} · ro ${weekNames2.ro[0]} / ${weekNames2.roLong[0]} · ${weekNames2.shout[0]} · rows ${weekNames2.rows.filter((l) => /Names|Case|Language/.test(l)).join(',')}`);
 
     const importedSet = await run(`
@@ -989,7 +1135,7 @@ app.whenReady().then(async () => {
       && modalGen.target.includes(modalGen.targetName) && /Weekday/.test(modalGen.target)
       && modalGen.rowsShown && modalGen.cases[0] === 'upper'
       && modalGen.weekBtn === 'Weekdays' && modalGen.weekShown
-      && modalGen.char0 === 'MONDAY' && modalGen.name0 === 'week_w1.png'
+      && modalGen.char0 === 'MONDAY' && /^week\d*_w1\.png$/.test(modalGen.name0)
       && modalGen.w > 0 && modalGen.h > 0
       && modalGen.digitBtn === 'Digits 0-9' && modalGen.digitHidden && modalGen.digitSeed === modalGen.digitSize,
       `“${modalGen.noTarget}” → refused=${modalGen.refused} · ${modalGen.target} · seed ${modalGen.seededFont} ${modalGen.seededSize}px · drew “${modalGen.char0}” → ${modalGen.name0} ${modalGen.w}×${modalGen.h} · digit layer: ${modalGen.digitBtn} (week button hidden: ${modalGen.digitHidden}, seed ${modalGen.digitSeed}px)`);
@@ -1436,11 +1582,11 @@ app.whenReady().then(async () => {
       const head = panel ? panel.querySelector('.phead') : null;
       return { btns, styles, bar: bar ? rect(bar) : null, panel: panel ? rect(panel) : null,
         headerButtons: head ? head.querySelectorAll('.lbtns button').length : -1 };`);
-    check('the layers panel has a flat bottom toolbar (duplicate / group / ungroup)',
-      layersBar.btns.join(',') === 'btnDup,btnGroup,btnUngroup'
+    check('the layers panel has a flat top toolbar (order / duplicate / group / ungroup / delete)',
+      layersBar.btns.join(',') === 'btnToFront,btnForward,btnBackward,btnToBack,btnDup,btnGroup,btnUngroup,btnDelLayers'
       && layersBar.headerButtons === 0
       && layersBar.styles.every((s) => s.border === '0px' && /rgba\(0, 0, 0, 0\)|transparent/.test(s.bg) && s.svg && s.h >= 28)
-      && layersBar.bar.y > layersBar.panel.y + layersBar.panel.h / 2
+      && layersBar.bar.y < layersBar.panel.y + layersBar.panel.h / 2
       && layersBar.bar.bottom <= layersBar.panel.bottom + 1,
       `buttons ${layersBar.btns.join(', ')} · ${layersBar.styles.map((s) => `${s.id} ${s.w}×${s.h} border ${s.border}`).join(' · ')} · bar at y=${layersBar.bar.y} in panel ${layersBar.panel.y}..${layersBar.panel.bottom} · header buttons left ${layersBar.headerButtons}`);
 
@@ -1493,7 +1639,7 @@ app.whenReady().then(async () => {
       alphaInp.oninput();
       const note = [...document.querySelectorAll('#props .prop-note')].map((p) => p.textContent).find((t) => /apply to every selected layer/.test(t)) || '';
       return { none: false, aShow: a.show, bShow: b.show, aAlpha: a.alpha, bAlpha: b.alpha,
-        showTip: rowOf('Show in').querySelector('.lbl').title, alphaTip: rowOf('Alpha').querySelector('.lbl').title, note };`);
+        showTip: rowOf('Show in').querySelector('.lbl .info').dataset.help, alphaTip: rowOf('Alpha').querySelector('.lbl .info').dataset.help, note };`);
     check('Show in (and Alpha) apply to every layer of a selected group',
       !showGroup.none && showGroup.aShow === 'aod' && showGroup.bShow === 'aod'
       && showGroup.aAlpha === 128 && showGroup.bAlpha === 128
@@ -1537,7 +1683,7 @@ app.whenReady().then(async () => {
       pic.src = picImg ? picImg.name : '';
       selectedId = pic.id; multiSel = new Set([pic.id]); refreshPanels();
       const picRows = [...document.querySelectorAll('#props .row .lbl')].map((s) => s.textContent.trim());
-      const plain = { symbol: picRows.includes('Symbol'), font: picRows.includes('Font'), preview: !!document.querySelector('#props .imgprev') };
+      const plain = { symbol: picRows.includes('Symbol'), font: picRows.includes('Font'), preview: !!document.querySelector('#props .imgfield .if-thumb img') };
       const e = await addElement('IMG', { name: 'Symbol test' });
       const before = project.images.length;
       e.symbol = { char: '°' };
@@ -1555,8 +1701,8 @@ app.whenReady().then(async () => {
       selectedId = e.id; multiSel = new Set([e.id]); refreshPanels();
       const rows = [...document.querySelectorAll('#props .row')];
       const labels = rows.map((r) => ((r.querySelector('.lbl') || {}).textContent || ''));
-      const prev = document.querySelector('#props .imgprev img');
-      const prevText = document.querySelector('#props .imgprev span');
+      const prev = document.querySelector('#props .imgfield .if-thumb img');
+      const prevText = document.querySelector('#props .imgfield .if-sub');
       const symInp = rows.find((r) => ((r.querySelector('.lbl') || {}).textContent || '') === 'Symbol');
       const name = e.src;
       const symValueBefore = symInp.querySelector('input').value;
