@@ -1869,6 +1869,7 @@ function layerRow(e) {
   row.className = 'layer' + (e.id === selectedId ? ' sel' : '') + (multiSel.has(e.id) && e.id !== selectedId ? ' multi' : '')
     + (e.visible === false ? ' hid' : '') + (e.locked ? ' locked' : '') + (offView(e) ? ' offview' : '');
   row.dataset.id = e.id;
+  if (offView(e)) row.title = `Not drawn in ${previewMode === 'aod' ? 'AOD' : 'the normal face'} — switch the filter to All to edit it`;
   const left = document.createElement('span');
   left.className = 'lname';
   const grip = document.createElement('span');
@@ -1898,6 +1899,7 @@ function layerRow(e) {
   right.appendChild(mk('trash', ICON.trash, 'Delete', () => { deleteElements([e]); }));
   row.appendChild(left); row.appendChild(right);
   row.onclick = (ev) => {
+    if (offView(e)) return;   // not part of this view: disabled until the filter is All
     if (ev.ctrlKey || ev.metaKey || ev.shiftKey) {
       if (multiSel.has(e.id)) multiSel.delete(e.id); else multiSel.add(e.id);
       selectedId = e.id;
@@ -1947,8 +1949,10 @@ function groupBlock(gid, members) {
   }));
   head.appendChild(grip); head.appendChild(chev); head.appendChild(icon); head.appendChild(nm); head.appendChild(cnt); head.appendChild(right);
   head.onclick = () => {
-    selectedId = members.length ? members[0].id : null;
-    multiSel = new Set(members.map((m) => m.id));
+    const live = members.filter((m) => !offView(m));
+    if (!live.length) return;
+    selectedId = live[0].id;
+    multiSel = new Set(live.map((m) => m.id));
     refreshPanels(); render();
   };
   const body = mkEl('div', 'group-body');
@@ -1965,7 +1969,7 @@ function makeSortable(container, { root = false } = {}) {
   Sortable.create(container, {
     group: root ? { name: 'wf-layers' } : { name: 'wf-layers', put: (_to, _from, dragEl) => !dragEl.classList.contains('group-block') },
     draggable: root ? '.layer, .group-block' : '.layer',
-    filter: '.lb, .gchev, .gname-edit, input', preventOnFilter: false,
+    filter: '.lb, .gchev, .gname-edit, input, .offview', preventOnFilter: false,
     animation: 120, fallbackTolerance: 4,
     ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', fallbackClass: 'sortable-fallback',
     fallbackOnBody: true,
@@ -5035,7 +5039,7 @@ function hitElement(ev) {
   const list = elements();
   for (let i = list.length - 1; i >= 0; i--) {
     const e = list[i];
-    if (e.visible === false || e.locked) continue;
+    if (e.visible === false || e.locked || offView(e)) continue;
     const b = elBox(e);
     if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) return e;
   }
@@ -5075,8 +5079,19 @@ $('cv').addEventListener('mousedown', (ev) => {
     return;
   }
   const hit = hitElement(ev);
+  const additive = ev.ctrlKey || ev.metaKey || ev.shiftKey;
   if (!hit) {
+    if (additive) return;   // a slipped Ctrl-click must not drop the selection
     selectedId = null; multiSel = new Set();
+    refreshPanels(); render();
+    return;
+  }
+  if (additive) {
+    // Ctrl / ⌘ / Shift-click toggles the layer in the selection
+    if (multiSel.has(hit.id)) {
+      multiSel.delete(hit.id);
+      if (selectedId === hit.id) selectedId = [...multiSel].pop() || null;
+    } else { multiSel.add(hit.id); selectedId = hit.id; }
     refreshPanels(); render();
     return;
   }
@@ -5153,6 +5168,14 @@ $('cv').addEventListener('dblclick', (ev) => {
     refreshPanels(); render();
   }
 });
+// a click on the empty workspace around the device deselects (the side panels
+// act on the selection, so they never do)
+document.querySelector('main').addEventListener('mousedown', (ev) => {
+  if (!project || ev.target.closest('#cv, .panel-c, button, input, select, textarea, a, .meta-status') || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button !== 0) return;
+  if (!selectedId && !multiSel.size) return;
+  selectedId = null; multiSel = new Set();
+  refreshPanels(); render();
+});
 // drop files onto the preview to import them
 window.addEventListener('dragover', (e) => e.preventDefault());
 window.addEventListener('drop', async (e) => {
@@ -5189,7 +5212,13 @@ document.querySelectorAll('#layersView button').forEach((b) => {
   b.onclick = () => {
     const v = b.dataset.view;
     layerFocus = v !== 'all';
-    if (layerFocus) setPreviewMode(v);
+    if (layerFocus) {
+      // layers outside the view become unselectable: drop them from the selection
+      setPreviewMode(v);
+      multiSel = new Set([...multiSel].filter((id) => { const e = elementById(id); return e && !offView(e); }));
+      if (selectedId && !multiSel.has(selectedId)) selectedId = [...multiSel].pop() || null;
+      refreshPanels(); render();
+    }
     else { syncLayerView(); if (project) renderLayers(); }
   };
 });

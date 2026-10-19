@@ -601,3 +601,6 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 .recent-item .ri-x svg { width: 14px; height: 14px; }
 .recent-item:hover .ri-x, .recent-item .ri-x:focus-visible { opacity: 1; }
 .recent-item .ri-x:hover { background: #3a1c1c; color: #ff9d9d; }
+.layer.offview, .group-row.offview { cursor: not-allowed; }
+.layer.offview .lrow-r, .group-row.offview .lrow-r { pointer-events: none; }
+.layer.offview.sel, .layer.offview.multi { background: transparent; }

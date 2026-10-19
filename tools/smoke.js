@@ -1382,6 +1382,33 @@ app.whenReady().then(async () => {
     check('layer view filter dims what the preview does not draw and tags Both',
       viewRun.aInDim && !viewRun.bInDim && viewRun.aodOn && viewRun.badge && viewRun.none === 0, JSON.stringify(viewRun));
 
+    const selRun = await run(`
+      const a = await addElement('FILL_RECT', { x: 5, y: 5, w: 30, h: 30, color: '#202020' });
+      const b = await addElement('FILL_RECT', { x: 60, y: 60, w: 30, h: 30, color: '#303030' });
+      a.x = 5; a.y = 5; b.x = 60; b.y = 60; a.group = b.group = null;
+      a.show = 'both'; b.show = 'normal';
+      selectedId = null; multiSel = new Set(); previewMode = 'normal'; layerFocus = false; render();
+      const at = (e) => { const bx = elBox(e), r = $('cv').getBoundingClientRect(), k = r.width / $('cv').width;
+        return { clientX: r.left + (bx.x + bx.w / 2) * k, clientY: r.top + (bx.y + bx.h / 2) * k }; };
+      const fire = (e, mod) => $('cv').dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0, ctrlKey: mod, ...at(e) }));
+      fire(a, false); window.dispatchEvent(new MouseEvent('mouseup'));
+      fire(b, true); window.dispatchEvent(new MouseEvent('mouseup'));
+      const two = multiSel.size >= 2 && multiSel.has(a.id) && multiSel.has(b.id);
+      fire(b, true); window.dispatchEvent(new MouseEvent('mouseup'));
+      const toggledOff = !multiSel.has(b.id) && multiSel.has(a.id);
+      fire(b, true); window.dispatchEvent(new MouseEvent('mouseup'));
+      document.querySelector('#layersView [data-view="aod"]').click();
+      const dropped = !multiSel.has(b.id) && multiSel.has(a.id);
+      const rowB = document.querySelector('#layers .layer[data-id="' + b.id + '"]');
+      rowB.click();
+      const rowIgnored = !multiSel.has(b.id);
+      document.querySelector('#layersView [data-view="all"]').click();
+      document.querySelector('main').dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0 }));
+      const cleared = !selectedId && multiSel.size === 0;
+      return { two, toggledOff, dropped, rowIgnored, cleared };`);
+    check('Ctrl-click multi-selects on the preview, AOD focus disables other layers, clicking the workspace deselects',
+      selRun.two && selRun.toggledOff && selRun.dropped && selRun.rowIgnored && selRun.cleared, JSON.stringify(selRun));
+
     const distRun = await run(`
       const D = dev();
       const a = await addElement('FILL_RECT', { w: 50, h: 20, color: '#202020' });
