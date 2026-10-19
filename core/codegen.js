@@ -9,7 +9,7 @@
 // Widget parameters are documented at https://docs.zepp.com/docs/watchface/api/hmUI/widget/
 const path = require('path');
 const { deviceByKey, platformsFor } = require('./devices');
-const { dataType } = require('./datatypes');
+const { dataType, DT_MAX } = require('./datatypes');
 const { apiVersionFor } = require('./fonts');
 
 function hexToNum(hex) {
@@ -53,7 +53,8 @@ function arrName(el) { return `img_${ident(el.name)}_${el.id.slice(-4)}`; }
 // and left out of the code instead.
 function missingPicture(el) {
   switch (el.kind) {
-    case 'IMG': case 'IMG_POINTER': return !el.src;
+    case 'IMG': return !el.src && !variantsOf(el);
+    case 'IMG_POINTER': return !el.src;
     case 'IMG_ANIM': return !(el.frames || []).length;
     case 'IMG_LEVEL': case 'IMG_PROGRESS': case 'TEXT_IMG': return !(el.images || []).length;
     default: return false;
@@ -86,15 +87,124 @@ function kv(lines, key, value, when = true) {
   lines.push(`    ${key}: ${value},`);
 }
 
+// an Image layer with two or more pictures is a variants layer: a Tap zone cycles them
+function variantsOf(el) {
+  return el && el.kind === 'IMG' && Array.isArray(el.images) && el.images.filter(Boolean).length >= 2 ? el.images.filter(Boolean) : null;
+}
 function emitElement(el, ctx, out) {
   const { arrays } = ctx;
+  const variants = variantsOf(el);
+  if (variants && el.show === 'aod') el = { ...el, src: variants[0] };   // AOD keeps the first picture
   const L = [];
   const sl = `show_level: ${showLevel(el.show)}`;
   const alpha = el.alpha != null && el.alpha < 255 ? `alpha: ${Math.max(0, num(el.alpha))},` : null;
 
   switch (el.kind) {
+    case 'SLEEP_CHART': {
+      // A GROUP the face fills with one FILL_RECT per sleep stage (the Maker's sleep chart).
+      // Everything sensor-related sits in try/catch: a missing API must not stop the face.
+      ctx.sensors.add('Sleep');
+      const k = ctx.sleepCharts = (ctx.sleepCharts || 0) + 1;
+      const v = `sleepChart_${k}`;
+      const hex = (c) => `0x${hexToNum(c).toString(16).padStart(6, '0')}`;
+      kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y)); kv(L, 'w', p(el.w || 215)); kv(L, 'h', p(el.h || 69));
+      kv(L, 'show_level', showLevel(el.show));
+      out.push(`  const ${v} = ui.createWidget(ui.widget.GROUP, {\n${L.join('\n')}\n  })`);
+      out.push(`  try {`);
+      out.push(`    const sleep = new Sleep()`);
+      out.push(`    if (sleep.updateInfo) sleep.updateInfo()`);
+      out.push(`    const stages = sleep.getStage ? sleep.getStage() : []`);
+      out.push(`    const M = sleep.getStageConstantObj ? sleep.getStageConstantObj() : {}`);
+      out.push(`    if (stages && stages.length) {`);
+      out.push(`      const colors = [${hex(el.colorDeep)}, ${hex(el.colorLight)}, ${hex(el.colorRem)}, ${hex(el.colorWake)}]`);
+      out.push(`      const t0 = stages[0].start`);
+      out.push(`      const total = Math.max(1, stages[stages.length - 1].stop + 1 - t0)`);
+      out.push(`      const sx = px(${num(el.w) || 215}) / total`);
+      out.push(`      const sy = px(${num(el.h) || 69}) / 4`);
+      out.push(`      for (const s of stages) {`);
+      out.push(`        const row = s.model === M.WAKE_STAGE ? 0 : s.model === M.REM_STAGE ? 1 : s.model === M.LIGHT_STAGE ? 2 : 3`);
+      out.push(`        ${v}.createWidget(ui.widget.FILL_RECT, { x: (s.start - t0) * sx, y: row * sy, w: Math.max(2, (s.stop + 1 - s.start) * sx), h: sy, radius: 5, color: colors[3 - row] })`);
+      out.push(`      }`);
+      out.push(`    }`);
+      out.push(`  } catch (e) {}`);
+      break;
+    }
+    case 'BAR': {
+      // The Maker's "linear scale": a FILL_RECT the code resizes with the reading (there is no
+      // framework binding for it, so a sensor updater sets its length, like the arcs' LEVEL).
+      const dt = dataType(el.dataType);
+      const len = Math.max(1, num(el.length) || 100), lw = Math.max(1, num(el.lineWidth) || 10);
+      const k = ctx.bars = (ctx.bars || 0) + 1;
+      const v = `bar_${k}`;
+      const colour = `0x${hexToNum(el.color).toString(16).padStart(6, '0')}`;
+      const x0 = num(el.x), y0 = num(el.y);
+      kv(L, 'x', p(x0)); kv(L, 'y', p(y0));
+      kv(L, 'w', el.vertical ? p(lw) : 'px(0)'); kv(L, 'h', el.vertical ? 'px(0)' : p(lw));
+      if (el.rounded) kv(L, 'radius', p(Math.round(lw / 2)));
+      kv(L, 'color', colour);
+      if (el.alpha != null && el.alpha < 255) kv(L, 'alpha', Math.max(0, num(el.alpha)));
+      kv(L, 'show_level', showLevel(el.show));
+      out.push(`  const ${v} = ui.createWidget(ui.widget.FILL_RECT, {\n${L.join('\n')}\n  })`);
+      // the fraction of the bar to fill, from the reading
+      let frac = '0';
+      const lines = [];
+      if (dt && dt.reader) {
+        const { cls, get } = dt.reader;
+        ctx.sensors.add(cls);
+        const sv = `s_${ident(el.dataType).toLowerCase()}`;
+        if (!ctx.declared.has(sv)) { lines.push(`  const ${sv} = new ${cls}()`); ctx.declared.add(sv); }
+        const isTarget = /Target$/.test(el.dataType) || /getTarget/.test(get);
+        const targetBased = /STEP|CAL|STAND|FAT_BURNING/.test(el.dataType) && !isTarget;
+        frac = targetBased ? `${sv}.getCurrent() / (${sv}.getTarget() || 1)` : `${sv}.${get}() / ${DT_MAX[el.dataType] || 100}`;
+        const upd = `upd_${v}`;
+        const total = `px(${len})`;
+        const fill = `Math.round(${total} * Math.max(0, Math.min(1, ${frac})))`;
+        const place = [];
+        if (el.vertical) {
+          const off = el.mirror ? `Math.round((${total} - fill) / 2)` : el.inversion ? `${total} - fill` : '0';
+          place.push(`y: px(${y0}) + ${off}`, 'h: fill');
+        } else {
+          const off = el.mirror ? `Math.round((${total} - fill) / 2)` : el.inversion ? `${total} - fill` : '0';
+          place.push(`x: px(${x0}) + ${off}`, 'w: fill');
+        }
+        lines.push(`  const ${upd} = () => {`, `    const fill = ${fill}`, `    ${v}.setProperty(ui.prop.MORE, { ${place.join(', ')} })`, '  }', `  ${sv}.onChange(${upd})`, `  ${upd}()`);
+      } else ctx.warnings.push(`${el.name}: ${el.dataType || 'no reading'} has no automatic reader — the bar stays empty on the watch`);
+      for (const l of lines) out.push(l);
+      break;
+    }
+    case 'TAP': {
+      if (el.show === 'aod') break;   // the always-on display takes no taps
+      let body = null;
+      if (el.action === 'variant') body = 'cycleVariants()';
+      else if (el.action === 'app' && el.appUrl) {
+        body = `if (typeof hmApp !== 'undefined') hmApp.startApp({ url: ${JSON.stringify(String(el.appUrl))}, native: true })`;
+      } else if (el.action === 'app') ctx.warnings.push(`${el.name}: no screen chosen — the tap zone is left out`);
+      else ctx.warnings.push(`${el.name}: this tap zone has no action here (${el.note ? 'the original ran custom code' : 'none set'}) — left out`);
+      if (!body) break;
+      if (el.action === 'variant' && !ctx.variants.length) ctx.warnings.push(`${el.name}: no image layer with variants to cycle`);
+      ctx.usesTap = true;
+      out.push(`  ui.createWidget(ui.widget.BUTTON, {\n    x: ${p(el.x)}, y: ${p(el.y)}, w: ${p(el.w)}, h: ${p(el.h)},\n    text: '',\n    normal_src: A('tapzone.png'),\n    press_src: A('tapzone.png'),\n    click_func: () => { ${body} },\n    show_level: ${showLevel(el.show)},\n  })`);
+      break;
+    }
     case 'IMG': {
-      L.push('  ui.createWidget(ui.widget.IMG, {');
+      if (variants) {
+        const k = ctx.variants.length;
+        const list = `variants_${k}`;
+        out.push(`  const ${list} = [${variants.map((n) => A(n)).join(', ')}]`);
+        out.push(`  const variant_${k} = ui.createWidget(ui.widget.IMG, {`);
+        kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
+        if (el.w) kv(L, 'w', p(el.w));
+        if (el.h) kv(L, 'h', p(el.h));
+        L.push(`    src: ${list}[variantIdx % ${list}.length],`);
+        kv(L, 'show_level', showLevel(el.show));
+        out.push(L.join('\n').replace(/,(\s*)$/, '$1') + '\n  })');
+        ctx.variants.push({ list, widget: `variant_${k}`, names: Array.isArray(el.variantNames) ? el.variantNames : [] });
+        break;
+      }
+      // A picture for the customise screen is a mask widget: a plain IMG with ONLY_EDIT
+      // would also be drawn over the normal face on the watch.
+      const maskW = el.show === 'edit' ? (el.editMask === 'fg' || /foreground/i.test(el.name || '') ? 'WATCHFACE_EDIT_FG_MASK' : 'WATCHFACE_EDIT_MASK') : null;
+      L.push(maskW ? `  try { const H = (typeof hmUI !== 'undefined' && hmUI.widget && hmUI.widget.${maskW}) ? hmUI : ui; H.createWidget(H.widget.${maskW}, {` : '  ui.createWidget(ui.widget.IMG, {');
       kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
       if (el.w) kv(L, 'w', p(el.w));
       if (el.h) kv(L, 'h', p(el.h));
@@ -106,15 +216,17 @@ function emitElement(el, ctx, out) {
         kv(L, 'center_y', p(el.centerY));
       }
       kv(L, 'src', asset(el, 'src'));
-      kv(L, 'show_level', showLevel(el.show));
-      out.push(L.join('\n').replace(/,(\s*)$/, '$1') + '\n  })');
+      kv(L, 'show_level', maskW ? 'H.show_level.ONLY_EDIT' : showLevel(el.show));
+      out.push(L.join('\n').replace(/,(\s*)$/, '$1') + '\n  })' + (maskW ? ' } catch (e) {}' : ''));
       break;
     }
     case 'TEXT': {
       // A gradient/outline fill, bold or italic cannot be expressed with the
       // TEXT widget (docs: only `color`, `text_size`, `font`, spacing), so those
       // layers are rasterised by the designer and shipped as a picture.
-      if (needsTextBake(el)) {
+      if (el.dataType && needsTextBake(el)) {
+        ctx.warnings.push(`${el.name}: a reading shown as text cannot carry ${bakeReason(el)} — exported with a flat colour`);
+      } else if (needsTextBake(el)) {
         if (!el.bakedImage) {
           ctx.warnings.push(`${el.name}: ${bakeReason(el)} — re-export to refresh the baked image`);
         } else {
@@ -128,7 +240,7 @@ function emitElement(el, ctx, out) {
           break;
         }
       }
-      L.push('  ui.createWidget(ui.widget.TEXT, {');
+      L.push(`  ui.createWidget(ui.widget.${el.dataType ? 'TEXT_FONT' : 'TEXT'}, {`);
       kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
       kv(L, 'w', p(el.w || 200)); kv(L, 'h', p(el.h || 40));
       kv(L, 'color', `0x${hexToNum(el.color).toString(16).padStart(6, '0')}`);
@@ -137,7 +249,9 @@ function emitElement(el, ctx, out) {
       kv(L, 'align_v', `ui.align.${el.alignV || 'CENTER_V'}`);
       if (el.lineSpace) kv(L, 'line_space', p(el.lineSpace));
       if (el.charSpace) kv(L, 'char_space', p(el.charSpace));
-      kv(L, 'text', JSON.stringify(el.text == null ? '' : String(el.text)));
+      if (el.dataType) kv(L, 'type', `ui.data_type.${el.dataType}`);
+      else kv(L, 'text', JSON.stringify(el.text == null ? '' : String(el.text)));
+      if (el.alpha != null && el.alpha < 255) kv(L, 'alpha', Math.max(0, num(el.alpha)));
       // custom typeface: the file is exported next to the images as
       // assets/<target>/fonts/<file> and referenced relative to that folder.
       if (el.fontFile) kv(L, 'font', JSON.stringify(`fonts/${path.basename(String(el.fontFile))}`));
@@ -418,7 +532,7 @@ function readerFor(el, ctx) {
 }
 
 function generateWatchface(project, device = deviceByKey(project.device)) {
-  const ctx = { sensors: new Set(), declared: new Set(), arrays: {}, warnings: [] };
+  const ctx = { sensors: new Set(), declared: new Set(), arrays: {}, warnings: [], variants: [], usesTap: false };
   const els = (project.elements || []).filter((e) => e.visible !== false);
   // ---- declare the image arrays the widgets reference ----
   const decls = [];
@@ -458,7 +572,9 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   out.push('// the pixel budget under 10% with a black background and no second hand.');
   out.push('// ---------------------------------------------------------------------------');
   if (els.some((e) => e.showWhen && !missingPicture(e))) ctx.sensors.add('Time');
+  const hasVariants = els.some((e) => variantsOf(e) && e.show !== 'aod');
   out.push("import ui from '@zos/ui'");
+
   if (ctx.sensors.size) {
     out.push(`import { ${[...ctx.sensors].sort().join(', ')} } from '@zos/sensor'`);
   }
@@ -476,11 +592,22 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   if (!els.length) {
     out.push('    // no visible elements yet');
   }
-  for (const el of els) {
+  if (hasVariants) {
+    // Guarded on purpose: a missing API must never stop the face from drawing.
+    out.push('    // the picked variant survives a restart (when the watch offers storage)');
+    out.push('    let variantIdx = 0');
+    out.push("    try { if (typeof hmFS !== 'undefined') variantIdx = Number(hmFS.SysProGetInt('dialcraft_variant')) || 0 } catch (e) {}");
+    out.push('');
+  }
+  const slotEls = els.filter((e) => e.kind === 'EDIT_SLOT');
+  const slotOf = (e) => (e.editSlot != null && e.editSlot !== '' ? slotEls.find((sl) => String(sl.editId) === String(e.editSlot)) : null);
+  // one layer (or two, when it shows in both states) as widget code, indented by `pad` extra spaces
+  const emitLayer = (el, pad) => {
     if (missingPicture(el)) {
       ctx.warnings.push(`${el.name}: no picture — left out of the export`);
-      continue;
+      return;
     }
+    if (el.kind === 'EDIT_SLOT') { emitSlot(el, pad); return; }
     // A layer shown in both states becomes two widgets — one ONLY_NORMAL, one
     // ONLY_AOD — because the watch's AOD path only picks up widgets that carry
     // the AOD bit on its own (the combined bitmask is not honoured). This is the
@@ -488,7 +615,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     const both = (el.show || 'both') === 'both';
     const states = both ? ['normal', 'aod'] : [el.show || 'normal'];
     for (const state of states) {
-      out.push(`    // ${el.name} (${el.kind})${both ? ` — ${state === 'aod' ? 'AOD (screen-off)' : 'normal state'}` : ''}`);
+      out.push(`${pad}    // ${el.name} (${el.kind})${both ? ` — ${state === 'aod' ? 'AOD (screen-off)' : 'normal state'}` : ''}`);
       const chunk = [];
       emitElement({ ...el, show: state, _emitState: both ? state : null }, ctx, chunk);
       // a layer tied to AM / PM keeps a handle so the hour can show or hide it
@@ -498,9 +625,69 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
         whenVars.push({ v, pm: el.showWhen === 'pm' });
       }
       // the emitters are written at a 2-space base indent; shift them inside initView
-      for (const line of chunk.join('\n').split('\n')) out.push(line ? '  ' + line : line);
+      for (const line of chunk.join('\n').split('\n')) out.push(line ? pad + '  ' + line : line);
       out.push('');
     }
+  };
+  // A complication slot: the group widget, then a switch on what the wearer picked that creates
+  // the layers of that choice. try/catch: the edit APIs must never stop the rest of the face.
+  const emitSlot = (slot, pad) => {
+    if (slot.show === 'aod') return;
+    const k = ctx.slots = (ctx.slots || 0) + 1;
+    const opts = (slot.optionalTypes || []).filter((o) => o && o.type);
+    const ty = (t) => `H.edit_type.${t}`;
+    out.push(`${pad}    // ${slot.name || 'Complication'} (the wearer picks what it shows)`);
+    out.push(`${pad}    try {`);
+    out.push(`${pad}      // the edit API lives on the legacy global in every shipping face; fall back to the import`);
+    out.push(`${pad}      const H = (typeof hmUI !== 'undefined' && hmUI.edit_type) ? hmUI : ui`);
+    out.push(`${pad}      const slot_${k} = H.createWidget(H.widget.WATCHFACE_EDIT_GROUP, {`);
+    const Ls = [];
+    kv(Ls, 'edit_id', num(slot.editId) || k);
+    kv(Ls, 'x', p(slot.x)); kv(Ls, 'y', p(slot.y)); kv(Ls, 'w', p(slot.w)); kv(Ls, 'h', p(slot.h));
+    kv(Ls, 'select_image', slot.selectImage ? A(slot.selectImage) : "''");
+    kv(Ls, 'un_select_image', slot.unSelectImage ? A(slot.unSelectImage) : "''");
+    kv(Ls, 'default_type', ty(slot.defaultType || (opts[0] && opts[0].type) || 'STEP'));
+    kv(Ls, 'optional_types', `[${opts.map((o) => `{ type: ${ty(o.type)}${o.preview ? `, preview: ${A(o.preview)}` : ''} }`).join(', ')}]`);
+    kv(Ls, 'count', opts.length);
+    kv(Ls, 'select_list', '{ title_font_size: px(34), title_align_h: H.align.CENTER_H, list_item_vspace: px(8), list_tips_text_font_size: px(32), list_tips_text_align_h: H.align.LEFT }');
+    if (slot.tipsBg) {
+      kv(Ls, 'tips_BG', A(slot.tipsBg)); kv(Ls, 'tips_x', p(slot.tipsX)); kv(Ls, 'tips_y', p(slot.tipsY));
+      kv(Ls, 'tips_width', p(slot.tipsWidth || slot.w)); kv(Ls, 'tips_margin', p(slot.tipsMargin || 10));
+    }
+    // no show_level: the group has to exist in the customise state too, or nothing can be picked
+    for (const l of Ls) out.push(`${pad}    ${l}`);
+    out.push(`${pad}      })`);
+    out.push(`${pad}      switch (slot_${k}.getProperty(H.prop.CURRENT_TYPE)) {`);
+    for (const o of opts) {
+      out.push(`${pad}        case ${ty(o.type)}: {`);
+      for (const ch of els.filter((e) => e.editSlot != null && String(e.editSlot) === String(slot.editId) && e.editType === o.type)) emitLayer(ch, pad + '        ');
+      out.push(`${pad}          break`);
+      out.push(`${pad}        }`);
+    }
+    out.push(`${pad}      }`);
+    // never stops the face, but says why the slot is missing (a toast on the watch)
+    out.push(`${pad}    } catch (e) {`);
+    out.push(`${pad}      try { ui.createWidget(ui.widget.TEXT, { x: 0, y: px(150), w: px(${device.w}), h: px(150), text: 'Edit slot: ' + (e && e.message ? e.message : e), text_size: px(22), color: 0xff5555, align_h: ui.align.CENTER_H, text_style: ui.text_style.WRAP }) } catch (e2) {}`);
+    out.push(`${pad}    }`);
+    out.push('');
+  };
+  for (const el of els) {
+    if (slotOf(el)) continue;      // emitted inside its slot's switch
+    emitLayer(el, '');
+  }
+  if (ctx.variants.length) {
+    const names = (ctx.variants.find((v) => v.names.length) || { names: [] }).names;
+    out.push('    // a Tap zone set to "Cycle variants" calls this');
+    if (names.length) out.push(`    const variantNames = ${JSON.stringify(names)}`);
+    out.push('    const cycleVariants = () => {');
+    const total = ctx.variants.map((v) => `${v.list}.length`).join(', ');
+    out.push(`      variantIdx = (variantIdx + 1) % Math.max(${total})`);
+    out.push("      try { if (typeof hmFS !== 'undefined') hmFS.SysProSetInt('dialcraft_variant', variantIdx) } catch (e) {}");
+    if (names.length) out.push("      try { if (variantNames[variantIdx] && typeof hmUI !== 'undefined') hmUI.showToast({ text: variantNames[variantIdx] }) } catch (e) {}");
+    for (const v of ctx.variants) out.push(`      ${v.widget}.setProperty(ui.prop.SRC, ${v.list}[variantIdx % ${v.list}.length])`);
+    out.push('    }');
+  } else if (ctx.usesTap && els.some((e) => e.kind === 'TAP' && e.action === 'variant')) {
+    out.push('    const cycleVariants = () => {}');
   }
   if (whenVars.length) {
     out.push('    // lit AM / PM layers follow the hour');
@@ -529,6 +716,8 @@ function generateAppJson(project, device, opts = {}) {
   // design: without it (the default is 0 = none) the watch shows its own AOD
   // face and the widgets' show_level never gets a chance.
   const hasAod = (project.elements || []).some((e) => e.visible !== false && (e.show === 'aod' || e.show === 'both'));
+  // a face with complication slots has to say it can be edited on the watch
+  const hasEdit = (project.elements || []).some((e) => e.visible !== false && e.kind === 'EDIT_SLOT');
   const doc = {
     configVersion: 'v3',
     app: {
@@ -544,7 +733,7 @@ function generateAppJson(project, device, opts = {}) {
     runtime: { apiVersion: apiVersionFor(device.api), type: 0 },
     targets: {
       [device.target]: {
-        module: { watchface: { path: `watchface/${device.target}/index`, main: 1, editable: 0, lockscreen: hasAod ? 1 : 0 } },
+        module: { watchface: { path: `watchface/${device.target}/index`, main: 1, editable: hasEdit ? 1 : 0, lockscreen: hasAod ? 1 : 0 } },
         platforms: platformsFor(device),
         designWidth: device.designWidth,
       },

@@ -542,6 +542,40 @@ app.whenReady().then(async () => {
       };`);
     check('import a Zeus project folder', !roundTrip.error && roundTrip.imported && roundTrip.layers > 0,
       roundTrip.error || `${roundTrip.layers} layers, ${roundTrip.images} images from ${roundTrip.source}`);
+    {
+      const { languageTag } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const got = ['enUS', 'zh_CN', 'ro-ro', '', undefined, 'not a tag!'].map(languageTag);
+      check('imported language tags are mended to valid locales',
+        got.join(',') === 'en-US,zh-CN,ro-RO,en-US,en-US,en-US', got.join(','));
+    }
+    const monthRun = await run(`
+      const m = await addElement('IMG_DATE', { part: 'month', isCharacter: true, x: 10, y: 10 });
+      const names = Array.from({ length: 12 }, (_, i) => 'mn_' + i + '.png');
+      m.images = names;
+      const mk = (w) => { const c = document.createElement('canvas'); c.width = w; c.height = 20; c.getContext('2d').fillRect(0, 0, w, 20); return c; };
+      names.forEach((n, i) => addProjectImage(n, mk(30 + i * 3)));
+      const keep = { ...dateParts };
+      dateParts = { ...dateParts, month: 3 };
+      const b = digitBox(m);
+      const drawn = monthNameImage(m);
+      dateParts = keep;
+      return { drawn, w: b.w };`);
+    check('a month shown as a name draws that month\'s picture at its own width',
+      monthRun.drawn === 'mn_2.png' && monthRun.w === 36, JSON.stringify(monthRun));
+    {
+      const { PNG } = require('pngjs');
+      const { appIconPng } = require(path.join(__dirname, '..', 'core', 'icon'));
+      const face = new PNG({ width: 390, height: 450 });
+      for (let i = 0; i < face.data.length; i += 4) { face.data[i] = 200; face.data[i + 1] = 40; face.data[i + 2] = 40; face.data[i + 3] = 255; }
+      const faceBuf = PNG.sync.write(face);
+      const sq = PNG.sync.read(appIconPng(faceBuf, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey('bip-6')));
+      const rd = PNG.sync.read(appIconPng(faceBuf, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey('balance-3')));
+      const px = (img, x, y) => img.data[(img.width * y + x) * 4 + 3];
+      check('a square watch gets the whole face as its preview, a round one the 248 circle',
+        sq.width === 266 && sq.height === 307 && px(sq, 0, 0) === 0 && px(sq, 133, 4) === 255 && px(sq, 4, 153) === 255 && px(sq, 133, 153) === 255
+        && rd.width === 248 && px(rd, 124, 124) === 255 && px(rd, 4, 4) === 0,
+        `square ${sq.width}×${sq.height} (corner α ${px(sq, 0, 0)}, edge α ${px(sq, 4, 153)}) · round ${rd.width}×${rd.height} (corner α ${px(rd, 4, 4)})`);
+    }
     // …the same face handed over as a .zip (flat, and wrapped in one folder)
     {
       const zipMod = require(path.join(__dirname, '..', 'core', 'zip'));
@@ -637,7 +671,7 @@ app.whenReady().then(async () => {
           });
           // not a layer: the watchface lifecycle hook
           hmUI.createWidget(hmUI.widget.WIDGET_DELEGATE, { resume_call: function () {} });
-          hmUI.createWidget(hmUI.widget.BUTTON, { x: 0, y: 0, w: 10, h: 10, text: 'tap' });
+          hmUI.createWidget(hmUI.widget.SLIDE_SWITCH, { x: 0, y: 0, w: 10, h: 10 });
           hmUI.createWidget(hmUI.widget.SCROLL_TEXT, { x: 0, y: 0 });
         },
       });
@@ -684,8 +718,8 @@ app.whenReady().then(async () => {
       && v2.hour.alignH === 'CENTER_H' && v2.hour.show === 'aod' && v2.hour.images.length === 1,
       JSON.stringify(v2.hour));
     check('widgets the designer cannot author are listed, not dropped',
-      !v2.error && /BUTTON/.test(v2.report) && /SCROLL_TEXT/.test(v2.report),
-      (v2.report || '').split('\n').filter((l) => /BUTTON|SCROLL_TEXT/.test(l)).join(' · '));
+      !v2.error && /SLIDE_SWITCH/.test(v2.report) && /SCROLL_TEXT/.test(v2.report),
+      (v2.report || '').split('\n').filter((l) => /SLIDE_SWITCH|SCROLL_TEXT/.test(l)).join(' · '));
     // WIDGET_DELEGATE draws nothing — it only carries the resume/pause hook, so
     // it is a note, not a widget that was "left out"
     const delegateLeftOut = ((v2.report || '').match(/Not in the designer[\s\S]*?(?:\n\n|$)/) || [''])[0];
@@ -1458,6 +1492,57 @@ app.whenReady().then(async () => {
     check('Visible when ties a layer to AM or PM (preview follows the clock)',
       whenRun.amA && !whenRun.amB && !whenRun.pmA && whenRun.pmB, JSON.stringify(whenRun));
 
+    const spaceRun = await run(`
+      const names = Array.from({ length: 10 }, (_, i) => 'sp_' + i + '.png');
+      for (const n of names) {
+        const c = document.createElement('canvas'); c.width = 20; c.height = 20;
+        const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(2, 2, 10, 16);
+        addProjectImage(n, c);
+      }
+      await loadAllImages();
+      const t = await addElement('IMG_TIME', { part: 'hour', x: 60, y: 60, zero: 1, space: 0, images: names });
+      t.images = names; t.space = 0; t.x = 60; t.y = 60;
+      selectedId = t.id; multiSel = new Set([t.id]);
+      const tight = tightSpace(t);
+      const hp = spaceHandlePos(t);
+      const r = $('cv').getBoundingClientRect(), k = r.width / $('cv').width;
+      const at = (dx) => ({ clientX: r.left + (hp.x + dx) * k, clientY: r.top + hp.y * k });
+      $('cv').dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0, ...at(0) }));
+      window.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, ...at(-6) }));
+      window.dispatchEvent(new MouseEvent('mouseup'));
+      return { tight, hasHandle: !!hp, dragged: t.space };`);
+    check('digit spacing: Tight measures the painted width, the canvas handle drags the spacing',
+      spaceRun.tight === -10 && spaceRun.hasHandle && spaceRun.dragged === -6, JSON.stringify(spaceRun));
+
+    const barRun = await run(`
+      const bar = await addElement('BAR', { x: 10, y: 10, length: 100, lineWidth: 8, dataType: 'BATTERY', color: '#ff0000' });
+      bar.x = 10; bar.y = 10; bar.length = 100; bar.lineWidth = 8; bar.rounded = false; bar.inversion = false;
+      const prev = testData.BATTERY; testData.BATTERY = 40;
+      const cv = document.createElement('canvas'); cv.width = 200; cv.height = 40;
+      const c = cv.getContext('2d');
+      drawElement(c, bar);
+      const px = (x, y) => c.getImageData(x, y, 1, 1).data[3];
+      const fillEnd = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => px(10 + 10 * i + 5, 14)).filter((a) => a > 0).length;
+      bar.inversion = true; c.clearRect(0, 0, 200, 40); drawElement(c, bar);
+      const invLeft = px(12, 14), invRight = px(105, 14);
+      testData.BATTERY = prev;
+      return { fillEnd, invLeft, invRight };`);
+    check('a progress bar fills to the reading (and from the far end when inverted)',
+      barRun.fillEnd === 4 && barRun.invLeft === 0 && barRun.invRight > 0, JSON.stringify(barRun));
+
+    const editRun = await run(`
+      const slot = await addElement('EDIT_SLOT', { editId: 7, x: 10, y: 10, w: 40, h: 20, defaultType: 'STEP', optionalTypes: [{ type: 'STEP', preview: '' }, { type: 'HEART', preview: '' }] });
+      const a = await addElement('FILL_RECT', { w: 10, h: 10, color: '#202020' });
+      const b = await addElement('FILL_RECT', { w: 10, h: 10, color: '#303030' });
+      a.editSlot = 7; a.editType = 'STEP'; b.editSlot = 7; b.editType = 'HEART';
+      const first = [editAllows(a), editAllows(b)];
+      editPick[7] = 'HEART';
+      const second = [editAllows(a), editAllows(b)];
+      editPick = {};
+      return { first, second, sel: !!document.querySelector('#editSels select') };`);
+    check('the Complication selector decides which choice\'s layers the preview draws',
+      editRun.first.join() === 'true,false' && editRun.second.join() === 'false,true', JSON.stringify(editRun));
+
     const distRun = await run(`
       const D = dev();
       const a = await addElement('FILL_RECT', { w: 50, h: 20, color: '#202020' });
@@ -2005,6 +2090,163 @@ app.whenReady().then(async () => {
     if (recentsBackup === null) { try { fs.unlinkSync(recentsFile); } catch (e) { /* there was none */ } }
     else fs.writeFileSync(recentsFile, recentsBackup);
 
+    // a Maker face with a "switch background" button and a shortcut button
+    {
+      const tapDir = path.join(SCRATCH, 'tapface');
+      fs.cpSync(v2Dir, tapDir, { recursive: true });
+      const assetsRoot = fs.existsSync(path.join(tapDir, 'assets', 'default', 'img')) ? path.join(tapDir, 'assets', 'default', 'img') : path.join(tapDir, 'assets');
+      for (const d of [assetsRoot, path.join(tapDir, 'assets')]) {
+        const src = path.join(d, 'plain.png');
+        if (fs.existsSync(src)) { fs.copyFileSync(src, path.join(d, 'plain2.png')); fs.copyFileSync(src, path.join(d, 'plain3.png')); }
+      }
+      fs.writeFileSync(path.join(tapDir, 'watchface', 'index.js'), `
+        let backgroundList = ['plain.png', 'plain2.png', 'plain3.png'];
+        let backgroundToastList = ['Yellow', 'Green', 'Blue'];
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            const bg = hmUI.createWidget(hmUI.widget.IMG, { x: 0, y: 0, w: 390, h: 450, src: 'plain.png' });
+            hmUI.createWidget(hmUI.widget.BUTTON, { x: 138, y: 10, w: 115, h: 51, normal_src: 'plain.png',
+              click_func: (b) => { switchBackground(); } });
+            hmUI.createWidget(hmUI.widget.BUTTON, { x: 34, y: 390, w: 78, h: 56, normal_src: 'plain.png',
+              click_func: (b) => { hmApp.startApp({url: 'ScheduleCalScreen', native: true }); } });
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const imp = importFaceDir(tapDir);
+      const els = imp.project ? imp.project.elements : [];
+      const bg = els.find((e) => e.kind === 'IMG' && (e.images || []).length === 3);
+      const taps = els.filter((e) => e.kind === 'TAP');
+      const js = imp.project ? gen.generateWatchface(imp.project, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET)).code : '';
+      let syntax = true;
+      try { new Function(js.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { syntax = false; }
+      check('a Maker face imports its background variants and tap zones',
+        !imp.error && !!bg && bg.variantNames.join() === 'Yellow,Green,Blue'
+        && taps.length === 2 && taps.some((t) => t.action === 'variant' && t.x === 138) && taps.some((t) => t.action === 'app' && t.appUrl === 'ScheduleCalScreen'),
+        imp.error || `bg ${bg ? bg.images.length : 0} variants · taps ${taps.map((t) => t.action).join(',')}`);
+      check('variants + tap zones export a switcher (storage, toast, BUTTON, startApp) that parses',
+        !/@zos\/storage|@zos\/interaction/.test(js) && /hmFS\.SysProGetInt/.test(js) && /typeof hmUI/.test(js)
+        && /const variant_0 = ui\.createWidget\(ui\.widget\.IMG/.test(js) && /variant_0\.setProperty\(ui\.prop\.SRC/.test(js)
+        && (js.match(/ui\.widget\.BUTTON/g) || []).length === 2 && /cycleVariants\(\)/.test(js) && /startApp\(\{ url: "ScheduleCalScreen"/.test(js) && syntax,
+        `imports ${/@zos\/storage|@zos\/interaction/.test(js)} · storage ${/SysProGetInt/.test(js)} · variant widget ${/const variant_0/.test(js)} · BUTTON ${(js.match(/ui\.widget\.BUTTON/g) || []).length} · cycle ${/cycleVariants\(\)/.test(js)} · app ${/startApp/.test(js)} · syntax ${syntax}`);
+    }
+    {
+      const { decodeSomh } = require(path.join(__dirname, '..', 'core', 'somh'));
+      // 16-bit flavour: 64-byte header, RGB565 pixels, stride 4 but a real width of 3
+      const buf = Buffer.alloc(64 + 4 * 2 * 2);
+      buf[0] = 0x2e; buf[2] = 0x02; buf.writeUInt16LE(4, 12); buf.writeUInt16LE(2, 14); buf.writeUInt16LE(0x2010, 16); buf.writeUInt16LE(3, 22);
+      const put = (i, v) => buf.writeUInt16LE(v, 64 + i * 2);
+      put(0, 0xf800); put(1, 0x07e0); put(2, 0x001f); put(3, 0xffff);   // row 0: red, green, blue, (padding)
+      put(4, 0x0000); put(5, 0xffff); put(6, 0x8410); put(7, 0xffff);
+      const img = decodeSomh(buf);
+      const at = (x, y) => [...img.data.slice((y * img.width + x) * 4, (y * img.width + x) * 4 + 4)];
+      check('a 16-bit (RGB565) Maker image decodes, cropped to its real width',
+        !!img && img.width === 3 && img.height === 2 && at(0, 0).join() === '255,0,0,255' && at(1, 0).join() === '0,255,0,255'
+        && at(2, 0).join() === '0,0,255,255' && at(1, 1).join() === '255,255,255,255',
+        img ? `${img.width}×${img.height} · ${at(0, 0)} ${at(1, 0)} ${at(2, 0)}` : 'not decoded');
+    }
+    // Maker components with no widget of their own: linear scale, text reading, sleep chart
+    {
+      const dirM = path.join(SCRATCH, 'makerparts');
+      fs.cpSync(v2Dir, dirM, { recursive: true });
+      fs.writeFileSync(path.join(dirM, 'watchface', 'index.js'), `
+        let normal_sleepColors = [0xFF708EAE, 0xFF212C35, 0xFF8CB0D8, 0xFF44556B];
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            hmUI.createWidget(hmUI.widget.FILL_RECT);
+            // normal_battery_linear_scale = hmUI.createWidget(hmUI.widget.Linear_Scale, {
+              // start_x: 53,
+              // start_y: 57,
+              // color: 0xFF84A6CD,
+              // lenght: 41,
+              // line_width: 17,
+              // line_cap: Rounded,
+              // vertical: False,
+              // mirror: False,
+              // inversion: True,
+              // alpha: 255,
+              // type: hmUI.data_type.BATTERY,
+              // show_level: hmUI.show_level.ONLY_NORMAL,
+            // });
+            hmUI.createWidget(hmUI.widget.TEXT_FONT, { x: 69, y: 397, w: 97, h: 29, text_size: 23, color: 0xFFFFFFFF, alpha: 180,
+              align_h: hmUI.align.CENTER_H, type: hmUI.data_type.MOON_RISE, show_level: hmUI.show_level.ONLY_NORMAL });
+            hmUI.createWidget(hmUI.widget.GROUP, { x: 41, y: 307, w: 215, h: 69, show_level: hmUI.show_level.ONLY_NORMAL });
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const impM = importFaceDir(dirM);
+      const elsM = impM.project ? impM.project.elements : [];
+      const bar = elsM.find((e) => e.kind === 'BAR');
+      const txt = elsM.find((e) => e.kind === 'TEXT' && e.dataType === 'MOON_RISE');
+      const slp = elsM.find((e) => e.kind === 'SLEEP_CHART');
+      check('Maker linear scale, text reading and sleep chart import as real layers',
+        !impM.error && !!bar && bar.x === 53 && bar.length === 41 && bar.lineWidth === 17 && bar.rounded && bar.inversion && bar.dataType === 'BATTERY'
+        && !!txt && txt.alpha === 180 && !!slp && slp.colorWake === '#44556b' && !elsM.some((e) => e.kind === 'FILL_RECT'),
+        impM.error || `bar ${bar ? bar.dataType : '—'} · text ${txt ? txt.dataType : '—'} · sleep ${slp ? slp.w + '×' + slp.h : '—'}`);
+      const jsM = impM.project ? gen.generateWatchface(impM.project, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET)).code : '';
+      let synM = true;
+      try { new Function(jsM.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { synM = false; }
+      check('bar, TEXT_FONT reading and sleep chart export (sensor-driven, guarded, valid syntax)',
+        /ui\.widget\.FILL_RECT/.test(jsM) && /bar_1\.setProperty\(ui\.prop\.MORE/.test(jsM) && /onChange\(upd_bar_1\)/.test(jsM)
+        && /ui\.widget\.TEXT_FONT/.test(jsM) && /type: ui\.data_type\.MOON_RISE/.test(jsM)
+        && /ui\.widget\.GROUP/.test(jsM) && /new Sleep\(\)/.test(jsM) && /catch \(e\) \{\}/.test(jsM) && synM,
+        'FILL_RECT + MORE updater, TEXT_FONT type, GROUP + Sleep in try/catch');
+    }
+    // an editable complication slot: choices import as layers that show for one choice only
+    {
+      const dirE = path.join(SCRATCH, 'editslot');
+      fs.cpSync(v2Dir, dirE, { recursive: true });
+      fs.writeFileSync(path.join(dirE, 'watchface', 'index.js'), `
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            hmUI.createWidget(hmUI.widget.IMG, { x: 0, y: 0, src: 'plain.png' });
+            const slot = hmUI.createWidget(hmUI.widget.WATCHFACE_EDIT_GROUP, {
+              edit_id: 1, x: 297, y: 213, w: 54, h: 29, default_type: hmUI.edit_type.STEP,
+              optional_types: [{ type: hmUI.edit_type.STEP, preview: 'plain.png' }, { type: hmUI.edit_type.HEART, preview: 'plain.png' }],
+              count: 2, tips_BG: 'plain.png', tips_x: 0, tips_y: -5, tips_width: 54, tips_margin: 10,
+            });
+            const editType = slot.getProperty(hmUI.prop.CURRENT_TYPE);
+            switch (editType) {
+              case hmUI.edit_type.STEP:
+                hmUI.createWidget(hmUI.widget.IMG, { x: 331, y: 212, src: 'plain.png' });
+                break;
+              case hmUI.edit_type.HEART:
+                hmUI.createWidget(hmUI.widget.IMG, { x: 298, y: 212, src: 'plain.png' });
+                break;
+            }
+            hmUI.createWidget(hmUI.widget.WATCHFACE_EDIT_MASK, { x: 0, y: 0, w: 390, h: 450, src: 'plain.png', show_level: hmUI.show_level.ONLY_EDIT });
+            hmUI.createWidget(hmUI.widget.IMG, { x: 5, y: 5, src: 'plain.png' });
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const impE = importFaceDir(dirE);
+      const elsE = impE.project ? impE.project.elements : [];
+      const slot = elsE.find((e) => e.kind === 'EDIT_SLOT');
+      const kids = elsE.filter((e) => e.editSlot != null);
+      const order = elsE.map((e) => e.kind + (e.editType ? ':' + e.editType : '')).join(' ');
+      const mask = elsE.find((e) => e.name === 'Edit mask');
+      check('a complication slot imports its choices as layers shown for one choice each',
+        !impE.error && !!slot && slot.editId === 1 && slot.optionalTypes.length === 2 && slot.defaultType === 'STEP'
+        && kids.length === 2 && kids.find((k) => k.editType === 'STEP').x === 331 && kids.find((k) => k.editType === 'HEART').x === 298
+        && !!mask && mask.show === 'edit' && /EDIT_SLOT IMG:STEP IMG:HEART IMG IMG/.test(order),
+        impE.error || order);
+      const jsE = gen.generateWatchface(impE.project, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET)).code;
+      const appE = JSON.parse(gen.generateAppJson(impE.project, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET)));
+      let synE = true;
+      try { new Function(jsE.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { synE = false; }
+      check('a complication slot exports the edit group, a switch on the pick, and editable in app.json',
+        /widget\.WATCHFACE_EDIT_GROUP/.test(jsE) && /case H\.edit_type\.STEP:/.test(jsE) && /case H\.edit_type\.HEART:/.test(jsE)
+        && /getProperty\(H\.prop\.CURRENT_TYPE\)/.test(jsE) && /catch \(e\) \{\}/.test(jsE) && appE.targets[TARGET].module.watchface.editable === 1 && synE,
+        `editable ${appE.targets[TARGET].module.watchface.editable} · syntax ${synE}`);
+      check('edit masks export as mask widgets (an IMG would also draw in the normal face)',
+        /WATCHFACE_EDIT_MASK/.test(jsE) && !/ui\.widget\.IMG, \{[^}]*ONLY_EDIT/.test(jsE),
+        (jsE.match(/WATCHFACE_EDIT_\w*MASK/g) || []).join(','));
+    }
     // the committed sample has to keep loading with the current model, images and all
     const sampleUi = await run(`
       const res = await API.openProjectPath(${JSON.stringify(path.join(__dirname, '..', 'samples', 'sample-digital'))});

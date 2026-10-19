@@ -48,8 +48,9 @@ async function guardUnsaved(detail) {
   return doSave();
 }
 
+let variantIdx = 0;                  // which picture the variants layers show in the preview
 let layerFocus = true;               // dim the layers the current preview doesn't draw
-let previewMode = 'normal';          // 'normal' | 'aod'
+let previewMode = 'normal';          // 'normal' | 'aod' | 'edit' (the customise screen)
 let liveClock = false;
 let clockTimer = null;
 
@@ -61,6 +62,11 @@ let guides = { v: [], h: [] };
 const GRID_PX = 20;
 const SNAP_PX = 4;
 const SAFE_PX = 2;
+// System states the status icons (IMG_STATUS) react to. The watch draws such an icon
+// only while its state is on, so the preview does the same; the Test data panel flips them.
+const SYS_STATUS_DEFAULT = { CLOCK: true, DISCONNECT: true, DISTURB: false, LOCK: false };
+let sysStatus = { ...SYS_STATUS_DEFAULT };
+const statusOff = (e) => e.kind === 'IMG_STATUS' && !sysStatus[e.status || 'DISCONNECT'];
 const REF_CLOCK = { h: 10, m: 9, s: 36 };  // design-spec reference time 10:09:36
 const REF_DATE = { day: 17, month: 10, year: 2026, weekday: 6 }; // 1 = Monday
 
@@ -76,7 +82,7 @@ const CENTER_KINDS = new Set(['CIRCLE', 'ARC_PROGRESS', 'TIME_POINTER']);
 // kinds whose box is driven by the w/h fields (resizable from the corners)
 // (not IMG_POINTER: the watch draws the pointer at its image size, pivoting on
 // its own x/y — see pointerBox)
-const WH_KINDS = new Set(['IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_ANIM',
+const WH_KINDS = new Set(['EDIT_SLOT', 'SLEEP_CHART', 'TAP', 'IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_ANIM',
   'IMG_STATUS', 'IMG_CLICK', 'TEXT', 'FILL_RECT', 'STROKE_RECT', 'ARC']);
 // kinds that draw digit images and therefore take an image array + metrics
 const SET_KINDS = new Set(['IMG_TIME', 'IMG_WEEK', 'IMG_DATE', 'TEXT_IMG', 'IMG_LEVEL', 'IMG_PROGRESS']);
@@ -569,6 +575,7 @@ function runStroke(c, run, ox = 0, oy = 0) {
 // every non-ASCII letter a language writes in its weekday and month names
 function languageChars(tag) {
   const out = new Set();
+  try { Intl.getCanonicalLocales(tag); } catch (e) { return ''; }   // a hand-typed or imported tag that is not a locale
   for (const kind of ['week', 'month']) {
     for (const form of ['short', 'long']) {
       for (const n of localeNames(kind, tag, form)) {
@@ -758,19 +765,17 @@ function clamp01(v) { return Math.max(0, Math.min(1, v)); }
 function pad2(v) { return String(v == null ? 0 : v).replace(/[^0-9]/g, '').padStart(2, '0').slice(-2); }
 
 // full-scale value per data type — the denominator for level/progress widgets
-const DT_MAX = {
-  STEP: 10000, STEP_TARGET: 12000, CAL: 500, CAL_TARGET: 600, DISTANCE: 10, STAND: 12,
-  STAND_TARGET: 12, FLOOR: 20, FAT_BURNING: 90, FAT_BURNING_TARGET: 90,
-  HEART: 200, SPO2: 100, STRESS: 100, PAI_DAILY: 100, PAI_WEEKLY: 400, BATTERY: 100,
-  HUMIDITY: 100, UVI: 12, AQI: 300, WIND: 12, WEATHER: 28, ALTIMETER: 1100, ALTITUDE: 1000,
-  TRAINING_LOAD: 400, VO2MAX: 60, RECOVERY_TIME: 72, READINESS: 100, MONTH_RUN_TIMES: 30,
-  MONTH_RUN_DISTANCE: 400, WEATHER_CURRENT: 50, WEATHER_LOW: 50, WEATHER_HIGH: 50, MOON: 8,
-};
+let EDIT_TYPES = [];
+let DT_MAX = {};                      // the value a reading is full at (core/datatypes.js)
 function dtValue(key) {
   if (key == null) return 0;
   if (Object.prototype.hasOwnProperty.call(testData, key)) return testData[key];
   const d = dtByKey(key);
   return d && d.preview != null ? d.preview : 0;
+}
+// the string a Text layer shows: the reading when it follows one, else its own text
+function textOf(e) {
+  return e && e.dataType ? valueString(e.dataType) : String(e && e.text != null ? e.text : '');
 }
 function valueString(key) {
   const v = dtValue(key);
@@ -787,6 +792,84 @@ function weekIndexS() { return Math.max(0, Math.min(6, (+dateParts.weekday || 1)
 // What the canvas draws for the sample time/date, spelled out in Properties so
 // the leading-zero switch, the alignment anchor (and the preview as a whole) can
 // be checked against what the generated code asks the watch to do.
+// ---- digit spacing helpers ---------------------------------------------------
+const digitKinds = (e) => e && (e.kind === 'IMG_TIME' || e.kind === 'IMG_DATE' || e.kind === 'TEXT_IMG');
+const spaceKey = (e) => (e.kind === 'TEXT_IMG' ? 'hSpace' : 'space');
+const inkCache = new Map();
+// the painted columns of a picture (the digits of a Maker set carry padding on the right)
+function inkWidth(name) {
+  const im = imgFor(name);
+  if (!im || !im.width) return null;
+  const k = `${name}:${im.width}x${im.height}`;
+  if (inkCache.has(k)) return inkCache.get(k);
+  const cv = document.createElement('canvas');
+  cv.width = im.width; cv.height = im.height;
+  const c = cv.getContext('2d');
+  c.drawImage(im, 0, 0);
+  let min = im.width, max = -1;
+  try {
+    const d = c.getImageData(0, 0, im.width, im.height).data;
+    for (let x = 0; x < im.width; x++) {
+      for (let y = 0; y < im.height; y++) if (d[(y * im.width + x) * 4 + 3] > 40) { if (x < min) min = x; if (x > max) max = x; break; }
+    }
+  } catch (err) { return null; }
+  const out = max >= min ? { left: min, right: max, w: max - min + 1 } : null;
+  inkCache.set(k, out);
+  return out;
+}
+// the spacing that makes the digits sit as wide as they are painted (no padding between them)
+function tightSpace(e) {
+  const names = (e.images || []).filter(Boolean);
+  if (!names.length) return null;
+  const cell = setCell(e);
+  let w = 0;
+  for (const n of names) { const i = inkWidth(n); if (i && i.w > w) w = i.w; }
+  return w ? w - cell.w : null;
+}
+// where the drag handle between the first two digits sits (device px), or null
+function spaceHandlePos(e) {
+  if (!digitKinds(e) || e.isCharacter || followSource(e)) return null;
+  if ((e.kind === 'IMG_TIME') && (e.part || 'hour') === 'hour12') return null;
+  const text = digitTextFor(e).replace('-', '');
+  if (text.length < 2) return null;
+  const b = digitBox(e);
+  const m = measureSet(e);
+  const x = digitRunX(e, b) + m.cell.w + m.sp;
+  return { x, y: b.y + b.h / 2 };
+}
+// Align as three buttons; dimmed when the value already fills the box (nothing to shift)
+function ctlAlignSeg(e, title) {
+  const wrap = mkEl('div', 'seg');
+  wrap.style.gridTemplateColumns = 'repeat(3, 1fr)';
+  const cur = e.alignH || 'LEFT';
+  const b = digitBox(e);
+  const idle = b.run >= b.w;
+  for (const [key, label, tip] of [['LEFT', 'Left', 'The value starts at the left edge of the box'], ['CENTER_H', 'Center', 'The value is centred in the box'], ['RIGHT', 'Right', 'The value ends at the right edge of the box']]) {
+    const btn = mkEl('button', 'seg-b' + (cur === key ? ' on' : ''), label);
+    btn.type = 'button';
+    btn.title = `${tip}${idle ? ' — the value fills the box right now, so nothing moves (turn Leading 0 off, or change the data, to see it)' : ''}`;
+    btn.onclick = () => { if (cur === key) return; pushHistory(); e.alignH = key; refreshPanels(); render(); scheduleCode(); };
+    wrap.appendChild(btn);
+  }
+  if (idle) wrap.classList.add('idle');
+  if (title) wrap.title = title;
+  return wrap;
+}
+// the spacing field with two helpers: fit to the painted width, back to 0
+function ctlSpace(e) {
+  const wrap = mkEl('div', 'rowctl');
+  const key = spaceKey(e);
+  wrap.appendChild(ctlNum(e, key));
+  const tight = ctlButton('Tight', 'Spacing that puts the digits side by side as painted (removes the padding Maker sets carry). Also: drag the handle between the first two digits on the canvas.', () => {
+    const v = tightSpace(e);
+    if (v == null) { status('No digit pictures to measure yet.', true); return; }
+    pushHistory(); e[key] = v; refreshPanels(); render(); scheduleCode();
+    status(`Spacing ${v} — digits side by side as painted.`);
+  });
+  const reset = ctlButton('0', 'Reset the spacing to 0', () => { pushHistory(); e[key] = 0; refreshPanels(); render(); scheduleCode(); });
+  wrap.appendChild(tight); wrap.appendChild(reset);
+  return wrap;
+}
 function digitPreviewNote(e) {
   const t = digitTextFor(e);
   const isDate = e.kind === 'IMG_DATE';
@@ -837,9 +920,11 @@ function digitTextFor(e) {
       const d = dtByKey(e.dataType);
       // the widget shows the reading as it is (22°, 8670 steps); the data type's
       // digit count is the *box* it stays in, not a padding request
-      let t = valueString(e.dataType).replace(/[^0-9]/g, '');
+      const raw = valueString(e.dataType);
+      let t = raw.replace(/[^0-9]/g, '');
       if (d && d.digits) t = t.slice(-d.digits);
-      return t;
+      // a negative reading puts the layer's minus picture in front, when it has one
+      return e.negative && /^\s*-/.test(raw) && t ? '-' + t : t;
     }
     case 'IMG_LEVEL': return String(levelIndex(e));
     case 'IMG_PROGRESS': return String(progressCount(e));
@@ -891,11 +976,36 @@ function followSource(e) {
 // the alignment and spacing a layer really uses (a following part inherits them)
 function effAlign(e) { const s = followSource(e); return s ? effAlign(s) : (e.alignH || 'LEFT'); }
 function effSpace(e) { const s = followSource(e); return s ? effSpace(s) : setSpacing(e); }
+// a month shown as its name: one picture out of the twelve, at its own size
+function monthNameImage(e) {
+  if (e.kind !== 'IMG_DATE' || !e.isCharacter) return null;
+  const idx = Math.max(0, Math.min(11, (+dateParts.month || 1) - 1));
+  return (e.images || [])[idx] || null;
+}
+// A 12-hour layer that only holds the AM / PM pictures (no digit images): which
+// one the clock shows, and where. Null for every other layer.
+function ampmImage(e) {
+  if (e.kind !== 'IMG_TIME' || (e.part || 'hour') !== 'hour12' || (e.images || []).length) return null;
+  if (!e.am && !e.pm) return null;
+  const pm = clock.h >= 12;
+  const name = pm ? e.pm : e.am;
+  if (!name) return { name: null, x: devNum(e.x), y: devNum(e.y), w: 0, h: 0 };
+  const m = imgMeta(name);
+  return { name, x: devNum(pm ? e.pmX : e.amX), y: devNum(pm ? e.pmY : e.amY), w: m ? m.width : 24, h: m ? m.height : 24 };
+}
 function measureSet(e) {
+  if (e.kind === 'IMG_DATE' && e.isCharacter) {
+    const m = imgMeta(monthNameImage(e));
+    const cell = setCell(e);
+    const w = m ? m.width : cell.w, h = m ? m.height : cell.h;
+    return { w, h, cell: { w, h }, n: 1, sp: 0 };
+  }
   const cell = setCell(e);
-  const n = Math.max(1, digitTextFor(e).length);
+  const text = digitTextFor(e);
+  const neg = text.startsWith('-') ? imgMeta(e.negative) : null;
+  const n = Math.max(1, text.replace('-', '').length);
   const sp = effSpace(e);
-  return { w: n * cell.w + Math.max(0, n - 1) * sp + setUnitWidth(e), h: cell.h, cell, n, sp };
+  return { w: n * cell.w + Math.max(0, n - 1) * sp + setUnitWidth(e) + (neg ? neg.width + sp : 0), h: cell.h, cell, n, sp };
 }
 // The box a digit widget occupies. hmUI gives IMG_TIME / IMG_DATE / TEXT_IMG no
 // width, so the watch lays the value out inside a box as wide as the part can
@@ -907,6 +1017,7 @@ function measureSet(e) {
 // value that fills the box looks the same in every align mode. The box is
 // anchored at the layer's X — the startX the export sends — so it never jumps.
 function digitCapacity(e) {
+  if (e.kind === 'IMG_DATE' && e.isCharacter) return 0;   // a name has no fixed width
   if (e.kind === 'IMG_TIME' || e.kind === 'IMG_DATE') return 2;
   if (e.kind === 'TEXT_IMG') {
     if (e.isCharacter) return 0;             // month names have no fixed width
@@ -961,12 +1072,16 @@ function elBox(e) {
       return { x: num(e.centerX) - r, y: num(e.centerY) - r, w: r * 2, h: r * 2 };
     }
     case 'TIME_POINTER': return { x: 0, y: 0, w: W, h: H };
+    case 'BAR': {
+      const len = Math.max(1, num(e.length, 100)), lw = Math.max(1, num(e.lineWidth, 10));
+      return e.vertical ? { x: num(e.x), y: num(e.y), w: lw, h: len } : { x: num(e.x), y: num(e.y), w: len, h: lw };
+    }
     case 'IMG_POINTER': return pointerBox(e);
     case 'IMG':
     case 'IMG_ANIM':
     case 'IMG_STATUS':
     case 'IMG_CLICK': {
-      const m = imgMeta(e.kind === 'IMG_ANIM' ? (e.frames || [])[0] : e.src)
+      const m = imgMeta(e.kind === 'IMG_ANIM' ? (e.frames || [])[0] : pictureOf(e))
         || (e.kind === 'IMG_ANIM' ? imgMeta((e.frames || []).find(Boolean)) : null);
       const w = num(e.w, 0) || (m ? m.width : 60);
       const h = num(e.h, 0) || (m ? m.height : 60);
@@ -976,8 +1091,11 @@ function elBox(e) {
     case 'IMG_TIME':
     case 'IMG_WEEK':
     case 'IMG_DATE':
-    case 'TEXT_IMG':
+    case 'TEXT_IMG': {
+      const ampm = ampmImage(e);
+      if (ampm) return { x: ampm.x, y: ampm.y, w: ampm.w, h: ampm.h };
       return digitBox(e);
+    }
     case 'IMG_LEVEL': {
       const m = setFirstImage(e);
       return { x: num(e.x), y: num(e.y), w: num(e.w, 0) || (m ? m.width : 100), h: num(e.h, 0) || (m ? m.height : 100) };
@@ -1034,10 +1152,70 @@ function placeEl(e, x, y) {
 
 // ------------------------------------------------------------------- rendering --
 // a layer can be tied to the half of the day it shows in (a lit AM / PM label)
+// an Image layer with 2+ pictures is a variants layer: the preview shows variantIdx
+function variantList(e) {
+  return e && e.kind === 'IMG' && Array.isArray(e.images) && e.images.filter(Boolean).length >= 2 ? e.images.filter(Boolean) : null;
+}
+function pictureOf(e) {
+  const v = variantList(e);
+  return v ? v[variantIdx % v.length] : e.src;
+}
+function variantName(e, i) {
+  const v = variantList(e);
+  const n = e && e.variantNames && e.variantNames[i];
+  return n || (v && v[i] ? String(v[i]).replace(/^.*\//, '').replace(/\.png$/i, '') : `Variant ${i + 1}`);
+}
+// ---- complication slots: a layer can belong to one choice of a slot -------------------------
+let editPick = {};                      // slot editId → the choice the preview shows
+const editSlotOf = (id) => elements().find((x) => x.kind === 'EDIT_SLOT' && String(x.editId) === String(id));
+function slotType(slot) { return editPick[slot.editId] || slot.defaultType || ((slot.optionalTypes || [])[0] || {}).type || ''; }
+function editAllows(e) {
+  if (e.editSlot == null || e.editSlot === '') return true;
+  const slot = editSlotOf(e.editSlot);
+  return !slot || e.editType === slotType(slot);
+}
+function syncEditSels() {
+  const host = $('editSels');
+  if (!host) return;
+  host.innerHTML = '';
+  const slots = project ? elements().filter((e) => e.kind === 'EDIT_SLOT' && (e.optionalTypes || []).length) : [];
+  host.hidden = !slots.length;
+  for (const slot of slots) {
+    const sel = document.createElement('select');
+    sel.title = `What the wearer has picked for “${slot.name || 'complication'}” on the watch — the face below shows that choice`;
+    for (const o of slot.optionalTypes) {
+      const opt = document.createElement('option');
+      opt.value = o.type; opt.textContent = `${slot.name || 'Slot'} shows: ${o.type}`;
+      sel.appendChild(opt);
+    }
+    sel.value = slotType(slot);
+    sel.onchange = () => { editPick[slot.editId] = sel.value; render(); };
+    host.appendChild(sel);
+  }
+}
+function syncVariantSel() {
+  syncEditSels();
+  const sel = $('variantSel');
+  if (!sel) return;
+  const lay = project ? elements().find((e) => variantList(e)) : null;
+  sel.hidden = !lay;
+  if (!lay) return;
+  const n = variantList(lay).length;
+  sel.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const o = document.createElement('option');
+    o.value = String(i); o.textContent = variantName(lay, i);
+    sel.appendChild(o);
+  }
+  variantIdx = Math.min(variantIdx, n - 1);
+  sel.value = String(variantIdx);
+}
 function whenAllows(e, h = clock.h) {
   return !e.showWhen || (e.showWhen === 'pm') === (h >= 12);
 }
 function showAllowed(show, mode) {
+  // the customise screen draws the normal face plus the edit-only pictures (masks)
+  if (mode === 'edit') return show === 'edit' || show === 'normal' || show === 'both' || show == null;
   if (show === 'edit') return false;
   if (mode === 'aod') return show === 'aod' || show === 'both';
   return show === 'normal' || show === 'both' || show == null;
@@ -1077,10 +1255,21 @@ function putRot(c, name, x, y, w, h, deg, cx, cy) {
   c.restore();
 }
 function drawDigits(c, e, x, y, text) {
+  if (e.kind === 'IMG_DATE' && e.isCharacter) {
+    const name = monthNameImage(e), m = imgMeta(name);
+    if (m) c.drawImage(imgFor(name), x, y, m.width, m.height);
+    else drawGlyphPlaceholder(c, String(dateParts.month), x, y, 24, 24, e.color);
+    return x + (m ? m.width : 24);
+  }
   const { cell, sp } = measureSet(e);
   const names = e.images || [];
   let cx = x;
   for (let i = 0; i < text.length; i++) {
+    if (text[i] === '-') {
+      const nm = imgMeta(e.negative);
+      if (nm) { put(c, e.negative, cx, y + Math.max(0, (cell.h - nm.height) / 2), nm.width, nm.height); cx += nm.width + sp; }
+      continue;
+    }
     const idx = +text[i];
     const name = names[idx];
     const im = imgFor(name);
@@ -1131,7 +1320,7 @@ function bakeReason(e) {
 function textMissingChars(e) {
   const fam = e && e.fontFile ? familyForFontFile(e.fontFile) : null;
   if (!fam) return '';
-  const r = coverageReport(fam, e.text);
+  const r = coverageReport(fam, textOf(e));
   return [...r.alternate, ...r.composed, ...r.system].join(' ');
 }
 // the watch has no fake-bold either: pick the heavy end of the family
@@ -1144,7 +1333,7 @@ function textMetrics(e) {
   if (!measureCanvas) measureCanvas = document.createElement('canvas');
   const c = measureCanvas.getContext('2d');
   setFontOn(c, familyForFontFile(e.fontFile) || 'Inter', +e.size || 32, textWeight(e), e.variations);
-  const lines = String(e.text == null ? '' : e.text).split('\n');
+  const lines = textOf(e).split('\n');
   const w = lines.reduce((m, l) => Math.max(m, c.measureText(l).width), 0);
   const h = lines.length * ((+e.size || 32) * 1.15 + (+e.lineSpace || 0));
   return { w, h };
@@ -1284,7 +1473,7 @@ function drawTextInto(c, e, b, fam, box) {
   c.fillStyle = outline ? hexOrWhite(e.color) : textFillStyle(c, e, b);
   const va = e.alignV || 'CENTER_V';
   c.textBaseline = va === 'TOP' ? 'top' : va === 'BOTTOM' ? 'bottom' : 'middle';
-  const lines = String(e.text == null ? '' : e.text).split('\n');
+  const lines = textOf(e).split('\n');
   const lh = size * 1.15 + (+e.lineSpace || 0);
   const totalH = lines.length * lh;
   const y0 = va === 'TOP' ? b.y : va === 'BOTTOM' ? b.y + b.h - totalH + lh : b.y + (b.h - totalH) / 2 + lh / 2;
@@ -1311,7 +1500,7 @@ function drawTextInto(c, e, b, fam, box) {
 const bakeCache = new Map();      // image name -> base64, survives style edits
 function textStyleKey(e) {
   return JSON.stringify([
-    String(e.text == null ? '' : e.text), +e.size || 32, e.color, e.color2, e.gradAngle,
+    textOf(e), +e.size || 32, e.color, e.color2, e.gradAngle,
     e.cssGradient, e.outlineColor, e.outlineWidth, textFillType(e), !!e.bold, !!e.italic,
     e.fontFile || '', textWeight(e), e.variations || '', e.alignH, e.alignV,
     e.lineSpace, e.charSpace, Math.round(+e.w || 200), Math.round(+e.h || 40),
@@ -1381,10 +1570,59 @@ function alignTextX(c, text, e, box) {
 function drawElement(c, e) {
   const bg = (hex) => `0x${hex}`;
   switch (e.kind) {
+    case 'TAP': break;
+    case 'EDIT_SLOT': break;
+    case 'SLEEP_CHART': {
+      // sample night: one row per stage (awake on top, deep at the bottom), like the watch draws it
+      const b = elBox(e);
+      const rows = { wake: 0, rem: 1, light: 2, deep: 3 };
+      const col = { wake: e.colorWake, rem: e.colorRem, light: e.colorLight, deep: e.colorDeep };
+      const SAMPLE = [['light', 0, 0.12], ['deep', 0.12, 0.3], ['light', 0.3, 0.4], ['rem', 0.4, 0.5], ['deep', 0.5, 0.62], ['light', 0.62, 0.78], ['rem', 0.78, 0.88], ['wake', 0.88, 0.9], ['light', 0.9, 1]];
+      const rh = b.h / 4;
+      for (const [st, a, z] of SAMPLE) {
+        c.fillStyle = hexOrWhite(col[st]);
+        const x = b.x + a * b.w, w = Math.max(2, (z - a) * b.w), y = b.y + rows[st] * rh;
+        c.beginPath();
+        if (c.roundRect) c.roundRect(x, y, w, rh, 5); else c.rect(x, y, w, rh);
+        c.fill();
+      }
+      break;
+    }
+    case 'BAR': {
+      // a bar that fills with the reading: from the start (or from the far end when inverted, or
+      // outwards from the middle when mirrored) over `length`, `lineWidth` thick
+      const b = elBox(e);
+      const frac = levelFraction(e.dataType, e.level);
+      const len = e.vertical ? b.h : b.w;
+      const fill = Math.round(len * frac);
+      if (fill <= 0) break;
+      let off = 0;
+      let size = fill;
+      if (e.mirror) { off = (len - fill) / 2; } else if (e.inversion) { off = len - fill; }
+      const x = e.vertical ? b.x : b.x + off, y = e.vertical ? b.y + off : b.y;
+      const w = e.vertical ? b.w : size, h = e.vertical ? size : b.h;
+      c.fillStyle = hexOrWhite(e.color);
+      if (e.rounded) {
+        const r = Math.min(w, h) / 2;
+        c.beginPath();
+        if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h);
+        c.fill();
+      } else c.fillRect(x, y, w, h);
+      break;
+    }
     case 'IMG': {
       const b = elBox(e);
-      if (e.angle) putRot(c, e.src, b.x, b.y, b.w, b.h, +e.angle, +e.centerX || b.x + b.w / 2, +e.centerY || b.y + b.h / 2);
-      else put(c, e.src, b.x, b.y, b.w, b.h);
+      if (e.angle) putRot(c, pictureOf(e), b.x, b.y, b.w, b.h, +e.angle, +e.centerX || b.x + b.w / 2, +e.centerY || b.y + b.h / 2);
+      else {
+        // the watch draws the picture at its own pixel size and clips it to the
+        // widget box — a 400-px background in a 390-px box loses its right edge
+        // instead of being squeezed (which would shift everything painted in it)
+        const im = imgFor(pictureOf(e));
+        if (im) {
+          const sw = Math.min(im.width, b.w), sh = Math.min(im.height, b.h);
+          c.drawImage(im, 0, 0, sw, sh, b.x, b.y, sw, sh);
+        } else drawMissing(c, b.x, b.y, b.w, b.h);
+      }
       break;
     }
     case 'IMG_ANIM': {
@@ -1425,6 +1663,9 @@ function drawElement(c, e) {
     case 'IMG_TIME':
     case 'IMG_DATE':
     case 'TEXT_IMG': {
+      // an AM / PM label layer carries no digits: the watch draws the AM or the PM picture
+      const ampm = ampmImage(e);
+      if (ampm) { if (ampm.name) put(c, ampm.name, ampm.x, ampm.y, ampm.w, ampm.h); break; }
       const b = digitBox(e);
       drawDigits(c, e, digitRunX(e, b), b.y, digitTextFor(e));
       break;
@@ -1444,11 +1685,14 @@ function drawElement(c, e) {
       break;
     }
     case 'IMG_STATUS': {
+      if (statusOff(e)) break;
       const b = elBox(e);
       put(c, e.src, b.x, b.y, b.w, b.h);
       break;
     }
     case 'IMG_CLICK': {
+      // a tap zone without a picture (the Maker's shortcuts) draws nothing on the watch
+      if (!e.src) break;
       const b = elBox(e);
       put(c, e.src, b.x, b.y, b.w, b.h);
       break;
@@ -1596,6 +1840,38 @@ function drawOverlay(c, W, H) {
     c.stroke();
     c.restore();
   }
+  // complication slots: where the wearer's choice appears
+  for (const e of elements()) {
+    if (e.kind !== 'EDIT_SLOT' || e.visible === false || e.show === 'aod') continue;
+    const b = elBox(e);
+    c.save();
+    c.setLineDash([2, 3]);
+    c.strokeStyle = 'rgba(120,200,255,0.9)';
+    c.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
+    c.setLineDash([]);
+    c.fillStyle = 'rgba(160,215,255,0.95)';
+    c.font = '600 9px system-ui, sans-serif';
+    c.textBaseline = 'bottom';
+    c.fillText('⚙ ' + slotType(e), b.x + 2, b.y - 1);
+    c.restore();
+  }
+  // tap zones draw nothing on the watch: show where they are, with what they do
+  for (const e of elements()) {
+    if (e.kind !== 'TAP' || e.visible === false || !showAllowed(e.show, previewMode)) continue;
+    const b = elBox(e);
+    c.save();
+    c.setLineDash([4, 3]);
+    c.strokeStyle = 'rgba(255,170,60,0.85)';
+    c.fillStyle = 'rgba(255,170,60,0.10)';
+    c.fillRect(b.x, b.y, b.w, b.h);
+    c.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
+    c.setLineDash([]);
+    c.fillStyle = 'rgba(255,200,120,0.95)';
+    c.font = '600 10px system-ui, sans-serif';
+    c.textBaseline = 'top';
+    c.fillText(e.action === 'variant' ? '↻ variant' : e.action === 'app' ? '↗ ' + String(e.appUrl || 'app').replace(/Screen$/, '') : 'tap', b.x + 4, b.y + 3, Math.max(10, b.w - 8));
+    c.restore();
+  }
   const sel = selection();
   for (const e of sel) {
     const b = elBox(e);
@@ -1610,6 +1886,22 @@ function drawOverlay(c, W, H) {
         c.fillRect(hRect.x, hRect.y, hRect.s, hRect.s);
         c.strokeStyle = '#5b8cff';
         c.strokeRect(hRect.x + 0.5, hRect.y + 0.5, hRect.s - 1, hRect.s - 1);
+      }
+    }
+    if (primary && sel.length === 1) {
+      // drag this to change the spacing between the digits
+      const hp = spaceHandlePos(e);
+      if (hp) {
+        c.fillStyle = '#ffb347';
+        c.strokeStyle = '#0d0f14';
+        c.lineWidth = 1.5;
+        c.beginPath();
+        c.moveTo(hp.x, hp.y - 7); c.lineTo(hp.x + 5, hp.y); c.lineTo(hp.x, hp.y + 7); c.lineTo(hp.x - 5, hp.y);
+        c.closePath(); c.fill(); c.stroke();
+        c.strokeStyle = 'rgba(255,179,71,0.6)';
+        c.setLineDash([3, 3]);
+        c.beginPath(); c.moveTo(hp.x, b.y); c.lineTo(hp.x, b.y + b.h); c.stroke();
+        c.setLineDash([]);
       }
     }
     if (primary && (e.kind === 'CIRCLE' || e.kind === 'ARC_PROGRESS')) {
@@ -1690,7 +1982,7 @@ function drawScene(c, W, H, mode, overlay) {
   c.fillRect(0, 0, W, H);
   for (const e of elements()) {
     if (e.visible === false) continue;
-    if (!showAllowed(e.show, mode) || !whenAllows(e)) continue;
+    if (!showAllowed(e.show, mode) || !whenAllows(e) || !editAllows(e)) continue;
     c.save();
     if (e.alpha != null && e.alpha < 255) c.globalAlpha = Math.max(0, e.alpha / 255);
     try { drawElement(c, e); } catch (err) { /* never let one widget break the preview */ }
@@ -1718,7 +2010,7 @@ function render() {
   drawScene(cv.getContext('2d'), W, H, previewMode, true);
   updateTitle();
   const shape = d.shape === 'r' ? 'round' : d.shape === 's' ? 'square' : 'band';
-  $('watchSub').textContent = `${d.name} · ${W}×${H} ${shape} · ${previewMode === 'aod' ? 'AOD preview' : 'normal preview'}`;
+  $('watchSub').textContent = `${d.name} · ${W}×${H} ${shape} · ${previewMode === 'aod' ? 'AOD preview' : previewMode === 'edit' ? 'customise-screen preview' : 'normal preview'}`;
   applyDeviceMask();
 }
 window.addEventListener('resize', () => { if (project) render(); });
@@ -1873,13 +2165,15 @@ function layerLabel(e) {
   return e.name || (kindById(e.kind) ? kindById(e.kind).label : e.kind);
 }
 // dimmed in the layers list: the focused view (Normal / AOD) doesn't draw it
-const offView = (e) => layerFocus && !showAllowed(e.show, previewMode);
+// the Edit view lists what belongs to customising: masks, complication slots and their choice layers
+const editRelated = (e) => e.show === 'edit' || e.kind === 'EDIT_SLOT' || (e.editSlot != null && e.editSlot !== '');
+const offView = (e) => layerFocus && (previewMode === 'edit' ? !editRelated(e) : !showAllowed(e.show, previewMode));
 function layerRow(e) {
   const row = document.createElement('div');
   row.className = 'layer' + (e.id === selectedId ? ' sel' : '') + (multiSel.has(e.id) && e.id !== selectedId ? ' multi' : '')
     + (e.visible === false ? ' hid' : '') + (e.locked ? ' locked' : '') + (offView(e) ? ' offview' : '');
   row.dataset.id = e.id;
-  if (offView(e)) row.title = `Not drawn in ${previewMode === 'aod' ? 'AOD' : 'the normal face'} — switch the filter to All to edit it`;
+  if (offView(e)) row.title = `${previewMode === 'edit' ? 'Not part of the customise screen' : `Not drawn in ${previewMode === 'aod' ? 'AOD' : 'the normal face'}`} — switch the filter to All to edit it`;
   const left = document.createElement('span');
   left.className = 'lname';
   const grip = document.createElement('span');
@@ -2407,7 +2701,7 @@ function mkEl(tag, cls, text) {
   if (text != null) n.textContent = text;
   return n;
 }
-const IMAGE_KEYS = ['src', 'unit', 'dot', 'negative', 'hour', 'minute', 'second', 'cover', 'bg', 'am', 'pm'];
+const IMAGE_KEYS = ['src', 'unit', 'dot', 'negative', 'hour', 'minute', 'second', 'cover', 'bg', 'am', 'pm', 'tipsBg', 'selectImage', 'unSelectImage'];
 function imageUseCount(name) {
   if (!name) return 0;
   return elements().filter((x) => IMAGE_KEYS.some((k) => x[k] === name)
@@ -2622,11 +2916,12 @@ function setHint(kind, e) {
   if (kind === 'IMG_LEVEL' || kind === 'IMG_PROGRESS') return n ? '' : 'add an image per level';
   return '';
 }
-function dtOptions(forClick) {
+function dtOptions(forClick, forText = false) {
   const groups = [];
   const out = [];
   for (const d of DATA_TYPES) {
     if (!!d.clickOnly !== !!forClick) continue;
+    if (d.textOnly && !forText) continue;   // a time string like “9:07 pm” has no digit pictures
     if (d.preview == null && !d.bound) continue;
     if (d.key === 'TIME' || d.key === 'DATE' || d.key === 'WEEK') continue;
     let g = groups.find((x) => x.label === d.group);
@@ -2814,6 +3109,19 @@ function renderPropsBody(host) {
   host.appendChild(ctlRow('Name', ctlText(e, 'name', layerLabel(e))));
   if (!many) host.appendChild(stackRow('Show in', ctlShowIn(targets)));
   host.appendChild(stackRow('Visible when', ctlWhen(targets)));
+  if (!many && e.kind !== 'EDIT_SLOT' && e.show !== 'edit') {
+    const choices = [{ value: '', label: 'Any choice (not tied to a slot)' }];
+    for (const s of elements().filter((x) => x.kind === 'EDIT_SLOT')) for (const o of s.optionalTypes || []) choices.push({ value: `${s.editId}:${o.type}`, label: `${s.name || 'Slot'} is ${o.type}` });
+    if (choices.length > 1 || e.editSlot != null) {
+      const cur = e.editSlot != null ? `${e.editSlot}:${e.editType}` : '';
+      if (cur && !choices.some((c) => c.value === cur)) choices.push({ value: cur, label: `${cur} (slot missing)` });
+      host.appendChild(ctlRow('Complication', ctlSelect(cur, choices, (v) => {
+        pushHistory();
+        if (!v) { delete e.editSlot; delete e.editType; } else { const [sl, ...t] = v.split(':'); e.editSlot = Number.isNaN(+sl) ? sl : +sl; e.editType = t.join(':'); }
+        refreshPanels(); render(); scheduleCode();
+      }), '“Any choice” draws the layer whatever the wearer picked. Pick “Complication 1 is STEP” to draw it only while that slot shows Steps — e.g. a steps number. Draw this layer only while the chosen complication slot shows that type — the way a Maker face adds a steps number only when the wearer picks “Steps”'));
+    }
+  }
   host.appendChild(ctlRow('Alpha', ctlAlpha(targets),
     many ? `Applies to all ${sel.length} selected layers` : ''));
 
@@ -2905,13 +3213,17 @@ const LABEL_CASES = [
 ];
 // a familiar list for the picker — any BCP-47 tag can simply be typed in
 const LANGUAGE_SUGGESTIONS = ['en-US', 'en-GB', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'pt-BR', 'nl-NL', 'pl-PL', 'cs-CZ', 'sk-SK', 'hu-HU', 'sv-SE', 'da-DK', 'fi-FI', 'nb-NO', 'tr-TR', 'ru-RU', 'uk-UA', 'el-GR', 'ja-JP', 'ko-KR', 'zh-CN', 'zh-TW', 'th-TH', 'vi-VN', 'id-ID', 'hi-IN', 'ar-EG', 'he-IL'];
+// a usable language tag: "enUS" / "zh_CN" are mended, anything that still is not a locale is dropped
+function cleanLangTag(raw) {
+  let t = String(raw || '').trim().replace(/_/g, '-');
+  if (/^[a-z]{2,3}[A-Z]{2}$/.test(t)) t = `${t.slice(0, -2)}-${t.slice(-2)}`;
+  try { return Intl.getCanonicalLocales(t)[0] || ''; } catch (err) { return ''; }
+}
 function projectLanguage() {
-  const l = project && project.language;
-  return l && String(l).trim() ? String(l).trim() : 'en-US';
+  return cleanLangTag(project && project.language) || 'en-US';
 }
 function languageOf(e) {
-  const l = e && e.language;
-  return l && String(l).trim() ? String(l).trim() : projectLanguage();
+  return cleanLangTag(e && e.language) || projectLanguage();
 }
 function localeKnown(tag) {
   if (!tag) return false;
@@ -3648,9 +3960,88 @@ function propsKind(e) {
   const k = kindById(e.kind);
   if (!['IMG', 'TIME_POINTER', 'IMG_WEEK'].includes(e.kind)) section(frag, k ? k.label : 'Widget');
   switch (e.kind) {
+    case 'BAR':
+      add('Data', ctlSelect(e.dataType || 'BATTERY', dtOptions(false), (v) => { e.dataType = v; }),
+        'The reading the bar fills with: it is full when the value reaches the maximum of that reading (steps: the target, battery: 100 …)');
+      add('Length', ctlNum(e, 'length', { min: 1 }), 'Length of the bar when it is full, in pixels');
+      add('Thickness', ctlNum(e, 'lineWidth', { min: 1 }), 'Width of the bar, in pixels');
+      add('Color', ctlColor(e, 'color'));
+      add('Vertical', ctlCheck(e, 'vertical'), 'Fill upwards-downwards instead of left-right');
+      add('Inverted', ctlCheck(e, 'inversion'), 'Fill from the far end instead of the start');
+      add('Mirror', ctlCheck(e, 'mirror'), 'Fill outwards from the middle of the bar');
+      add('Rounded', ctlCheck(e, 'rounded'), 'Round ends');
+      frag.appendChild(propNote('The bar draws only its fill — the frame or track is part of the background picture. On the watch it grows with the reading; here it follows the value in Test data.'));
+      break;
+    case 'EDIT_SLOT': {
+      add('Edit id', ctlNum(e, 'editId', { min: 1 }), 'The slot\'s number: every slot on the face needs its own');
+      const typeOpts = (EDIT_TYPES || []).map((t) => ({ value: t, label: t }));
+      add('Default', ctlSelect(e.defaultType || 'STEP', typeOpts, (v) => { e.defaultType = v; render(); scheduleCode(); }), 'What the slot shows until the wearer changes it');
+      section(frag, 'Choices');
+      const list = mkEl('div', 'edit-opts');
+      (e.optionalTypes || []).forEach((o, i) => {
+        const row = mkEl('div', 'edit-opt');
+        row.appendChild(ctlSelect(o.type, typeOpts, (v) => { pushHistory(); o.type = v; refreshPanels(); render(); scheduleCode(); }));
+        row.appendChild(imageField(o, 'preview', { onChange: () => { scheduleCode(); } }));
+        row.appendChild(ctlButton('✕', 'Remove this choice', () => { pushHistory(); e.optionalTypes.splice(i, 1); refreshPanels(); render(); scheduleCode(); }));
+        list.appendChild(row);
+      });
+      frag.appendChild(list);
+      const used = new Set((e.optionalTypes || []).map((o) => o.type));
+      const addSel = ctlSelect('', [{ value: '', label: 'Add a choice…' }, ...(EDIT_TYPES || []).filter((t) => !used.has(t)).map((t) => ({ value: t, label: t }))], (v) => {
+        if (!v) return;
+        pushHistory(); e.optionalTypes = [...(e.optionalTypes || []), { type: v, preview: '' }];
+        refreshPanels(); render(); scheduleCode();
+      });
+      frag.appendChild(addSel);
+      frag.appendChild(propNote('Each choice has a preview picture the wearer sees in the picker. Give a layer “Complication → this slot is …” to draw it for one choice only, and use the selector under the face to preview each choice.'));
+      section(frag, 'Picker tips');
+      img('Tips background', 'tipsBg');
+      add('Tips X', ctlNum(e, 'tipsX')); add('Tips Y', ctlNum(e, 'tipsY'));
+      add('Tips width', ctlNum(e, 'tipsWidth', { min: 0 })); add('Tips margin', ctlNum(e, 'tipsMargin', { min: 0 }));
+      break;
+    }
+    case 'SLEEP_CHART':
+      add('Deep', ctlColor(e, 'colorDeep')); add('Light', ctlColor(e, 'colorLight'));
+      add('REM', ctlColor(e, 'colorRem')); add('Awake', ctlColor(e, 'colorWake'));
+      frag.appendChild(propNote('The watch fills this box with the night\'s sleep stages (awake on the top row, deep sleep at the bottom). The preview shows a sample night.'));
+      break;
+    case 'TAP': {
+      add('Action', ctlSelect(e.action || 'none', [
+        { value: 'variant', label: 'Cycle background variants' },
+        { value: 'app', label: 'Open a Zepp screen' },
+        { value: 'none', label: 'Nothing' },
+      ], (v) => { e.action = v; refreshPanels(); render(); scheduleCode(); }));
+      if ((e.action || 'none') === 'app') {
+        const inp = document.createElement('input');
+        inp.type = 'text'; inp.value = e.appUrl || ''; inp.placeholder = 'ScheduleCalScreen';
+        inp.setAttribute('list', 'tapApps');
+        inp.onchange = () => { pushHistory(); e.appUrl = inp.value.trim(); render(); scheduleCode(); };
+        const dl = document.createElement('datalist');
+        dl.id = 'tapApps';
+        for (const a of META.tapApps || []) { const o = document.createElement('option'); o.value = a.key; o.label = a.label; dl.appendChild(o); }
+        const wrap = mkEl('div', 'rowctl'); wrap.appendChild(inp); wrap.appendChild(dl);
+        add('Screen', wrap, 'The native Zepp screen to open, e.g. ScheduleCalScreen (calendar), SportListScreen (workouts), PowerSaveHintScreen');
+      }
+      if (e.note) frag.appendChild(propNote(`The original ran custom code here, which the designer does not keep: ${e.note}`));
+      frag.appendChild(propNote('A tap zone draws nothing — it is the area of the face that reacts to a tap. Shown dashed in the editor only.'));
+      break;
+    }
     case 'IMG':
       section(frag, 'Image');
       img('Image', 'src');
+      {
+        // two or more pictures turn the layer into a variants layer (colour schemes, backgrounds)
+        section(frag, 'Variants');
+        frag.appendChild(stackRow('Pictures', imageSetField(e)));
+        const names = document.createElement('input');
+        names.type = 'text'; names.placeholder = 'Yellow, Green, Blue …';
+        names.value = (e.variantNames || []).join(', ');
+        names.onchange = () => { pushHistory(); e.variantNames = names.value.split(',').map((t) => t.trim()).filter(Boolean); scheduleCode(); syncVariantSel(); };
+        add('Names', names, 'The name shown as a toast on the watch for each variant, comma separated');
+        frag.appendChild(propNote(variantList(e)
+          ? 'This layer has variants: a Tap zone set to “Cycle background variants” steps through them on the watch. Pick the one to preview with the Variant selector under the face.'
+          : 'Add two or more pictures to make this a variants layer (e.g. one background per colour).'));
+      }
       add('Angle', ctlNum(e, 'angle', { min: -360, max: 360 }));
       add('Pos X', ctlNum(e, 'posX'));
       add('Pos Y', ctlNum(e, 'posY'));
@@ -3695,9 +4086,8 @@ function propsKind(e) {
       if ((e.part || 'hour') !== 'hour12') {
         add('Leading 0', ctlCheck(e, 'zero'));
         if (!src) {
-          add('Space', ctlNum(e, 'space'));
-          add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
-            'Where the value sits inside the widget box (hour/minute/second/day/month are 2 digits, a reading is as wide as its data type): Left, centred, or Right — the box stays put, the value moves inside it');
+          add('Space', ctlSpace(e));
+          add('Align', ctlAlignSeg(e, 'Where the value sits inside the widget box (hour/minute/second/day/month are 2 digits, a reading is as wide as its data type): Left, centred, or Right — the box stays put, the value moves inside it'));
         }
       }
       add('Follow', ctlCheck(e, 'follow'),
@@ -3725,12 +4115,11 @@ function propsKind(e) {
         if (v !== 'month') e.isCharacter = false;   // only months have names
       }));
       add('Leading 0', ctlCheck(e, 'zero'));
-      if (!followSource(e)) add('Space', ctlNum(e, 'space'));
+      if (!followSource(e)) add('Space', ctlSpace(e));
       add('Follow', ctlCheck(e, 'follow'),
         'Follow the previous date part (month → day, the spec\'s 12/04 order): the watch draws this value directly after it, with its spacing and alignment');
       add('Character', characterCheck(e), 'Month name instead of digits');
-      if (!followSource(e)) add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
-        'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it');
+      if (!followSource(e)) add('Align', ctlAlignSeg(e, 'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it'));
       frag.appendChild(propNote(digitPreviewNote(e)));
       if (e.isCharacter) {
         set('Month names', '12 images, January first');
@@ -3747,9 +4136,8 @@ function propsKind(e) {
       break;
     case 'TEXT_IMG':
       add('Data', ctlSelect(e.dataType || 'STEP', dtOptions(false), (v) => { e.dataType = v; }));
-      add('Spacing', ctlNum(e, 'hSpace', { min: 0 }));
-      add('Align', ctlSelect(e.alignH || 'LEFT', alignOptions(), (v) => { e.alignH = v; }),
-        'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it');
+      add('Spacing', ctlSpace(e));
+      add('Align', ctlAlignSeg(e, 'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it'));
       set('Digits', 'Digits 0-9');
       img('Unit', 'unit');
       img('Decimal', 'dot');
@@ -3762,7 +4150,9 @@ function propsKind(e) {
       const T = targetsFor(e, TEXT_KINDS);
       const fill = textFillType(e);
       const addNote = (txt) => frag.appendChild(propNote(txt));
-      add('Text', ctlText(T, 'text', 'MONDAY'));
+      add('Reading', ctlSelect(e.dataType || '', [{ value: '', label: 'None — fixed text' }, ...dtOptions(false, true)], (v) => { setOn(T, 'dataType', v || ''); refreshPanels(); render(); scheduleCode(); }),
+        'Show a reading (moonrise, steps, battery …) as text with the font, instead of a fixed text. On the watch it is a TEXT_FONT widget.');
+      if (!e.dataType) add('Text', ctlText(T, 'text', 'MONDAY'));
       add('Size', ctlNum(T, 'size', { min: 1 }));
       add('Fill', ctlSelect(fill, TEXT_FILL_TYPES, (v) => setOn(T, 'fillType', v)));
       if (fill === 'solid') add('Color', ctlColor(T, 'color'));
@@ -3879,6 +4269,17 @@ function renderTestData() {
   const host = $('testData');
   if (!host) return;
   host.innerHTML = '';
+  const sg = document.createElement('div');
+  sg.className = 'td-group'; sg.textContent = 'System status';
+  host.appendChild(sg);
+  for (const s of SYSTEM_STATUS) {
+    const row = mkRow(s.label, 'Status icons draw only while their state is on — like on the watch');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = !!sysStatus[s.key]; cb.dataset.sys = s.key;
+    cb.onchange = () => { sysStatus[s.key] = cb.checked; render(); };
+    row.appendChild(cb);
+    host.appendChild(row);
+  }
   let group = null;
   for (const d of DATA_TYPES) {
     if (d.preview == null) continue;
@@ -3964,6 +4365,7 @@ function refreshPanels() {
   renderTestData();
   renderImagesPanel();
   syncLayersToolbar();
+  syncVariantSel();
   const has = !!project;
   ['btnComponents', 'btnPresets', 'btnGlyphs', 'btnUpload', 'btnSave', 'btnExportZeus', 'btnBuild', 'btnInstall', 'btnFonts'].forEach((id) => { if ($(id)) $(id).disabled = !has; });
 }
@@ -4018,6 +4420,9 @@ function collectUsedImages(set) {
     for (const key of ['images', 'frames']) {
       if (Array.isArray(e[key])) for (const n of e[key]) if (n) set.add(typeof n === 'string' ? n : n.name);
     }
+    // a complication slot's pictures: the picker previews, the tips background and the select marks
+    for (const key of ['tipsBg', 'selectImage', 'unSelectImage']) if (e[key]) set.add(e[key]);
+    if (Array.isArray(e.optionalTypes)) for (const o of e.optionalTypes) if (o && o.preview) set.add(o.preview);
   }
 }
 function deleteImage(name) {
@@ -4239,7 +4644,26 @@ async function attachDigitSet(e) {
 }
 // -------------------------------------------------------------------- menus --
 let componentsOpen = false, presetsOpen = false, glyphsOpen = false;
-function toggleComponents(open) { componentsOpen = open == null ? !componentsOpen : open; $('componentsMenu').hidden = !componentsOpen; $('btnComponents').classList.toggle('on', componentsOpen); }
+function toggleComponents(open) {
+  componentsOpen = open == null ? !componentsOpen : open;
+  $('componentsMenu').hidden = !componentsOpen;
+  $('btnComponents').classList.toggle('on', componentsOpen);
+  if (componentsOpen) { const q = $('componentsSearch'); if (q) { q.value = ''; filterComponents(''); q.focus(); } }
+}
+function filterComponents(text) {
+  const q = text.trim().toLowerCase();
+  const list = $('componentsList');
+  let title = null, shown = 0, any = false;
+  const flush = () => { if (title) title.hidden = !shown; };
+  for (const n of list.children) {
+    if (n.classList.contains('pm-title')) { flush(); title = n; shown = 0; continue; }
+    const hit = !q || n.textContent.toLowerCase().includes(q);
+    n.hidden = !hit;
+    if (hit) { shown++; any = true; }
+  }
+  flush();
+  $('componentsEmpty').hidden = any;
+}
 function togglePresets(open) { presetsOpen = open == null ? !presetsOpen : open; $('presetsMenu').hidden = !presetsOpen; $('btnPresets').classList.toggle('on', presetsOpen); }
 function toggleGlyphs(open) { glyphsOpen = open == null ? !glyphsOpen : open; $('glyphsMenu').hidden = !glyphsOpen; $('btnGlyphs').classList.toggle('on', glyphsOpen); }
 document.addEventListener('click', (e) => {
@@ -4248,8 +4672,14 @@ document.addEventListener('click', (e) => {
   if (glyphsOpen && !e.target.closest('#btnGlyphs') && !e.target.closest('#glyphsMenu')) toggleGlyphs(false);
 });
 function buildComponentsMenu() {
-  const m = $('componentsMenu');
-  m.innerHTML = '';
+  const menu = $('componentsMenu');
+  menu.innerHTML = '<input id="componentsSearch" class="pm-search" type="search" placeholder="Search widgets…" autocomplete="off" spellcheck="false"><div id="componentsList" class="pm-list"></div><div id="componentsEmpty" class="pm-empty" hidden>No widget matches.</div>';
+  const m = $('componentsList');
+  $('componentsSearch').oninput = (ev) => filterComponents(ev.target.value);
+  $('componentsSearch').onkeydown = (ev) => {
+    if (ev.key === 'Escape') toggleComponents(false);
+    if (ev.key === 'Enter') { const b = m.querySelector('button:not([hidden])'); if (b) b.click(); }
+  };
   let group = null;
   for (const k of KINDS) {
     if (k.group !== group) {
@@ -4437,6 +4867,9 @@ const PRESETS = [
   { id: 'weather', label: 'Weather icon', sub: '29-icon level' },
   { group: 'Progress & shapes' },
   { id: 'arcprogress', label: 'Step progress arc', sub: 'ARC_PROGRESS' },
+  { id: 'bar', label: 'Progress bar', sub: 'linear, follows a reading' },
+  { id: 'sleepchart', label: 'Sleep chart', sub: 'last night, by stage' },
+  { id: 'editslot', label: 'Complication slot', sub: 'the wearer picks what it shows' },
   { id: 'level', label: 'Battery image level', sub: 'IMG_LEVEL' },
   { id: 'rect', label: 'Filled rectangle', sub: 'FILL_RECT' },
   { id: 'stroke', label: 'Stroked rectangle', sub: 'STROKE_RECT' },
@@ -4447,6 +4880,7 @@ const PRESETS = [
   { id: 'datatext', label: 'Any reading as images', sub: 'TEXT_IMG' },
   { id: 'status', label: 'Bluetooth status', sub: 'IMG_STATUS' },
   { id: 'click', label: 'Tap shortcut', sub: 'IMG_CLICK' },
+  { id: 'tap', label: 'Tap zone', sub: 'opens a screen / cycles variants' },
 ];
 function buildPresetsMenu() {
   const m = $('presetsMenu');
@@ -4544,6 +4978,32 @@ async function applyPreset(id) {
     case 'click': {
       pushHistory();
       const e = newElement('IMG_CLICK', { dataType: 'OUTDOOR_RUNNING', show: 'normal', x: cx - 20, y: cy + 90, w: 40, h: 40, name: 'Run shortcut' });
+      project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+      break;
+    }
+    case 'editslot': {
+      pushHistory();
+      const nextId = Math.max(0, ...elements().filter((x) => x.kind === 'EDIT_SLOT').map((x) => +x.editId || 0)) + 1;
+      const e = newElement('EDIT_SLOT', { show: 'normal', editId: nextId, x: cx - 40, y: cy - 20, w: 80, h: 40, name: `Complication ${nextId}`, defaultType: 'STEP', optionalTypes: [{ type: 'STEP', preview: '' }, { type: 'HEART', preview: '' }] });
+      project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+      break;
+    }
+    case 'sleepchart': {
+      pushHistory();
+      const e = newElement('SLEEP_CHART', { show: 'normal', x: cx - 108, y: cy + 60, w: 215, h: 69, name: 'Sleep chart' });
+      project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+      break;
+    }
+    case 'bar': {
+      pushHistory();
+      const e = newElement('BAR', { dataType: 'BATTERY', show: 'normal', x: cx - 80, y: cy + 100, length: 160, lineWidth: 12, rounded: true, color: '#34e073', name: 'Battery bar' });
+      project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+      break;
+    }
+    case 'tap': {
+      pushHistory();
+      const hasVariants = elements().some((x) => variantList(x));
+      const e = newElement('TAP', { action: hasVariants ? 'variant' : 'app', appUrl: hasVariants ? '' : 'ScheduleCalScreen', show: 'normal', x: cx - 60, y: 20, w: 120, h: 50, name: hasVariants ? 'Tap: next variant' : 'Tap: open screen' });
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
       break;
     }
@@ -5081,7 +5541,7 @@ function hitElement(ev) {
   const list = elements();
   for (let i = list.length - 1; i >= 0; i--) {
     const e = list[i];
-    if (e.visible === false || e.locked || offView(e) || !whenAllows(e)) continue;
+    if (e.visible === false || e.locked || offView(e) || !whenAllows(e) || statusOff(e) || !editAllows(e)) continue;
     const b = elBox(e);
     if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) return e;
   }
@@ -5093,6 +5553,10 @@ function handleAt(ev) {
   const p = eventDevPos(ev);
   const b = elBox(e);
   const tol = Math.max(5, Math.round(9 * (cv_scale())));
+  if (selection().length === 1) {
+    const hp = spaceHandlePos(e);
+    if (hp && Math.abs(p.x - hp.x) <= tol && Math.abs(p.y - hp.y) <= tol + 4) return 'space';
+  }
   if (e.kind === 'CIRCLE' || e.kind === 'ARC_PROGRESS') {
     if (Math.hypot(p.x - (b.x + b.w), p.y - (b.y + b.h / 2)) <= tol) return 'radius';
     return null;
@@ -5114,6 +5578,11 @@ $('cv').addEventListener('mousedown', (ev) => {
   if (!project) return;
   const handle = handleAt(ev);
   const p = eventDevPos(ev);
+  if (handle === 'space' && selEl()) {
+    const e = selEl();
+    drag = { mode: 'space', before: snapshot(), e, px: p.x, key: spaceKey(e), start: +e[spaceKey(e)] || 0 };
+    return;
+  }
   if (handle && selEl()) {
     const e = selEl();
     const b = elBox(e);
@@ -5149,6 +5618,11 @@ $('cv').addEventListener('mousedown', (ev) => {
 window.addEventListener('mousemove', (ev) => {
   if (!drag || !project) return;
   const p = eventDevPos(ev);
+  if (drag.mode === 'space') {
+    const v = drag.start + Math.round(p.x - drag.px) * (ev.shiftKey ? 1 : 1);
+    if (drag.e[drag.key] !== v) { drag.e[drag.key] = v; render(); }
+    return;
+  }
   if (drag.mode === 'move') {
     const rawDx = p.x - drag.px, rawDy = p.y - drag.py;
     // A group (or any multi-selection) is dragged *and snapped* as one box, so
@@ -5200,7 +5674,7 @@ window.addEventListener('mouseup', () => {
 $('cv').addEventListener('mousemove', (ev) => {
   if (drag || !project) return;
   const h = handleAt(ev);
-  const cursor = h === 'radius' ? 'nwse-resize' : h ? (h === 'nw' || h === 'se' ? 'nwse-resize' : 'nesw-resize') : (hitElement(ev) ? 'move' : 'default');
+  const cursor = h === 'space' ? 'ew-resize' : h === 'radius' ? 'nwse-resize' : h ? (h === 'nw' || h === 'se' ? 'nwse-resize' : 'nesw-resize') : (hitElement(ev) ? 'move' : 'default');
   $('cv').style.cursor = cursor;
 });
 $('cv').addEventListener('dblclick', (ev) => {
@@ -5239,6 +5713,7 @@ function setPreviewMode(mode) {
   previewMode = mode;
   $('btnPreviewNormal').classList.toggle('on', mode === 'normal');
   $('btnPreviewAod').classList.toggle('on', mode === 'aod');
+  $('btnPreviewEdit').classList.toggle('on', mode === 'edit');
   if (project) { render(); renderLayers(); }
   syncLayerView();
   // an empty AOD is why a watch shows its own AOD face instead of yours
@@ -5264,8 +5739,10 @@ document.querySelectorAll('#layersView button').forEach((b) => {
     else { syncLayerView(); if (project) renderLayers(); }
   };
 });
+$('variantSel').onchange = (ev) => { variantIdx = +ev.target.value || 0; if (project) render(); };
 $('btnPreviewNormal').onclick = () => setPreviewMode('normal');
 $('btnPreviewAod').onclick = () => setPreviewMode('aod');
+$('btnPreviewEdit').onclick = () => setPreviewMode('edit');
 $('btnPreviewLive').onclick = () => setLiveClock(!liveClock);
 
 // -------------------------------------------------------------- project lifecycle --
@@ -5288,6 +5765,8 @@ function freshProject(name, target) {
 }
 function resetTestData() {
   testData = {};
+  editPick = {};
+  sysStatus = { ...SYS_STATUS_DEFAULT };
   for (const d of DATA_TYPES) {
     if (d.preview != null) testData[d.key] = d.preview;
   }
@@ -6330,6 +6809,8 @@ async function init() {
   SHOW_LEVELS = META.showLevels;
   WEATHER_ICONS = META.weatherIcons;
   SYSTEM_STATUS = META.systemStatus;
+  DT_MAX = META.dtMax || {};
+  EDIT_TYPES = META.editTypes || [];
   BUNDLED_FONTS = META.fonts || [];
   FONT_VARIATIONS = META.fontVariations || {};
   for (const d of DATA_TYPES) DT_BY_KEY[d.key] = d;

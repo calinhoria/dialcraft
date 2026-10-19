@@ -82,6 +82,22 @@ const KINDS = [
     id: 'IMG_CLICK', label: 'Tap shortcut icon', group: 'Data', docs: 'IMG_CLICK', box: 'natural',
     defaults: { dataType: 'OUTDOOR_RUNNING', w: 40, h: 40 },
   },
+  {
+    id: 'BAR', label: 'Progress bar (linear)', group: 'Shape', docs: 'FILL_RECT', box: 'wh',
+    defaults: { length: 100, lineWidth: 10, rounded: false, vertical: false, inversion: false, mirror: false, color: '#84a6cd', dataType: 'BATTERY', level: 0 },
+  },
+  {
+    id: 'SLEEP_CHART', label: 'Sleep chart', group: 'Data', docs: 'GROUP', box: 'wh',
+    defaults: { w: 215, h: 69, colorDeep: '#708eae', colorLight: '#212c35', colorRem: '#8cb0d8', colorWake: '#44556b' },
+  },
+  {
+    id: 'EDIT_SLOT', label: 'Complication slot', group: 'Data', docs: 'WATCHFACE_EDIT_GROUP', box: 'wh',
+    defaults: { editId: 1, w: 54, h: 29, defaultType: 'STEP', optionalTypes: [], selectImage: '', unSelectImage: '', tipsBg: '', tipsX: 0, tipsY: 0, tipsWidth: 0, tipsMargin: 10 },
+  },
+  {
+    id: 'TAP', label: 'Tap zone', group: 'Data', docs: 'BUTTON', box: 'wh',
+    defaults: { w: 100, h: 50, action: 'variant', appUrl: '', note: '' },
+  },
   // ---------------------------------------------------------------- shapes --
   {
     id: 'FILL_RECT', label: 'Filled rectangle', group: 'Shape', docs: 'FILL_RECT', box: 'wh',

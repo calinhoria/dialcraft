@@ -138,8 +138,37 @@ function compose(content) {
 
 // App icon PNG buffer. `preview` is a rendered watchface image (any size); when
 // it is missing or unreadable the placeholder dial is used instead.
-function appIconPng(preview) {
+// Rounded-rectangle alpha mask (1px soft edge) — the corner of a square / band screen.
+function roundRectMask(img, radius) {
+  const r = Math.max(0, Math.min(radius, Math.min(img.width, img.height) / 2));
+  for (let y = 0; y < img.height; y++) {
+    for (let x = 0; x < img.width; x++) {
+      const px = x + 0.5, py = y + 0.5;
+      const cx = px < r ? r : px > img.width - r ? img.width - r : px;
+      const cy = py < r ? r : py > img.height - r ? img.height - r : py;
+      const cov = Math.max(0, Math.min(1, r + 0.5 - Math.hypot(px - cx, py - cy)));
+      const i = (img.width * y + x) << 2;
+      img.data[i + 3] = Math.round(img.data[i + 3] * cov);
+    }
+  }
+  return img;
+}
+
+// App icon / on-watch preview PNG. A round screen gets the 248×248 circle of the
+// design guide; a square or band screen gets the whole face at the device's own
+// preview size with the screen's rounded corners — a circle would cut off the
+// corners, where square faces keep their date and complications.
+function appIconPng(preview, device) {
   const src = decode(preview);
+  if (src && device && device.shape !== 'r' && Array.isArray(device.preview) && device.preview[0] > 0) {
+    const [pw, ph] = device.preview;
+    // "cover": the face fills the preview, nothing is squeezed
+    const k = Math.max(pw / src.width, ph / src.height);
+    const sw = pw / k, sh = ph / k;
+    const img = resample(src, (src.width - sw) / 2, (src.height - sh) / 2, sw, sh, pw, ph);
+    const corner = (device.radius || 0) * (pw / (device.w || src.width));
+    return PNG.sync.write(roundRectMask(img, corner));
+  }
   if (!src) return compose(circleMask(fallbackDisc()));
   // centre-crop to a square, then scale into the disc
   const side = Math.min(src.width, src.height);

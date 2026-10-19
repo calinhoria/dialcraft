@@ -56,6 +56,8 @@ const DATA_TYPES = [
 
   // ---- weather -------------------------------------------------------------
   { key: 'WEATHER_CURRENT', label: 'Temperature (current)', group: 'Weather', digits: 3, preview: 22, unit: '°C', negative: true, bound: true },
+  { key: 'MOON_RISE', label: 'Moonrise time', group: 'Weather', digits: 8, preview: '9:07 pm', textOnly: true },
+  { key: 'MOON_SET', label: 'Moonset time', group: 'Weather', digits: 8, preview: '7:03 am', textOnly: true },
   { key: 'WEATHER_LOW', label: 'Temperature (low)', group: 'Weather', digits: 3, preview: 14, unit: '°C', negative: true, bound: true },
   { key: 'WEATHER_HIGH', label: 'Temperature (high)', group: 'Weather', digits: 3, preview: 27, unit: '°C', negative: true, bound: true },
   { key: 'HUMIDITY', label: 'Humidity', group: 'Weather', digits: 3, preview: 42, unit: '%', bound: true },
@@ -113,4 +115,25 @@ const SYSTEM_STATUS = [
   { key: 'LOCK', label: 'Lock screen on' },
 ];
 
-module.exports = { DATA_TYPES, dataType, dtLabel, unitsFor, digitCount, WEATHER_ICONS, SYSTEM_STATUS };
+// Native Zepp screens a tap zone can open (hmApp.startApp({ url, native: true })).
+// The names are the ones shipping watchfaces use; anything else can be typed in.
+const TAP_APPS = [
+  { key: 'ScheduleCalScreen', label: 'Calendar' },
+  { key: 'SportListScreen', label: 'Workouts' },
+  { key: 'PowerSaveHintScreen', label: 'Power saving' },
+];
+
+const DT_MAX = {
+  STEP: 10000, STEP_TARGET: 12000, CAL: 500, CAL_TARGET: 600, DISTANCE: 10, STAND: 12,
+  STAND_TARGET: 12, FLOOR: 20, FAT_BURNING: 90, FAT_BURNING_TARGET: 90,
+  HEART: 200, SPO2: 100, STRESS: 100, PAI_DAILY: 100, PAI_WEEKLY: 400, BATTERY: 100,
+  HUMIDITY: 100, UVI: 12, AQI: 300, WIND: 12, WEATHER: 28, ALTIMETER: 1100, ALTITUDE: 1000,
+  TRAINING_LOAD: 400, VO2MAX: 60, RECOVERY_TIME: 72, READINESS: 100, MONTH_RUN_TIMES: 30,
+  MONTH_RUN_DISTANCE: 400, WEATHER_CURRENT: 50, WEATHER_LOW: 50, WEATHER_HIGH: 50, MOON: 8,
+};
+// What a complication slot can show (hmUI.edit_type) — the names the Maker's switch lists.
+const EDIT_TYPES = ['STEP', 'BATTERY', 'HEART', 'CAL', 'PAI_DAILY', 'DISTANCE', 'AQI', 'HUMIDITY', 'ALTIMETER', 'STRESS', 'WIND', 'SPO2',
+  'TRAINING_LOAD', 'VO2MAX', 'UVI', 'DATE', 'WEEK', 'WEATHER', 'TEMPERATURE', 'SUN', 'BIO_CHARGE', 'LTHR', 'LTPACE', 'SLEEP', 'ALTITUDE',
+  'RECOVERY_TIME', 'HRV', 'FLOOR', 'MONTH_RUN_TIMES', 'MONTH_RUN_DISTANCE'];
+
+module.exports = { EDIT_TYPES, DT_MAX, TAP_APPS, DATA_TYPES, dataType, dtLabel, unitsFor, digitCount, WEATHER_ICONS, SYSTEM_STATUS };

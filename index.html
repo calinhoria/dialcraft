@@ -86,6 +86,7 @@
           <button type="button" data-view="all" title="Every layer at full strength">All</button>
           <button type="button" data-view="normal" title="Focus the layers drawn in the normal face (also switches the preview)">Normal</button>
           <button type="button" data-view="aod" title="Focus the layers drawn in AOD (also switches the preview)">AOD</button>
+          <button type="button" data-view="edit" title="Focus the customise-screen layers: edit masks and complication slots (also switches the preview)">Edit</button>
         </div>
         <div class="layers-toolbar">
           <div class="lt-info" id="layersSelInfo">No selection</div>
@@ -135,7 +136,10 @@
     <div class="center-tools">
       <button id="btnPreviewNormal" class="on" title="Preview the normal (always-on for the user) state">Normal</button>
       <button id="btnPreviewAod" title="Preview the AOD (always-on display) state">AOD</button>
+      <button id="btnPreviewEdit" title="Preview the screen the wearer sees when long-pressing the face to customise it (edit masks and complication slots)">Edit</button>
       <button id="btnPreviewLive" title="Run the preview clock from the real time">Live clock</button>
+      <select id="variantSel" hidden title="Which variant of the background layer the preview shows"></select>
+      <span id="editSels" hidden></span>
     </div>
     <div id="meta" class="meta-status"></div>
     <div class="hint">Drag widget to move &middot; resize from the corner handles &middot; click a layer to select &middot; Ctrl+Z undo</div>

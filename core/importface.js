@@ -27,7 +27,8 @@ const WIDGET_KIND = {
   IMG: 'IMG', IMG_ANIM: 'IMG_ANIM', IMG_LEVEL: 'IMG_LEVEL', IMG_PROGRESS: 'IMG_PROGRESS',
   IMG_POINTER: 'IMG_POINTER', IMG_TIME: 'IMG_TIME', IMG_WEEK: 'IMG_WEEK', IMG_DATE: 'IMG_DATE',
   TIME_POINTER: 'TIME_POINTER', TEXT: 'TEXT', TEXT_IMG: 'TEXT_IMG',
-  IMG_STATUS: 'IMG_STATUS', IMG_CLICK: 'IMG_CLICK',
+  IMG_STATUS: 'IMG_STATUS', IMG_CLICK: 'IMG_CLICK', BUTTON: 'IMG', TEXT_FONT: 'TEXT', GROUP: 'SLEEP_CHART',
+  WATCHFACE_EDIT_GROUP: 'EDIT_SLOT', WATCHFACE_EDIT_MASK: 'IMG', WATCHFACE_EDIT_FG_MASK: 'IMG',
   FILL_RECT: 'FILL_RECT', STROKE_RECT: 'STROKE_RECT', CIRCLE: 'CIRCLE', ARC: 'ARC',
   ARC_PROGRESS: 'ARC_PROGRESS',
 };
@@ -41,7 +42,7 @@ const NON_VISUAL = {
 // constants handed to widgets; the shim turns `ui.show_level.ONLY_AOD` into the
 // string "show_level.ONLY_AOD" so the name survives the capture
 const CONST_GROUPS = new Set(['widget', 'align', 'align_v', 'align_h', 'data_type', 'show_level',
-  'prop', 'text_style', 'anim_status', 'system_status', 'id', 'event']);
+  'prop', 'text_style', 'anim_status', 'system_status', 'id', 'event', 'edit_type']);
 const TIME_PARTS = ['hour', 'minute', 'second'];
 const DATE_PARTS = ['month', 'day'];
 const IMAGE_EXT = /\.(png|jpe?g|webp|bmp|svg)$/i;
@@ -77,6 +78,31 @@ const num = (v) => (Number.isFinite(+v) ? +v : undefined);
 function clean(obj) {
   const out = {};
   for (const [k, v] of Object.entries(obj)) if (v !== undefined && v !== null) out[k] = v;
+  return out;
+}
+// The Maker's "Linear scale": the face creates an empty FILL_RECT and keeps the scale's real
+// parameters in a commented-out block (it resizes the rectangle in its own code). Read those.
+function parseLinearScales(code) {
+  const out = [];
+  const re = /\/\/\s*(\w+)\s*=\s*hmUI\.createWidget\(\s*hmUI\.widget\.Linear_Scale\s*,\s*\{([\s\S]*?)\/\/\s*\}\s*\)/g;
+  let m;
+  while ((m = re.exec(code))) {
+    const kv = {};
+    for (const line of m[2].split('\n')) {
+      const t = /^\s*\/\/\s*(\w+)\s*:\s*(.*?)\s*,?\s*$/.exec(line);
+      if (t) kv[t[1]] = t[2];
+    }
+    const n = (k) => (kv[k] != null && Number.isFinite(+kv[k]) ? +kv[k] : undefined);
+    const yes = (k) => /^true$/i.test(String(kv[k] || ''));
+    const color = kv.color != null ? Number(kv.color) : NaN;
+    out.push({
+      name: m[1], used: false,
+      x: n('start_x'), y: n('start_y'), length: n('lenght') != null ? n('lenght') : n('length'), lineWidth: n('line_width'),
+      rounded: /Rounded/i.test(kv.line_cap || ''), vertical: yes('vertical'), mirror: yes('mirror'), inversion: yes('inversion'),
+      alpha: n('alpha'), color: Number.isFinite(color) ? '#' + (color & 0xffffff).toString(16).padStart(6, '0') : undefined,
+      dataType: nameOf(kv.type), show: showOf(kv.show_level),
+    });
+  }
   return out;
 }
 function hexOf(v) {
@@ -162,7 +188,13 @@ function makeShim(calls, notes, opts = {}) {
   const createWidget = (type, params) => {
     let p = {};
     try { p = JSON.parse(JSON.stringify(params || {})); } catch (e) { p = { ...(params || {}) }; }
+    // a button's tap code is a function (lost in the copy): keep its text to read the action from
+    if (params && typeof params.click_func === 'function') {
+      try { p._click = Function.prototype.toString.call(params.click_func); } catch (e) { /* no source */ }
+    }
     const entry = { type: nameOf(type) || String(type), params: p, sensor };
+    // a complication slot: the face asks it which type the wearer picked (getProperty CURRENT_TYPE)
+    if (entry.type === 'WATCHFACE_EDIT_GROUP') entry.slotIndex = calls.filter((c) => c.type === 'WATCHFACE_EDIT_GROUP').length;
     calls.push(entry);
     const inst = mk('widgetInstance', 'widget');
     // setProperty(hmUI.prop.VISIBLE, v) is how a face lights one of two labels
@@ -171,6 +203,12 @@ function makeShim(calls, notes, opts = {}) {
       get(t, prop, r) {
         if (prop === 'setProperty') {
           return (key, val) => { if (/VISIBLE/.test(String(key))) entry.visible = !!val; return undefined; };
+        }
+        if (prop === 'getProperty' && entry.slotIndex != null) {
+          // answer with the type this pass tries (or one no case matches, for the base pass)
+          return (key) => (/CURRENT_TYPE/.test(String(key))
+            ? (opts.pick && opts.pick.slot === entry.slotIndex ? `edit_type.${opts.pick.type}` : 'edit_type.__none__')
+            : mk('widgetInstance', 'value'));
         }
         return Reflect.get(t, prop, r);
       },
@@ -277,7 +315,11 @@ function capture(code, opts = {}) {
     }
     const todo = [...missing].filter((n) => !(n in sandbox));
     if (!todo.length) break;
-    for (const n of todo) { stub(n); notes.push(`stubbed the unknown global \`${n}\``); }
+    for (const n of todo) {
+      stub(n);
+      // `__$$hmAppManager$$__`, `DeviceRuntimeCore` & co. are the Maker toolchain's own wrapper, not something to design
+      if (!/^__\$\$.*\$\$__$/.test(n) && n !== 'DeviceRuntimeCore') notes.push(`stubbed the unknown global \`${n}\``);
+    }
   }
   for (const n of attemptNotes) if (!notes.includes(n)) notes.push(n);
   // build() registers the widgets; the designer's own export splits the work
@@ -534,22 +576,88 @@ function importFaceDir(dir) {
   // widgets the code shows only before / after noon (lit AM and PM labels)
   let pmRun = null;
   const codeText = fs.readFileSync(codeFile, 'utf8');
+  // what the face's own start-up code hides (a stat it shows only after a tap, a dimming
+  // overlay): the visibility it sets on the first run is how the face starts
+  for (const c of captured.calls) c.initVisible = c.visible;
+  ctx.linear = parseLinearScales(codeText);
+  ctx.code = codeText;
   if (/VISIBLE/.test(codeText) && /getHours|hour/.test(codeText)) {
     const am = capture(codeText, { hour: 9 }).calls;
     pmRun = capture(codeText, { hour: 15 }).calls;
     captured.calls.forEach((c, i) => { c.visible = am[i] ? am[i].visible : undefined; c.visiblePm = pmRun[i] ? pmRun[i].visible : undefined; });
   }
-  for (const call of captured.calls) {
+  // complication slots: run the code once per optional type; what each type adds is that type's layers
+  const slotCalls = captured.calls.filter((c) => c.type === 'WATCHFACE_EDIT_GROUP');
+  const inserts = new Map();     // call index → [{ call, slot, type }]
+  const sameCall = (a, b) => a && b && a.type === b.type && JSON.stringify(a.params) === JSON.stringify(b.params);
+  slotCalls.forEach((sc) => {
+    const types = (Array.isArray(sc.params.optional_types) ? sc.params.optional_types : []).map((o) => nameOf(o && o.type)).filter(Boolean);
+    for (const T of types) {
+      const run = capture(codeText, { pick: { slot: sc.slotIndex, type: T } }).calls;
+      const B = captured.calls;
+      let a = 0;
+      while (a < B.length && a < run.length && sameCall(B[a], run[a])) a++;
+      let z = 0;
+      while (z < B.length - a && z < run.length - a && sameCall(B[B.length - 1 - z], run[run.length - 1 - z])) z++;
+      const extra = run.slice(a, run.length - z);
+      if (!extra.length) continue;
+      if (!inserts.has(a)) inserts.set(a, []);
+      for (const c of extra) inserts.get(a).push({ call: c, slot: sc.params.edit_id, type: T });
+    }
+  });
+  const pushCall = (call, tag) => {
     const made = mapWidget(call.type, call.params, ctx, skipped, call.sensor);
-    if (pmRun && call.visible !== call.visiblePm && (call.visible === true || call.visiblePm === true)) {
+    if (tag) for (const e of made) { e.editSlot = tag.slot; e.editType = tag.type; ctx.editChildren = (ctx.editChildren || 0) + 1; }
+    else if (pmRun && call.visible !== call.visiblePm && (call.visible === true || call.visiblePm === true)) {
       for (const e of made) {
         e.showWhen = call.visible === true && call.visiblePm !== true ? 'am' : 'pm';
         e.name = e.showWhen === 'am' ? 'AM lit' : 'PM lit';
       }
+    } else if (call.initVisible === false) {
+      for (const e of made) e.visible = false;
+      ctx.startHidden = (ctx.startHidden || 0) + made.length;
     }
     elements.push(...made);
+  };
+  captured.calls.forEach((call, idx) => {
+    // the layers a type adds sit where the face's switch is: right after the slot's code
+    for (const x of inserts.get(idx) || []) pushCall(x.call, { slot: x.slot, type: x.type });
+    pushCall(call, null);
+  });
+  for (const x of inserts.get(captured.calls.length) || []) pushCall(x.call, { slot: x.slot, type: x.type });
+  for (const lin of ctx.linear.filter((x) => !x.used && x.show === 'aod')) {
+    lin.used = true;
+    ctx.bars = (ctx.bars || 0) + 1;
+    elements.push(newElement('BAR', clean({
+      name: `${lin.dataType && dataType(lin.dataType) ? dataType(lin.dataType).label : 'Progress'} bar`, show: 'aod', alpha: lin.alpha, x: lin.x, y: lin.y, length: lin.length, lineWidth: lin.lineWidth,
+      rounded: lin.rounded, vertical: lin.vertical, mirror: lin.mirror, inversion: lin.inversion, color: lin.color,
+      dataType: lin.dataType && dataType(lin.dataType) ? lin.dataType : undefined,
+    })));
   }
   elements = mergeStates(elements);
+  // the Maker's "switch background" button: a list of pictures the first background
+  // layer cycles through, with a toast name for each
+  if (elements.some((e) => e.kind === 'TAP' && e.action === 'variant')) {
+    const listOf = (name) => {
+      const m = new RegExp(`${name}\\s*=\\s*\\[([^\\]]*)\\]`).exec(codeText);
+      return m ? [...m[1].matchAll(/['"]([^'"]*)['"]/g)].map((x) => x[1]) : [];
+    };
+    const pics = listOf('backgroundList').map((n) => ctx.resolve(n)).filter(Boolean);
+    const toasts = listOf('backgroundToastList').map((t) => t.replace('%s', '').trim());
+    const bg = pics.length > 1 ? elements.find((e) => e.kind === 'IMG' && e.src === pics[0]) : null;
+    if (bg) {
+      bg.images = pics;
+      if (toasts.some(Boolean)) bg.variantNames = toasts.slice(0, pics.length);
+      bg.name = bg.name === 'Image' ? 'Background (variants)' : bg.name;
+      notes.push(`${pics.length} background variants found — the first background layer cycles through them (preview them with the Variant picker)`);
+    }
+  }
+  if (ctx.editSlots) notes.push(`${ctx.editSlots} editable complication slot${ctx.editSlots === 1 ? '' : 's'} imported (Complication layers) with ${ctx.editChildren || 0} layer${ctx.editChildren === 1 ? '' : 's'} that appear for one choice only — the wearer picks the type on the watch; preview each choice with the Complication selector`);
+  if (ctx.sleepCharts) notes.push(`${ctx.sleepCharts} sleep chart${ctx.sleepCharts === 1 ? '' : 's'} imported as Sleep chart layers (the watch fills them from last night's sleep stages)`);
+  if (ctx.bars) notes.push(`${ctx.bars} linear scale${ctx.bars === 1 ? '' : 's'} came in as Progress bar layers (the Maker keeps their settings in a comment; the face's code resizes them at runtime)`);
+  if (ctx.emptyWidgets) notes.push(`${ctx.emptyWidgets} empty widget${ctx.emptyWidgets === 1 ? '' : 's'} left out (no parameters — placeholders the face's code fills in at runtime, such as the Maker's linear scale bars)`);
+  if (ctx.startHidden) notes.push(`${ctx.startHidden} layer${ctx.startHidden === 1 ? '' : 's'} start hidden (the face's own code hides ${ctx.startHidden === 1 ? 'it' : 'them'} on start and shows ${ctx.startHidden === 1 ? 'it' : 'them'} on a tap) — they stay in the list, switched off, and are not exported`);
+  if (ctx.taps) notes.push(`${ctx.taps} tap zone${ctx.taps === 1 ? '' : 's'} came in as Tap zone layers${ctx.customTaps ? ` — ${ctx.customTaps} of them ran custom code the designer does not keep (the original code is in the layer's note)` : ''}`);
   for (const [type, n] of lifecycle) {
     notes.push(`the watchface registers ${type} ×${n} for ${NON_VISUAL[type]} — not a layer, so there is nothing to design`);
   }
@@ -596,7 +704,7 @@ function importFaceDir(dir) {
     // designer then rasterizes new glyphs with its default and says so
     font: fonts.length ? fonts[0].family : '',
     // what the face declares; weekday / month names follow it
-    language: app.defaultLanguage || Object.keys(appJson.i18n || {})[0] || 'en-US',
+    language: languageTag(appJson.defaultLanguage || app.defaultLanguage || Object.keys(appJson.i18n || {})[0]),
     groups: {},
     elements,
   };
@@ -661,6 +769,24 @@ function mapWidget(type, p, ctx, skipped, sensor) {
     ctx.lifecycle.set(type, (ctx.lifecycle.get(type) || 0) + 1);
     return [];
   }
+  // createWidget(FILL_RECT) with no parameters is a placeholder the Maker leaves for a widget
+  // it configures in code (its "Linear scale" bars): drawn as a default rectangle it would
+  // cover the face, so it is left out
+  if (['FILL_RECT', 'STROKE_RECT', 'CIRCLE', 'ARC'].includes(type)
+    && !Object.keys(p || {}).some((k) => k !== 'show_level' && k !== '_click')) {
+    const lin = type === 'FILL_RECT' ? (ctx.linear || []).find((x) => !x.used && x.show !== 'aod') : null;
+    if (lin) {
+      lin.used = true;
+      ctx.bars = (ctx.bars || 0) + 1;
+      return [newElement('BAR', clean({
+        name: `${lin.dataType && dataType(lin.dataType) ? dataType(lin.dataType).label : 'Progress'} bar`, show: lin.show, alpha: lin.alpha, x: lin.x, y: lin.y, length: lin.length, lineWidth: lin.lineWidth,
+        rounded: lin.rounded, vertical: lin.vertical, mirror: lin.mirror, inversion: lin.inversion, color: lin.color,
+        dataType: lin.dataType && dataType(lin.dataType) ? lin.dataType : undefined,
+      }))];
+    }
+    ctx.emptyWidgets = (ctx.emptyWidgets || 0) + 1;
+    return [];
+  }
   const kindId = WIDGET_KIND[type];
   if (!kindId) { skipped.set(type || '?', (skipped.get(type || '?') || 0) + 1); return []; }
   const img = (ref) => ctx.resolve(ref);
@@ -683,6 +809,50 @@ function mapWidget(type, p, ctx, skipped, sensor) {
   const el = (id, patch) => [mk(id, { ...base, ...patch })];
 
   switch (type) {
+    case 'WATCHFACE_EDIT_MASK':
+    case 'WATCHFACE_EDIT_FG_MASK': {
+      // pictures drawn only while the wearer customises the face
+      const src = img(p.src);
+      return el('IMG', { name: type === 'WATCHFACE_EDIT_MASK' ? 'Edit mask' : 'Edit foreground mask', ...box, src });
+    }
+    case 'WATCHFACE_EDIT_GROUP': {
+      const opts = (Array.isArray(p.optional_types) ? p.optional_types : []).map((o) => ({ type: nameOf(o && o.type), preview: img(o && o.preview) || '' })).filter((o) => o.type);
+      ctx.editSlots = (ctx.editSlots || 0) + 1;
+      return el('EDIT_SLOT', clean({
+        name: `Complication ${p.edit_id != null ? p.edit_id : ctx.editSlots}`, ...box,
+        editId: num(p.edit_id), defaultType: nameOf(p.default_type), optionalTypes: opts,
+        selectImage: img(p.select_image) || '', unSelectImage: img(p.un_select_image) || '',
+        tipsBg: img(p.tips_BG) || '', tipsX: num(p.tips_x), tipsY: num(p.tips_y), tipsWidth: num(p.tips_width), tipsMargin: num(p.tips_margin),
+      }));
+    }
+    case 'GROUP': {
+      // the Maker's sleep chart: an empty group the face's code fills with a bar per sleep stage
+      const m = /sleepColors\s*=\s*\[([^\]]*)\]/.exec(ctx.code || '');
+      const cols = m ? m[1].split(',').map((t) => Number(t.trim())).filter(Number.isFinite).map((n) => '#' + (n & 0xffffff).toString(16).padStart(6, '0')) : [];
+      ctx.sleepCharts = (ctx.sleepCharts || 0) + 1;
+      return el('SLEEP_CHART', clean({
+        name: 'Sleep chart', ...box,
+        colorDeep: cols[0], colorLight: cols[1], colorRem: cols[2], colorWake: cols[3],
+      }));
+    }
+    case 'BUTTON': {
+      // The tap zones the Maker adds: a picture (often an invisible 1×1 one) with a click
+      // function. The picture stays a layer when it is visible; the click becomes a Tap zone.
+      const src = img(p.normal_src || p.press_src);
+      const size = src ? ctx.size(src) : null;
+      const out = [];
+      if (src && !(size && size.w <= 2 && size.h <= 2)) out.push(mk('IMG', { ...base, name: 'Button', ...box, src }));
+      const click = String(p._click || '');
+      const app = /startApp\s*\(\s*\{[^}]*?url\s*:\s*['"]([^'"]+)['"]/.exec(click);
+      let action = 'none', appUrl = '', note = '';
+      if (/switchBackground\s*\(/.test(click)) action = 'variant';
+      else if (app) { action = 'app'; appUrl = app[1]; }
+      else if (click) { note = click.replace(/\s+/g, ' ').slice(0, 160); ctx.customTaps = (ctx.customTaps || 0) + 1; }
+      const tapName = action === 'variant' ? 'Tap: next background' : action === 'app' ? `Tap: ${appUrl.replace(/Screen$/, '')}` : 'Tap zone';
+      out.push(mk('TAP', { ...base, name: tapName, ...box, action, appUrl, note }));
+      ctx.taps = (ctx.taps || 0) + 1;
+      return out;
+    }
     case 'IMG': {
       const src = img(p.src);
       const fromReading = src ? null : picked(p.src);
@@ -701,10 +871,13 @@ function mapWidget(type, p, ctx, skipped, sensor) {
         centerX: num(p.center_x), centerY: num(p.center_y),
       });
     }
+    case 'TEXT_FONT':
     case 'TEXT': {
       const font = typeof p.font === 'string' ? path.basename(p.font) : undefined;
+      const dt = type === 'TEXT_FONT' ? nameOf(p.type) : undefined;
       return el('TEXT', {
-        name: 'Text', ...box,
+        name: dt && dataType(dt) ? dataType(dt).label : 'Text', ...box,
+        dataType: dt && dataType(dt) ? dt : undefined,
         text: p.text == null ? '' : String(p.text),
         color: hexOf(p.color), size: num(p.text_size),
         alignH: alignOf(p.align_h), alignV: alignOf(p.align_v),
@@ -793,7 +966,8 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       });
     case 'IMG_LEVEL':
       return el('IMG_LEVEL', {
-        name: 'Level', x: box.x, y: box.y, w: box.w, h: box.h,
+        // no w/h = the picture's own size (the kind's 100×100 default would squash it)
+        name: 'Level', x: box.x, y: box.y, w: box.w === undefined ? 0 : box.w, h: box.h === undefined ? 0 : box.h,
         images: imgs(p.image_array), dataType: nameOf(p.type), level: num(p.level),
       });
     case 'IMG_PROGRESS': {
@@ -862,6 +1036,12 @@ function mapWidget(type, p, ctx, skipped, sensor) {
 
 // The designer emits a layer shown in both states as two widgets (ONLY_NORMAL +
 // ONLY_AOD). Fold them back into one layer on the way in.
+// "enUS", "zh_CN", "en-us" → a valid BCP-47 tag ("en-US"); anything unusable → en-US
+function languageTag(raw) {
+  let t = String(raw || '').trim().replace(/_/g, '-');
+  if (/^[a-z]{2,3}[A-Z]{2}$/.test(t)) t = `${t.slice(0, -2)}-${t.slice(-2)}`;
+  try { return Intl.getCanonicalLocales(t)[0] || 'en-US'; } catch (e) { return 'en-US'; }
+}
 function mergeStates(elements) {
   const out = [];
   const sigOf = (e) => JSON.stringify({ ...e, id: null, name: null, show: null });
@@ -877,4 +1057,4 @@ function mergeStates(elements) {
   return out;
 }
 
-module.exports = { importFaceDir, stripModule, WIDGET_KIND, NON_VISUAL, collectRefs };
+module.exports = { languageTag, importFaceDir, stripModule, WIDGET_KIND, NON_VISUAL, collectRefs };

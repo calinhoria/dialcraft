@@ -266,9 +266,12 @@ main.empty .watch-head, main.empty .center-tools { display: none; }
 .presets-menu button:hover { background: #ffffff0f; }
 .presets-menu button .pm-sub { margin-left: auto; padding-left: 18px; color: var(--color-mut); font-size: 11px; white-space: nowrap; }
 .presets-menu .pm-sep { height: 1px; background: var(--color-line); margin: 6px 4px; }
-#componentsMenu button .pm-sub { display: none; }
-#componentsMenu { column-count: 2; column-gap: 4px; min-width: 420px; }
-#componentsMenu .pm-title { column-span: all; }
+#componentsMenu { display: flex; flex-direction: column; overflow: hidden; min-width: 320px; max-width: 380px; padding: 0; }
+#componentsMenu[hidden] { display: none; }
+#componentsMenu .pm-search { margin: 8px; padding: 7px 10px; background: #0d0f14; border: 1px solid var(--color-line); border-radius: 8px; color: var(--color-ink); font-size: 13px; outline: none; }
+#componentsMenu .pm-search:focus { border-color: #5b8cff; }
+#componentsMenu .pm-list { overflow-y: auto; padding: 0 6px 6px; max-height: calc(70vh - 56px); }
+#componentsMenu .pm-empty { padding: 14px; color: var(--color-mut); font-size: 12px; text-align: center; }
 
 .td-group { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--color-mut); margin: 12px 0 4px; padding-top: 8px; border-top: 1px solid var(--color-line); }
 .td-group:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
@@ -608,3 +611,14 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 .layer.offview, .group-row.offview { cursor: not-allowed; }
 .layer.offview .lrow-r, .group-row.offview .lrow-r { pointer-events: none; }
 .layer.offview.sel, .layer.offview.multi { background: transparent; }
+
+.center-tools button { white-space: nowrap; }
+.center-tools select { background: #0d0f14; border: 0; color: var(--color-ink); font-size: 12px; padding: 4px 8px; border-radius: 7px; cursor: pointer; max-width: 150px; }
+.center-tools select:hover { background: #ffffff0d; }
+.center-tools select[hidden] { display: none; }
+
+/* digit props: spacing helpers and the idle align control */
+.rowctl > input[type="number"] { min-width: 0; flex: 1 1 60px; }
+.rowctl > button { flex: none; padding: 4px 8px; font-size: 11px; }
+#props .seg.idle .seg-b:not(.on) { opacity: .75; }
+#props .seg.idle .seg-b.on { background: #3a4a78; }

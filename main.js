@@ -10,7 +10,7 @@ const { spawn } = require('child_process');
 const { PNG } = require('pngjs');
 const QRCode = require('qrcode');
 const { DEVICES, deviceByKey, deviceLabel } = require('./core/devices');
-const { DATA_TYPES, WEATHER_ICONS, SYSTEM_STATUS } = require('./core/datatypes');
+const { DATA_TYPES, WEATHER_ICONS, SYSTEM_STATUS, TAP_APPS, DT_MAX, EDIT_TYPES } = require('./core/datatypes');
 const { KINDS, SHOW_LEVELS } = require('./core/kinds');
 const { BUNDLED_FONTS, fontInfoFromBuffer, readCmapRanges, isFontFile, fontFormat, zeusApiLevel, FONT_VARIATIONS } = require('./core/fonts');
 const { LanServer, lanAddresses } = require('./core/lanserver');
@@ -144,6 +144,9 @@ ipcMain.handle('meta', async () => ({
   showLevels: SHOW_LEVELS,
   weatherIcons: WEATHER_ICONS,
   systemStatus: SYSTEM_STATUS,
+  tapApps: TAP_APPS,
+  dtMax: DT_MAX,
+  editTypes: EDIT_TYPES,
   masks: loadMaskManifest(),
   fonts: bundledFonts(),
   fontVariations: FONT_VARIATIONS,
@@ -440,9 +443,10 @@ function writeZeusProject(outDir, payload) {
   for (const el of project.elements || []) {
     if (!el || el.kind === 'IMG_ANIM') continue;
     for (const key of ['images', 'frames']) for (const n of el[key] || []) usedNames.add(n);
-    for (const key of ['src', 'unit', 'dot', 'negative', 'bg', 'cover', 'am', 'pm', 'hour', 'minute', 'second']) {
+    for (const key of ['src', 'unit', 'dot', 'negative', 'bg', 'cover', 'am', 'pm', 'hour', 'minute', 'second', 'tipsBg', 'selectImage', 'unSelectImage']) {
       if (el[key]) usedNames.add(el[key]);
     }
+    for (const o of el.optionalTypes || []) if (o && o.preview) usedNames.add(o.preview);
   }
   const keep = new Set((images || []).map((i) => i.name));
   for (const name of frameNames) if (!usedNames.has(name)) keep.delete(name); // lives in images/anim/
@@ -484,7 +488,12 @@ function writeZeusProject(outDir, payload) {
   // The app icon is mandatory: app.json points at images/preview.png and zpm
   // fails the whole build (exit 7) if the file is missing. Always write one.
   const previewBuf = payload.previewBase64 ? Buffer.from(payload.previewBase64, 'base64') : null;
-  fs.writeFileSync(path.join(imgDir, 'preview.png'), appIconPng(previewBuf));
+  fs.writeFileSync(path.join(imgDir, 'preview.png'), appIconPng(previewBuf, deviceByKey(project.device)));
+  // Tap zones are BUTTON widgets, which need a picture: a transparent 1×1 one (what the Maker ships too)
+  if ((project.elements || []).some((e) => e && e.kind === 'TAP')) {
+    const { PNG } = require('pngjs');
+    fs.writeFileSync(path.join(imgDir, 'tapzone.png'), PNG.sync.write(new PNG({ width: 1, height: 1 })));
+  }
   // fonts used by TEXT widgets live beside the images: assets/<target>/fonts/
   const usedFonts = new Set((project.elements || []).map((e) => e && e.fontFile).filter(Boolean).map((f) => path.basename(String(f))));
   if (usedFonts.size) {
@@ -560,6 +569,9 @@ function buildLog(line) {
 async function runZeusBuild(outDir, payload, { apiLevel } = {}) {
   let res;
   try { res = writeZeusProject(outDir, payload); } catch (err) { return { ok: false, error: String(err.message || err), outDir }; }
+  // an earlier build's packages must not survive: the install page serves what is in dist/,
+  // so a stale (bigger, older) .zab used to win over the one that was just built
+  try { fs.rmSync(path.join(outDir, 'dist'), { recursive: true, force: true }); } catch (e) { /* nothing to clear */ }
   const [cmd, prefix] = await zeusCommand();
   const args = [...prefix, 'build'];
   if (apiLevel) args.push(`--APILevel=${apiLevel}`);
@@ -613,7 +625,7 @@ function collectInstallFiles(dir, project, device) {
     files.push({ path: p, route: path.basename(p), label: label || path.basename(p), kind, download: /\.zab$/i.test(p) });
   };
   const dist = path.join(dir, 'dist');
-  const zabs = walkFiles(dist).filter((f) => /\.zab$/i.test(f)).sort((a, b) => fs.statSync(b).size - fs.statSync(a).size);
+  const zabs = walkFiles(dist).filter((f) => /\.zab$/i.test(f)).sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);   // newest first
   for (const z of zabs) add(z, 'install package', path.basename(z));
   const previews = walkFiles(path.join(dir, 'assets')).filter((f) => /[\\/]images[\\/]preview\.png$/i.test(f));
   add(path.join(dir, 'preview.png'), 'preview');

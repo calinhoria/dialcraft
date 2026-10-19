@@ -403,6 +403,26 @@ they were — the panel says `Shared with N other layers` beforehand. Selecting
 several glyph layers (or clicking a group) restyles them together in one pass,
 and they share the copy.
 
+## Variants and tap zones
+
+Some faces change on a tap: another colour scheme, another background, a shortcut to a
+Zepp screen. Dialcraft models both.
+
+- **Variants.** An **Image** layer with two or more pictures (Properties → Variants) is a
+  variants layer. Name the variants (“Yellow, Green, …”), then use the **Variant** selector
+  under the face to preview each one.
+- **Tap zone** (Add → Tap zone). A rectangle that reacts to a tap and draws nothing. Its
+  action is **Cycle background variants** (steps the variants layers, shows the variant's
+  name as a toast and remembers the choice across restarts) or **Open a Zepp screen**
+  (`hmApp.startApp({ url, native: true })`, e.g. `ScheduleCalScreen`, `SportListScreen`).
+  Tap zones are drawn dashed in the editor only.
+- **Import.** A Watchface Maker face with a *switch background* button comes in with its
+  background list as variants, and its buttons as tap zones. Buttons that ran other custom
+  code come in as a tap zone with the original code in its note (that code is not kept).
+- **Export.** Tap zones become `BUTTON` widgets over a transparent `tapzone.png`, and the
+  variants switcher uses `@zos/storage` and `@zos/interaction` (Zepp OS 3+). Built and
+  syntax-checked, but not run on a watch from here — test it on yours.
+
 ## AOD
 
 Every layer belongs to a face variant — **Show in**: *Normal*, *AOD*, *Both*
