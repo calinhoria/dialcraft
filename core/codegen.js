@@ -457,6 +457,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   out.push('// Design-spec reminders: preview time 10:09:36, 2px safe edge, AOD keeps');
   out.push('// the pixel budget under 10% with a black background and no second hand.');
   out.push('// ---------------------------------------------------------------------------');
+  if (els.some((e) => e.showWhen && !missingPicture(e))) ctx.sensors.add('Time');
   out.push("import ui from '@zos/ui'");
   if (ctx.sensors.size) {
     out.push(`import { ${[...ctx.sensors].sort().join(', ')} } from '@zos/sensor'`);
@@ -471,6 +472,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   }
   out.push('WatchFace({');
   out.push('  initView() {');
+  const whenVars = [];
   if (!els.length) {
     out.push('    // no visible elements yet');
   }
@@ -489,10 +491,27 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
       out.push(`    // ${el.name} (${el.kind})${both ? ` — ${state === 'aod' ? 'AOD (screen-off)' : 'normal state'}` : ''}`);
       const chunk = [];
       emitElement({ ...el, show: state, _emitState: both ? state : null }, ctx, chunk);
+      // a layer tied to AM / PM keeps a handle so the hour can show or hide it
+      if (el.showWhen && chunk.length && /ui\.createWidget\(/.test(chunk[chunk.length - 1])) {
+        const v = `when_${whenVars.length}`;
+        chunk[chunk.length - 1] = chunk[chunk.length - 1].replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2const ${v} = ui.createWidget(`);
+        whenVars.push({ v, pm: el.showWhen === 'pm' });
+      }
       // the emitters are written at a 2-space base indent; shift them inside initView
       for (const line of chunk.join('\n').split('\n')) out.push(line ? '  ' + line : line);
       out.push('');
     }
+  }
+  if (whenVars.length) {
+    out.push('    // lit AM / PM layers follow the hour');
+    out.push('    const clockNow = new Time()');
+    out.push('    const updateWhen = () => {');
+    out.push('      const pm = clockNow.getHours() >= 12');
+    for (const w of whenVars) out.push(`      ${w.v}.setProperty(ui.prop.VISIBLE, ${w.pm ? 'pm' : '!pm'})`);
+    out.push('    }');
+    out.push('    updateWhen()');
+    out.push('    clockNow.onPerMinute(updateWhen)');
+    out.push('    ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: updateWhen })');
   }
   out.push('  },');
   out.push('');

@@ -1033,6 +1033,10 @@ function placeEl(e, x, y) {
 }
 
 // ------------------------------------------------------------------- rendering --
+// a layer can be tied to the half of the day it shows in (a lit AM / PM label)
+function whenAllows(e, h = clock.h) {
+  return !e.showWhen || (e.showWhen === 'pm') === (h >= 12);
+}
 function showAllowed(show, mode) {
   if (show === 'edit') return false;
   if (mode === 'aod') return show === 'aod' || show === 'both';
@@ -1686,7 +1690,7 @@ function drawScene(c, W, H, mode, overlay) {
   c.fillRect(0, 0, W, H);
   for (const e of elements()) {
     if (e.visible === false) continue;
-    if (!showAllowed(e.show, mode)) continue;
+    if (!showAllowed(e.show, mode) || !whenAllows(e)) continue;
     c.save();
     if (e.alpha != null && e.alpha < 255) c.globalAlpha = Math.max(0, e.alpha / 255);
     try { drawElement(c, e); } catch (err) { /* never let one widget break the preview */ }
@@ -1886,6 +1890,12 @@ function layerRow(e) {
   nm.className = 'nname'; nm.textContent = layerLabel(e);
   const badge = aodBadge(e);
   left.appendChild(grip); left.appendChild(icon);
+  if (e.showWhen) {
+    const w = document.createElement('span');
+    w.className = 'grp when'; w.textContent = e.showWhen.toUpperCase();
+    w.title = e.showWhen === 'am' ? 'Visible before noon only' : 'Visible after noon only';
+    left.appendChild(w);
+  }
   if (badge) { const b = document.createElement('span'); b.className = 'grp ' + badge.toLowerCase(); b.textContent = badge; b.title = 'Shown in: ' + badge.toLowerCase(); left.appendChild(b); }
   left.appendChild(nm);
   const right = document.createElement('span');
@@ -2150,7 +2160,7 @@ function scrubTarget(lbl) {
 }
 document.addEventListener('pointerdown', (ev) => {
   if (ev.button !== 0 || !ev.target.closest) return;
-  if (ev.target.closest('.info')) return;
+  if (ev.target.closest('.help-i')) return;
   const lbl = ev.target.closest('#props .pfx, #props .row > .lbl, #fontModal .row > .lbl');
   const inp = lbl && scrubTarget(lbl);
   if (!inp) return;
@@ -2183,6 +2193,7 @@ document.addEventListener('pointerdown', (ev) => {
 // built with an explicit title uses that instead.
 const PROP_HELP = {
   'Name': 'The layer’s name in the designer and in the generated code comments. The watch never shows it.',
+  'Visible when': 'Tie the layer to the time of day: AM only before noon, PM only from noon on. Use it for a lit AM / PM label drawn over a dim one — the preview follows the clock, and the exported code switches it on the watch by the hour.',
   'Show in': 'Which face variant draws this layer: Normal (screen on), AOD (always-on display, screen off), Both, or Edit (only while the wearer customises the face). Applies to every selected layer. Shortcuts: Shift+N / Shift+A / Shift+B.',
   'Alpha': 'Opacity from 0 (invisible) to 255 (solid).',
   'Position': 'Top-left corner of the layer, in screen pixels from the top-left of the display. Drag the X / Y letters to scrub; the wheel steps a focused field (Shift ×10).',
@@ -2267,7 +2278,7 @@ function mkRow(lbl, title) {
   if (help) {
     // the ⓘ is drawn by CSS, so the label's text stays just the label
     const i = document.createElement('span');
-    i.className = 'info';
+    i.className = 'help-i';
     i.dataset.help = help;
     i.setAttribute('aria-label', help);
     s.appendChild(i);
@@ -2282,7 +2293,7 @@ function mkRow(lbl, title) {
   tip.hidden = true;
   document.body.appendChild(tip);
   document.addEventListener('mouseover', (ev) => {
-    const i = ev.target.closest && ev.target.closest('.info');
+    const i = ev.target.closest && ev.target.closest('.help-i');
     if (!i) return;
     tip.textContent = i.dataset.help;
     tip.hidden = false;
@@ -2294,7 +2305,7 @@ function mkRow(lbl, title) {
     tip.style.top = `${top}px`;
   });
   document.addEventListener('mouseout', (ev) => {
-    if (ev.target.closest && ev.target.closest('.info')) tip.hidden = true;
+    if (ev.target.closest && ev.target.closest('.help-i')) tip.hidden = true;
   });
 }
 // Rows about the layer as a whole (Show in, Alpha) write to every selected
@@ -2688,6 +2699,29 @@ function ctlShowIn(targets) {
   }
   return wrap;
 }
+const WHEN_SEGMENTS = [
+  ['', 'Always', 'Drawn at any time of day'],
+  ['am', 'AM', 'Only before noon — e.g. a lit “AM” label. The watch switches it by the hour.'],
+  ['pm', 'PM', 'Only from noon on — e.g. a lit “PM” label. The watch switches it by the hour.'],
+];
+function ctlWhen(targets) {
+  const wrap = mkEl('div', 'seg');
+  wrap.style.gridTemplateColumns = 'repeat(3, 1fr)';
+  const cur = new Set(targets.map((t) => t.showWhen || ''));
+  for (const [key, label, tip] of WHEN_SEGMENTS) {
+    const b = mkEl('button', 'seg-b' + (cur.size === 1 && cur.has(key) ? ' on' : ''), label);
+    b.type = 'button'; b.title = tip;
+    b.onclick = () => {
+      if (targets.every((t) => (t.showWhen || '') === key)) return;
+      pushHistory();
+      for (const t of targets) { if (key) t.showWhen = key; else delete t.showWhen; }
+      refreshPanels(); render(); scheduleCode();
+      status(key ? `Shown ${key === 'am' ? 'before' : 'after'} noon only — the preview follows the clock (${String(clock.h).padStart(2, '0')}:${String(clock.m).padStart(2, '0')}).` : 'Shown at any time of day.');
+    };
+    wrap.appendChild(b);
+  }
+  return wrap;
+}
 function setShowIn(targets, key) {
   if (!targets.length || targets.every((t) => (t.show || 'normal') === key)) return;
   pushHistory();
@@ -2779,6 +2813,7 @@ function renderPropsBody(host) {
   section(host, 'Layer');
   host.appendChild(ctlRow('Name', ctlText(e, 'name', layerLabel(e))));
   if (!many) host.appendChild(stackRow('Show in', ctlShowIn(targets)));
+  host.appendChild(stackRow('Visible when', ctlWhen(targets)));
   host.appendChild(ctlRow('Alpha', ctlAlpha(targets),
     many ? `Applies to all ${sel.length} selected layers` : ''));
 
@@ -5046,7 +5081,7 @@ function hitElement(ev) {
   const list = elements();
   for (let i = list.length - 1; i >= 0; i--) {
     const e = list[i];
-    if (e.visible === false || e.locked || offView(e)) continue;
+    if (e.visible === false || e.locked || offView(e) || !whenAllows(e)) continue;
     const b = elBox(e);
     if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) return e;
   }

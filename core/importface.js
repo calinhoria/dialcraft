@@ -119,7 +119,7 @@ function showOf(v) {
 // constant name (for the groups above) or another permissive. That lets the
 // watchface code run untouched — sensors, hm* globals, helpers — while every
 // widget call lands in `calls`.
-function makeShim(calls, notes) {
+function makeShim(calls, notes, opts = {}) {
   const log = notes || [];
   // the reading the code is currently looking at (hmSensor.createSensor(…)):
   // a widget can pick its picture from it, which is how a runtime index is
@@ -162,8 +162,19 @@ function makeShim(calls, notes) {
   const createWidget = (type, params) => {
     let p = {};
     try { p = JSON.parse(JSON.stringify(params || {})); } catch (e) { p = { ...(params || {}) }; }
-    calls.push({ type: nameOf(type) || String(type), params: p, sensor });
-    return mk('widgetInstance', 'widget');
+    const entry = { type: nameOf(type) || String(type), params: p, sensor };
+    calls.push(entry);
+    const inst = mk('widgetInstance', 'widget');
+    // setProperty(hmUI.prop.VISIBLE, v) is how a face lights one of two labels
+    // (AM / PM): remember the last value so the import can tell which hour shows it
+    return new Proxy(inst, {
+      get(t, prop, r) {
+        if (prop === 'setProperty') {
+          return (key, val) => { if (/VISIBLE/.test(String(key))) entry.visible = !!val; return undefined; };
+        }
+        return Reflect.get(t, prop, r);
+      },
+    });
   };
   const sandbox = {
     createWidget,
@@ -172,6 +183,15 @@ function makeShim(calls, notes) {
     print() {},
     px: (n) => n,
     vp: (n) => n,
+    // a fixed clock, so a face that branches on the hour can be run at 09:00 and 15:00
+    Date: (() => {
+      const Real = Date;
+      if (opts.hour == null) return Real;
+      return class extends Real {
+        constructor(...a) { if (a.length) super(...a); else super(2024, 0, 1, opts.hour, 0, 0); }
+        static now() { return new Real(2024, 0, 1, opts.hour, 0, 0).getTime(); }
+      };
+    })(),
     setTimeout: () => 0,
     setInterval: () => 0,
     clearTimeout() {},
@@ -220,11 +240,11 @@ function stripModule(code) {
 // sensor class or runtime helper the shim does not know) is stubbed and the run
 // retried — whether the reference error reached us or was logged by the face's
 // own try/catch — so an unfamiliar API never loses the whole capture.
-function capture(code) {
+function capture(code, opts = {}) {
   const calls = [];
   const notes = [];
   const attemptNotes = [];
-  const { sandbox, getConfig, reset, mk } = makeShim(calls, attemptNotes);
+  const { sandbox, getConfig, reset, mk } = makeShim(calls, attemptNotes, opts);
   const context = vm.createContext(sandbox);
   const source = stripModule(code);
   let error = null;
@@ -511,7 +531,24 @@ function importFaceDir(dir) {
   const lifecycle = new Map();
   ctx.lifecycle = lifecycle;
   let elements = [];
-  for (const call of captured.calls) elements.push(...mapWidget(call.type, call.params, ctx, skipped, call.sensor));
+  // widgets the code shows only before / after noon (lit AM and PM labels)
+  let pmRun = null;
+  const codeText = fs.readFileSync(codeFile, 'utf8');
+  if (/VISIBLE/.test(codeText) && /getHours|hour/.test(codeText)) {
+    const am = capture(codeText, { hour: 9 }).calls;
+    pmRun = capture(codeText, { hour: 15 }).calls;
+    captured.calls.forEach((c, i) => { c.visible = am[i] ? am[i].visible : undefined; c.visiblePm = pmRun[i] ? pmRun[i].visible : undefined; });
+  }
+  for (const call of captured.calls) {
+    const made = mapWidget(call.type, call.params, ctx, skipped, call.sensor);
+    if (pmRun && call.visible !== call.visiblePm && (call.visible === true || call.visiblePm === true)) {
+      for (const e of made) {
+        e.showWhen = call.visible === true && call.visiblePm !== true ? 'am' : 'pm';
+        e.name = e.showWhen === 'am' ? 'AM lit' : 'PM lit';
+      }
+    }
+    elements.push(...made);
+  }
   elements = mergeStates(elements);
   for (const [type, n] of lifecycle) {
     notes.push(`the watchface registers ${type} ×${n} for ${NON_VISUAL[type]} — not a layer, so there is nothing to design`);

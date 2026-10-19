@@ -416,6 +416,16 @@ app.whenReady().then(async () => {
       && !slArr.some((l) => /\|/.test(l))
       && appJson.targets[TARGET].module.watchface.lockscreen === 1,
       `lockscreen ${aodFlag.withAod} with AOD layers / ${aodFlag.withoutAod} without · show_level values: ${[...new Set(slArr.map((l) => l.trim()))].join(' / ')} · exported app.json lockscreen ${appJson.targets[TARGET].module.watchface.lockscreen}`);
+    const whenProj = { name: 'When probe', elements: [
+      { id: 'w1x1', name: 'AM lit', kind: 'IMG', show: 'normal', showWhen: 'am', src: 'am.png', x: 1, y: 2 },
+      { id: 'w2x2', name: 'PM lit', kind: 'IMG', show: 'normal', showWhen: 'pm', src: 'pm.png', x: 1, y: 30 }] };
+    const whenJs = codegenMod.generateWatchface(whenProj, aodDev).code;
+    let whenSyntax = true;
+    try { new Function(whenJs.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { whenSyntax = false; }
+    check('AM / PM layers export a Time-driven VISIBLE switch',
+      /import \{ Time \} from '@zos\/sensor'/.test(whenJs) && /const when_0 = ui\.createWidget/.test(whenJs)
+      && /when_0\.setProperty\(ui\.prop\.VISIBLE, !pm\)/.test(whenJs) && /when_1\.setProperty\(ui\.prop\.VISIBLE, pm\)/.test(whenJs)
+      && /clockNow\.onPerMinute\(updateWhen\)/.test(whenJs) && whenSyntax, 'Time import, two handles, hour switch, valid syntax');
     check('app.json is a watchface for the target', appJson.app.appType === 'watchface' && !!appJson.targets[TARGET],
         `appType=${appJson.app.appType}, targets=${Object.keys(appJson.targets).join(',')}`);
       const dev = require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET);
@@ -1409,6 +1419,20 @@ app.whenReady().then(async () => {
     check('Ctrl-click multi-selects on the preview, AOD focus disables other layers, clicking the workspace deselects',
       selRun.two && selRun.toggledOff && selRun.dropped && selRun.rowIgnored && selRun.cleared, JSON.stringify(selRun));
 
+    const whenRun = await run(`
+      const a = await addElement('FILL_RECT', { x: 5, y: 5, w: 30, h: 30, color: '#202020' });
+      const b = await addElement('FILL_RECT', { x: 60, y: 60, w: 30, h: 30, color: '#303030' });
+      a.show = b.show = 'normal'; a.showWhen = 'am'; b.showWhen = 'pm';
+      const saved = { ...clock };
+      clock = { h: 9, m: 0, s: 0 };
+      const amA = whenAllows(a), amB = whenAllows(b);
+      clock = { h: 17, m: 0, s: 0 };
+      const pmA = whenAllows(a), pmB = whenAllows(b);
+      clock = saved;
+      return { amA, amB, pmA, pmB };`);
+    check('Visible when ties a layer to AM or PM (preview follows the clock)',
+      whenRun.amA && !whenRun.amB && !whenRun.pmA && whenRun.pmB, JSON.stringify(whenRun));
+
     const distRun = await run(`
       const D = dev();
       const a = await addElement('FILL_RECT', { w: 50, h: 20, color: '#202020' });
@@ -1722,7 +1746,7 @@ app.whenReady().then(async () => {
       alphaInp.oninput();
       const note = [...document.querySelectorAll('#props .prop-note')].map((p) => p.textContent).find((t) => /apply to every selected layer/.test(t)) || '';
       return { none: false, aShow: a.show, bShow: b.show, aAlpha: a.alpha, bAlpha: b.alpha,
-        showTip: rowOf('Show in').querySelector('.lbl .info').dataset.help, alphaTip: rowOf('Alpha').querySelector('.lbl .info').dataset.help, note };`);
+        showTip: rowOf('Show in').querySelector('.lbl .help-i').dataset.help, alphaTip: rowOf('Alpha').querySelector('.lbl .help-i').dataset.help, note };`);
     check('Show in (and Alpha) apply to every layer of a selected group',
       !showGroup.none && showGroup.aShow === 'aod' && showGroup.bShow === 'aod'
       && showGroup.aAlpha === 128 && showGroup.bAlpha === 128
