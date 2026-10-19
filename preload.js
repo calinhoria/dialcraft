@@ -13,6 +13,8 @@ contextBridge.exposeInMainWorld('api', {
   generateCode: (payload) => ipcRenderer.invoke('generate-code', payload),
   exportZeus: (payload) => ipcRenderer.invoke('export-zeus', payload),
   buildZeus: (payload) => ipcRenderer.invoke('build-zeus', payload),
+  toolsStatus: () => ipcRenderer.invoke('tools-status'),
+  installZeus: () => ipcRenderer.invoke('install-zeus'),
   qr: (opts) => ipcRenderer.invoke('qr', opts),
   confirmUnsaved: (opts) => ipcRenderer.invoke('confirm-unsaved', opts),
   closeConfirmed: () => ipcRenderer.invoke('close-confirmed'),

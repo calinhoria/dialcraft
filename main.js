@@ -585,6 +585,54 @@ function zeusCommand() {
     probe.on('close', (code) => resolve(code === 0 ? ['zeus', []] : ['npx', ['--yes', '@zeppos/zeus-cli@latest']]));
   });
 }
+// run a tool to the end (short ones: version probes); never throws
+function probeTool(cmd, args) {
+  return new Promise((resolve) => {
+    let out = '';
+    let child;
+    try { child = spawn(cmd, args, { shell: process.platform === 'win32', env: toolEnv() }); } catch (e) { resolve(null); return; }
+    const timer = setTimeout(() => { try { child.kill(); } catch (e) { /* gone */ } resolve(null); }, 8000);
+    child.stdout.on('data', (b) => { out += b.toString(); });
+    child.on('error', () => { clearTimeout(timer); resolve(null); });
+    child.on('close', (code) => { clearTimeout(timer); resolve(code === 0 ? out.replace(/\x1b\[[0-9;]*m/g, '').trim() : null); });
+  });
+}
+// What the build needs: Node + npx always, and Zeus either installed globally or fetched by npx.
+ipcMain.handle('tools-status', async () => {
+  const [node, npx, zeus] = await Promise.all([probeTool('node', ['--version']), probeTool('npx', ['--version']), probeTool('zeus', ['--version'])]);
+  // `zeus --version` prints node / npm / zeus / zpm lines, in colour: keep the zeus one
+  const zeusVer = zeus ? ((/^zeus:\s*v?([\d.]+)/mi.exec(zeus) || /(\d+\.\d+\.\d+)/.exec(zeus) || [])[1] || zeus.split('\n')[0]) : null;
+  const first = (s) => (s ? s.split('\n')[0].trim() : null);
+  return { node: first(node), npx: first(npx), zeus: zeusVer, platform: process.platform };
+});
+// Install the Zeus CLI globally (npm i -g), so a build does not have to fetch it every time
+ipcMain.handle('install-zeus', async () => {
+  buildLog('$ npm install -g @zeppos/zeus-cli');
+  return new Promise((resolve) => {
+    let out = '';
+    let child;
+    try { child = spawn('npm', ['install', '-g', '@zeppos/zeus-cli'], { shell: process.platform === 'win32', env: toolEnv() }); }
+    catch (e) { resolve({ ok: false, error: String(e.message || e) }); return; }
+    const onData = (b) => { const s = b.toString(); out += s; s.split('\n').forEach((l) => l.trim() && buildLog(l)); };
+    child.stdout.on('data', onData);
+    child.stderr.on('data', onData);
+    child.on('error', (err) => resolve({
+      ok: false,
+      error: 'Could not run npm: ' + String(err.message || err) + (err && err.code === 'ENOENT' ? ' — install Node.js (https://nodejs.org) first.' : ''),
+    }));
+    child.on('close', async (code) => {
+      if (code !== 0) {
+        const perm = /EACCES|EPERM/.test(out);
+        resolve({ ok: false, error: perm
+          ? 'npm was not allowed to write to its global folder. Install Node with a version manager (nvm, Volta, fnm), or run: sudo npm install -g @zeppos/zeus-cli'
+          : `npm exited with code ${code}` });
+        return;
+      }
+      const z = await probeTool('zeus', ['--version']);
+      resolve({ ok: true, zeus: z ? ((/^zeus:\s*v?([\d.]+)/mi.exec(z) || [])[1] || null) : null });
+    });
+  });
+});
 function buildLog(line) {
   if (win && !win.isDestroyed()) win.webContents.send('build-log', line);
 }

@@ -5130,11 +5130,18 @@ function toggleComponents(open) {
   componentsOpen = open == null ? !componentsOpen : open;
   $('componentsMenu').hidden = !componentsOpen;
   $('btnComponents').classList.toggle('on', componentsOpen);
-  if (componentsOpen) { const q = $('componentsSearch'); if (q) { q.value = ''; filterComponents(''); q.focus(); } }
+  if (componentsOpen) openSearchMenu('components');
 }
-function filterComponents(text) {
+function togglePresets(open) {
+  presetsOpen = open == null ? !presetsOpen : open;
+  $('presetsMenu').hidden = !presetsOpen;
+  $('btnPresets').classList.toggle('on', presetsOpen);
+  if (presetsOpen) openSearchMenu('presets');
+}
+// a menu with a search box: the list under it scrolls, group titles hide when nothing in them matches
+function filterMenu(listId, emptyId, text) {
   const q = text.trim().toLowerCase();
-  const list = $('componentsList');
+  const list = $(listId);
   let title = null, shown = 0, any = false;
   const flush = () => { if (title) title.hidden = !shown; };
   for (const n of list.children) {
@@ -5144,9 +5151,23 @@ function filterComponents(text) {
     if (hit) { shown++; any = true; }
   }
   flush();
-  $('componentsEmpty').hidden = any;
+  $(emptyId).hidden = any;
 }
-function togglePresets(open) { presetsOpen = open == null ? !presetsOpen : open; $('presetsMenu').hidden = !presetsOpen; $('btnPresets').classList.toggle('on', presetsOpen); }
+function buildSearchMenu(menu, prefix, placeholder, close) {
+  menu.classList.add('searchable');
+  menu.innerHTML = `<input id="${prefix}Search" class="pm-search" type="search" placeholder="${placeholder}" autocomplete="off" spellcheck="false"><div id="${prefix}List" class="pm-list"></div><div id="${prefix}Empty" class="pm-empty" hidden>Nothing matches.</div>`;
+  const search = $(`${prefix}Search`), list = $(`${prefix}List`);
+  search.oninput = (ev) => filterMenu(`${prefix}List`, `${prefix}Empty`, ev.target.value);
+  search.onkeydown = (ev) => {
+    if (ev.key === 'Escape') close();
+    if (ev.key === 'Enter') { const b = list.querySelector('button:not([hidden])'); if (b) b.click(); }
+  };
+  return list;
+}
+function openSearchMenu(prefix) {
+  const q = $(`${prefix}Search`);
+  if (q) { q.value = ''; filterMenu(`${prefix}List`, `${prefix}Empty`, ''); q.focus(); }
+}
 function toggleGlyphs(open) { glyphsOpen = open == null ? !glyphsOpen : open; $('glyphsMenu').hidden = !glyphsOpen; $('btnGlyphs').classList.toggle('on', glyphsOpen); }
 document.addEventListener('click', (e) => {
   if (componentsOpen && !e.target.closest('#btnComponents') && !e.target.closest('#componentsMenu')) toggleComponents(false);
@@ -5154,14 +5175,7 @@ document.addEventListener('click', (e) => {
   if (glyphsOpen && !e.target.closest('#btnGlyphs') && !e.target.closest('#glyphsMenu')) toggleGlyphs(false);
 });
 function buildComponentsMenu() {
-  const menu = $('componentsMenu');
-  menu.innerHTML = '<input id="componentsSearch" class="pm-search" type="search" placeholder="Search widgets…" autocomplete="off" spellcheck="false"><div id="componentsList" class="pm-list"></div><div id="componentsEmpty" class="pm-empty" hidden>No widget matches.</div>';
-  const m = $('componentsList');
-  $('componentsSearch').oninput = (ev) => filterComponents(ev.target.value);
-  $('componentsSearch').onkeydown = (ev) => {
-    if (ev.key === 'Escape') toggleComponents(false);
-    if (ev.key === 'Enter') { const b = m.querySelector('button:not([hidden])'); if (b) b.click(); }
-  };
+  const m = buildSearchMenu($('componentsMenu'), 'components', 'Search widgets…', () => toggleComponents(false));
   let group = null;
   for (const k of KINDS) {
     if (k.group !== group) {
@@ -5366,8 +5380,7 @@ const PRESETS = [
   { id: 'tap', label: 'Tap zone', sub: 'opens a screen / cycles variants' },
 ];
 function buildPresetsMenu() {
-  const m = $('presetsMenu');
-  m.innerHTML = '';
+  const m = buildSearchMenu($('presetsMenu'), 'presets', 'Search presets…', () => togglePresets(false));
   for (const p of PRESETS) {
     if (p.group) {
       const t = document.createElement('div');
@@ -6784,6 +6797,34 @@ function ago(t) {
   return dd < 30 ? `${dd} day${dd === 1 ? '' : 's'} ago` : new Date(t).toLocaleDateString();
 }
 $('recentClear').onclick = async () => { await API.recentClear(); renderRecents(); };
+
+// ------------------------------------------------------------ build tools --
+// Node + npx are needed to build; the Zeus CLI is global when installed, else npx fetches it each time
+async function refreshTools() {
+  const info = $('toolsInfo'), btn = $('btnInstallZeus');
+  if (!info) return null;
+  info.textContent = 'checking…';
+  let t;
+  try { t = await API.toolsStatus(); } catch (e) { info.textContent = 'could not check'; return null; }
+  let text, ok = true;
+  if (!t.node || !t.npx) { text = 'Node.js / npx not found — install Node.js from nodejs.org to build'; ok = false; }
+  else if (t.zeus) text = `Node ${t.node.replace(/^v/, '')} · Zeus ${t.zeus} (installed)`;
+  else text = `Node ${t.node.replace(/^v/, '')} · Zeus not installed — npx fetches it on each build`;
+  info.textContent = text;
+  info.classList.toggle('bad', !ok);
+  btn.hidden = !(t.node && t.npx && !t.zeus);
+  return t;
+}
+$('btnToolsCheck').onclick = () => refreshTools();
+$('btnInstallZeus').onclick = async () => {
+  $('btnInstallZeus').disabled = true;
+  openLogModal('Install Zeus CLI', '', 'npm install -g @zeppos/zeus-cli');
+  const res = await API.installZeus();
+  $('btnInstallZeus').disabled = false;
+  appendLog(res.ok ? `\nInstalled${res.zeus ? ': ' + res.zeus : ''}.` : `\n${res.error}`);
+  refreshTools();
+};
+setTimeout(() => { refreshTools(); }, 600);
 
 // ------------------------------------------------------------------- export --
 let lastLogPath = null;

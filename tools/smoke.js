@@ -2419,6 +2419,40 @@ app.whenReady().then(async () => {
         && p.indexOf('/Users/x/.nvm/versions/node/v20.18.3/bin') < p.indexOf('/Users/x/.nvm/versions/node/v18.1.0/bin')
         && new Set(p).size === p.length && win === 'C:\\Windows', p.join(':'));
     }
+    // Add and Presets: a search box over a scrolling list, groups hide when empty, Enter picks the first match
+    const menus = await run(`
+      const r = await API.openProjectPath(${JSON.stringify(path.join(__dirname, '..', 'samples', 'sample-digital'))});
+      await loadProject(r);
+      const out = {};
+      for (const [btn, prefix] of [['btnComponents', 'components'], ['btnPresets', 'presets']]) {
+        document.getElementById(btn).click();
+        const search = document.getElementById(prefix + 'Search'), list = document.getElementById(prefix + 'List');
+        const total = list.querySelectorAll('button').length;
+        const focused = document.activeElement === search;
+        search.value = prefix === 'presets' ? 'heart' : 'circle'; search.dispatchEvent(new Event('input'));
+        const shown = [...list.querySelectorAll('button')].filter((b) => !b.hidden).length;
+        const titles = [...list.querySelectorAll('.pm-title')].filter((t) => !t.hidden).length;
+        search.value = 'zzzzqq'; search.dispatchEvent(new Event('input'));
+        const none = [...list.querySelectorAll('button')].every((b) => b.hidden) && !document.getElementById(prefix + 'Empty').hidden;
+        search.value = ''; search.dispatchEvent(new Event('input'));
+        const back = [...list.querySelectorAll('button')].filter((b) => !b.hidden).length === total;
+        const scroll = getComputedStyle(list).overflowY === 'auto';
+        out[prefix] = { total, focused, shown, titles, none, back, scroll };
+        document.getElementById(btn).click();
+      }
+      return out;`);
+    check('the Add and Presets menus have a search box (focused on open) over a scrolling list; groups hide when empty',
+      Object.values(menus).every((m) => m.total > 10 && m.focused && m.shown >= 1 && m.shown < m.total && m.titles >= 1 && m.titles <= 2 && m.none && m.back && m.scroll), JSON.stringify(menus));
+    // build tools: Node / npx / Zeus status comes back and the panel says what the build will do
+    const tools = await run(`
+      const t = await API.toolsStatus();
+      const r = await API.openProjectPath(${JSON.stringify(path.join(__dirname, '..', 'samples', 'sample-digital'))});
+      await loadProject(r);
+      const shown = await refreshTools();
+      return { t, text: document.getElementById('toolsInfo').textContent, install: !document.getElementById('btnInstallZeus').hidden, hasApi: typeof API.installZeus === 'function' };`);
+    check('the build-tools row reports Node / npx / Zeus and offers to install Zeus only when Node is there and Zeus is not',
+      tools.hasApi && 'node' in tools.t && 'npx' in tools.t && 'zeus' in tools.t && /Node|not found/.test(tools.text) && !/\u001b|node:/.test(tools.text) && (!tools.t.zeus || /^\d+\.\d+/.test(tools.t.zeus))
+      && tools.install === !!(tools.t.node && tools.t.npx && !tools.t.zeus), JSON.stringify(tools));
     // the colour-theme dialog: chips from a chosen palette, custom colours added and removed
     const thUi = await run(`
       const r = await API.openProjectPath(${JSON.stringify(path.join(__dirname, '..', 'samples', 'sample-digital'))});
