@@ -225,6 +225,16 @@ window.addEventListener('keydown', (e) => {
   // deselect layers
   const typing = document.activeElement && /input|select|textarea/i.test(document.activeElement.tagName);
   if (typing) return;
+  if (mod && !e.shiftKey && e.key.toLowerCase() === 'a') {
+    e.preventDefault();
+    const all = elements().filter((x) => !x.locked);
+    if (!all.length) return;
+    multiSel = new Set(all.map((x) => x.id));
+    if (!multiSel.has(selectedId)) selectedId = all[all.length - 1].id;
+    refreshPanels(); render();
+    status(`Selected ${all.length} layer${all.length === 1 ? '' : 's'}`);
+    return;
+  }
   if (e.key === 'Delete' || e.key === 'Backspace') {
     const sel = selection();
     if (!sel.length) return;
