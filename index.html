@@ -64,7 +64,7 @@
 <main class="grid gap-3 p-3 grid-cols-[300px_minmax(0,1fr)_320px] empty">
   <section class="left flex flex-col gap-3 min-w-0">
     <div class="panel-c collapsed rounded-xl border border-line bg-panel p-3" data-panel>
-      <h3 class="phead" data-panel-head>Watchface <span id="wfSummary" class="phead-sum"></span><span class="flex-1"></span><span class="chev">▾</span></h3>
+      <h3 class="phead" data-panel-head>Watchface <span id="wfSummary" class="phead-sum"></span><span class="flex-1"></span><button type="button" id="btnCloseProjectHead" class="phead-close" title="Close project">Close</button><span class="chev">▾</span></h3>
       <div class="pbody">
         <div class="row"><span class="lbl">Name</span><input id="inpName" type="text" placeholder="My watchface" /></div>
         <div class="row"><span class="lbl">Device</span><button id="projDevice" type="button" class="field-btn"><span id="projDeviceName"></span><span class="fb-act">Change…</span></button></div>
@@ -73,6 +73,7 @@
         <div class="row"><span class="lbl">Glyph font</span><select id="projFont"></select></div>
         <div class="row"><span class="lbl">Language</span><input id="projLang" type="text" list="langSuggest" placeholder="en-US" /></div>
         <datalist id="langSuggest"></datalist>
+        <div class="row"><span class="lbl">Colours</span><button id="btnThemes" class="row-btn" title="Make the face switch between colours: the accent colour is recoloured to a palette">Colour themes…</button></div>
         <div class="row"><span class="lbl">Fonts</span><button id="btnFonts" class="row-btn" title="Import your own fonts, preview them and rasterize glyph sets">Font library &amp; glyphs…</button></div>
         <div class="row small" id="screenInfo"></div>
         <div class="row small" id="targetInfo"></div>
@@ -138,6 +139,7 @@
       <button id="btnPreviewAod" title="Preview the AOD (always-on display) state">AOD</button>
       <button id="btnPreviewEdit" title="Preview the screen the wearer sees when long-pressing the face to customise it (edit masks and complication slots)">Edit</button>
       <button id="btnPreviewLive" title="Run the preview clock from the real time">Live clock</button>
+      <select id="themeSel" hidden title="Which colour theme the preview shows"></select>
       <select id="variantSel" hidden title="Which variant of the background layer the preview shows"></select>
       <span id="editSels" hidden></span>
     </div>
@@ -238,6 +240,25 @@
     <h3>Project check <span id="lintCount" class="muted"></span></h3>
     <div id="lintList" class="lint-list"></div>
     <div class="modal-btns"><button id="lintClose">Close</button></div>
+  </div>
+</div>
+
+<!-- colour themes -->
+<div id="themeModal" class="modal-backdrop" hidden>
+  <div class="modal">
+    <h3>Colour themes</h3>
+    <p class="muted">Pick a palette (or add your own colours) and tick the ones you want. The face's accent colour is found from its pictures and moved to each of them — the pictures that have it get one copy per theme. A Tap zone set to “Next colour theme” then switches them on the watch.</p>
+    <div class="row"><span class="lbl">Palette</span><select id="themePaletteSel"></select></div>
+    <div id="themePalette" class="theme-palette"></div>
+    <div class="row"><span class="lbl">Custom</span>
+      <span class="rowctl"><input id="themeCustomColor" type="color" value="#ff4a1c" /><input id="themeCustomName" type="text" placeholder="name (optional)" /><button id="themeCustomAdd" type="button">Add</button></span></div>
+    <div class="row"><span class="lbl">Accent</span><span class="rowctl"><input id="themeAccent" type="text" placeholder="auto — or pick the face's accent colour" /><input id="themeAccentPick" type="color" value="#ffc000" title="Pick the colour to replace" /><button id="themeAccentAuto" type="button" title="Find it from the pictures">Auto</button></span></div>
+    <div id="themeMsg" class="muted"></div>
+    <div class="modal-btns">
+      <button id="btnThemeRemove" hidden>Remove themes</button>
+      <button id="themeClose">Close</button>
+      <button id="themeGo">Generate</button>
+    </div>
   </div>
 </div>
 

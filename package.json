@@ -1,7 +1,7 @@
 {
   "name": "dialcraft",
-  "version": "0.1.0",
-  "description": "Dialcraft \u2014 a watchface designer for Zepp OS / Amazfit watches: visual editor, Zeus CLI export, .zab build and Wi-Fi install",
+  "version": "0.2.0",
+  "description": "Dialcraft — a watchface designer for Zepp OS / Amazfit watches: visual editor, Zeus CLI export, .zab build and Wi-Fi install",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -62,7 +62,8 @@
         "AppImage",
         "deb"
       ],
-      "category": "Development"
+      "category": "Development",
+      "maintainer": "Calin Belut <calinhoria@users.noreply.github.com>"
     },
     "icon": "build/icon.png"
   }

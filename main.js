@@ -410,7 +410,9 @@ ipcMain.handle('generate-code', async (_e, payload) => {
 // ------------------------------------------------------- Zeus project export --
 function writeZeusProject(outDir, payload) {
   const device = deviceByKey(payload.project.device) || DEVICES[0];
-  const { project, images } = payload;
+  const { project } = payload;
+  // the designer's kept originals (…__src.png) are never part of the face
+  const images = (payload.images || []).filter((i) => !/__src\.png$/i.test(i.name));
   const assetDir = path.join(outDir, 'assets', device.assetDir);
   const imgDir = path.join(assetDir, 'images');
   // exports made before the asset-folder rename may still hold assets/<target>.<st>/
@@ -443,7 +445,7 @@ function writeZeusProject(outDir, payload) {
   for (const el of project.elements || []) {
     if (!el || el.kind === 'IMG_ANIM') continue;
     for (const key of ['images', 'frames']) for (const n of el[key] || []) usedNames.add(n);
-    for (const key of ['src', 'unit', 'dot', 'negative', 'bg', 'cover', 'am', 'pm', 'hour', 'minute', 'second', 'tipsBg', 'selectImage', 'unSelectImage']) {
+    for (const key of ['src', 'unit', 'unitImperial', 'invalid', 'minuteCover', 'secondCover', 'dot', 'negative', 'bg', 'cover', 'scale', 'am', 'pm', 'hour', 'minute', 'second', 'tipsBg', 'selectImage', 'unSelectImage']) {
       if (el[key]) usedNames.add(el[key]);
     }
     for (const o of el.optionalTypes || []) if (o && o.preview) usedNames.add(o.preview);

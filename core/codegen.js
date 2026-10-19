@@ -54,7 +54,7 @@ function arrName(el) { return `img_${ident(el.name)}_${el.id.slice(-4)}`; }
 function missingPicture(el) {
   switch (el.kind) {
     case 'IMG': return !el.src && !variantsOf(el);
-    case 'IMG_POINTER': return !el.src;
+    case 'IMG_POINTER': case 'DATE_POINTER': return !el.src;
     case 'IMG_ANIM': return !(el.frames || []).length;
     case 'IMG_LEVEL': case 'IMG_PROGRESS': case 'TEXT_IMG': return !(el.images || []).length;
     default: return false;
@@ -100,6 +100,15 @@ function emitElement(el, ctx, out) {
   const alpha = el.alpha != null && el.alpha < 255 ? `alpha: ${Math.max(0, num(el.alpha))},` : null;
 
   switch (el.kind) {
+    case 'POLYLINE': {
+      // the firmware draws the line for the reading (docs: only HEART and SLEEP are supported); the
+      // docs spell the widget GRADKIENT_POLYLINE
+      kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y)); kv(L, 'w', p(el.w || 200)); kv(L, 'h', p(el.h || 80));
+      kv(L, 'type', `ui.data_type.${el.dataType === 'SLEEP' ? 'SLEEP' : 'HEART'}`);
+      kv(L, 'show_level', showLevel(el.show));
+      out.push(`  try { ui.createWidget(ui.widget.GRADKIENT_POLYLINE, {\n${L.join('\n')}\n  }) } catch (e) {}`);
+      break;
+    }
     case 'SLEEP_CHART': {
       // A GROUP the face fills with one FILL_RECT per sleep stage (the Maker's sleep chart).
       // Everything sensor-related sits in try/catch: a missing API must not stop the face.
@@ -176,6 +185,10 @@ function emitElement(el, ctx, out) {
       if (el.show === 'aod') break;   // the always-on display takes no taps
       let body = null;
       if (el.action === 'variant') body = 'cycleVariants()';
+      else if (el.action === 'theme') {
+        if (ctx.themed) body = 'cycleTheme()';
+        else ctx.warnings.push(`${el.name}: no colour themes yet — generate them from the project panel first (left out)`);
+      }
       else if (el.action === 'app' && el.appUrl) {
         body = `if (typeof hmApp !== 'undefined') hmApp.startApp({ url: ${JSON.stringify(String(el.appUrl))}, native: true })`;
       } else if (el.action === 'app') ctx.warnings.push(`${el.name}: no screen chosen — the tap zone is left out`);
@@ -183,7 +196,16 @@ function emitElement(el, ctx, out) {
       if (!body) break;
       if (el.action === 'variant' && !ctx.variants.length) ctx.warnings.push(`${el.name}: no image layer with variants to cycle`);
       ctx.usesTap = true;
-      out.push(`  ui.createWidget(ui.widget.BUTTON, {\n    x: ${p(el.x)}, y: ${p(el.y)}, w: ${p(el.w)}, h: ${p(el.h)},\n    text: '',\n    normal_src: A('tapzone.png'),\n    press_src: A('tapzone.png'),\n    click_func: () => { ${body} },\n    show_level: ${showLevel(el.show)},\n  })`);
+      if (el.text || el.normalColor) {
+        // a visible button: label and/or background colours (the docs' BUTTON text / color / press_color / normal_color / radius)
+        const hex = (v) => `0x${hexToNum(v).toString(16).padStart(6, '0')}`;
+        const B = [`    x: ${p(el.x)}, y: ${p(el.y)}, w: ${p(el.w)}, h: ${p(el.h)},`, `    text: ${JSON.stringify(String(el.text || ''))},`];
+        if (el.textColor) B.push(`    color: ${hex(el.textColor)},`);
+        if (el.textSize) B.push(`    text_size: ${p(el.textSize)},`);
+        if (el.normalColor) { B.push(`    normal_color: ${hex(el.normalColor)},`, `    press_color: ${hex(el.pressColor || el.normalColor)},`); }
+        if (el.radius) B.push(`    radius: ${p(el.radius)},`);
+        out.push(`  ui.createWidget(ui.widget.BUTTON, {\n${B.join('\n')}\n    click_func: () => { ${body} },\n    show_level: ${showLevel(el.show)},\n  })`);
+      } else out.push(`  ui.createWidget(ui.widget.BUTTON, {\n    x: ${p(el.x)}, y: ${p(el.y)}, w: ${p(el.w)}, h: ${p(el.h)},\n    text: '',\n    normal_src: A('tapzone.png'),\n    press_src: A('tapzone.png'),\n    click_func: () => { ${body} },\n    show_level: ${showLevel(el.show)},\n  })`);
       break;
     }
     case 'IMG': {
@@ -249,6 +271,7 @@ function emitElement(el, ctx, out) {
       kv(L, 'align_v', `ui.align.${el.alignV || 'CENTER_V'}`);
       if (el.lineSpace) kv(L, 'line_space', p(el.lineSpace));
       if (el.charSpace) kv(L, 'char_space', p(el.charSpace));
+      if (el.textStyle && el.textStyle !== 'NONE') kv(L, 'text_style', `ui.text_style.${el.textStyle}`);
       if (el.dataType) kv(L, 'type', `ui.data_type.${el.dataType}`);
       else kv(L, 'text', JSON.stringify(el.text == null ? '' : String(el.text)));
       if (el.alpha != null && el.alpha < 255) kv(L, 'alpha', Math.max(0, num(el.alpha)));
@@ -262,11 +285,16 @@ function emitElement(el, ctx, out) {
     case 'TEXT_IMG': {
       kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
       if (el.w) kv(L, 'w', p(el.w));
-      if (el.dataType) kv(L, 'type', `ui.data_type.${el.dataType}`);
+      // a fixed text replaces the reading (the docs: `type` is disabled when `text` is set)
+      if (el.text) kv(L, 'text', JSON.stringify(String(el.text).replace(/[^0-9]/g, '')));
+      else if (el.dataType) kv(L, 'type', `ui.data_type.${el.dataType}`);
       kv(L, 'font_array', arrays[arrName(el)]);
       if (el.hSpace) kv(L, 'h_space', p(el.hSpace));
       kv(L, 'align_h', `ui.align.${el.alignH || 'LEFT'}`);
       if (el.unit) { kv(L, 'unit_en', asset(el, 'unit')); kv(L, 'unit_sc', asset(el, 'unit')); kv(L, 'unit_tc', asset(el, 'unit')); }
+      // the unit shown when the watch is set to imperial (mi, °F …)
+      if (el.unitImperial) { kv(L, 'imperial_unit_en', asset(el, 'unitImperial')); kv(L, 'imperial_unit_sc', asset(el, 'unitImperial')); kv(L, 'imperial_unit_tc', asset(el, 'unitImperial')); }
+      if (el.invalid) kv(L, 'invalid_image', asset(el, 'invalid'));
       if (el.dot) kv(L, 'dot_image', asset(el, 'dot'));
       if (el.negative) kv(L, 'negative_image', asset(el, 'negative'));
       kv(L, 'show_level', showLevel(el.show));
@@ -345,6 +373,23 @@ function emitElement(el, ctx, out) {
       out.push(`  ui.createWidget(ui.widget.IMG_DATE, {\n${L.join('\n')}\n  })`);
       break;
     }
+    case 'DATE_POINTER': {
+      // hmUI.date.WEEK / DAY / MONTH — the date unit the pointer turns with
+      kv(L, 'type', `(typeof hmUI !== 'undefined' && hmUI.date ? hmUI.date : ui.date).${el.dateType || 'WEEK'}`);
+      kv(L, 'center_x', p(el.centerX)); kv(L, 'center_y', p(el.centerY));
+      kv(L, 'src', asset(el, 'src'));
+      kv(L, 'posX', p(el.posX)); kv(L, 'posY', p(el.posY));
+      if (el.scale) {
+        kv(L, 'scale_x', p(el.scaleX)); kv(L, 'scale_y', p(el.scaleY));
+        kv(L, 'scale_en', asset(el, 'scale')); kv(L, 'scale_sc', asset(el, 'scale')); kv(L, 'scale_tc', asset(el, 'scale'));
+      }
+      if (el.cover) { kv(L, 'cover_path', asset(el, 'cover')); kv(L, 'cover_x', p(el.coverX)); kv(L, 'cover_y', p(el.coverY)); }
+      kv(L, 'start_angle', num(el.startAngle || 0));
+      kv(L, 'end_angle', num(el.endAngle == null ? 180 : el.endAngle));
+      kv(L, 'show_level', showLevel(el.show));
+      out.push(`  ui.createWidget(ui.widget.DATE_POINTER, {\n${L.join('\n')}\n  })`);
+      break;
+    }
     case 'TIME_POINTER': {
       const hands = [['hour', el.hour, el.hourPivotX, el.hourPivotY], ['minute', el.minute, el.minutePivotX, el.minutePivotY], ['second', el.second, el.secondPivotX, el.secondPivotY]];
       for (const [name, src, px_, py] of hands) {
@@ -354,6 +399,10 @@ function emitElement(el, ctx, out) {
         kv(L, `${name}_path`, A(src));
       }
       if (el.cover) { kv(L, 'hour_cover_path', A(el.cover)); kv(L, 'hour_cover_x', p(el.centerX)); kv(L, 'hour_cover_y', p(el.centerY)); }
+      // a hand of its own can carry its own cap too (minute_cover_* / second_cover_*)
+      for (const name of ['minute', 'second']) {
+        if (el[`${name}Cover`]) { kv(L, `${name}_cover_path`, A(el[`${name}Cover`])); kv(L, `${name}_cover_x`, p(el.centerX)); kv(L, `${name}_cover_y`, p(el.centerY)); }
+      }
       kv(L, 'show_level', showLevel(el.show));
       out.push(`  ui.createWidget(ui.widget.TIME_POINTER, {\n${L.join('\n')}\n  })`);
       break;
@@ -386,8 +435,9 @@ function emitElement(el, ctx, out) {
       const arr = arrays[arrName(el)];
       const n = (el.images || []).length || 1;
       const spread = num(el.spread || 24);
-      kv(L, 'x', `[${Array.from({ length: n }, (_, i) => p(num(el.x) + i * spread)).join(', ')}]`);
-      kv(L, 'y', `[${Array.from({ length: n }, () => p(el.y)).join(', ')}]`);
+      const pos = Array.isArray(el.positions) && el.positions.length === n ? el.positions : null;
+      kv(L, 'x', `[${Array.from({ length: n }, (_, i) => p(pos ? pos[i][0] : num(el.x) + i * spread)).join(', ')}]`);
+      kv(L, 'y', `[${Array.from({ length: n }, (_, i) => p(pos ? pos[i][1] : el.y)).join(', ')}]`);
       kv(L, 'image_array', arr);
       kv(L, 'image_length', `${arr}.length`);
       if (el.dataType) kv(L, 'type', `ui.data_type.${el.dataType}`);
@@ -487,6 +537,8 @@ function emitElement(el, ctx, out) {
       kv(L, 'repeat_count', num(el.repeat != null ? el.repeat : 0));
       kv(L, 'step', num(el.step || 1));
       kv(L, 'anim_status', 'ui.anim_status.START');
+      if (el.displayOnRestart) kv(L, 'display_on_restart', 'true');
+      if (el.defaultFrame) kv(L, 'default_frame_index', num(el.defaultFrame));
       kv(L, 'show_level', showLevel(el.show));
       out.push(`  ui.createWidget(ui.widget.IMG_ANIM, {\n${L.join('\n')}\n  })`);
       break;
@@ -533,9 +585,14 @@ function readerFor(el, ctx) {
 
 function generateWatchface(project, device = deviceByKey(project.device)) {
   const ctx = { sensors: new Set(), declared: new Set(), arrays: {}, warnings: [], variants: [], usesTap: false };
+  // colour themes: pictures with a recoloured copy per theme; the face rebuilds itself on a switch
+  const th = project.themes;
+  const themed = !!(th && Array.isArray(th.list) && th.list.length && Array.isArray(th.recolored) && th.recolored.length);
+  ctx.themed = themed;
   const els = (project.elements || []).filter((e) => e.visible !== false);
   // ---- declare the image arrays the widgets reference ----
   const decls = [];
+  const fills = [];                   // themed faces: the arrays are filled again after a switch
   const arrayByContent = new Map();   // identical sets share one const
   for (const el of els) {
     let names = null;
@@ -551,7 +608,10 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     const id = arrName(el);
     arrayByContent.set(key, id);
     ctx.arrays[id] = id;
-    decls.push(`const ${id} = [\n${names.map((n) => `  ${A(n)}`).join(',\n')},\n]`);
+    if (themed) {
+      decls.push(`let ${id} = []`);
+      fills.push(`  ${id} = [\n${names.map((n) => `    ${A(n)}`).join(',\n')},\n  ]`);
+    } else decls.push(`const ${id} = [\n${names.map((n) => `  ${A(n)}`).join(',\n')},\n]`);
   }
   for (const el of els) {
     if (el.kind !== 'ARC_PROGRESS') continue;
@@ -579,12 +639,19 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push(`import { ${[...ctx.sensors].sort().join(', ')} } from '@zos/sensor'`);
   }
   out.push('');
-  out.push('const A = (p) => `images/${p}`');
+  if (themed) {
+    out.push(`// colour themes: ${th.list.map((t) => t.name).join(', ')} (pictures with a recoloured copy are listed in THEMED)`);
+    out.push(`const THEME_NAMES = ${JSON.stringify(['Original', ...th.list.map((t) => t.name)])}`);
+    out.push(`const THEMED = ${JSON.stringify(Object.fromEntries(th.recolored.map((n) => [n, 1])))}`);
+    out.push('let themeIdx = 0');
+    out.push("const A = (p) => `images/${themeIdx && THEMED[p] ? p.replace(/\\.png$/i, '__t' + themeIdx + '.png') : p}`");
+  } else out.push('const A = (p) => `images/${p}`');
   out.push('');
   if (decls.length) {
     out.push('// ---- image arrays (frame order matters: digits 0-9, week 1-7) ----');
     out.push(decls.join('\n\n'));
     out.push('');
+    if (themed) { out.push('const initArrays = () => {'); out.push(fills.join('\n')); out.push('}'); out.push(''); }
   }
   out.push('WatchFace({');
   out.push('  initView() {');
@@ -599,6 +666,12 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push("    try { if (typeof hmFS !== 'undefined') variantIdx = Number(hmFS.SysProGetInt('dialcraft_variant')) || 0 } catch (e) {}");
     out.push('');
   }
+  if (themed) {
+    out.push('    // the picked colour theme survives a restart (when the watch offers storage)');
+    out.push("    try { if (typeof hmFS !== 'undefined') themeIdx = (Number(hmFS.SysProGetInt('dialcraft_theme')) || 0) % THEME_NAMES.length } catch (e) {}");
+    out.push('');
+  }
+  const bodyStart = out.length;
   const slotEls = els.filter((e) => e.kind === 'EDIT_SLOT');
   const slotOf = (e) => (e.editSlot != null && e.editSlot !== '' ? slotEls.find((sl) => String(sl.editId) === String(e.editSlot)) : null);
   // one layer (or two, when it shows in both states) as widget code, indented by `pad` extra spaces
@@ -699,6 +772,38 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('    updateWhen()');
     out.push('    clockNow.onPerMinute(updateWhen)');
     out.push('    ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: updateWhen })');
+  }
+  if (themed) {
+    // Everything above becomes buildFace(): a theme switch deletes the widgets it made and builds again
+    const body = out.splice(bodyStart).join('\n')
+      .replace(/ui\.createWidget\(/g, 'mk(')
+      .replace(/\bH\.createWidget\(/g, 'mkH(H, ')
+      .replace(/\.(onChange|onPerMinute|onPerSecond)\(([\w$]+)\)/g, '.$1(guard($2, g))');
+    const ind = (t) => t.split('\n').map((l) => (l ? '  ' + l : l)).join('\n');
+    out.push('    let gen = 0');
+    out.push('    const made = []');
+    out.push('    const mk = (t, o) => { const w = ui.createWidget(t, o); made.push(w); return w }');
+    out.push('    const mkH = (h, t, o) => { const w = h.createWidget(t, o); made.push(w); return w }');
+    out.push('    // a timer or sensor callback of an old build must not touch its deleted widgets');
+    out.push('    const guard = (f, g) => (...a) => { if (g === gen) return f(...a) }');
+    out.push('    const buildFace = () => {');
+    out.push('      const g = ++gen');
+    if (decls.length) out.push('      initArrays()');
+    out.push(ind(body));
+    out.push('    }');
+    out.push('    const rebuild = () => {');
+    out.push('      for (const w of made) { try { if (ui.deleteWidget) ui.deleteWidget(w); else if (typeof hmUI !== \'undefined\') hmUI.deleteWidget(w) } catch (e) {} }');
+    out.push('      made.length = 0');
+    out.push('      buildFace()');
+    out.push('    }');
+    out.push('    // a Tap zone calls this; the rebuild runs after the tap handler returns (it deletes the tap zone itself)');
+    out.push('    const cycleTheme = () => {');
+    out.push('      themeIdx = (themeIdx + 1) % THEME_NAMES.length');
+    out.push("      try { if (typeof hmFS !== 'undefined') hmFS.SysProSetInt('dialcraft_theme', themeIdx) } catch (e) {}");
+    out.push("      try { if (typeof hmUI !== 'undefined' && hmUI.showToast) hmUI.showToast({ text: THEME_NAMES[themeIdx] }) } catch (e) {}");
+    out.push("      if (typeof setTimeout === 'function') setTimeout(rebuild, 0); else rebuild()");
+    out.push('    }');
+    out.push('    buildFace()');
   }
   out.push('  },');
   out.push('');

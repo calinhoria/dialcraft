@@ -75,14 +75,16 @@ let dateParts = { ...REF_DATE };
 let testData = {};                    // dataType key -> preview value
 
 const imgCache = new Map();           // name -> HTMLImageElement
+// copies the designer keeps for itself: colour-theme variants and the original pictures of a restyled imported set
+const HIDDEN_IMG_RE = /__(t\d+|src)\.png$/i;
 let glyphFont = 'Orbitron';
 
 // geometric kinds whose anchor is a centre rather than a top-left corner
-const CENTER_KINDS = new Set(['CIRCLE', 'ARC_PROGRESS', 'TIME_POINTER']);
+const CENTER_KINDS = new Set(['CIRCLE', 'ARC_PROGRESS', 'TIME_POINTER', 'DATE_POINTER']);
 // kinds whose box is driven by the w/h fields (resizable from the corners)
 // (not IMG_POINTER: the watch draws the pointer at its image size, pivoting on
 // its own x/y — see pointerBox)
-const WH_KINDS = new Set(['EDIT_SLOT', 'SLEEP_CHART', 'TAP', 'IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_ANIM',
+const WH_KINDS = new Set(['EDIT_SLOT', 'SLEEP_CHART', 'POLYLINE', 'TAP', 'IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_ANIM',
   'IMG_STATUS', 'IMG_CLICK', 'TEXT', 'FILL_RECT', 'STROKE_RECT', 'ARC']);
 // kinds that draw digit images and therefore take an image array + metrics
 const SET_KINDS = new Set(['IMG_TIME', 'IMG_WEEK', 'IMG_DATE', 'TEXT_IMG', 'IMG_LEVEL', 'IMG_PROGRESS']);
@@ -281,7 +283,16 @@ async function loadAllImages() {
     if (im) imgCache.set(it.name, im);
   }));
 }
-function imgFor(name) { return name ? imgCache.get(name) || null : null; }
+let themeIdx = 0;                    // preview colour theme (0 = the face as drawn)
+const themedName = (name, i) => String(name).replace(/\.png$/i, `__t${i}.png`);
+function imgFor(name) {
+  if (!name) return null;
+  if (themeIdx && project && project.themes && project.themes.recolored && project.themes.recolored.includes(name)) {
+    const t = imgCache.get(themedName(name, themeIdx));
+    if (t) return t;
+  }
+  return imgCache.get(name) || null;
+}
 function imgMeta(name) { return (project && project.images.find((i) => i.name === name)) || null; }
 
 function addProjectImage(name, canvas, { replace = true } = {}) {
@@ -879,7 +890,7 @@ function digitPreviewNote(e) {
       : `${pad2(clock.h)}:${pad2(clock.m)}:${pad2(clock.s)}`;
   const what = liveClock ? 'the live time' : `“${t}” at ${sample}`;
   const hour12 = e.kind === 'IMG_TIME' && (e.part || 'hour') === 'hour12';
-  const key = `${isDate ? (e.part === 'month' ? 'month' : 'day') : (e.part || 'hour')}_zero`;
+  const key = `${isDate ? (e.part === 'month' || e.part === 'year' ? e.part : 'day') : (e.part || 'hour')}_zero`;
   const zero = !!+e.zero;
   const zeroTxt = hour12
     ? 'the 12-hour form carries no leading-zero or align switch'
@@ -915,14 +926,25 @@ function digitTextFor(e) {
       if (p === 'hour12') { const h = clock.h % 12; return String(h === 0 ? 12 : h); }
       return padDigits(clock.h, zero);
     }
-    case 'IMG_DATE': return padDigits((e.part || 'day') === 'month' ? dateParts.month : dateParts.day, zero);
+    case 'IMG_DATE': {
+      const part = e.part || 'day';
+      // the year is the last two digits, as the Maker's own preview draws it
+      return padDigits(part === 'month' ? dateParts.month : part === 'year' ? (+dateParts.year || 0) % 100 : dateParts.day, zero);
+    }
     case 'TEXT_IMG': {
+      if (e.text) return String(e.text).replace(/[^0-9]/g, '');
       const d = dtByKey(e.dataType);
       // the widget shows the reading as it is (22°, 8670 steps); the data type's
       // digit count is the *box* it stays in, not a padding request
       const raw = valueString(e.dataType);
-      let t = raw.replace(/[^0-9]/g, '');
-      if (d && d.digits) t = t.slice(-d.digits);
+      // a reading with a decimal point keeps it when the layer has a dot picture
+      const dotted = !!(e.dot && d && d.dot);
+      let t = raw.replace(dotted ? /[^0-9.]/g : /[^0-9]/g, '');
+      if (d && d.digits) {
+        let left = d.digits, k = t.length;
+        while (k > 0 && left > 0) { k--; if (t[k] !== '.') left--; }
+        t = t.slice(k);
+      }
       // a negative reading puts the layer's minus picture in front, when it has one
       return e.negative && /^\s*-/.test(raw) && t ? '-' + t : t;
     }
@@ -1003,9 +1025,10 @@ function measureSet(e) {
   const cell = setCell(e);
   const text = digitTextFor(e);
   const neg = text.startsWith('-') ? imgMeta(e.negative) : null;
-  const n = Math.max(1, text.replace('-', '').length);
+  const dm = text.includes('.') ? imgMeta(e.dot) : null;
+  const n = Math.max(1, text.replace(/[-.]/g, '').length);
   const sp = effSpace(e);
-  return { w: n * cell.w + Math.max(0, n - 1) * sp + setUnitWidth(e) + (neg ? neg.width + sp : 0), h: cell.h, cell, n, sp };
+  return { w: n * cell.w + Math.max(0, n - 1) * sp + setUnitWidth(e) + (neg ? neg.width + sp : 0) + (dm ? dm.width + sp : 0), h: cell.h, cell, n, sp };
 }
 // The box a digit widget occupies. hmUI gives IMG_TIME / IMG_DATE / TEXT_IMG no
 // width, so the watch lays the value out inside a box as wide as the part can
@@ -1033,7 +1056,8 @@ function digitBox(e) {
   const x = sb ? sb.x + sb.w : devNum(e.x);
   const y = sb ? sb.y : devNum(e.y);
   const cap = digitCapacity(e);
-  const capW = cap ? cap * m.cell.w + Math.max(0, cap - 1) * m.sp + setUnitWidth(e) : 0;
+  const dotM = e.kind === 'TEXT_IMG' && e.dot && (dtByKey(e.dataType) || {}).dot ? imgMeta(e.dot) : null;
+  const capW = cap ? cap * m.cell.w + Math.max(0, cap - 1) * m.sp + setUnitWidth(e) + (dotM ? dotM.width + m.sp : 0) : 0;
   const explicit = e.kind === 'TEXT_IMG' ? devNum(e.w) : 0;   // TEXT_IMG may carry a width
   return { x, y, w: Math.max(explicit, capW, m.w), h: m.h, anchor: x, run: m.w };
 }
@@ -1071,7 +1095,7 @@ function elBox(e) {
       const r = Math.max(1, num(e.radius, 60));
       return { x: num(e.centerX) - r, y: num(e.centerY) - r, w: r * 2, h: r * 2 };
     }
-    case 'TIME_POINTER': return { x: 0, y: 0, w: W, h: H };
+    case 'TIME_POINTER': case 'DATE_POINTER': return { x: 0, y: 0, w: W, h: H };
     case 'BAR': {
       const len = Math.max(1, num(e.length, 100)), lw = Math.max(1, num(e.lineWidth, 10));
       return e.vertical ? { x: num(e.x), y: num(e.y), w: lw, h: len } : { x: num(e.x), y: num(e.y), w: len, h: lw };
@@ -1105,6 +1129,10 @@ function elBox(e) {
       const n = Math.max(1, (e.images || []).length);
       const cw = m ? m.width : 20, ch = m ? m.height : 20;
       const spread = num(e.spread, 24);
+      if (Array.isArray(e.positions) && e.positions.length) {
+        const xs = e.positions.map((q) => +q[0]), ys = e.positions.map((q) => +q[1]);
+        return { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs) + cw, h: Math.max(...ys) - Math.min(...ys) + ch };
+      }
       return { x: num(e.x), y: num(e.y), w: cw + (n - 1) * spread, h: ch };
     }
     case 'ARC': return { x: num(e.x), y: num(e.y), w: num(e.w, 100), h: num(e.h, 100) };
@@ -1137,7 +1165,7 @@ function moveEl(e, dx, dy) {
     e.centerY = Math.round((+e.centerY || 0) + dy);
     return;
   }
-  if (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER') {
+  if (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER' || e.kind === 'DATE_POINTER') {
     e.centerX = Math.round((+e.centerX || 0) + dx);
     e.centerY = Math.round((+e.centerY || 0) + dy);
     return;
@@ -1195,6 +1223,7 @@ function syncEditSels() {
 }
 function syncVariantSel() {
   syncEditSels();
+  syncThemeSel();
   const sel = $('variantSel');
   if (!sel) return;
   const lay = project ? elements().find((e) => variantList(e)) : null;
@@ -1268,6 +1297,11 @@ function drawDigits(c, e, x, y, text) {
     if (text[i] === '-') {
       const nm = imgMeta(e.negative);
       if (nm) { put(c, e.negative, cx, y + Math.max(0, (cell.h - nm.height) / 2), nm.width, nm.height); cx += nm.width + sp; }
+      continue;
+    }
+    if (text[i] === '.') {
+      const dm = imgMeta(e.dot);
+      if (dm) { put(c, e.dot, cx, y + Math.max(0, (cell.h - dm.height) / 2), dm.width, dm.height); cx += dm.width + sp; }
       continue;
     }
     const idx = +text[i];
@@ -1464,6 +1498,26 @@ function textFillStyle(c, e, b) {
 
 // Shared glyph painter: used by the canvas preview *and* by the PNG bake, so
 // what you see in the editor is exactly what lands in the .zab.
+// the TEXT widget's text_style: WRAP breaks a line that is wider than the box, ELLIPSIS cuts it with …
+function fitTextLines(c, lines, w, style) {
+  if (!style || style === 'NONE' || !(w > 0)) return lines;
+  const out = [];
+  for (const line of lines) {
+    if (c.measureText(line).width <= w) { out.push(line); continue; }
+    if (style === 'ELLIPSIS') {
+      let s = line;
+      while (s.length > 1 && c.measureText(s + '…').width > w) s = s.slice(0, -1);
+      out.push(s + '…');
+      continue;
+    }
+    let cur = '';
+    for (const word of line.split(/(\s+)/)) {
+      if (cur && c.measureText(cur + word).width > w) { out.push(cur.trimEnd()); cur = word.trimStart(); } else cur += word;
+    }
+    if (cur) out.push(cur);
+  }
+  return out;
+}
 function drawTextInto(c, e, b, fam, box) {
   const size = +e.size || 32;
   c.save();
@@ -1473,7 +1527,7 @@ function drawTextInto(c, e, b, fam, box) {
   c.fillStyle = outline ? hexOrWhite(e.color) : textFillStyle(c, e, b);
   const va = e.alignV || 'CENTER_V';
   c.textBaseline = va === 'TOP' ? 'top' : va === 'BOTTOM' ? 'bottom' : 'middle';
-  const lines = textOf(e).split('\n');
+  const lines = fitTextLines(c, textOf(e).split('\n'), b.w, e.textStyle);
   const lh = size * 1.15 + (+e.lineSpace || 0);
   const totalH = lines.length * lh;
   const y0 = va === 'TOP' ? b.y : va === 'BOTTOM' ? b.y + b.h - totalH + lh : b.y + (b.h - totalH) / 2 + lh / 2;
@@ -1570,8 +1624,37 @@ function alignTextX(c, text, e, box) {
 function drawElement(c, e) {
   const bg = (hex) => `0x${hex}`;
   switch (e.kind) {
-    case 'TAP': break;
+    case 'TAP': {
+      if (!(e.text || e.normalColor) || e.show === 'aod') break;
+      const b = elBox(e);
+      c.save();
+      if (e.normalColor) { c.fillStyle = hexOrWhite(e.normalColor); roundRect(c, b.x, b.y, b.w, b.h, +e.radius || 0); c.fill(); }
+      if (e.text) {
+        c.fillStyle = hexOrWhite(e.textColor);
+        c.font = `${Math.max(8, +e.textSize || 28)}px Inter, sans-serif`;
+        c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.fillText(String(e.text), b.x + b.w / 2, b.y + b.h / 2, Math.max(10, b.w - 4));
+      }
+      c.restore();
+      break;
+    }
     case 'EDIT_SLOT': break;
+    case 'POLYLINE': {
+      // the firmware's gradient line chart; a sample curve stands in for the data
+      const b = elBox(e);
+      const pts = [0.55, 0.4, 0.62, 0.3, 0.5, 0.2, 0.45, 0.58, 0.35, 0.48];
+      const xy = pts.map((v, i) => [b.x + (i / (pts.length - 1)) * b.w, b.y + v * b.h]);
+      c.save();
+      const g = c.createLinearGradient(0, b.y, 0, b.y + b.h);
+      g.addColorStop(0, 'rgba(255,90,90,0.55)'); g.addColorStop(1, 'rgba(255,90,90,0)');
+      c.beginPath(); c.moveTo(xy[0][0], b.y + b.h);
+      xy.forEach(([x, y]) => c.lineTo(x, y));
+      c.lineTo(xy[xy.length - 1][0], b.y + b.h); c.closePath(); c.fillStyle = g; c.fill();
+      c.beginPath(); xy.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y)));
+      c.strokeStyle = e.dataType === 'SLEEP' ? '#8cb0d8' : '#ff5a5a'; c.lineWidth = 2; c.stroke();
+      c.restore();
+      break;
+    }
     case 'SLEEP_CHART': {
       // sample night: one row per stage (awake on top, deep at the bottom), like the watch draws it
       const b = elBox(e);
@@ -1643,6 +1726,10 @@ function drawElement(c, e) {
       const b = elBox(e);
       const n = (e.images || []).length;
       const filled = progressCount(e);
+      if (Array.isArray(e.positions) && e.positions.length === n) {
+        for (let i = 0; i < filled && i < n; i++) { const m = imgMeta(e.images[i]); put(c, e.images[i], +e.positions[i][0], +e.positions[i][1], m ? m.width : 20, m ? m.height : 20); }
+        break;
+      }
       const spread = +e.spread || 24;
       const cw = b.w && n ? (b.w - (n - 1) * spread) / n : 20;
       const ch = b.h;
@@ -1757,6 +1844,24 @@ function drawElement(c, e) {
       c.restore();
       break;
     }
+    case 'DATE_POINTER': {
+      const cx = +e.centerX || 0, cy = +e.centerY || 0;
+      if (e.scale) { const m = imgMeta(e.scale); if (m) c.drawImage(imgFor(e.scale), +e.scaleX || 0, +e.scaleY || 0, m.width, m.height); }
+      // the pointer turns from start to end angle across the week (7), month days (31) or year (12)
+      const t = e.dateType || 'WEEK';
+      const frac = t === 'DAY' ? ((+dateParts.day || 1) - 1) / 30 : t === 'MONTH' ? ((+dateParts.month || 1) - 1) / 11 : (weekIndexS()) / 6;
+      const a0 = +e.startAngle || 0, a1 = e.endAngle == null ? 180 : +e.endAngle;
+      const m = imgMeta(e.src);
+      if (m) {
+        c.save();
+        c.translate(cx, cy);
+        c.rotate(((a0 + (a1 - a0) * frac) * Math.PI) / 180);
+        c.drawImage(imgFor(e.src), -(+e.posX || 0), -(+e.posY || 0), m.width, m.height);
+        c.restore();
+      }
+      if (e.cover) { const cm = imgMeta(e.cover); if (cm) c.drawImage(imgFor(e.cover), +e.coverX || 0, +e.coverY || 0, cm.width, cm.height); }
+      break;
+    }
     case 'TIME_POINTER': {
       const cx = +e.centerX || 0, cy = +e.centerY || 0;
       const hands = [
@@ -1774,9 +1879,10 @@ function drawElement(c, e) {
         c.drawImage(imgFor(name), -(+pxv || 0), -(+pyv || 0), m.width, m.height);
         c.restore();
       }
-      if (e.cover) {
-        const m = imgMeta(e.cover);
-        if (m) { c.drawImage(imgFor(e.cover), cx - m.width / 2, cy - m.height / 2, m.width, m.height); }
+      for (const name of [e.cover, e.minuteCover, e.secondCover]) {
+        if (!name) continue;
+        const m = imgMeta(name);
+        if (m) { c.drawImage(imgFor(name), cx - m.width / 2, cy - m.height / 2, m.width, m.height); }
       }
       break;
     }
@@ -1869,7 +1975,7 @@ function drawOverlay(c, W, H) {
     c.fillStyle = 'rgba(255,200,120,0.95)';
     c.font = '600 10px system-ui, sans-serif';
     c.textBaseline = 'top';
-    c.fillText(e.action === 'variant' ? '↻ variant' : e.action === 'app' ? '↗ ' + String(e.appUrl || 'app').replace(/Screen$/, '') : 'tap', b.x + 4, b.y + 3, Math.max(10, b.w - 8));
+    c.fillText(e.action === 'variant' ? '↻ variant' : e.action === 'theme' ? '◐ theme' : e.action === 'app' ? '↗ ' + String(e.appUrl || 'app').replace(/Screen$/, '') : 'tap', b.x + 4, b.y + 3, Math.max(10, b.w - 8));
     c.restore();
   }
   const sel = selection();
@@ -1910,7 +2016,7 @@ function drawOverlay(c, W, H) {
       c.arc(b.x + b.w, b.y + b.h / 2, 4, 0, Math.PI * 2);
       c.fill();
     }
-    if (primary && (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER')) {
+    if (primary && (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER' || e.kind === 'DATE_POINTER')) {
       c.fillStyle = '#ff78dc';
       c.beginPath();
       c.arc(+e.centerX || 0, +e.centerY || 0, 4, 0, Math.PI * 2);
@@ -3051,7 +3157,7 @@ function geoHelpers(e) {
   const wrap = mkEl('div', 'rowctl wrap');
   const center = (axis) => {
     pushHistory();
-    if (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER') {
+    if (e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER' || e.kind === 'DATE_POINTER') {
       if (axis !== 'y') e.centerX = Math.round(d.w / 2);
       if (axis !== 'x') e.centerY = Math.round(d.h / 2);
     } else {
@@ -3128,7 +3234,7 @@ function renderPropsBody(host) {
   section(host, 'Position & size');
   if (CENTER_KINDS.has(e.kind)) {
     host.appendChild(pairRow('Center', [['X', ctlNum(e, 'centerX')], ['Y', ctlNum(e, 'centerY')]]));
-    if (e.kind !== 'TIME_POINTER') host.appendChild(ctlRow('Radius', ctlNum(e, 'radius', { min: 0 })));
+    if (e.kind !== 'TIME_POINTER' && e.kind !== 'DATE_POINTER') host.appendChild(ctlRow('Radius', ctlNum(e, 'radius', { min: 0 })));
   } else if (e.kind === 'IMG_POINTER') {
     host.appendChild(pairRow('Center', [['X', ctlNum(e, 'centerX')], ['Y', ctlNum(e, 'centerY')]]));
     host.appendChild(pairRow('Pivot', [['X', ctlNum(e, 'x')], ['Y', ctlNum(e, 'y')]]));
@@ -3177,6 +3283,8 @@ function propNote(text) {
 //   * imported sets (weather icons, month names) are never re-rendered.
 const DIGIT_SET_KINDS = new Set(['IMG_TIME', 'IMG_DATE', 'IMG_LEVEL', 'IMG_PROGRESS', 'TEXT_IMG']);
 const GLYPH_ATTACHED = ['unit', 'dot', 'negative', 'am', 'pm'];
+const IMPORTED_FONT = 'Imported Font';   // not a typeface: the pictures the face came with, recoloured and scaled
+const IMPORTED_FILLS = [{ value: 'original', label: 'Original colours' }];
 const GLYPH_FILLS = [
   { value: 'solid', label: 'Solid' },
   { value: 'gradient', label: 'Gradient (2 stops)' },
@@ -3312,14 +3420,16 @@ function glyphStyle(e) {
   const g = e.glyph || (sepOnly ? ((digitLayerFor(e) || {}).glyph) : null) || {};
   // an imported set carries no style of its own: offer the size its pictures are
   // drawn at, so the first re-render keeps their proportions
-  const keep = (!g.size && glyphSpecForLayer(e)) ? importedGlyphHeight(e) : 0;
-  const size = +g.size || keep || (labelKind(e) ? 40 : +glyphOpts.size) || 48;
+  const font = g.font || (importedGlyphSet(e) && !g.glyphs ? IMPORTED_FONT : glyphFont);
+  const isImp = font === IMPORTED_FONT;
+  const keep = (!g.size && !isImp && glyphSpecForLayer(e)) ? importedGlyphHeight(e) : 0;
+  const size = +g.size || (isImp ? sourceHeightOf(e) : 0) || keep || (labelKind(e) ? 40 : +glyphOpts.size) || 48;
   return {
-    font: g.font || glyphFont,
+    font,
     size: Math.max(8, Math.round(size)),
     weight: g.weight == null ? +glyphOpts.weight : +g.weight,
     variations: g.variations == null ? glyphOpts.variations : g.variations,
-    fill: g.fill || 'solid',
+    fill: g.fill || (isImp ? 'original' : 'solid'),
     color: g.color || '#ffffff',
     from: g.from || '#ffd400',
     to: g.to || '#ff2d55',
@@ -3497,14 +3607,262 @@ function glyphSpecFrom(st) {
   const { font, size, weight, variations, fill, color, from, to, angle, css, outlineColor, outlineWidth, bold, italic } = st;
   return { font, size, weight, variations, fill, color, from, to, angle, css, outlineColor, outlineWidth, bold, italic };
 }
+
+// ---------------------------------------------------------- Imported Font --
+// A set that came from another watchface is a set of pictures, not a typeface.
+// “Imported Font” keeps those pictures as the source (copies named …__src.png,
+// hidden and never exported) and draws the layer from them: Size scales them,
+// the fill paints over them — flat colour, a gradient or a CSS gradient — through
+// their own alpha, so the shapes stay and only the colour and scale change.
+function sourceHeightOf(e) {
+  const g = e.glyph || {};
+  const src = (g.sourceNames || []).find(Boolean);
+  const n = src || (e.images || [])[0] || (e.frames || [])[0] || e.src;
+  const m = n ? imgMeta(n) : null;
+  return m && m.height ? m.height : 0;
+}
+// copy `name` to its hidden source name (once)
+function keepSource(name) {
+  if (!name) return null;
+  const sName = name.replace(/\.png$/i, '__src.png');
+  if (!imgMeta(sName)) {
+    const m = imgMeta(name);
+    if (!m) return null;
+    project.images.push({ name: sName, width: m.width, height: m.height, url: m.url });
+    const im = imgCache.get(name);
+    if (im) imgCache.set(sName, im);
+  }
+  return sName;
+}
+function ensureSources(e, spec) {
+  e.glyph = e.glyph || glyphSpecFrom(glyphStyle(e));
+  const g = e.glyph;
+  if (g.sourceNames && g.sourceNames.length === spec.length) return;
+  g.sourceNames = spec.map((x) => keepSource(x.name));
+  g.sourceAttached = {};
+  for (const key of GLYPH_ATTACHED) if (e[key]) g.sourceAttached[key] = keepSource(e[key]);
+}
+// a picture scaled and painted over: the output keeps the source's alpha
+function styleImage(srcName, scale, st) {
+  const im = imgCache.get(srcName);
+  if (!im) return null;
+  const w = Math.max(1, Math.round((im.naturalWidth || im.width) * scale));
+  const h = Math.max(1, Math.round((im.naturalHeight || im.height) * scale));
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const c = cv.getContext('2d', { willReadFrequently: true });
+  c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
+  c.drawImage(im, 0, 0, w, h);
+  const t = st.fill || 'original';
+  if (t === 'original' || t === 'outline') return cv;
+  const box = { x: 0, y: 0, w, h };
+  const paintFill = (cx) => {
+    if (t === 'gradient') cx.fillStyle = linearFill(cx, box, st.angle == null ? 90 : +st.angle, [[st.from || st.color, 0], [st.to || '#000000', 1]]);
+    else if (t === 'css') cx.fillStyle = cssGradientFill(cx, { cssGradient: st.css, color: st.color }, box);
+    else cx.fillStyle = st.color || '#ffffff';
+    cx.fillRect(0, 0, w, h);
+  };
+  // Maker pictures are often opaque artwork on a black ground, not cut-outs: there the
+  // brightness is the shape, so the fill is multiplied by it and the ground stays black
+  const px = c.getImageData(0, 0, w, h);
+  const d = px.data;
+  let clear = 0, peak = 1;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] < 250) clear++;
+    peak = Math.max(peak, d[i], d[i + 1], d[i + 2]);
+  }
+  if (clear < (w * h) * 0.02) {
+    const f = document.createElement('canvas');
+    f.width = w; f.height = h;
+    const fc = f.getContext('2d', { willReadFrequently: true });
+    paintFill(fc);
+    const fd = fc.getImageData(0, 0, w, h).data;
+    for (let i = 0; i < d.length; i += 4) {
+      const m = Math.min(1, Math.max(d[i], d[i + 1], d[i + 2]) / peak);
+      d[i] = Math.round(fd[i] * m); d[i + 1] = Math.round(fd[i + 1] * m); d[i + 2] = Math.round(fd[i + 2] * m);
+    }
+    c.putImageData(px, 0, 0);
+    return cv;
+  }
+  c.globalCompositeOperation = 'source-in';
+  paintFill(c);
+  return cv;
+}
+async function regenerateImported(e, spec, st, targets) {
+  const g = e.glyph;
+  const srcs = g.sourceNames || [];
+  const srcH = sourceHeightOf(e) || st.size;
+  const scale = Math.max(0.05, st.size / srcH);
+  // a set another layer draws too is copied first, as a font-drawn set is
+  const cur = spec.map((x) => x.name).filter(Boolean);
+  const shared = glyphUsersOf(cur, e).filter((x) => !targets.includes(x)).length > 0;
+  const fork = shared && cur.length > 0 && !cur.every(designFixedName);
+  const pre = fork ? freshPrefixFor(e) : null;
+  const names = [];
+  for (let i = 0; i < spec.length; i++) {
+    const s = srcs[i];
+    const want = (fork || !spec[i].name) ? `${pre || glyphPrefixFor(e, spec)}_${spec[i].tag}.png` : spec[i].name;
+    const cv = s ? styleImage(s, scale, st) : null;
+    if (!cv) { names.push(spec[i].name || want); continue; }
+    const out = fork ? uniqImageName(want) : want;
+    addProjectImage(out, cv, { replace: !fork });
+    names.push(out);
+  }
+  if (e.kind === 'IMG') e.src = names[0];
+  else if (e.kind === 'IMG_ANIM') e.frames = names;
+  else e.images = names;
+  for (const key of GLYPH_ATTACHED) {
+    const s = g.sourceAttached && g.sourceAttached[key];
+    if (!s || !e[key]) continue;
+    const cv = styleImage(s, scale, st);
+    if (cv) addProjectImage(e[key], cv, { replace: true });
+  }
+  await loadAllImages();
+  return names;
+}
+// back to the pictures the layer came with
+async function restoreImportedSet(e) {
+  const g = e.glyph || {};
+  if (!g.sourceNames) return false;
+  const spec = glyphSpecForLayer(e) || [];
+  spec.forEach((x, i) => {
+    const s = g.sourceNames[i], m = s ? imgMeta(s) : null, cur = x.name ? imgMeta(x.name) : null;
+    if (m && cur) { cur.url = m.url; cur.width = m.width; cur.height = m.height; }
+  });
+  for (const key of GLYPH_ATTACHED) {
+    const s = g.sourceAttached && g.sourceAttached[key], m = s ? imgMeta(s) : null, cur = e[key] ? imgMeta(e[key]) : null;
+    if (m && cur) { cur.url = m.url; cur.width = m.width; cur.height = m.height; }
+  }
+  delete e.glyph;
+  await loadAllImages();
+  return true;
+}
+
+// ------------------------------------------------- level / progress recolour --
+// A level set (the ring that fills up, a row of dots) is pictures of a state, not characters: it can
+// be painted over like an Imported Font set, never rasterised from a typeface.
+function isTintLayer(e) {
+  if (!e) return false;
+  if (e.kind === 'IMG_LEVEL' || e.kind === 'IMG_PROGRESS') return (e.images || []).filter(Boolean).length >= 2;
+  // a single picture — an icon: the image layers, status icons, tap icons (not one drawn from a symbol, nor a variants layer)
+  if (e.kind === 'IMG' || e.kind === 'IMG_STATUS' || e.kind === 'IMG_CLICK') {
+    return !!e.src && !!imgMeta(e.src) && !(e.kind === 'IMG' && (isGlyphLayer(e) || variantList(e)));
+  }
+  return false;
+}
+// a layer the palette's "Apply to all" repaints: levels, and icons — not a full-screen background
+function isThemeTint(e) {
+  if (!isTintLayer(e)) return false;
+  if (e.kind === 'IMG_LEVEL' || e.kind === 'IMG_PROGRESS') return true;
+  const m = imgMeta(e.src);
+  return !!m && m.width <= 160 && m.height <= 160;
+}
+const tintNames = (e) => ((e.kind === 'IMG_LEVEL' || e.kind === 'IMG_PROGRESS') ? (e.images || []).filter(Boolean) : [e.src]);
+function tintStyle(e) {
+  const t = e.tint || {};
+  return {
+    fill: t.fill || 'original', color: t.color || '#ffffff', from: t.from || '#ffd400', to: t.to || '#ff2d55',
+    angle: t.angle == null ? 180 : +t.angle, css: t.css || DEFAULT_GLYPH_CSS,
+  };
+}
+async function regenerateTint(e, targets) {
+  const names = tintNames(e);
+  if (!names.length || !names[0]) return null;
+  e.tint = e.tint || tintStyle(e);
+  if (!e.tint.sourceNames || e.tint.sourceNames.length !== names.length) e.tint.sourceNames = names.map(keepSource);
+  const st = tintStyle(e);
+  const shared = glyphUsersOf(names, e).filter((x) => !targets.includes(x)).length > 0;
+  const out = [];
+  e.tint.sourceNames.forEach((s, i) => {
+    const cv = s ? styleImage(s, 1, st) : null;
+    if (!cv) { out.push(names[i]); return; }
+    const to = shared ? uniqImageName(names[i].replace(/\.png$/i, '_c.png')) : names[i];
+    addProjectImage(to, cv, { replace: !shared });
+    out.push(to);
+  });
+  if (e.kind === 'IMG_LEVEL' || e.kind === 'IMG_PROGRESS') e.images = out; else e.src = out[0];
+  await loadAllImages();
+  return out;
+}
+async function restoreTint(e) {
+  const t = e.tint;
+  if (!t || !t.sourceNames) return false;
+  tintNames(e).forEach((n, i) => {
+    const s = t.sourceNames[i], m = s ? imgMeta(s) : null, cur = imgMeta(n);
+    if (m && cur) { cur.url = m.url; cur.width = m.width; cur.height = m.height; }
+  });
+  delete e.tint;
+  await loadAllImages();
+  return true;
+}
+function tintRows(frag, add, e) {
+  const T = selection().filter(isTintLayer);
+  const st = tintStyle(e);
+  section(frag, 'Colour');
+  const apply = (key, value) => {
+    for (const t of T) { const g = (t.tint = t.tint || tintStyle(t)); g[key] = value; }
+    scheduleGlyphGen(T);
+  };
+  const color = (key) => {
+    const inp = document.createElement('input');
+    inp.type = 'color'; inp.value = st[key];
+    inp.oninput = () => { pushHistory(); apply(key, inp.value); render(); scheduleCode(); };
+    return inp;
+  };
+  add('Fill', ctlSelect(st.fill, IMPORTED_FILLS.concat(GLYPH_FILLS.filter((f) => f.value !== 'outline')), (v) => { pushHistory(); apply('fill', v); refreshPanels(); render(); scheduleCode(); }),
+    'Paint the level pictures over: the lit part takes the colour, the dim part stays dim');
+  if (st.fill === 'solid') add('Color', color('color'));
+  if (st.fill === 'gradient') { add('From', color('from')); add('To', color('to')); }
+  if (st.fill === 'solid' || st.fill === 'gradient') paletteRows(add, st, apply, T);
+  const btns = mkEl('div', 'rowctl wrap');
+  if (e.tint && e.tint.sourceNames) {
+    btns.appendChild(ctlButton('Restore originals', 'Put the pictures the face came with back', async () => {
+      pushHistory();
+      for (const t of T) await restoreTint(t);
+      refreshPanels(); render(); scheduleCode();
+      status('Restored the pictures the face came with.');
+    }));
+  }
+  btns.appendChild(ctlButton('Redraw now', 'Paint the pictures again now', () => { pushHistory(); rerenderGlyphLayers(T); }));
+  add('Redraw', btns);
+}
+// ------------------------------------------------------------ palettes --
+// Well-known palettes: pick one and its colours become the fill — a solid
+// colour, or the two ends of a gradient.
+const COLOR_PALETTES = [
+  { name: 'Teenage Engineering', colors: ['#ff4a1c', '#ffc700', '#5ab0ff', '#3ddc84', '#ff7aa8', '#a6a6a6'] },
+  { name: 'Dracula', colors: ['#bd93f9', '#ff79c6', '#50fa7b', '#8be9fd', '#f1fa8c', '#ffb86c'] },
+  { name: 'Nord', colors: ['#88c0d0', '#81a1c1', '#5e81ac', '#a3be8c', '#ebcb8b', '#bf616a'] },
+  { name: 'Solarized', colors: ['#b58900', '#cb4b16', '#dc322f', '#d33682', '#268bd2', '#2aa198', '#859900'] },
+  { name: 'Gruvbox', colors: ['#fabd2f', '#fe8019', '#fb4934', '#b8bb26', '#83a598', '#d3869b'] },
+  { name: 'Monokai', colors: ['#f92672', '#fd971f', '#e6db74', '#a6e22e', '#66d9ef', '#ae81ff'] },
+  { name: 'Catppuccin Mocha', colors: ['#f5c2e7', '#cba6f7', '#f38ba8', '#fab387', '#a6e3a1', '#89b4fa'] },
+  { name: 'Tokyo Night', colors: ['#7aa2f7', '#bb9af7', '#7dcfff', '#9ece6a', '#e0af68', '#f7768e'] },
+  { name: 'One Dark', colors: ['#61afef', '#c678dd', '#e06c75', '#98c379', '#e5c07b', '#56b6c2'] },
+  { name: 'Material', colors: ['#f44336', '#e91e63', '#9c27b0', '#3f51b5', '#2196f3', '#009688', '#ffc107'] },
+  { name: 'Cyberpunk', colors: ['#fcee0a', '#00f0ff', '#ff003c', '#7a00ff', '#00ff9c'] },
+  { name: 'Synthwave', colors: ['#ff2975', '#f222ff', '#8c1eff', '#00f0ff', '#ffd319'] },
+  { name: 'Sunset', colors: ['#ff5e5b', '#ff9a3c', '#ffd166', '#ef476f', '#a06cd5'] },
+  { name: 'Ocean', colors: ['#0096c7', '#00b4d8', '#48cae4', '#90e0ef', '#caf0f8'] },
+  { name: 'Forest', colors: ['#52b788', '#74c69d', '#95d5b2', '#b7e4c7', '#d8f3dc'] },
+  { name: 'Pastel', colors: ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff'] },
+  { name: 'Rainbow', colors: ['#e40303', '#ff8c00', '#ffed00', '#00b140', '#2f6bff', '#a020f0'] },
+  { name: 'Game Boy', colors: ['#9bbc0f', '#8bac0f', '#c4cfa1', '#306230'] },
+  { name: 'Monochrome', colors: ['#ffffff', '#d9d9d9', '#a6a6a6', '#737373', '#505050'] },
+  { name: 'Neon', colors: ['#ff00ff', '#00ffff', '#39ff14', '#ff073a', '#fff200'] },
+];
 // Rasterise this layer's images again, in place, with its current style.
 // A digit set shared with a layer we are *not* restyling is copied first (the
 // reference does the same): the other layers keep the glyphs they were drawn
 // with, this one gets a set of its own.
 async function regenerateGlyphs(e, { targets = [e] } = {}) {
+  if (isTintLayer(e)) return regenerateTint(e, targets);
   const spec = glyphSpecForLayer(e);
   if (!spec || !spec.length) return null;
   const st = glyphStyle(e);
+  // keep the pictures the layer came with before anything draws over them
+  if (spec.some((g) => g.name) && (importedGlyphSet(e) || st.font === IMPORTED_FONT)) ensureSources(e, spec);
+  if (st.font === IMPORTED_FONT) return regenerateImported(e, spec, st, targets);
   // An image drawn from a symbol gets a file of its own the first time
   // (symbol_<char>.png) — it never overwrites the picture (or the shared
   // separator file) the layer was pointing at. Later edits re-render that file
@@ -3701,6 +4059,7 @@ function characterCheck(e) {
 // Properties rows for one glyph layer; every control writes to *all* selected
 // glyph layers, so selecting a group restyles the whole clock in one go.
 function glyphStyleRows(frag, add, e) {
+  if (isTintLayer(e)) { tintRows(frag, add, e); if (e.kind !== 'IMG') return; }
   const spec = glyphSpecForLayer(e);
   const files = glyphLayerFiles(e);
   // any image layer can be *generated* from a symbol (a character drawn with a
@@ -3769,25 +4128,34 @@ function glyphStyleRows(frag, add, e) {
   if (spec) {
     // the characters this layer draws decide which fonts can draw it natively
     const need = spec.map((g) => g.char).join('');
-    const fontOpts = glyphFamilyOptions().map((o) => {
+    const offerImported = files.length > 0 || st.font === IMPORTED_FONT;
+    const isImp = st.font === IMPORTED_FONT;
+    const fontOpts = (offerImported ? [{ value: IMPORTED_FONT, label: 'Imported Font · the pictures this face came with' }] : []).concat(glyphFamilyOptions()).map((o) => {
+      if (o.value === IMPORTED_FONT) return o;
       const cov = coverageReport(o.value, need);
       const tag = cov.system.length ? ` · lacks ${cov.system.join('')}`
         : (cov.composed.length || cov.alternate.length) ? ` · composes ${[...cov.composed, ...cov.alternate].join('')}` : '';
       return { value: o.value, label: o.label + tag };
     });
     add('Font', ctlSelect(st.font, fontOpts, (v) => {
+      if (v !== IMPORTED_FONT && st.fill === 'original') apply('fill', 'solid');
+      // keep the face's own pictures before a typeface draws over them
+      if (v !== IMPORTED_FONT && (imported || st.font === IMPORTED_FONT)) for (const t of T) { const sp = glyphSpecForLayer(t); if (sp && sp.some((x) => x.name)) ensureSources(t, sp); }
+      if (v === IMPORTED_FONT) for (const t of T) { const g = (t.glyph = t.glyph || glyphSpecFrom(glyphStyle(t))); if (!g.size || g.font !== IMPORTED_FONT) g.size = 0; if (g.fill === 'solid' && !g.sourceNames) g.fill = 'original'; }
       apply('font', v);
+      if (v === IMPORTED_FONT) { refreshPanels(); return; }
       ensureFont(v, st.weight).then(() => render());
-    }), 'Typeface these images are rasterised from');
-    const cov = coverageSummary(st.font, need);
+    }), isImp ? 'The pictures the face came with: Size scales them, the fill paints over them' : 'Typeface these images are rasterised from');
+    const cov = isImp ? { native: true } : coverageSummary(st.font, need);
     if (!cov.native) {
       const n = propNote(`${st.font}: ${cov.text}.${cov.system.length ? ' Pick a font marked without “lacks” to keep one typeface.' : ''}`);
       n.classList.add(cov.system.length ? 'warn' : 'info');
       frag.appendChild(n);
     }
-    add('Size', num('size', { min: 8 }), 'Height the glyphs are rasterised at, in px');
-    add('Fill', ctlSelect(st.fill, GLYPH_FILLS, (v) => apply('fill', v)));
+    add('Size', num('size', { min: 8 }), isImp ? 'Height the pictures are scaled to, in px (they came at ' + (sourceHeightOf(e) || '?') + ' px)' : 'Height the glyphs are rasterised at, in px');
+    add('Fill', ctlSelect(st.fill, isImp ? IMPORTED_FILLS.concat(GLYPH_FILLS.filter((f) => f.value !== 'outline')) : GLYPH_FILLS, (v) => { apply('fill', v); refreshPanels(); }));
     if (st.fill === 'solid') add('Color', color('color'));
+    if (st.fill === 'solid' || st.fill === 'gradient') paletteRows(add, st, apply, T);
     if (st.fill === 'outline') {
       // the outline is a hollow ring: the fill colour is not used
       add('Outline', color('outlineColor'), 'Colour of the outline ring');
@@ -3804,9 +4172,19 @@ function glyphStyleRows(frag, add, e) {
         ? 'linear / radial / conic, e.g. linear-gradient(180deg, #ffd400 0%, #ff2d55 100%)'
         : 'not parsed — the glyphs fall back to the flat colour'));
     }
-    add('Bold', check('bold', 'Thickens every glyph — works with single-weight fonts too'));
-    add('Italic', check('italic', 'Slants every glyph 12°'));
+    if (!isImp) {
+      add('Bold', check('bold', 'Thickens every glyph — works with single-weight fonts too'));
+      add('Italic', check('italic', 'Slants every glyph 12°'));
+    }
     const btns = mkEl('div', 'rowctl wrap');
+    if (isImp && (e.glyph || {}).sourceNames) {
+      btns.appendChild(ctlButton('Restore originals', 'Put the pictures the face came with back, at their own size and colour', async () => {
+        pushHistory();
+        for (const t of T) await restoreImportedSet(t);
+        refreshPanels(); render(); scheduleCode();
+        status('Restored the pictures the face came with.');
+      }));
+    }
     btns.appendChild(ctlButton(files.length ? 'Redraw now' : (spec.length > 1 ? 'Generate images' : 'Generate image'),
       files.length ? 'Rasterise these images again now' : 'Rasterise from this style now', () => {
         pushHistory();
@@ -3837,6 +4215,62 @@ function glyphStyleRows(frag, add, e) {
   if (nT > 1) notes.push(`Styles are applied to all ${nT} selected image layers.`);
   if (notes.length) frag.appendChild(propNote(notes.join(' ')));
 }
+// A palette picker under a solid / gradient fill: choosing one fills the colours at once (solid: its
+// first colour; gradient: first → second), a swatch sets one colour (a click: Color / From, shift+click: To).
+function paletteRows(add, st, apply, T) {
+  const wrap = mkEl('div', 'rowctl wrap palette-row');
+  const sel = document.createElement('select');
+  const none = document.createElement('option'); none.value = ''; none.textContent = 'Pick a palette…'; sel.appendChild(none);
+  COLOR_PALETTES.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = p.name; sel.appendChild(o); });
+  sel.value = paletteIdxByLayer.get(selectedId) ?? '';
+  const strip = mkEl('div', 'palette-strip');
+  const paint = (i) => {
+    strip.innerHTML = '';
+    const p = COLOR_PALETTES[i];
+    if (!p) return;
+    p.colors.forEach((col) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'palette-sw'; b.style.background = col;
+      b.title = st.fill === 'gradient' ? `${col} — click: From · shift+click: To` : col;
+      b.onclick = (ev) => {
+        pushHistory();
+        if (st.fill === 'gradient') apply(ev.shiftKey ? 'to' : 'from', col); else apply('color', col);
+        refreshPanels(); render(); scheduleCode();
+      };
+      strip.appendChild(b);
+    });
+  };
+  sel.onchange = () => {
+    const i = sel.value === '' ? null : +sel.value;
+    if (i == null) { paletteIdxByLayer.delete(selectedId); paint(null); return; }
+    paletteIdxByLayer.set(selectedId, String(i));
+    const p = COLOR_PALETTES[i];
+    pushHistory();
+    if (st.fill === 'gradient') { apply('from', p.colors[0]); apply('to', p.colors[1] || p.colors[0]); } else apply('color', p.colors[0]);
+    refreshPanels(); render(); scheduleCode();
+  };
+  wrap.appendChild(sel);
+  paint(sel.value === '' ? null : +sel.value);
+  add('Palette', wrap, 'Famous colour palettes: picking one fills the colours — solid takes its first colour, a gradient its first two. Click a swatch to set one colour (shift+click sets the gradient end)');
+  add('', strip);
+  const all = ctlButton('Apply to all text layers', 'Give every digit, weekday and level layer of the project this palette\'s colour — a quick theme', () => {
+    const i = sel.value === '' ? null : +sel.value;
+    if (i == null) { status('Pick a palette first.', true); return; }
+    const p = COLOR_PALETTES[i];
+    pushHistory();
+    const layers = elements().filter((x) => isGlyphLayer(x) || isThemeTint(x));
+    layers.forEach((t) => {
+      const g = isTintLayer(t) ? (t.tint = t.tint || tintStyle(t)) : (t.glyph = t.glyph || glyphSpecFrom(glyphStyle(t)));
+      g.fill = st.fill === 'gradient' ? 'gradient' : 'solid';
+      if (g.fill === 'gradient') { g.from = p.colors[0]; g.to = p.colors[1] || p.colors[0]; } else g.color = p.colors[0];
+    });
+    scheduleGlyphGen(layers);
+    refreshPanels(); render(); scheduleCode();
+    status(`${p.name}: applied to ${layers.length} layer${layers.length === 1 ? '' : 's'} — the pictures redraw in a moment.`);
+  });
+  add('', all);
+}
+const paletteIdxByLayer = new Map();
 function propsGroupTools(sel) {
   const D = dev();
   const tools = (title, defs) => {
@@ -4000,6 +4434,11 @@ function propsKind(e) {
       add('Tips width', ctlNum(e, 'tipsWidth', { min: 0 })); add('Tips margin', ctlNum(e, 'tipsMargin', { min: 0 }));
       break;
     }
+    case 'POLYLINE':
+      add('Data', ctlSelect(e.dataType === 'SLEEP' ? 'SLEEP' : 'HEART', [{ value: 'HEART', label: 'Heart rate' }, { value: 'SLEEP', label: 'Sleep' }], (v) => { e.dataType = v; render(); scheduleCode(); }),
+        'The watch draws the line itself; the docs support only heart rate and sleep');
+      frag.appendChild(propNote('A gradient line chart drawn by the firmware (GRADKIENT_POLYLINE). The preview shows a sample curve.'));
+      break;
     case 'SLEEP_CHART':
       add('Deep', ctlColor(e, 'colorDeep')); add('Light', ctlColor(e, 'colorLight'));
       add('REM', ctlColor(e, 'colorRem')); add('Awake', ctlColor(e, 'colorWake'));
@@ -4008,6 +4447,7 @@ function propsKind(e) {
     case 'TAP': {
       add('Action', ctlSelect(e.action || 'none', [
         { value: 'variant', label: 'Cycle background variants' },
+        { value: 'theme', label: 'Next colour theme' },
         { value: 'app', label: 'Open a Zepp screen' },
         { value: 'none', label: 'Nothing' },
       ], (v) => { e.action = v; refreshPanels(); render(); scheduleCode(); }));
@@ -4022,8 +4462,15 @@ function propsKind(e) {
         const wrap = mkEl('div', 'rowctl'); wrap.appendChild(inp); wrap.appendChild(dl);
         add('Screen', wrap, 'The native Zepp screen to open, e.g. ScheduleCalScreen (calendar), SportListScreen (workouts), PowerSaveHintScreen');
       }
+      section(frag, 'Look (optional)');
+      add('Label', ctlText(e, 'text', 'empty = invisible zone'), 'Give the zone a label and/or colours and it becomes a visible BUTTON');
+      add('Label color', ctlColor(e, 'textColor'));
+      add('Label size', ctlNum(e, 'textSize', { min: 0 }));
+      add('Fill', ctlColor(e, 'normalColor'), 'normal_color — setting it makes a filled button');
+      add('Pressed', ctlColor(e, 'pressColor'), 'press_color');
+      add('Radius', ctlNum(e, 'radius', { min: 0 }));
       if (e.note) frag.appendChild(propNote(`The original ran custom code here, which the designer does not keep: ${e.note}`));
-      frag.appendChild(propNote('A tap zone draws nothing — it is the area of the face that reacts to a tap. Shown dashed in the editor only.'));
+      frag.appendChild(propNote((e.text || e.normalColor) ? 'A visible button: it draws its label and fill on the watch.' : 'Without a label or fill, a tap zone draws nothing — it is the area of the face that reacts to a tap. Shown dashed in the editor only.'));
       break;
     }
     case 'IMG':
@@ -4053,6 +4500,8 @@ function propsKind(e) {
       add('FPS', ctlNum(e, 'fps', { min: 1, max: 60 }));
       add('Repeat', ctlNum(e, 'repeat', { min: 0 }), '0 = forever');
       add('Step', ctlNum(e, 'step', { min: 1 }));
+      add('Restart', ctlCheck(e, 'displayOnRestart'), 'display_on_restart: play again when the watchface comes back to the screen');
+      add('Still frame', ctlNum(e, 'defaultFrame', { min: 0 }), 'default_frame_index: the frame shown in power-saving mode');
       // a run of PNGs, or an animated GIF/WebP that is split for you
       set('Frames', 'Frames', { buttons: [ctlButton('Import…',
         'Pick several PNGs to use as frames — or pick an animated GIF / WebP and it is split into one PNG per frame, with the frame rate taken from the file', () => pickAnimFrames(e))] });
@@ -4065,7 +4514,10 @@ function propsKind(e) {
         e.dataType = v || null;
       }));
       if (!e.dataType) add('Level', ctlNum(e, 'level', { min: 0, max: 100 }));
-      if (e.kind === 'IMG_PROGRESS') add('Spread', ctlNum(e, 'spread', { min: 0 }));
+      if (e.kind === 'IMG_PROGRESS' && Array.isArray(e.positions) && e.positions.length) {
+        add('Positions', ctlButton('Even row', 'This face places each picture by hand; make them an even row again', () => { pushHistory(); e.x = e.positions[0][0]; e.y = e.positions[0][1]; delete e.positions; refreshPanels(); render(); scheduleCode(); }),
+          `${e.positions.length} pictures at their own positions (kept from the import)`);
+      } else if (e.kind === 'IMG_PROGRESS') add('Spread', ctlNum(e, 'spread', { min: 0 }));
       set('Images', 'One image per level');
       glyphStyleRows(frag, add, e);
       break;
@@ -4110,7 +4562,7 @@ function propsKind(e) {
       break;
     }
     case 'IMG_DATE':
-      add('Part', ctlSelect(e.part || 'day', [{ value: 'day', label: 'Day' }, { value: 'month', label: 'Month' }], (v) => {
+      add('Part', ctlSelect(e.part || 'day', [{ value: 'day', label: 'Day' }, { value: 'month', label: 'Month' }, { value: 'year', label: 'Year (2 digits)' }], (v) => {
         e.part = v;
         if (v !== 'month') e.isCharacter = false;   // only months have names
       }));
@@ -4136,12 +4588,15 @@ function propsKind(e) {
       break;
     case 'TEXT_IMG':
       add('Data', ctlSelect(e.dataType || 'STEP', dtOptions(false), (v) => { e.dataType = v; }));
+      add('Fixed text', ctlText(e, 'text', 'digits only — empty follows the reading'), 'A fixed number drawn with these digits; the reading is then not used (the docs: type is disabled when text is set)');
       add('Spacing', ctlSpace(e));
       add('Align', ctlAlignSeg(e, 'Where the value sits inside the widget box: Left, centred, or Right — the box stays put, the value moves inside it'));
       set('Digits', 'Digits 0-9');
       img('Unit', 'unit');
+      img('Imperial unit', 'unitImperial');
       img('Decimal', 'dot');
       img('Negative', 'negative');
+      img('Invalid', 'invalid');
       glyphStyleRows(frag, add, e);
       break;
     case 'TEXT': {
@@ -4199,6 +4654,9 @@ function propsKind(e) {
       ], (v) => setOn(T, 'alignV', v)));
       add('Line space', ctlNum(T, 'lineSpace'));
       add('Char space', ctlNum(T, 'charSpace'));
+      add('Overflow', ctlSelect(e.textStyle || 'NONE', [{ value: 'NONE', label: 'None — runs on' }, { value: 'WRAP', label: 'Wrap onto more lines' }, { value: 'ELLIPSIS', label: 'Cut with …' }],
+        (v) => { setOn(T, 'textStyle', v === 'NONE' ? undefined : v); refreshPanels(); render(); scheduleCode(); }),
+        'text_style: what the watch does with text wider than the box');
       if (T.length > 1) addNote(`Styles are applied to all ${T.length} selected Text layers.`);
       const tm = textMetrics(e);
       const fits = tm.w <= (+e.w || 0) + 1 && tm.h <= (+e.h || 0) + 1;
@@ -4212,10 +4670,12 @@ function propsKind(e) {
     case 'IMG_STATUS':
       add('Status', ctlSelect(e.status || 'DISCONNECT', SYSTEM_STATUS.map((s) => ({ value: s.key, label: s.label })), (v) => { e.status = v; }));
       img('Icon', 'src');
+      glyphStyleRows(frag, add, e);
       break;
     case 'IMG_CLICK':
       add('Action', ctlSelect(e.dataType || 'OUTDOOR_RUNNING', dtOptions(true), (v) => { e.dataType = v; }));
       img('Icon', 'src');
+      glyphStyleRows(frag, add, e);
       break;
     case 'FILL_RECT':
     case 'STROKE_RECT':
@@ -4242,6 +4702,25 @@ function propsKind(e) {
       add('Line width', ctlNum(e, 'lineWidth', { min: 1 }));
       img('Background', 'bg');
       break;
+    case 'DATE_POINTER': {
+      add('Follows', ctlSelect(e.dateType || 'WEEK', [{ value: 'WEEK', label: 'Day of the week' }, { value: 'DAY', label: 'Day of the month' }, { value: 'MONTH', label: 'Month' }], (v) => { e.dateType = v; render(); scheduleCode(); }),
+        'The date unit the pointer turns with, from the start angle to the end angle');
+      section(frag, 'Pointer');
+      img('Image', 'src');
+      add('Pivot X', ctlNum(e, 'posX'), 'Where, inside the pointer picture, it turns around');
+      add('Pivot Y', ctlNum(e, 'posY'));
+      add('Start angle', ctlNum(e, 'startAngle', { min: -360, max: 360 }), '0 = 12 o\'clock, clockwise');
+      add('End angle', ctlNum(e, 'endAngle', { min: -360, max: 360 }));
+      section(frag, 'Scale (dial behind)');
+      img('Scale', 'scale');
+      add('Scale X', ctlNum(e, 'scaleX'));
+      add('Scale Y', ctlNum(e, 'scaleY'));
+      section(frag, 'Cover (cap above)');
+      img('Cover', 'cover');
+      add('Cover X', ctlNum(e, 'coverX'));
+      add('Cover Y', ctlNum(e, 'coverY'));
+      break;
+    }
     case 'TIME_POINTER': {
       for (const [key, label] of [['hour', 'Hour'], ['minute', 'Minute'], ['second', 'Second']]) {
         section(frag, `${label} hand`);
@@ -4251,6 +4730,8 @@ function propsKind(e) {
       }
       section(frag, 'Centre cap');
       img('Cover', 'cover');
+      img('Minute cap', 'minuteCover');
+      img('Second cap', 'secondCover');
       break;
     }
     default: break;
@@ -4392,6 +4873,7 @@ function renderImagesPanel() {
   const used = new Set();
   collectUsedImages(used);
   for (const im of project.images) {
+    if (HIDDEN_IMG_RE.test(im.name)) continue;      // colour-theme copies and kept originals live with their picture
     const cell = document.createElement('div');
     cell.className = 'img' + (used.has(im.name) ? '' : ' unused');
     const thumb = document.createElement('img');
@@ -4414,7 +4896,7 @@ function renderImagesPanel() {
 }
 function collectUsedImages(set) {
   for (const e of elements()) {
-    for (const key of ['src', 'unit', 'dot', 'negative', 'hour', 'minute', 'second', 'cover', 'bg', 'am', 'pm']) {
+    for (const key of ['src', 'unit', 'unitImperial', 'invalid', 'dot', 'negative', 'hour', 'minute', 'second', 'cover', 'minuteCover', 'secondCover', 'scale', 'bg', 'am', 'pm']) {
       if (e[key]) set.add(e[key]);
     }
     for (const key of ['images', 'frames']) {
@@ -4441,10 +4923,10 @@ function deleteImage(name) {
 $('btnPruneImages').onclick = () => {
   const used = new Set();
   collectUsedImages(used);
-  const unused = project.images.filter((i) => !used.has(i.name));
+  const unused = project.images.filter((i) => !used.has(i.name) && !HIDDEN_IMG_RE.test(i.name));
   if (!unused.length) { status('No unused images.'); return; }
   pushHistory();
-  project.images = project.images.filter((i) => used.has(i.name));
+  project.images = project.images.filter((i) => used.has(i.name) || HIDDEN_IMG_RE.test(i.name));
   setDirty(true);
   undoToast(`Removed ${unused.length} unused image${unused.length === 1 ? '' : 's'}.`);
   refreshPanels(); render(); scheduleCode();
@@ -4869,6 +5351,7 @@ const PRESETS = [
   { id: 'arcprogress', label: 'Step progress arc', sub: 'ARC_PROGRESS' },
   { id: 'bar', label: 'Progress bar', sub: 'linear, follows a reading' },
   { id: 'sleepchart', label: 'Sleep chart', sub: 'last night, by stage' },
+  { id: 'polyline', label: 'Line chart', sub: 'heart rate / sleep, gradient' },
   { id: 'editslot', label: 'Complication slot', sub: 'the wearer picks what it shows' },
   { id: 'level', label: 'Battery image level', sub: 'IMG_LEVEL' },
   { id: 'rect', label: 'Filled rectangle', sub: 'FILL_RECT' },
@@ -4985,6 +5468,12 @@ async function applyPreset(id) {
       pushHistory();
       const nextId = Math.max(0, ...elements().filter((x) => x.kind === 'EDIT_SLOT').map((x) => +x.editId || 0)) + 1;
       const e = newElement('EDIT_SLOT', { show: 'normal', editId: nextId, x: cx - 40, y: cy - 20, w: 80, h: 40, name: `Complication ${nextId}`, defaultType: 'STEP', optionalTypes: [{ type: 'STEP', preview: '' }, { type: 'HEART', preview: '' }] });
+      project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+      break;
+    }
+    case 'polyline': {
+      pushHistory();
+      const e = newElement('POLYLINE', { show: 'normal', x: cx - 100, y: cy + 40, w: 200, h: 80, name: 'Heart-rate chart' });
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
       break;
     }
@@ -5745,6 +6234,243 @@ $('btnPreviewAod').onclick = () => setPreviewMode('aod');
 $('btnPreviewEdit').onclick = () => setPreviewMode('edit');
 $('btnPreviewLive').onclick = () => setLiveClock(!liveClock);
 
+
+// ---------------------------------------------------------------- colour themes --
+// One face, several colours. The accent colour of the face (found from its
+// pictures) is moved to each palette colour — hue, saturation and brightness —
+// in every picture that has it; pictures without it stay shared. The copies are
+// ordinary project images named <name>__t<N>.png, the export switches between
+// them (a Tap zone set to “Next colour theme” rebuilds the face).
+function rgbToHsv(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0;
+  if (d) {
+    if (mx === r) h = ((g - b) / d) % 6; else if (mx === g) h = (b - r) / d + 2; else h = (r - g) / d + 4;
+    h *= 60; if (h < 0) h += 360;
+  }
+  return [h, mx ? d / mx : 0, mx];
+}
+function hsvToRgb(h, s, v) {
+  h = ((h % 360) + 360) % 360;
+  const c = v * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = v - c;
+  let r = 0, g = 0, b = 0;
+  if (h < 60) [r, g, b] = [c, x, 0]; else if (h < 120) [r, g, b] = [x, c, 0]; else if (h < 180) [r, g, b] = [0, c, x];
+  else if (h < 240) [r, g, b] = [0, x, c]; else if (h < 300) [r, g, b] = [x, 0, c]; else [r, g, b] = [c, 0, x];
+  return [(r + m) * 255, (g + m) * 255, (b + m) * 255];
+}
+const hueDiff = (a, b) => { let d = a - b; while (d > 180) d -= 360; while (d < -180) d += 360; return d; };
+// the dominant saturated hue across a set of RGBA buffers
+function detectAccent(buffers) {
+  const bins = new Array(36).fill(0);
+  for (const data of buffers) {
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] < 200) continue;
+      const [h, s, v] = rgbToHsv(data[i], data[i + 1], data[i + 2]);
+      if (s > 0.4 && v > 0.35) bins[Math.floor(h / 10) % 36] += s * v;
+    }
+  }
+  let best = 0;
+  for (let i = 1; i < 36; i++) if (bins[i] > bins[best]) best = i;
+  if (!bins[best]) return null;
+  const centre = best * 10 + 5;
+  let sS = 0, sV = 0, n = 0;
+  for (const data of buffers) {
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] < 200) continue;
+      const [h, s, v] = rgbToHsv(data[i], data[i + 1], data[i + 2]);
+      if (s > 0.4 && v > 0.35 && Math.abs(hueDiff(h, centre)) <= 20) { sS += s; sV += v; n++; }
+    }
+  }
+  const [r, g, b] = hsvToRgb(centre, n ? sS / n : 1, n ? sV / n : 1);
+  return { h: centre, s: n ? sS / n : 1, v: n ? sV / n : 1, color: '#' + [r, g, b].map((x) => Math.round(x).toString(16).padStart(2, '0')).join('') };
+}
+// Recolour `data` (RGBA) in place; returns how many pixels were of the accent. Soft edges blend by saturation.
+function recolorData(data, accent, target, tol = 32) {
+  const [th, ts, tv] = rgbToHsv(parseInt(target.slice(1, 3), 16), parseInt(target.slice(3, 5), 16), parseInt(target.slice(5, 7), 16));
+  const sRatio = ts / Math.max(0.2, accent.s), vRatio = tv / Math.max(0.2, accent.v);
+  let hits = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] === 0) continue;
+    const [h, s, v] = rgbToHsv(data[i], data[i + 1], data[i + 2]);
+    const dh = hueDiff(h, accent.h);
+    if (Math.abs(dh) > tol || s < 0.08 || v < 0.1) continue;
+    const w = Math.min(1, (s - 0.08) / 0.17);
+    const [r, g, b] = hsvToRgb(th + dh * 0.6, Math.min(1, s * sRatio), Math.min(1, v * vRatio));
+    data[i] = Math.round(data[i] + (r - data[i]) * w);
+    data[i + 1] = Math.round(data[i + 1] + (g - data[i + 1]) * w);
+    data[i + 2] = Math.round(data[i + 2] + (b - data[i + 2]) * w);
+    if (w > 0.5) hits++;
+  }
+  return hits;
+}
+function imageToCanvas(name) {
+  const im = imgCache.get(name);
+  if (!im) return null;
+  const cv = document.createElement('canvas');
+  cv.width = im.naturalWidth || im.width; cv.height = im.naturalHeight || im.height;
+  if (!cv.width || !cv.height) return null;
+  const cx = cv.getContext('2d', { willReadFrequently: true });
+  cx.drawImage(im, 0, 0);
+  return { cv, cx };
+}
+function clearThemeImages() {
+  project.images = project.images.filter((i) => !/__t\d+\.png$/i.test(i.name));
+  for (const k of [...imgCache.keys()]) if (/__t\d+\.png$/i.test(k)) imgCache.delete(k);
+  delete project.themes;
+  themeIdx = 0;
+}
+async function generateThemes(list, accentHex) {
+  if (!project || !list.length) return { error: 'Pick at least one colour.' };
+  clearThemeImages();
+  const bases = project.images.map((i) => i.name);
+  const loaded = bases.map((n) => ({ n, c: imageToCanvas(n) })).filter((x) => x.c);
+  let accent = null;
+  if (accentHex && /^#[0-9a-f]{6}$/i.test(accentHex)) {
+    const [h, s, v] = rgbToHsv(parseInt(accentHex.slice(1, 3), 16), parseInt(accentHex.slice(3, 5), 16), parseInt(accentHex.slice(5, 7), 16));
+    accent = { h, s, v, color: accentHex };
+  } else {
+    accent = detectAccent(loaded.map((x) => x.c.cx.getImageData(0, 0, x.c.cv.width, x.c.cv.height).data));
+  }
+  if (!accent) return { error: 'No accent colour found in the pictures (the face is black / white / grey).' };
+  const recolored = [];
+  list.forEach((t, k) => {
+    for (const { n, c } of loaded) {
+      const img = c.cx.getImageData(0, 0, c.cv.width, c.cv.height);
+      const hits = recolorData(img.data, accent, t.color);
+      if (!hits) continue;
+      const out = document.createElement('canvas');
+      out.width = c.cv.width; out.height = c.cv.height;
+      out.getContext('2d').putImageData(img, 0, 0);
+      addProjectImage(themedName(n, k + 1), out);
+      if (!recolored.includes(n)) recolored.push(n);
+    }
+  });
+  project.themes = { accent: accent.color, list: list.map((t) => ({ name: t.name, color: t.color })), recolored };
+  await loadAllImages();
+  setDirty(true);
+  return { accent: accent.color, themes: list.length, recolored: recolored.length };
+}
+function syncThemeSel() {
+  const sel = $('themeSel');
+  if (!sel) return;
+  const t = project && project.themes;
+  sel.hidden = !(t && t.list && t.list.length);
+  if (sel.hidden) { themeIdx = 0; return; }
+  sel.innerHTML = '';
+  ['Original', ...t.list.map((x) => x.name)].forEach((name, i) => {
+    const o = document.createElement('option'); o.value = String(i); o.textContent = `Theme: ${name}`; sel.appendChild(o);
+  });
+  themeIdx = Math.min(themeIdx, t.list.length);
+  sel.value = String(themeIdx);
+}
+// a readable name for a colour (the toast on the watch and the Theme selector show it)
+function colorName(hex) {
+  const [h, s, v] = rgbToHsv(parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16));
+  if (v < 0.2) return 'Black';
+  if (s < 0.14) return v > 0.85 ? 'White' : v > 0.5 ? 'Grey' : 'Charcoal';
+  const names = [[11, 'Red'], [40, 'Orange'], [70, 'Yellow'], [160, 'Green'], [195, 'Teal'], [250, 'Blue'], [290, 'Purple'], [350, 'Pink'], [361, 'Red']];
+  return names.find(([max]) => h < max)[1];
+}
+let themeChips = [];                 // { name, color, checked, custom }
+function uniqueThemeName(name, chips) {
+  let n = name, k = 2;
+  while (chips.some((c) => c.name === n)) n = `${name} ${k++}`;
+  return n;
+}
+function renderThemeChips() {
+  const host = $('themePalette');
+  host.innerHTML = '';
+  for (const c of themeChips) {
+    const lab = document.createElement('label');
+    lab.className = 'theme-chip';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = !!c.checked;
+    cb.onchange = () => { c.checked = cb.checked; };
+    const dot = document.createElement('span'); dot.className = 'theme-dot'; dot.style.background = c.color;
+    lab.appendChild(cb); lab.appendChild(dot); lab.appendChild(document.createTextNode(c.name));
+    lab.title = c.color;
+    if (c.custom) {
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'theme-x'; x.textContent = '✕'; x.title = 'Remove this colour';
+      x.onclick = (ev) => { ev.preventDefault(); themeChips = themeChips.filter((k) => k !== c); renderThemeChips(); };
+      lab.appendChild(x);
+    }
+    host.appendChild(lab);
+  }
+}
+function themeChipsFromPalette(p) {
+  const out = [];
+  for (const col of p.colors) out.push({ name: uniqueThemeName(colorName(col), out), color: col, checked: true, custom: false });
+  return out;
+}
+function openThemes() {
+  if (!project) return;
+  const sel = $('themePaletteSel');
+  if (!sel.options.length) {
+    const none = document.createElement('option'); none.value = ''; none.textContent = 'Custom colours only'; sel.appendChild(none);
+    COLOR_PALETTES.forEach((p, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = p.name; sel.appendChild(o); });
+    sel.onchange = () => {
+      const keep = themeChips.filter((c) => c.custom);
+      const pal = sel.value === '' ? [] : themeChipsFromPalette(COLOR_PALETTES[+sel.value]);
+      themeChips = pal.concat(keep.map((c) => ({ ...c, name: uniqueThemeName(c.name, pal) })));
+      renderThemeChips();
+    };
+  }
+  const existing = (project.themes && project.themes.list) || [];
+  if (existing.length) {
+    // what the project already has: kept as editable colours
+    themeChips = existing.map((t) => ({ name: t.name, color: t.color, checked: true, custom: true }));
+    sel.value = '';
+  } else {
+    sel.value = '0';
+    themeChips = themeChipsFromPalette(COLOR_PALETTES[0]);
+  }
+  renderThemeChips();
+  $('themeAccent').value = (project.themes && project.themes.accent) || '';
+  $('themeMsg').textContent = project.themes ? `${project.themes.list.length} theme(s), ${project.themes.recolored.length} pictures recoloured. Generating again replaces them.` : '';
+  $('btnThemeRemove').hidden = !project.themes;
+  $('themeModal').hidden = false;
+}
+$('themeCustomAdd').onclick = () => {
+  const color = $('themeCustomColor').value;
+  const name = $('themeCustomName').value.trim() || colorName(color);
+  themeChips.push({ name: uniqueThemeName(name, themeChips), color, checked: true, custom: true });
+  $('themeCustomName').value = '';
+  renderThemeChips();
+};
+$('themeAccentPick').oninput = (ev) => { $('themeAccent').value = ev.target.value; };
+$('themeAccentAuto').onclick = () => { $('themeAccent').value = ''; };
+$('btnThemes').onclick = openThemes;
+$('themeClose').onclick = () => { $('themeModal').hidden = true; };
+$('btnThemeRemove').onclick = () => {
+  pushHistory();
+  clearThemeImages();
+  refreshPanels(); render(); scheduleCode();
+  $('themeModal').hidden = true;
+  status('Colour themes removed.');
+};
+$('themeGo').onclick = async () => {
+  const list = themeChips.filter((c) => c.checked).map((c) => ({ name: c.name, color: c.color }));
+  const acc = $('themeAccent').value.trim();
+  $('themeMsg').textContent = 'Working…';
+  pushHistory();
+  const res = await generateThemes(list, acc);
+  if (res.error) { $('themeMsg').textContent = res.error; return; }
+  themeIdx = 1;
+  // the wearer needs something to tap: a zone over the top of the face, easy to move
+  let added = false;
+  if (!elements().some((e) => e.kind === 'TAP' && e.action === 'theme')) {
+    const d = dev();
+    elements().push(newElement('TAP', { action: 'theme', show: 'normal', x: Math.round(d.w / 2 - 60), y: 20, w: 120, h: 50, name: 'Tap: next colour theme' }));
+    added = true;
+  }
+  refreshPanels(); render(); scheduleCode();
+  $('themeModal').hidden = true;
+  status(`Made ${res.themes} colour theme(s) from the accent ${res.accent}: ${res.recolored} pictures recoloured.${added ? ' A Tap zone “next colour theme” was added — move it where the wearer should tap.' : ''}`);
+};
+$('themeSel').onchange = (ev) => { themeIdx = +ev.target.value || 0; if (project) render(); };
+
 // -------------------------------------------------------------- project lifecycle --
 function freshProject(name, target) {
   return {
@@ -5849,7 +6575,7 @@ function convertProject(target, name) {
   const s = (v) => Math.round((+v || 0) * sx);
   const t = (v) => Math.round((+v || 0) * sy);
   for (const e of elements()) {
-    if (e.kind === 'CIRCLE' || e.kind === 'ARC_PROGRESS' || e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER') {
+    if (e.kind === 'CIRCLE' || e.kind === 'ARC_PROGRESS' || e.kind === 'TIME_POINTER' || e.kind === 'IMG_POINTER' || e.kind === 'DATE_POINTER') {
       // a pointer's x/y is the pivot inside its image, which keeps its size
       e.centerX = s(e.centerX); e.centerY = t(e.centerY);
       if (e.radius) e.radius = Math.round(e.radius * Math.min(sx, sy));
@@ -5875,6 +6601,7 @@ $('btnCloseProject').onclick = async () => {
   setEmptyState(); refreshPanels(); renderRecents(); updateTitle();
   status('');
 };
+$('btnCloseProjectHead').onclick = (ev) => { ev.stopPropagation(); $('btnCloseProject').onclick(); };
 $('inpName').oninput = (ev) => { if (!project) return; project.name = ev.target.value; setDirty(true); scheduleCode(); };
 $('inpDesc').oninput = (ev) => { if (!project) return; project.description = ev.target.value; setDirty(true); scheduleCode(); };
 $('inpAppId').oninput = (ev) => { if (!project) return; project.appId = +ev.target.value || 0; setDirty(true); scheduleCode(); };
@@ -6231,7 +6958,7 @@ function lintProject() {
   }
   const used = new Set();
   collectUsedImages(used);
-  const unused = project.images.filter((i) => !used.has(i.name));
+  const unused = project.images.filter((i) => !used.has(i.name) && !HIDDEN_IMG_RE.test(i.name));
   if (unused.length) add('info', `${unused.length} image${unused.length === 1 ? '' : 's'} in the project are unused.`);
   for (const m of (project.font ? [] : [])) add('info', m);
   if (!glyphFont) add('info', 'Pick a glyph font to generate digit images.');

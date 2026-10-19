@@ -32,7 +32,7 @@ const DATA_TYPES = [
   { key: 'STEP_TARGET', label: 'Step target', group: 'Activity', digits: 5, preview: 10000, reader: { cls: 'Step', get: 'getTarget' } },
   { key: 'CAL', label: 'Calories', group: 'Activity', digits: 4, preview: 280, reader: { cls: 'Calorie', get: 'getCurrent' } },
   { key: 'CAL_TARGET', label: 'Calorie target', group: 'Activity', digits: 4, preview: 500, reader: { cls: 'Calorie', get: 'getTarget' } },
-  { key: 'DISTANCE', label: 'Distance', group: 'Activity', digits: 6, preview: 5.3, dot: true, reader: { cls: 'Distance', get: 'getCurrent' }, note: 'shown as 0.00 / 00.0' },
+  { key: 'DISTANCE', label: 'Distance', group: 'Activity', digits: 3, preview: 5.3, dot: true, reader: { cls: 'Distance', get: 'getCurrent' }, note: 'shown as 0.00 / 00.0' },
   { key: 'STAND', label: 'Stand (hours)', group: 'Activity', digits: 2, preview: 7, reader: { cls: 'Stand', get: 'getCurrent' } },
   { key: 'STAND_TARGET', label: 'Stand target', group: 'Activity', digits: 2, preview: 12, reader: { cls: 'Stand', get: 'getTarget' } },
   { key: 'FLOOR', label: 'Floors climbed', group: 'Activity', digits: 3, preview: 8 },

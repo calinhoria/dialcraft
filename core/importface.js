@@ -26,8 +26,8 @@ const { isSomh, somhToPng } = require('./somh');
 const WIDGET_KIND = {
   IMG: 'IMG', IMG_ANIM: 'IMG_ANIM', IMG_LEVEL: 'IMG_LEVEL', IMG_PROGRESS: 'IMG_PROGRESS',
   IMG_POINTER: 'IMG_POINTER', IMG_TIME: 'IMG_TIME', IMG_WEEK: 'IMG_WEEK', IMG_DATE: 'IMG_DATE',
-  TIME_POINTER: 'TIME_POINTER', TEXT: 'TEXT', TEXT_IMG: 'TEXT_IMG',
-  IMG_STATUS: 'IMG_STATUS', IMG_CLICK: 'IMG_CLICK', BUTTON: 'IMG', TEXT_FONT: 'TEXT', GROUP: 'SLEEP_CHART',
+  TIME_POINTER: 'TIME_POINTER', DATE_POINTER: 'DATE_POINTER', TEXT: 'TEXT', TEXT_IMG: 'TEXT_IMG',
+  IMG_STATUS: 'IMG_STATUS', IMG_CLICK: 'IMG_CLICK', BUTTON: 'IMG', TEXT_FONT: 'TEXT', GROUP: 'SLEEP_CHART', GRADKIENT_POLYLINE: 'POLYLINE',
   WATCHFACE_EDIT_GROUP: 'EDIT_SLOT', WATCHFACE_EDIT_MASK: 'IMG', WATCHFACE_EDIT_FG_MASK: 'IMG',
   FILL_RECT: 'FILL_RECT', STROKE_RECT: 'STROKE_RECT', CIRCLE: 'CIRCLE', ARC: 'ARC',
   ARC_PROGRESS: 'ARC_PROGRESS',
@@ -42,9 +42,9 @@ const NON_VISUAL = {
 // constants handed to widgets; the shim turns `ui.show_level.ONLY_AOD` into the
 // string "show_level.ONLY_AOD" so the name survives the capture
 const CONST_GROUPS = new Set(['widget', 'align', 'align_v', 'align_h', 'data_type', 'show_level',
-  'prop', 'text_style', 'anim_status', 'system_status', 'id', 'event', 'edit_type']);
+  'prop', 'text_style', 'anim_status', 'system_status', 'id', 'event', 'edit_type', 'date']);
 const TIME_PARTS = ['hour', 'minute', 'second'];
-const DATE_PARTS = ['month', 'day'];
+const DATE_PARTS = ['month', 'year', 'day'];
 const IMAGE_EXT = /\.(png|jpe?g|webp|bmp|svg)$/i;
 // hmSensor.id.X -> designer data type, for a widget whose picture follows a
 // reading (only the ids that map onto a level-style image set are listed).
@@ -151,6 +151,34 @@ function makeShim(calls, notes, opts = {}) {
   // a widget can pick its picture from it, which is how a runtime index is
   // traced back to a data type
   let sensor;
+  // The clock the face reads. The watchface code often sets a digit picture from
+  // `e.format_hour` / `e.minute` in a refresh function; capture() calls those
+  // functions at several times and records which picture each widget got.
+  const clock = { h: 10, m: 9, s: 36 };
+  const listeners = [];
+  const entries = [];
+  const timeValues = () => ({
+    hour: clock.h, minute: clock.m, second: clock.s, format_hour: clock.h % 12 || 12,
+    day: 15, month: 6, year: 2024, week: 1,
+  });
+  const makeTime = () => {
+    const base = mk('Time', 'time');
+    const vals = {
+      getHours: () => clock.h, getMinutes: () => clock.m, getSeconds: () => clock.s,
+      getFormatHour: () => clock.h % 12 || 12, getDate: () => 15, getMonth: () => 6, getFullYear: () => 2024, getDay: () => 1,
+      addEventListener: (_ev, cb) => { if (typeof cb === 'function') listeners.push(cb); },
+      onPerMinute: (cb) => { if (typeof cb === 'function') listeners.push(cb); },
+      onPerSecond: (cb) => { if (typeof cb === 'function') listeners.push(cb); },
+    };
+    return new Proxy(base, {
+      get(t, prop, r) {
+        const tv = timeValues();
+        if (typeof prop === 'string' && prop in tv) return tv[prop];
+        if (typeof prop === 'string' && prop in vals) return vals[prop];
+        return Reflect.get(t, prop, r);
+      },
+    });
+  };
   const mk = (tag, name) => {
     const fn = function () { return mk(tag, name); };
     return new Proxy(fn, {
@@ -179,10 +207,13 @@ function makeShim(calls, notes, opts = {}) {
       },
       set() { return true; },
       apply(_t, _this, args) {
-        if (/(^|\.)createSensor$/.test(name)) sensor = args && args.length ? args[0] : undefined;
+        if (/(^|\.)createSensor$/.test(name)) {
+          sensor = args && args.length ? args[0] : undefined;
+          if (typeof sensor === 'string' && /(^|\.)TIME$/.test(sensor)) return makeTime();
+        }
         return mk(tag, `${name}()`);
       },
-      construct() { return mk(tag, `new ${name}`); },
+      construct() { return name === 'Time' ? makeTime() : mk(tag, `new ${name}`); },
     });
   };
   const createWidget = (type, params) => {
@@ -193,6 +224,8 @@ function makeShim(calls, notes, opts = {}) {
       try { p._click = Function.prototype.toString.call(params.click_func); } catch (e) { /* no source */ }
     }
     const entry = { type: nameOf(type) || String(type), params: p, sensor };
+    if (params && typeof params.resume_call === 'function') listeners.push(params.resume_call);
+    entries.push(entry);
     // a complication slot: the face asks it which type the wearer picked (getProperty CURRENT_TYPE)
     if (entry.type === 'WATCHFACE_EDIT_GROUP') entry.slotIndex = calls.filter((c) => c.type === 'WATCHFACE_EDIT_GROUP').length;
     calls.push(entry);
@@ -202,7 +235,13 @@ function makeShim(calls, notes, opts = {}) {
     return new Proxy(inst, {
       get(t, prop, r) {
         if (prop === 'setProperty') {
-          return (key, val) => { if (/VISIBLE/.test(String(key))) entry.visible = !!val; return undefined; };
+          return (key, val) => {
+            if (/VISIBLE/.test(String(key))) entry.visible = !!val;
+            // a picture picked at runtime: setProperty(MORE, { src }) or setProperty(SRC, name)
+            if (/MORE/.test(String(key)) && val && typeof val === 'object' && typeof val.src === 'string') entry.more = val.src;
+            else if (/(^|\.)SRC$/.test(String(key)) && typeof val === 'string') entry.more = val;
+            return undefined;
+          };
         }
         if (prop === 'getProperty' && entry.slotIndex != null) {
           // answer with the type this pass tries (or one no case matches, for the base pass)
@@ -260,9 +299,70 @@ function makeShim(calls, notes, opts = {}) {
   return {
     sandbox,
     getConfig: () => config,
-    reset() { calls.length = 0; config = null; sensor = undefined; },
+    reset() { calls.length = 0; config = null; sensor = undefined; listeners.length = 0; entries.length = 0; },
     mk,
+    // call the face's refresh callbacks at each time and record the picture every widget ends up with
+    probe(times) {
+      const out = [];
+      for (const [h, m] of times) {
+        clock.h = h; clock.m = m; clock.s = 0;
+        for (const e of entries) e.more = undefined;
+        for (const cb of listeners.slice()) { try { cb(); } catch (err) { /* the face's own refresh failed: that widget stays static */ } }
+        out.push(entries.map((e) => e.more));
+      }
+      entries.forEach((e, i) => { const seq = out.map((o) => o[i]); if (seq.every((v) => typeof v === 'string')) e.probes = seq; });
+      clock.h = 10; clock.m = 9; clock.s = 36;
+    },
   };
+}
+
+// Four IMG widgets whose picture the face sets every minute from the clock are really the
+// hour and minute digits: find which digit each follows (from the pictures it showed at
+// the probe times), and replace the four by Digital time layers.
+function liftClockDigits(calls, ctx) {
+  const roles = {
+    ht: ([h]) => Math.floor((h % 12 || 12) / 10), hu: ([h]) => (h % 12 || 12) % 10,
+    mt: ([, m]) => Math.floor(m / 10), mu: ([, m]) => m % 10,
+  };
+  const found = {};
+  calls.forEach((c, i) => {
+    if (c.type !== 'IMG' || !c.probes || c.probes.length !== PROBE_TIMES.length) return;
+    for (const [role, digit] of Object.entries(roles)) {
+      const map = new Map();
+      let ok = true;
+      PROBE_TIMES.forEach((t, k) => {
+        const d = digit(t);
+        if (map.has(d) && map.get(d) !== c.probes[k]) ok = false;
+        map.set(d, c.probes[k]);
+      });
+      if (!ok || new Set(map.values()).size !== map.size || map.size < 2) continue;
+      if (!found[role]) found[role] = [];
+      found[role].push({ i, c, map });
+      break;
+    }
+  });
+  const drop = new Set();
+  const add = new Map();    // call index → synthetic call
+  for (const [part, tens, units] of [['hour', 'ht', 'hu'], ['minute', 'mt', 'mu']]) {
+    const T = found[tens] && found[tens][0], U = found[units] && found[units][0];
+    if (!T || !U) continue;
+    const digits = Array.from({ length: 10 }, (_, d) => U.map.get(d));
+    if (digits.some((v) => !v)) continue;
+    const params = {
+      ...U.c.params,
+      [`${part}_startX`]: T.c.params.x, [`${part}_startY`]: T.c.params.y,
+      [`${part}_array`]: digits, [`${part}_zero`]: 1, _unitsX: U.c.params.x,
+    };
+    for (const k of ['x', 'y', 'w', 'h', 'src', 'enable']) delete params[k];
+    const first = Math.min(T.i, U.i);
+    add.set(first, { type: 'IMG_TIME', params, sensor: undefined });
+    drop.add(T.i); drop.add(U.i);
+    ctx.clockDigits = (ctx.clockDigits || 0) + 1;
+  }
+  if (!drop.size) return calls;
+  const out = [];
+  calls.forEach((c, i) => { if (add.has(i)) out.push(add.get(i)); if (!drop.has(i)) out.push(c); });
+  return out;
 }
 
 function stripModule(code) {
@@ -278,11 +378,13 @@ function stripModule(code) {
 // sensor class or runtime helper the shim does not know) is stubbed and the run
 // retried — whether the reference error reached us or was logged by the face's
 // own try/catch — so an unfamiliar API never loses the whole capture.
+// 12-hour value and minute: every digit 0-9 appears as a units digit, tens digits cover 0-1 (hour) and 0-5 (minute)
+const PROBE_TIMES = [[12, 0], [1, 12], [2, 23], [3, 34], [4, 45], [5, 56], [6, 7], [7, 18], [8, 29], [9, 41], [10, 52], [11, 3]];
 function capture(code, opts = {}) {
   const calls = [];
   const notes = [];
   const attemptNotes = [];
-  const { sandbox, getConfig, reset, mk } = makeShim(calls, attemptNotes, opts);
+  const { sandbox, getConfig, reset, mk, probe } = makeShim(calls, attemptNotes, opts);
   const context = vm.createContext(sandbox);
   const source = stripModule(code);
   let error = null;
@@ -334,6 +436,7 @@ function capture(code, opts = {}) {
     if (entry) {
       try { config[entry].call(config); } catch (e) { error = `${entry}(): ${String((e && e.message) || e)}`; }
     }
+    if (!error || /^onInit/.test(error)) { try { probe(PROBE_TIMES.map(([h12, m]) => [h12 % 12, m])); } catch (e) { /* no clock-driven widgets */ } }
   } else if (!error) {
     error = 'no WatchFace({ … }) call found in the file';
   }
@@ -578,12 +681,13 @@ function importFaceDir(dir) {
   const codeText = fs.readFileSync(codeFile, 'utf8');
   // what the face's own start-up code hides (a stat it shows only after a tap, a dimming
   // overlay): the visibility it sets on the first run is how the face starts
+  captured.calls = liftClockDigits(captured.calls, ctx);
   for (const c of captured.calls) c.initVisible = c.visible;
   ctx.linear = parseLinearScales(codeText);
   ctx.code = codeText;
   if (/VISIBLE/.test(codeText) && /getHours|hour/.test(codeText)) {
-    const am = capture(codeText, { hour: 9 }).calls;
-    pmRun = capture(codeText, { hour: 15 }).calls;
+    const am = liftClockDigits(capture(codeText, { hour: 9 }).calls, ctx);
+    pmRun = liftClockDigits(capture(codeText, { hour: 15 }).calls, ctx);
     captured.calls.forEach((c, i) => { c.visible = am[i] ? am[i].visible : undefined; c.visiblePm = pmRun[i] ? pmRun[i].visible : undefined; });
   }
   // complication slots: run the code once per optional type; what each type adds is that type's layers
@@ -593,7 +697,7 @@ function importFaceDir(dir) {
   slotCalls.forEach((sc) => {
     const types = (Array.isArray(sc.params.optional_types) ? sc.params.optional_types : []).map((o) => nameOf(o && o.type)).filter(Boolean);
     for (const T of types) {
-      const run = capture(codeText, { pick: { slot: sc.slotIndex, type: T } }).calls;
+      const run = liftClockDigits(capture(codeText, { pick: { slot: sc.slotIndex, type: T } }).calls, ctx);
       const B = captured.calls;
       let a = 0;
       while (a < B.length && a < run.length && sameCall(B[a], run[a])) a++;
@@ -720,7 +824,7 @@ function importFaceDir(dir) {
   const used = new Set();
   for (const el of elements) {
     for (const key of ['images', 'frames']) for (const n of el[key] || []) used.add(n);
-    for (const key of ['src', 'unit', 'dot', 'negative', 'bg', 'cover', 'am', 'pm', 'hour', 'minute', 'second']) {
+    for (const key of ['src', 'unit', 'unitImperial', 'invalid', 'minuteCover', 'secondCover', 'dot', 'negative', 'bg', 'cover', 'scale', 'am', 'pm', 'hour', 'minute', 'second']) {
       if (el[key]) used.add(el[key]);
     }
   }
@@ -825,6 +929,15 @@ function mapWidget(type, p, ctx, skipped, sensor) {
         tipsBg: img(p.tips_BG) || '', tipsX: num(p.tips_x), tipsY: num(p.tips_y), tipsWidth: num(p.tips_width), tipsMargin: num(p.tips_margin),
       }));
     }
+    case 'GRADKIENT_POLYLINE': {
+      const dt = nameOf(p.type);
+      if (dt !== 'HEART' && dt !== 'SLEEP') {
+        // drawn by the face's own code (addLine / addPoint): the data is not part of the design
+        skipped.set('GRADKIENT_POLYLINE (data drawn by code)', (skipped.get('GRADKIENT_POLYLINE (data drawn by code)') || 0) + 1);
+        return [];
+      }
+      return el('POLYLINE', { name: dt === 'SLEEP' ? 'Sleep line chart' : 'Heart-rate chart', ...box, dataType: dt });
+    }
     case 'GROUP': {
       // the Maker's sleep chart: an empty group the face's code fills with a bar per sleep stage
       const m = /sleepColors\s*=\s*\[([^\]]*)\]/.exec(ctx.code || '');
@@ -849,7 +962,14 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       else if (app) { action = 'app'; appUrl = app[1]; }
       else if (click) { note = click.replace(/\s+/g, ' ').slice(0, 160); ctx.customTaps = (ctx.customTaps || 0) + 1; }
       const tapName = action === 'variant' ? 'Tap: next background' : action === 'app' ? `Tap: ${appUrl.replace(/Screen$/, '')}` : 'Tap zone';
-      out.push(mk('TAP', { ...base, name: tapName, ...box, action, appUrl, note }));
+      const visible = (p.text && String(p.text).length) || p.normal_color != null;
+      out.push(mk('TAP', {
+        ...base, name: tapName, ...box, action, appUrl, note,
+        ...(visible ? {
+          text: p.text == null ? '' : String(p.text), textColor: p.color != null ? hexOf(p.color) : undefined, textSize: num(p.text_size),
+          normalColor: p.normal_color != null ? hexOf(p.normal_color) : undefined, pressColor: p.press_color != null ? hexOf(p.press_color) : undefined, radius: num(p.radius),
+        } : {}),
+      }));
       ctx.taps = (ctx.taps || 0) + 1;
       return out;
     }
@@ -882,6 +1002,7 @@ function mapWidget(type, p, ctx, skipped, sensor) {
         color: hexOf(p.color), size: num(p.text_size),
         alignH: alignOf(p.align_h), alignV: alignOf(p.align_v),
         lineSpace: num(p.line_space), charSpace: num(p.char_space),
+        textStyle: ['WRAP', 'ELLIPSIS'].includes(nameOf(p.text_style)) ? nameOf(p.text_style) : undefined,
         fontFile: font || '',
       });
     }
@@ -891,6 +1012,9 @@ function mapWidget(type, p, ctx, skipped, sensor) {
         name: (dt && dataType(dt) ? dataType(dt).label : 'Reading'), ...box,
         dataType: dt, images: imgs(p.font_array), hSpace: num(p.h_space), alignH: alignOf(p.align_h),
         unit: img(p.unit_en) || '', dot: img(p.dot_image) || '', negative: img(p.negative_image) || '',
+        unitImperial: img(p.imperial_unit_en || p.imperial_unit_sc || p.imperial_unit_tc) || '',
+        invalid: img(Array.isArray(p.invalid_image) ? p.invalid_image[0] : p.invalid_image) || '',
+        text: typeof p.text === 'string' && /\d/.test(p.text) ? p.text.replace(/[^0-9]/g, '') : undefined,
       });
     }
     case 'IMG_TIME': {
@@ -911,13 +1035,16 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       for (const part of TIME_PARTS) {
         if (!keys.some((k) => k.startsWith(`${part}_`))) continue;
         const follow = num(p[`${part}_follow`]) ? 1 : 0;
+        const digits = imgs(p[`${part}_array`]);
+        // digit widgets lifted from a clock refresh carry where the units digit sits instead of a spacing
+        const gap = p._unitsX != null ? Math.max(0, p._unitsX - num(p[`${part}_startX`]) - ((digits[0] && ctx.size(digits[0])) || { w: 0 }).w) : num(p[`${part}_space`]);
         out.push(mk('IMG_TIME', {
           ...base, part, name: part[0].toUpperCase() + part.slice(1),
           x: num(p[`${part}_startX`]),
           y: follow ? undefined : num(p[`${part}_startY`]),
-          zero: num(p[`${part}_zero`]) ? 1 : 0, space: num(p[`${part}_space`]),
+          zero: num(p[`${part}_zero`]) ? 1 : 0, space: gap,
           follow, alignH: alignOf(p[`${part}_align`]),
-          images: imgs(p[`${part}_array`]), unit: img(p[`${part}_unit_en`]) || '',
+          images: digits, unit: img(p[`${part}_unit_en`]) || '',
         }));
       }
       return out;
@@ -930,7 +1057,7 @@ function mapWidget(type, p, ctx, skipped, sensor) {
         if (!Object.keys(p).some((k) => k.startsWith(`${part}_`))) continue;
         const follow = num(p[`${part}_follow`]) ? 1 : 0;
         out.push(mk('IMG_DATE', {
-          ...base, part, name: part === 'month' ? 'Month' : 'Day',
+          ...base, part, name: part === 'month' ? 'Month' : part === 'year' ? 'Year' : 'Day',
           x: num(p[`${part}_startX`]),
           y: follow ? undefined : num(p[`${part}_startY`]),
           zero: num(p[`${part}_zero`]) ? 1 : 0, space: num(p[`${part}_space`]), follow,
@@ -942,6 +1069,16 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       }
       return out;
     }
+    case 'DATE_POINTER':
+      return el('DATE_POINTER', {
+        name: 'Date pointer',
+        dateType: ['MONTH', 'DAY', 'WEEK'].includes(nameOf(p.type)) ? nameOf(p.type) : 'WEEK',
+        centerX: num(p.center_x), centerY: num(p.center_y),
+        src: img(p.src), posX: num(p.posX), posY: num(p.posY),
+        scale: img(p.scale_en || p.scale_sc || p.scale_tc) || '', scaleX: num(p.scale_x), scaleY: num(p.scale_y),
+        cover: img(p.cover_path) || '', coverX: num(p.cover_x), coverY: num(p.cover_y),
+        startAngle: num(p.start_angle), endAngle: p.end_angle == null ? 180 : num(p.end_angle),
+      });
     case 'TIME_POINTER': {
       const hand = (name) => [img(p[`${name}_path`]), num(p[`${name}_posX`]), num(p[`${name}_posY`])];
       const [h, hx, hy] = hand('hour');
@@ -955,6 +1092,7 @@ function mapWidget(type, p, ctx, skipped, sensor) {
         minute: m || '', minutePivotX: mx, minutePivotY: my,
         second: s || '', secondPivotX: sx, secondPivotY: sy,
         cover: img(p.hour_cover_path) || '',
+        minuteCover: img(p.minute_cover_path) || '', secondCover: img(p.second_cover_path) || '',
       });
     }
     case 'IMG_POINTER':
@@ -973,8 +1111,12 @@ function mapWidget(type, p, ctx, skipped, sensor) {
     case 'IMG_PROGRESS': {
       const xs = (Array.isArray(p.x) ? p.x : [p.x]).map(num).filter((v) => v !== undefined);
       const ys = (Array.isArray(p.y) ? p.y : [p.y]).map(num).filter((v) => v !== undefined);
+      // evenly spaced on one row is a start + a spread; anything else keeps its own position per picture
+      const spreadV = xs.length > 1 ? xs[1] - xs[0] : 0;
+      const uniform = xs.every((v, k) => v === xs[0] + k * spreadV) && ys.every((v) => v === ys[0]);
+      const positions = !uniform && xs.length > 1 ? xs.map((v, k) => [v, ys[k] !== undefined ? ys[k] : ys[0]]) : undefined;
       return el('IMG_PROGRESS', {
-        name: 'Progress', x: xs[0], y: ys[0], spread: xs.length > 1 ? xs[1] - xs[0] : undefined,
+        name: 'Progress', x: xs[0], y: ys[0], spread: xs.length > 1 ? spreadV : undefined, positions,
         images: imgs(p.image_array), dataType: nameOf(p.type), level: num(p.level),
       });
     }
@@ -1026,6 +1168,7 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       return el('IMG_ANIM', {
         name: 'Animation', x: num(p.x), y: num(p.y),
         frames, fps: num(p.anim_fps), repeat: num(p.repeat_count), step: num(p.step), animPrefix: prefix,
+        displayOnRestart: p.display_on_restart ? true : undefined, defaultFrame: num(p.default_frame_index) || undefined,
       });
     }
     default:

@@ -403,6 +403,33 @@ they were — the panel says `Shared with N other layers` beforehand. Selecting
 several glyph layers (or clicking a group) restyles them together in one pass,
 and they share the copy.
 
+## Palettes and the Imported Font
+
+In **Glyph style**, a solid or gradient **Fill** shows a **Palette** picker with 20 well-known palettes
+(Teenage Engineering, Dracula, Nord, Solarized, Gruvbox, Monokai, Catppuccin, Tokyo Night, One Dark,
+Material, Cyberpunk, Synthwave, Sunset, Ocean, Forest, Pastel, Rainbow, Game Boy, Monochrome, Neon).
+Choosing one fills the colours at once (solid: its first colour; gradient: its first two); a swatch sets a
+single colour (shift+click sets the gradient's end). **Apply to all text layers** gives every digit /
+weekday layer the palette — a quick theme.
+
+A set that came from another watchface is offered as **Imported Font**: the pictures it came with. Size
+scales them and the fill paints over them through their own alpha (shapes stay, colour and scale change).
+The originals are kept as hidden `…__src.png` copies (never exported), so **Restore originals** puts them
+back, and choosing a real typeface instead still keeps them.
+
+## Colour themes
+
+One face, several colours. **Watchface → Colour themes…** finds the face's accent colour from its
+pictures (or take the hex you type) and moves it — hue, saturation, brightness — to every colour you
+tick (a Teenage-Engineering-style palette: orange, yellow, sky, green, pink, grey, white). Only
+pictures that carry the accent get a copy (`name__t1.png`, …); black / white / grey pictures stay shared.
+The **Theme** selector under the preview shows each one.
+
+A Tap zone set to **Next colour theme** switches them on the watch (one is added for you). The export
+builds the whole face in one function; a tap deletes the widgets it made and builds again with the next
+theme's pictures, and the choice is remembered. Every theme adds its pictures to the package — a face
+with 45 accent pictures and 4 themes ships 180 more files, so tick only the colours you want.
+
 ## Variants and tap zones
 
 Some faces change on a tap: another colour scheme, another background, a shortcut to a

@@ -44,6 +44,13 @@ const KINDS = [
     defaults: { images: [], part: 'day', zero: 0, follow: 0, space: 0, unit: '', isCharacter: false },
   },
   {
+    id: 'DATE_POINTER', label: 'Date pointer (dial)', group: 'Clock', docs: 'DATE_POINTER', box: 'screen',
+    defaults: {
+      dateType: 'WEEK', centerX: 0, centerY: 0, src: '', posX: 0, posY: 0,
+      scale: '', scaleX: 0, scaleY: 0, cover: '', coverX: 0, coverY: 0, startAngle: 0, endAngle: 180,
+    },
+  },
+  {
     id: 'TIME_POINTER', label: 'Analog clock', group: 'Clock', docs: 'TIME_POINTER', box: 'screen',
     defaults: {
       centerX: 0, centerY: 0,
@@ -89,6 +96,10 @@ const KINDS = [
   {
     id: 'SLEEP_CHART', label: 'Sleep chart', group: 'Data', docs: 'GROUP', box: 'wh',
     defaults: { w: 215, h: 69, colorDeep: '#708eae', colorLight: '#212c35', colorRem: '#8cb0d8', colorWake: '#44556b' },
+  },
+  {
+    id: 'POLYLINE', label: 'Line chart (heart / sleep)', group: 'Data', docs: 'GRADKIENT_POLYLINE', box: 'wh',
+    defaults: { w: 200, h: 80, dataType: 'HEART' },
   },
   {
     id: 'EDIT_SLOT', label: 'Complication slot', group: 'Data', docs: 'WATCHFACE_EDIT_GROUP', box: 'wh',

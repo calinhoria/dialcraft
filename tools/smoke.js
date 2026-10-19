@@ -560,6 +560,128 @@ app.whenReady().then(async () => {
       const drawn = monthNameImage(m);
       dateParts = keep;
       return { drawn, w: b.w };`);
+    const kmRun = await run(`
+      const d = await addElement('TEXT_IMG', { dataType: 'DISTANCE', x: 234, y: 10, alignH: 'RIGHT', hSpace: 2, dot: 'dd_dot.png' });
+      const names = Array.from({ length: 10 }, (_, i) => 'dd_' + i + '.png');
+      d.images = names;
+      const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').fillRect(0, 0, w, h); return c; };
+      names.forEach((n) => addProjectImage(n, mk(22, 20)));
+      addProjectImage('dd_dot.png', mk(6, 27));
+      const b = digitBox(d);
+      return { text: digitTextFor(d), w: b.w };`);
+    check('a distance keeps its decimal point and fits a 3-digit + dot box (not 6 digits)',
+      kmRun.text === '5.30' && kmRun.w === 78, JSON.stringify(kmRun));
+    const thRun = await run(`
+      const mkc = (col) => { const c = document.createElement('canvas'); c.width = 8; c.height = 8; const x = c.getContext('2d'); x.fillStyle = col; x.fillRect(0, 0, 8, 8); return c; };
+      addProjectImage('th_y.png', mkc('#ffc000'));
+      addProjectImage('th_g.png', mkc('#808080'));
+      await loadAllImages();
+      const el = await addElement('IMG', { x: 0, y: 0, src: 'th_y.png', name: 'ThemeImg' });
+      const res = await generateThemes([{ name: 'Sky', color: '#5ab0ff' }, { name: 'Grey', color: '#a6a6a6' }], '#ffc000');
+      const px = (n) => { const c = imageToCanvas(n); const d = c.cx.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2]]; };
+      const out = {
+        res, rec: project.themes && project.themes.recolored, hasCopy: !!imgMeta('th_y__t1.png'), noGreyCopy: !imgMeta('th_g__t1.png'),
+        sky: px('th_y__t1.png'), grey: px('th_y__t2.png'), orig: px('th_y.png'),
+      };
+      themeIdx = 1;
+      out.drawn = imgFor('th_y.png') === imgCache.get('th_y__t1.png');
+      themeIdx = 0;
+      const tapEl = await addElement('TAP', { action: 'theme', x: 0, y: 0, w: 40, h: 40, show: 'normal', name: 'Theme tap' });
+      const code = (await API.generateCode({ project })).code;
+      project.elements = project.elements.filter((x) => x !== tapEl);
+      out.code = code;
+      clearThemeImages();
+      out.cleared = !project.themes && !imgMeta('th_y__t1.png');
+      project.elements = project.elements.filter((x) => x !== el);
+      return out;`);
+    const lum = (c) => c[0] * 0.3 + c[1] * 0.6 + c[2] * 0.1;
+    check('colour themes: the accent moves to each palette colour, greys stay shared, the preview picks the copy',
+      !thRun.res.error && thRun.rec.includes('th_y.png') && !thRun.rec.includes('th_g.png') && thRun.hasCopy && thRun.noGreyCopy
+      && thRun.sky[2] > thRun.sky[0] + 40 && Math.abs(thRun.grey[0] - thRun.grey[2]) < 20 && thRun.orig[0] > 240 && thRun.drawn && thRun.cleared,
+      JSON.stringify({ ...thRun, code: undefined }));
+    {
+      const code = thRun.code || '';
+      let syn = true;
+      try { new Function(code.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { syn = false; }
+      check('a themed export switches by deleting and rebuilding the widgets (guarded, deferred, persisted)',
+        /const THEMED = \{[^}]*"th_y\.png":1/.test(code) && /cycleTheme\(\)/.test(code) && /deleteWidget/.test(code) && /guard = /.test(code)
+        && /setTimeout\(rebuild, 0\)/.test(code) && /dialcraft_theme/.test(code) && /__t' \+ themeIdx/.test(code) && syn,
+        `syntax ${syn}`);
+    }
+    const impRun = await run(`
+      const mkc = (w, h, col) => { const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); x.fillStyle = col; x.fillRect(2, 2, w - 4, h - 4); return c; };
+      const names = Array.from({ length: 10 }, (_, i) => 'imp' + i + '.png');
+      names.forEach((n) => addProjectImage(n, mkc(20, 40, '#ff0000')));
+      await loadAllImages();
+      const e = await addElement('IMG_TIME', { part: 'hour', x: 5, y: 5 });
+      e.images = names; delete e.glyph;
+      const before = glyphStyle(e);
+      e.glyph = glyphSpecFrom(glyphStyle(e));
+      e.glyph.fill = 'solid'; e.glyph.color = '#00ff00'; e.glyph.size = 80;
+      const nDone = await rerenderGlyphLayers([e], { quiet: true });
+      const dbg = { nDone, imgs: project.images.filter((i) => /imp/.test(i.name)).map((i) => i.name + ':' + i.height).join(','), spec: !!glyphSpecForLayer(e), glyph: JSON.stringify(e.glyph) };
+      if (!imgMeta('imp0__src.png')) return { dbg };
+      const px = (n) => { const c = imageToCanvas(n); if (!c) return ['missing ' + n, [...imgCache.keys()].filter((k) => /imp/.test(k)).join(',')]; const d = c.cx.getImageData(c.cv.width >> 1, c.cv.height >> 1, 1, 1).data; return [d[0], d[1], d[2], d[3]]; };
+      const out = {
+        font0: before.font, fill0: before.fill, size0: before.size,
+        h: imgMeta('imp0.png').height, w: imgMeta('imp0.png').width, green: px('imp0.png'),
+        srcRed: px('imp0__src.png'), srcH: imgMeta('imp0__src.png').height, hidden: HIDDEN_IMG_RE.test('imp0__src.png'),
+        palettes: COLOR_PALETTES.length, offered: true,
+      };
+      e.glyph.fill = 'gradient'; e.glyph.from = '#0000ff'; e.glyph.to = '#ffff00'; e.glyph.angle = 180; e.glyph.size = 40;
+      await rerenderGlyphLayers([e], { quiet: true });
+      const top = (n) => { const c = imageToCanvas(n); const d = c.cx.getImageData(c.cv.width >> 1, 4, 1, 1).data; const b = c.cx.getImageData(c.cv.width >> 1, c.cv.height - 5, 1, 1).data; return [d[2] > d[0], b[0] > b[2]]; };
+      out.grad = top('imp0.png');
+      // opaque artwork on black (a Maker picture): the fill is multiplied by the brightness, the ground stays black
+      const mko = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); x.fillStyle = '#000'; x.fillRect(0, 0, w, h); x.fillStyle = '#ffee00'; x.fillRect(8, 8, w - 16, h - 16); return c; };
+      addProjectImage('imp0.png', mko(20, 40));
+      e.glyph.sourceNames = null;
+      await loadAllImages();
+      e.glyph.fill = 'solid'; e.glyph.color = '#00ffff'; e.glyph.size = 40;
+      await rerenderGlyphLayers([e], { quiet: true });
+      const o = imageToCanvas('imp0.png');
+      const corner = o.cx.getImageData(1, 1, 1, 1).data, mid = o.cx.getImageData(10, 20, 1, 1).data;
+      out.opaque = [corner[0] + corner[1] + corner[2], mid[0], mid[1] > 200 && mid[2] > 200, mid[3]];
+      await restoreImportedSet(e);
+      out.restored = [imgMeta('imp0.png').height, px('imp0.png')[0], !e.glyph];
+      project.elements = project.elements.filter((x) => x !== e);
+      return out;`);
+    check('Imported Font: the pictures a face came with are scaled and painted over (solid, gradient), kept as hidden sources and restorable; 20 palettes',
+      impRun.font0 === 'Imported Font' && impRun.fill0 === 'original' && impRun.size0 === 40 && impRun.h === 80 && impRun.w === 40
+      && impRun.green[1] > 240 && impRun.green[0] < 20 && impRun.srcRed[0] > 240 && impRun.srcH === 40 && impRun.hidden && impRun.palettes === 20
+      && impRun.grad[0] && impRun.grad[1] && impRun.opaque[0] < 12 && impRun.opaque[1] < 40 && impRun.opaque[2] && impRun.opaque[3] === 255 && impRun.restored[0] === 40 && impRun.restored[2],
+      JSON.stringify(impRun));
+    const lvRun = await run(`
+      const mk = (lit) => { const c = document.createElement('canvas'); c.width = 20; c.height = 20; const x = c.getContext('2d'); x.fillStyle = '#000'; x.fillRect(0, 0, 20, 20); x.fillStyle = '#4a4400'; x.fillRect(0, 0, 10, 20); if (lit) { x.fillStyle = '#ffee00'; x.fillRect(10, 0, 10, 20); } return c; };
+      const names = ['lvl0.png', 'lvl1.png', 'lvl2.png'];
+      names.forEach((n, i) => addProjectImage(n, mk(i > 0)));
+      await loadAllImages();
+      const e = await addElement('IMG_LEVEL', { x: 0, y: 0 });
+      e.images = names; e.dataType = 'BATTERY';
+      const T = isTintLayer(e);
+      e.tint = tintStyle(e); e.tint.fill = 'solid'; e.tint.color = '#00ffff';
+      await rerenderGlyphLayers([e], { quiet: true });
+      const at = (n, x) => { const c = imageToCanvas(n); const d = c.cx.getImageData(x, 10, 1, 1).data; return [d[0], d[1], d[2]]; };
+      const lit = at('lvl1.png', 15), dim = at('lvl1.png', 4);
+      const out = { T, lit, dim, src: !!imgMeta('lvl1__src.png') };
+      await restoreTint(e);
+      out.restored = at('lvl1.png', 15)[0];
+      // an icon: one picture on an IMG layer
+      addProjectImage('ico.png', mk(true));
+      await loadAllImages();
+      const ic = await addElement('IMG', { x: 0, y: 0, src: 'ico.png', name: 'Icon' });
+      out.iconT = isTintLayer(ic) && isThemeTint(ic);
+      ic.tint = tintStyle(ic); ic.tint.fill = 'solid'; ic.tint.color = '#ff00ff';
+      await rerenderGlyphLayers([ic], { quiet: true });
+      out.icon = at('ico.png', 15);
+      await restoreTint(ic);
+      out.iconBack = at('ico.png', 15)[1];
+      project.elements = project.elements.filter((x) => x !== ic);
+      project.elements = project.elements.filter((x) => x !== e);
+      return out;`);
+    check('a level set is painted over: the lit part takes the colour, the dim track stays dim, originals come back',
+      lvRun.T && lvRun.lit[0] < 10 && lvRun.lit[1] > 240 && lvRun.lit[2] > 240 && lvRun.dim[1] > 20 && lvRun.dim[1] < 130 && lvRun.dim[0] < 10 && lvRun.src && lvRun.restored > 240 && lvRun.iconT && lvRun.icon[0] > 240 && lvRun.icon[1] < 10 && lvRun.icon[2] > 240 && lvRun.iconBack > 200,
+      JSON.stringify(lvRun));
     check('a month shown as a name draws that month\'s picture at its own width',
       monthRun.drawn === 'mn_2.png' && monthRun.w === 36, JSON.stringify(monthRun));
     {
@@ -2194,6 +2316,178 @@ app.whenReady().then(async () => {
         && /ui\.widget\.TEXT_FONT/.test(jsM) && /type: ui\.data_type\.MOON_RISE/.test(jsM)
         && /ui\.widget\.GROUP/.test(jsM) && /new Sleep\(\)/.test(jsM) && /catch \(e\) \{\}/.test(jsM) && synM,
         'FILL_RECT + MORE updater, TEXT_FONT type, GROUP + Sleep in try/catch');
+    }
+    // digits the face sets from the clock every minute (IMG + setProperty MORE) are the Digital time layers
+    {
+      const dirC = path.join(SCRATCH, 'clockdigits');
+      fs.cpSync(v2Dir, dirC, { recursive: true });
+      fs.writeFileSync(path.join(dirC, 'watchface', 'index.js'), `
+        const D = ['plain.png','plain.png','plain.png','plain.png','plain.png','plain.png','plain.png','plain.png','plain.png','plain.png'].map((n, i) => i ? 'plain' + i + '.png' : n);
+        DeviceRuntimeCore.WatchFace({
+          init_view() {
+            const e = hmSensor.createSensor(hmSensor.id.TIME);
+            const a = hmUI.createWidget(hmUI.widget.IMG, { x: 20, y: 30, w: 20, h: 30, src: D[0] });
+            const b = hmUI.createWidget(hmUI.widget.IMG, { x: 80, y: 30, w: 80, h: 30, src: D[0] });
+            const c = hmUI.createWidget(hmUI.widget.IMG, { x: 20, y: 130, src: D[0] });
+            const d = hmUI.createWidget(hmUI.widget.IMG, { x: 80, y: 130, src: D[0] });
+            function g() {
+              const h = e.format_hour.toString(), m = e.minute.toString();
+              a.setProperty(hmUI.prop.MORE, { src: D[h.length == 2 ? h.charAt(0) : 0] });
+              b.setProperty(hmUI.prop.MORE, { src: D[h.length == 2 ? h.charAt(1) : h.charAt(0)] });
+              c.setProperty(hmUI.prop.MORE, { src: D[m.length == 2 ? m.charAt(0) : 0] });
+              d.setProperty(hmUI.prop.MORE, { src: D[m.length == 2 ? m.charAt(1) : m.charAt(0)] });
+            }
+            e.addEventListener(hmSensor.event.CHANGE, function () { g(); });
+            hmUI.createWidget(hmUI.widget.WIDGET_DELEGATE, { resume_call: function () { g(); } });
+          },
+          onInit() { this.init_view(); },
+        });
+      `);
+      for (let i = 1; i < 10; i++) fs.copyFileSync(path.join(dirC, 'assets', fs.readdirSync(path.join(dirC, 'assets')).find((n) => /plain\.png$/.test(n)) || 'plain.png'), path.join(dirC, 'assets', `plain${i}.png`));
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const impC = importFaceDir(dirC);
+      const tm = (impC.project ? impC.project.elements : []).filter((e) => e.kind === 'IMG_TIME');
+      const hr = tm.find((e) => e.part === 'hour'), mn = tm.find((e) => e.part === 'minute');
+      check('clock-driven digit pictures import as hour and minute Digital time layers (no static clipped images)',
+        !impC.error && tm.length === 2 && !!hr && !!mn && hr.x === 20 && hr.y === 30 && mn.y === 130 && hr.images.length === 10 && hr.images[7] === 'plain7.png' && hr.zero === 1
+        && !(impC.project.elements || []).some((e) => e.kind === 'IMG'),
+        impC.error || tm.map((e) => `${e.part}@${e.x},${e.y} sp${e.space}`).join(' '));
+    }
+    // DATE_POINTER: imported, exported and drawn
+    {
+      const dirP = path.join(SCRATCH, 'datepointer');
+      fs.cpSync(v2Dir, dirP, { recursive: true });
+      fs.writeFileSync(path.join(dirP, 'watchface', 'index.js'), `
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            hmUI.createWidget(hmUI.widget.DATE_POINTER, {
+              scale_x: 10, scale_y: 20, scale_en: 'plain.png', scale_sc: 'plain.png', scale_tc: 'plain.png',
+              center_x: 195, center_y: 225, src: 'plain.png', posX: 3, posY: 40,
+              cover_x: 180, cover_y: 210, cover_path: 'plain.png', start_angle: -90, end_angle: 90, type: hmUI.date.WEEK,
+            });
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const impP = importFaceDir(dirP);
+      const dp = (impP.project ? impP.project.elements : []).find((e) => e.kind === 'DATE_POINTER');
+      const codeP = dp ? gen.generateWatchface(impP.project, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET)).code : '';
+      let synP = true;
+      try { new Function(codeP.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { synP = false; }
+      const drawn = await run(`
+        const e = await addElement('DATE_POINTER', { centerX: 100, centerY: 100, startAngle: -90, endAngle: 90, dateType: 'WEEK' });
+        const ok = !!e && e.kind === 'DATE_POINTER' && elBox(e).w > 0;
+        project.elements = project.elements.filter((x) => x !== e);
+        return ok;`);
+      check('a date pointer (DATE_POINTER) imports every parameter, exports them and can be added in the editor',
+        !impP.error && !!dp && dp.dateType === 'WEEK' && dp.centerX === 195 && dp.posY === 40 && dp.startAngle === -90 && dp.endAngle === 90 && dp.scaleX === 10 && dp.coverX === 180
+        && /widget\.DATE_POINTER/.test(codeP) && /\.WEEK,/.test(codeP) && /posX: px\(3\)/.test(codeP) && /start_angle: -90/.test(codeP) && synP && drawn,
+        impP.error || JSON.stringify(dp));
+    }
+    // IMG_PROGRESS with hand-placed pictures keeps every position
+    {
+      const dirI = path.join(SCRATCH, 'progresspos');
+      fs.cpSync(v2Dir, dirI, { recursive: true });
+      fs.writeFileSync(path.join(dirI, 'watchface', 'index.js'), `
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            hmUI.createWidget(hmUI.widget.IMG_PROGRESS, { x: [10, 40, 90], y: [200, 190, 200], image_array: Array(3).fill('plain.png'), image_length: 3, level: 2 });
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const impI = importFaceDir(dirI);
+      const ip = (impI.project ? impI.project.elements : []).find((e) => e.kind === 'IMG_PROGRESS');
+      const codeI = gen.generateWatchface(impI.project, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET)).code;
+      check('an image progress with irregular positions keeps each picture where it was and exports the same lists',
+        !!ip && Array.isArray(ip.positions) && ip.positions.length === 3 && ip.positions[1][1] === 190 && /x: \[px\(10\), px\(40\), px\(90\)\]/.test(codeI) && /y: \[px\(200\), px\(190\), px\(200\)\]/.test(codeI),
+        JSON.stringify(ip && ip.positions));
+    }
+    // the colour-theme dialog: chips from a chosen palette, custom colours added and removed
+    const thUi = await run(`
+      const r = await API.openProjectPath(${JSON.stringify(path.join(__dirname, '..', 'samples', 'sample-digital'))});
+      await loadProject(r);
+      openThemes();
+      const first = themeChips.map((c) => c.name + ':' + c.color).join(',');
+      const sel = document.getElementById('themePaletteSel');
+      sel.value = '1'; sel.onchange();
+      const dracula = themeChips.length;
+      document.getElementById('themeCustomColor').value = '#123456';
+      document.getElementById('themeCustomName').value = 'Mine';
+      document.getElementById('themeCustomAdd').click();
+      const hasCustom = themeChips.some((c) => c.custom && c.name === 'Mine' && c.color === '#123456');
+      sel.value = '2'; sel.onchange();
+      const keepsCustom = themeChips.some((c) => c.custom && c.name === 'Mine') && themeChips.length > 1;
+      const chipEls = document.querySelectorAll('#themePalette .theme-chip').length === themeChips.length;
+      document.getElementById('themeModal').hidden = true;
+      return { first, dracula, hasCustom, keepsCustom, chipEls, name: colorName('#ffc700') };`);
+    check('the colour-theme dialog builds its colours from the chosen palette, keeps custom colours across palette changes',
+      /Orange:#ff4a1c/.test(thUi.first) && /Pink:#ff7aa8/.test(thUi.first) && thUi.dracula === 6 && thUi.hasCustom && thUi.keepsCustom && thUi.chipEls && thUi.name === 'Yellow', JSON.stringify(thUi));
+    // GRADKIENT_POLYLINE: the firmware-drawn heart / sleep line chart
+    {
+      const dirG = path.join(SCRATCH, 'polyline');
+      fs.cpSync(v2Dir, dirG, { recursive: true });
+      fs.writeFileSync(path.join(dirG, 'watchface', 'index.js'), `
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            hmUI.createWidget(hmUI.widget.GRADKIENT_POLYLINE, { x: 20, y: 300, w: 200, h: 80, type: hmUI.data_type.HEART });
+            hmUI.createWidget(hmUI.widget.GRADKIENT_POLYLINE, { x: 20, y: 200, w: 100, h: 60 });
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const impG = importFaceDir(dirG);
+      const pl = (impG.project ? impG.project.elements : []).filter((e) => e.kind === 'POLYLINE');
+      const codeG = gen.generateWatchface(impG.project, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET)).code;
+      let synG = true;
+      try { new Function(codeG.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { synG = false; }
+      check('the heart / sleep line chart (GRADKIENT_POLYLINE) imports when the firmware draws it and exports with its type; one drawn by code is reported',
+        !impG.error && pl.length === 1 && pl[0].dataType === 'HEART' && pl[0].w === 200 && /GRADKIENT_POLYLINE/.test(codeG) && /type: ui\.data_type\.HEART/.test(codeG) && synG
+        && /GRADKIENT_POLYLINE \(data drawn by code\)/.test(impG.report.join('\n')),
+        impG.error || JSON.stringify(pl));
+    }
+    // the smaller documented parameters: text_style, hand caps, imperial units, fixed text, visible buttons
+    {
+      const dirQ = path.join(SCRATCH, 'smallparams');
+      fs.cpSync(v2Dir, dirQ, { recursive: true });
+      fs.writeFileSync(path.join(dirQ, 'watchface', 'index.js'), `
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            hmUI.createWidget(hmUI.widget.TEXT, { x: 10, y: 10, w: 200, h: 40, text: 'A very long text', text_size: 24, color: 0xffffff, text_style: hmUI.text_style.ELLIPSIS });
+            hmUI.createWidget(hmUI.widget.TIME_POINTER, {
+              hour_centerX: 195, hour_centerY: 225, hour_posX: 5, hour_posY: 60, hour_path: 'plain.png',
+              minute_centerX: 195, minute_centerY: 225, minute_posX: 5, minute_posY: 80, minute_path: 'plain.png', minute_cover_path: 'plain.png',
+              second_centerX: 195, second_centerY: 225, second_posX: 3, second_posY: 90, second_path: 'plain.png', second_cover_path: 'plain.png',
+            });
+            hmUI.createWidget(hmUI.widget.TEXT_IMG, {
+              x: 50, y: 50, font_array: Array(10).fill('plain.png'), type: hmUI.data_type.DISTANCE, unit_en: 'plain.png', imperial_unit_en: 'plain.png', invalid_image: 'plain.png', h_space: 2,
+            });
+            hmUI.createWidget(hmUI.widget.TEXT_IMG, { x: 50, y: 90, font_array: Array(10).fill('plain.png'), text: '1234', h_space: 2 });
+            hmUI.createWidget(hmUI.widget.BUTTON, {
+              x: 20, y: 300, w: 120, h: 50, text: 'Go', color: 0xffffff, text_size: 24, normal_color: 0x333333, press_color: 0x666666, radius: 12,
+              click_func: () => { hmApp.startApp({ url: 'ScheduleCalScreen', native: true }) },
+            });
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const impQ = importFaceDir(dirQ);
+      const E = impQ.project ? impQ.project.elements : [];
+      const codeQ = gen.generateWatchface(impQ.project, require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET)).code;
+      let synQ = true;
+      try { new Function(codeQ.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { synQ = false; }
+      const tp = E.find((e) => e.kind === 'TIME_POINTER'), ti = E.filter((e) => e.kind === 'TEXT_IMG'), btn = E.find((e) => e.kind === 'TAP');
+      check('smaller documented parameters survive import and export (text_style, hand caps, imperial unit, fixed text, visible button)',
+        !impQ.error && E.find((e) => e.kind === 'TEXT').textStyle === 'ELLIPSIS' && !!tp.minuteCover && !!tp.secondCover && !!ti[0].unitImperial && !!ti[0].invalid && ti[1].text === '1234'
+        && !!btn && btn.text === 'Go' && btn.normalColor === '#333333' && btn.radius === 12
+        && /text_style: ui\.text_style\.ELLIPSIS/.test(codeQ) && /minute_cover_path/.test(codeQ) && /second_cover_path/.test(codeQ)
+        && /imperial_unit_en/.test(codeQ) && /invalid_image/.test(codeQ) && /text: "1234"/.test(codeQ)
+        && /normal_color: 0x333333/.test(codeQ) && /press_color: 0x666666/.test(codeQ) && /radius: px\(12\)/.test(codeQ) && /text: "Go"/.test(codeQ) && synQ,
+        impQ.error || `syntax ${synQ}`);
     }
     // an editable complication slot: choices import as layers that show for one choice only
     {
