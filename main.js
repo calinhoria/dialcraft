@@ -15,6 +15,7 @@ const { KINDS, SHOW_LEVELS } = require('./core/kinds');
 const { BUNDLED_FONTS, fontInfoFromBuffer, readCmapRanges, isFontFile, fontFormat, zeusApiLevel, FONT_VARIATIONS } = require('./core/fonts');
 const { LanServer, lanAddresses } = require('./core/lanserver');
 const { importFaceDir } = require('./core/importface');
+const { extractZip } = require('./core/zip');
 const { appIconPng } = require('./core/icon');
 const {
   generateWatchface, generateAppJson, generateAppJs, generateProjectReadme, animPrefixFor,
@@ -303,21 +304,45 @@ function loadProjectDir(dir, opts = {}) {
   }
   return { project, images, fonts, savePath: root, base: path.basename(root) };
 }
+// A .zip is unpacked to a scratch folder, imported from there and cleaned up;
+// the result (and the recent entry) point at the .zip itself, which is what the
+// user picked and can open again.
+function loadProjectSource(p, opts = {}) {
+  let st;
+  try { st = fs.statSync(p); } catch (e) { return { error: 'File or folder not found.' }; }
+  if (!st.isFile()) return loadProjectDir(p, opts);
+  if (!/\.zip$/i.test(p)) return { error: 'Pick a watchface .zip or a project folder.' };
+  const tmp = fs.mkdtempSync(path.join(app.getPath('temp'), 'dialcraft-zip-'));
+  try {
+    extractZip(p, tmp);
+    const res = loadProjectDir(tmp, { force: true });
+    if (res && !res.error) {
+      res.source = p; res.savePath = null;
+      res.base = path.basename(p).replace(/\.zip$/i, '');
+    }
+    return res;
+  } catch (e) {
+    return { error: `Could not read that .zip: ${String((e && e.message) || e)}` };
+  } finally {
+    try { fs.rmSync(tmp, { recursive: true, force: true }); } catch (e) { /* scratch folder */ }
+  }
+}
 ipcMain.handle('open-project-dialog', async (_e, opts = {}) => {
   const r = await dialog.showOpenDialog(win, {
     title: opts.title || 'Open a project or a watchface folder',
     buttonLabel: opts.buttonLabel || 'Open',
-    message: opts.message || 'Pick a saved designer project, or a Zepp OS watchface folder (app.json) to import',
-    properties: ['openDirectory'],
+    message: opts.message || 'Pick a saved designer project, a Zepp OS watchface folder (app.json) or a watchface .zip',
+    properties: ['openFile', 'openDirectory'],
+    filters: [{ name: 'Watchface .zip', extensions: ['zip'] }, { name: 'All files', extensions: ['*'] }],
   });
   if (r.canceled || !r.filePaths.length) return null;
-  const res = loadProjectDir(r.filePaths[0], { force: !!opts.force });
+  const res = loadProjectSource(r.filePaths[0], { force: !!opts.force });
   if (res && !res.error) pushRecent(res.savePath || res.source, res.project.name, res.project.device);
   return res;
 });
 ipcMain.handle('open-project-path', async (_e, dir, opts = {}) => {
   if (!dir || !fs.existsSync(dir)) return { error: 'Folder not found.' };
-  const res = loadProjectDir(dir, { force: !!(opts && opts.force) });
+  const res = loadProjectSource(dir, { force: !!(opts && opts.force) });
   if (res && !res.error) pushRecent(res.savePath || res.source, res.project.name, res.project.device);
   return res;
 });

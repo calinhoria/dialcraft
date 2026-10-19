@@ -542,6 +542,31 @@ app.whenReady().then(async () => {
       };`);
     check('import a Zeus project folder', !roundTrip.error && roundTrip.imported && roundTrip.layers > 0,
       roundTrip.error || `${roundTrip.layers} layers, ${roundTrip.images} images from ${roundTrip.source}`);
+    // …the same face handed over as a .zip (flat, and wrapped in one folder)
+    {
+      const zipMod = require(path.join(__dirname, '..', 'core', 'zip'));
+      const entries = zipMod.zipDirectory(zeusDir);
+      const flat = path.join(SCRATCH, 'face-flat.zip');
+      const wrapped = path.join(SCRATCH, 'face-wrapped.zip');
+      const evil = path.join(SCRATCH, 'face-evil.zip');
+      fs.writeFileSync(flat, zipMod.createZip(entries));
+      fs.writeFileSync(wrapped, zipMod.createZip(entries.map((e) => ({ ...e, name: 'my face/' + e.name }))));
+      fs.writeFileSync(evil, zipMod.createZip([...entries, { name: '../escaped.txt', data: Buffer.from('x') }]));
+      const zipRes = await run(`
+        const out = {};
+        for (const [k, f] of [['flat', ${JSON.stringify(flat)}], ['wrapped', ${JSON.stringify(wrapped)}], ['evil', ${JSON.stringify(evil)}]]) {
+          const r = await API.openProjectPath(f);
+          out[k] = r.error ? { error: r.error } : { layers: r.project.elements.length, images: r.images.length, source: r.source, base: r.base };
+        }
+        return out;`);
+      check('a watchface .zip imports (flat or wrapped in a folder) and shows as the source',
+        zipRes.flat.layers === roundTrip.layers && zipRes.wrapped.layers === roundTrip.layers
+        && zipRes.flat.images === roundTrip.images && zipRes.flat.source === flat && zipRes.flat.base === 'face-flat',
+        JSON.stringify(zipRes.flat) + ' / ' + JSON.stringify(zipRes.wrapped));
+      check('a .zip with a path escaping its folder is refused',
+        !!zipRes.evil.error && /unsafe path/.test(zipRes.evil.error) && !fs.existsSync(path.join(SCRATCH, 'escaped.txt')) && !fs.existsSync(path.join(path.dirname(os.tmpdir()), 'escaped.txt')),
+        zipRes.evil.error || 'it imported');
+    }
     // A Text layer that needed baking (gradient/bold) exports as an IMG, so the
     // round trip is compared with TEXT counted as IMG.
     check('the imported layers match the exported ones (round trip)',

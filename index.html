@@ -14,7 +14,7 @@
   <button id="btnRedo" title="Redo (Ctrl+Shift+Z)" disabled class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
   <span class="hsep"></span>
   <button id="btnOpen" title="Open a saved project folder, or a Zepp OS watchface folder (app.json) to import" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M15.5 12.5h5M18 10v5"/></svg>Open</button>
-  <button id="btnImport" title="Import an existing watchface: a Zeus CLI project folder or a Watchface Maker export (app.json + watchface/ + assets/)" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg>Import</button>
+  <button id="btnImport" title="Import an existing watchface: a .zip, a Zeus CLI project folder or a Watchface Maker export (app.json + watchface/ + assets/)" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg>Import</button>
   <button id="btnSave" title="Save project (Ctrl+S)" disabled class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l3 3v15H5z"/><path d="M9 3v6h6V3M8 15h8v6H8z"/></svg>Save</button>
 
   <!-- add tools group -->
@@ -116,11 +116,11 @@
   <section class="center flex flex-col items-center justify-center gap-2.5 min-w-0">
     <div id="emptyState" class="empty-state" hidden>
       <h2>No watchface open</h2>
-      <p class="muted">Start a new watchface, open a saved project, or import an existing one (Zeus CLI / Watchface Maker folder with an <code>app.json</code>).</p>
+      <p class="muted">Start a new watchface, open a saved project, or import an existing one (a watchface <code>.zip</code>, or a Zeus CLI / Watchface Maker folder with an <code>app.json</code>).</p>
       <div class="es-btns">
         <button id="btnEmptyNew" class="es-primary">New watchface</button>
         <button id="btnEmptyOpenProject">Open project</button>
-        <button id="btnEmptyImport">Import watchface…</button>
+        <button id="btnEmptyImport" title="A watchface .zip or a project folder">Import watchface…</button>
       </div>
       <div id="recentWrap" class="recent" hidden>
         <div class="recent-head"><span>Recent projects</span><button id="recentClear" type="button">Clear</button></div>

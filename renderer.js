@@ -5489,9 +5489,9 @@ $('btnOpen').onclick = async () => {
 async function importFaceDialog() {
   if (!await guardUnsaved()) return;
   const res = await API.openProjectDialog({
-    title: 'Import a watchface folder',
+    title: 'Import a watchface (.zip or folder)',
     buttonLabel: 'Import',
-    message: 'Pick a Zepp OS watchface project folder (app.json + watchface/ + assets/)',
+    message: 'Pick a watchface .zip, or a Zepp OS project folder (app.json + watchface/ + assets/)',
     force: true,
   });
   if (!res) return;

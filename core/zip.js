@@ -115,4 +115,50 @@ function zipDirectory(dir, opts = {}) {
   return entries;
 }
 
-module.exports = { createZip, zipDirectory, crc32 };
+// Unpack a .zip into `dest` (created). Entries that would land outside `dest`
+// ("../x", absolute paths) are refused, macOS `__MACOSX` litter is skipped and
+// the total size is capped so a hostile archive cannot fill the disk.
+function extractZip(file, dest, opts = {}) {
+  const maxTotal = opts.maxTotal || 600 * 1024 * 1024;
+  const buf = fs.readFileSync(file);
+  // end of central directory record: scan back for its signature
+  let eocd = -1;
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 22 - 65535); i--) {
+    if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('not a valid .zip file');
+  const count = buf.readUInt16LE(eocd + 10);
+  let p = buf.readUInt32LE(eocd + 16);
+  const root = path.resolve(dest);
+  fs.mkdirSync(root, { recursive: true });
+  let total = 0, written = 0;
+  for (let n = 0; n < count; n++) {
+    if (buf.readUInt32LE(p) !== 0x02014b50) throw new Error('corrupt .zip directory');
+    const flags = buf.readUInt16LE(p + 8);
+    const method = buf.readUInt16LE(p + 10);
+    const csize = buf.readUInt32LE(p + 20);
+    const usize = buf.readUInt32LE(p + 24);
+    const nlen = buf.readUInt16LE(p + 28), elen = buf.readUInt16LE(p + 30), clen = buf.readUInt16LE(p + 32);
+    const lho = buf.readUInt32LE(p + 42);
+    const name = buf.slice(p + 46, p + 46 + nlen).toString((flags & 0x800) ? 'utf8' : 'utf8');
+    p += 46 + nlen + elen + clen;
+    if (!name || name.endsWith('/') || /(^|\/)__MACOSX(\/|$)/.test(name) || /(^|\/)\.DS_Store$/.test(name)) continue;
+    const target = path.resolve(root, name);
+    if (target !== root && !target.startsWith(root + path.sep)) throw new Error(`unsafe path in the .zip: ${name}`);
+    total += usize;
+    if (total > maxTotal) throw new Error('the .zip is too large to import');
+    if (buf.readUInt32LE(lho) !== 0x04034b50) throw new Error('corrupt .zip entry');
+    const start = lho + 30 + buf.readUInt16LE(lho + 26) + buf.readUInt16LE(lho + 28);
+    const raw = buf.slice(start, start + csize);
+    let data;
+    if (method === 0) data = raw;
+    else if (method === 8) data = zlib.inflateRawSync(raw);
+    else throw new Error(`unsupported compression (method ${method}) for ${name}`);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, data);
+    written++;
+  }
+  return written;
+}
+
+module.exports = { createZip, zipDirectory, crc32, extractZip };
