@@ -104,11 +104,41 @@ ipcMain.handle('confirm-unsaved', async (_e, opts = {}) => {
   });
   return ['save', 'discard', 'cancel'][r.response] || 'cancel';
 });
+// ------------------------------------------------------------------ updates --
+// Checks GitHub releases (see core/updater.js for which installs can update in place)
+const UPDATE_REPO = 'calinhoria/dialcraft';
+let updater = null;
+function updateSettingsFile() { return path.join(app.getPath('userData'), 'updates.json'); }
+const updateSettings = {
+  get() { try { return { auto: true, skip: '', ...JSON.parse(fs.readFileSync(updateSettingsFile(), 'utf8')) }; } catch (e) { return { auto: true, skip: '' }; } },
+  set(patch) { try { fs.writeFileSync(updateSettingsFile(), JSON.stringify({ ...updateSettings.get(), ...patch }, null, 2)); } catch (e) { /* read-only profile */ } },
+};
+function getUpdater() {
+  if (updater) return updater;
+  let autoUpdater = null;
+  if (app.isPackaged) { try { ({ autoUpdater } = require('electron-updater')); autoUpdater.logger = null; } catch (e) { autoUpdater = null; } }
+  updater = require('./core/updater').createUpdater({
+    autoUpdater, currentVersion: app.getVersion(), platform: process.platform, env: process.env, isPackaged: app.isPackaged && !!autoUpdater,
+    repo: UPDATE_REPO, openExternal: (url) => { if (/^https:\/\/github\.com\//.test(url)) shell.openExternal(url); },
+    send: (st) => { if (win && !win.isDestroyed()) win.webContents.send('update-state', st); },
+    settings: updateSettings,
+  });
+  return updater;
+}
+ipcMain.handle('update-state', () => ({ ...getUpdater().state(), auto: updateSettings.get().auto }));
+ipcMain.handle('update-check', () => getUpdater().check({ manual: true }));
+ipcMain.handle('update-download', () => getUpdater().download());
+ipcMain.handle('update-install', () => getUpdater().install());
+ipcMain.handle('update-skip', () => getUpdater().skip());
+ipcMain.handle('update-auto', (_e, on) => { updateSettings.set({ auto: !!on }); return !!on; });
+
 app.whenReady().then(() => {
   migrateUserData();
   // a packaged app takes build/icon.icns; a dev run would show Electron's own
   if (process.platform === 'darwin' && app.dock && fs.existsSync(APP_ICON)) app.dock.setIcon(APP_ICON);
   createWindow();
+  // a quiet check a few seconds after start-up (installed app only, and only if the wearer left it on)
+  setTimeout(() => { try { if (app.isPackaged && updateSettings.get().auto) getUpdater().check({ manual: false }); } catch (e) { /* never block start-up */ } }, 8000);
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

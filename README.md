@@ -86,6 +86,14 @@ SmartScreen and macOS Gatekeeper will warn — on macOS right-click → Open, or
 `xattr -cr /Applications/Dialcraft.app`. The app itself needs no Node, but **building
 a `.zab` does** (see below).
 
+**Updates.** The installed app checks GitHub releases a few seconds after it starts (switch it off with
+*Check for updates when the app starts* in the Watchface panel, or use *Check for updates* on the start screen) and
+shows a banner when a newer version exists. Nothing is downloaded without your say-so. The Windows installer and the
+Linux AppImage update in place (download, then *Restart to install*); the macOS builds, the Windows portable `.exe`
+and the `.deb` cannot be swapped in place, so the banner opens the release page instead. Updating arrived in 0.2.6 —
+older installs have to be replaced by hand once. Updates are fetched over HTTPS from this repository's releases and
+checked against the hashes in `latest*.yml`; the builds themselves are unsigned.
+
 ### From source
 
 Requirements: **Node 18+** and npm, on macOS, Windows or Linux. Building `.zab`

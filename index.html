@@ -7,6 +7,14 @@
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="bg-bg text-ink select-none">
+<div id="updateBar" class="update-bar" hidden>
+  <span id="updateText"></span>
+  <span class="flex-1"></span>
+  <button id="updateDownload" type="button" class="primary">Download</button>
+  <button id="updateInstall" type="button" class="primary" hidden>Restart to install</button>
+  <button id="updateSkip" type="button" title="Do not tell me about this version again">Skip this version</button>
+  <button id="updateLater" type="button">Later</button>
+</div>
 <header class="flex items-center gap-1.5 px-3 h-[46px] bg-panel border-b border-line">
   <!-- file group -->
   <button id="btnNew" title="New watchface" class="hbtn"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 12v6M9 15h6"/></svg>New</button>
@@ -77,6 +85,8 @@
         <div class="row"><span class="lbl">Fonts</span><button id="btnFonts" class="row-btn" title="Import your own fonts, preview them and rasterize glyph sets">Font library &amp; glyphs…</button></div>
         <div class="row small" id="screenInfo"></div>
         <div class="row small" id="targetInfo"></div>
+        <div class="row"><span class="lbl">Dialcraft</span><span class="rowctl"><span id="appVersion" class="tools-info muted"></span><button id="btnUpdateCheck" type="button" title="Look for a newer release on GitHub">Check for updates</button></span></div>
+        <div class="row small"><label class="muted" title="A quiet check a few seconds after start-up; nothing is downloaded without your say-so"><input id="updateAuto" type="checkbox" /> Check for updates when the app starts</label></div>
         <div class="row"><span class="lbl">Build tools</span><span class="rowctl"><span id="toolsInfo" class="tools-info muted">checking…</span><button id="btnToolsCheck" type="button" title="Look for Node, npx and the Zeus CLI again">Check</button><button id="btnInstallZeus" type="button" hidden title="npm install -g @zeppos/zeus-cli — so a build does not fetch Zeus every time">Install Zeus</button></span></div>
         <button id="btnCloseProject" class="row-btn">Close project</button>
       </div>
@@ -125,6 +135,7 @@
         <button id="btnEmptyOpenProject">Open project</button>
         <button id="btnEmptyImport" title="A watchface .zip or a project folder">Import watchface…</button>
       </div>
+      <div class="es-version muted"><span id="emptyVersion"></span> · <a href="#" id="emptyUpdateCheck">Check for updates</a></div>
       <div id="recentWrap" class="recent" hidden>
         <div class="recent-head"><span>Recent projects</span><button id="recentClear" type="button">Clear</button></div>
         <div id="recentList"></div>

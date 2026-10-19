@@ -643,3 +643,12 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 #themeModal .rowctl input[type=color] { width: 36px; height: 28px; padding: 0; flex: none; }
 .tools-info { flex: 1; min-width: 0; font-size: 11px; line-height: 1.35; }
 .tools-info.bad { color: #ffb4b4; }
+
+/* new-version banner */
+.update-bar { display: flex; align-items: center; gap: 8px; padding: 7px 14px; background: #1b2540; border-bottom: 1px solid #2f3d66; font-size: 12px; color: #dbe4ff; }
+.update-bar[hidden] { display: none; }
+.update-bar button { border: 1px solid #3b4a75; background: #141b30; color: #dbe4ff; border-radius: 7px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
+.update-bar button:hover { background: #1e2848; }
+.update-bar button.primary { background: var(--color-acc); border-color: var(--color-acc); color: #fff; font-weight: 600; }
+.es-version { margin-top: 18px; font-size: 11px; }
+.es-version a { color: #8fb0ff; }

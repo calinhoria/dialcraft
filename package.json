@@ -1,6 +1,6 @@
 {
   "name": "dialcraft",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Dialcraft — a watchface designer for Zepp OS / Amazfit watches: visual editor, Zeus CLI export, .zab build and Wi-Fi install",
   "main": "main.js",
   "scripts": {
@@ -25,6 +25,7 @@
     "tailwindcss": "^4.3.3"
   },
   "dependencies": {
+    "electron-updater": "^6.8.9",
     "pngjs": "^7.0.0",
     "qrcode": "^1.5.4"
   },
@@ -72,6 +73,14 @@
     "portable": {
       "artifactName": "Dialcraft-${version}-portable.${ext}"
     },
-    "afterPack": "tools/adhoc-sign.js"
+    "afterPack": "tools/adhoc-sign.js",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "calinhoria",
+        "repo": "dialcraft",
+        "releaseType": "prerelease"
+      }
+    ]
   }
 }

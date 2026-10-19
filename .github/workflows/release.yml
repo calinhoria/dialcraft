@@ -4,6 +4,7 @@
 #
 # The tag must match "version" in package.json. Runs only on tags (and by hand, which builds and
 # keeps the files as workflow artifacts without publishing). Unsigned: no certificates are used.
+# The latest*.yml and *.blockmap files are what the app's updater (electron-updater) reads: they must be on the release.
 name: release
 
 on:
@@ -47,6 +48,8 @@ jobs:
             dist/*.dmg
             dist/*-mac.zip
             dist/*-arm64-mac.zip
+            dist/latest*.yml
+            dist/*.blockmap
           if-no-files-found: error
 
   publish:

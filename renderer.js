@@ -6805,6 +6805,52 @@ function ago(t) {
 }
 $('recentClear').onclick = async () => { await API.recentClear(); renderRecents(); };
 
+// ------------------------------------------------------------------- updates --
+// The main process checks GitHub releases (core/updater.js); this only shows what it reports.
+let updateLaterVersion = null;
+function renderUpdate(st) {
+  if (!st) return;
+  const ver = `Dialcraft ${st.current || ''}`.trim();
+  for (const id of ['appVersion', 'emptyVersion']) if ($(id)) $(id).textContent = id === 'appVersion' ? ver : `Dialcraft ${st.current || ''}`;
+  if ($('updateAuto') && st.auto != null) $('updateAuto').checked = !!st.auto;
+  const bar = $('updateBar');
+  const say = (text, { dl = false, install = false, skip = false } = {}) => {
+    $('updateText').textContent = text;
+    $('updateDownload').hidden = !dl; $('updateInstall').hidden = !install; $('updateSkip').hidden = !skip;
+    $('updateDownload').textContent = st.mode === 'auto' ? 'Download' : 'Open release page';
+    bar.hidden = false;
+  };
+  if (st.status === 'available' && st.version && st.version !== updateLaterVersion) {
+    say(`Dialcraft ${st.version} is available (you have ${st.current}).` + (st.mode === 'manual' ? ' This install updates by hand.' : ''), { dl: true, skip: true });
+  } else if (st.status === 'downloading') {
+    say(`Downloading Dialcraft ${st.version || ''}… ${st.progress || 0}%`);
+  } else if (st.status === 'ready') {
+    say(`Dialcraft ${st.version || ''} is downloaded.`, { install: true });
+  } else if (st.status === 'error') {
+    say(`Could not check for updates: ${st.error || 'unknown error'}`, { dl: false });
+  } else bar.hidden = true;
+  if (st.status === 'none' && st.manual) status('You have the latest version of Dialcraft.');
+}
+async function checkUpdates() {
+  if ($('btnUpdateCheck')) $('btnUpdateCheck').disabled = true;
+  status('Checking for updates…');
+  const st = await API.updateCheck();
+  if ($('btnUpdateCheck')) $('btnUpdateCheck').disabled = false;
+  if (st && st.mode === 'off') status('Updates are checked in the installed app only (this is a development run).');
+  else if (st && st.status === 'none') status('You have the latest version of Dialcraft.');
+  else if (st && st.status === 'error') status('Could not check for updates: ' + st.error, true);
+  else if (st && st.status === 'available') status(`Dialcraft ${st.version} is available.`);
+}
+$('btnUpdateCheck').onclick = checkUpdates;
+$('emptyUpdateCheck').onclick = (ev) => { ev.preventDefault(); checkUpdates(); };
+$('updateAuto').onchange = (ev) => API.updateAuto(ev.target.checked);
+$('updateDownload').onclick = () => API.updateDownload();
+$('updateInstall').onclick = () => API.updateInstall();
+$('updateSkip').onclick = () => API.updateSkip();
+$('updateLater').onclick = async () => { const st = await API.updateState(); updateLaterVersion = st.version; $('updateBar').hidden = true; };
+API.onUpdateState((st) => API.updateState().then(renderUpdate));
+setTimeout(() => API.updateState().then(renderUpdate), 400);
+
 // ------------------------------------------------------------ build tools --
 // Node + npx are needed to build; the Zeus CLI is global when installed, else npx fetches it each time
 async function refreshTools() {

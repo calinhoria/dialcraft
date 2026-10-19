@@ -2453,6 +2453,74 @@ app.whenReady().then(async () => {
     check('the build-tools row reports Node / npx / Zeus and offers to install Zeus only when Node is there and Zeus is not',
       tools.hasApi && 'node' in tools.t && 'npx' in tools.t && 'zeus' in tools.t && /Node|not found/.test(tools.text) && !/\u001b|node:/.test(tools.text) && (!tools.t.zeus || /^\d+\.\d+/.test(tools.t.zeus))
       && tools.install === !!(tools.t.node && tools.t.npx && !tools.t.zeus), JSON.stringify(tools));
+    // app updates: which installs update themselves, the check → download → install flow, skipping a version
+    {
+      const { createUpdater, installMode, compareVersions, releaseUrl } = require(path.join(__dirname, '..', 'core', 'updater'));
+      const EventEmitter = require('events');
+      const mode = (platform, env, isPackaged = true) => installMode({ platform, env, isPackaged });
+      const fake = () => {
+        const u = new EventEmitter();
+        u.calls = [];
+        u.checkForUpdates = async () => { u.calls.push('check'); u.emit('checking-for-update'); u.emit('update-available', u.next || { version: '0.9.0', releaseNotes: '<p>Hi</p>' }); };
+        u.downloadUpdate = async () => { u.calls.push('download'); u.emit('download-progress', { percent: 50 }); u.emit('update-downloaded', {}); };
+        u.quitAndInstall = (...a) => u.calls.push('install ' + a.join());
+        return u;
+      };
+      const mk = (over = {}) => {
+        const store = { skip: '' }, sent = [], opened = [];
+        const au = over.au || fake();
+        const up = createUpdater({
+          autoUpdater: au, currentVersion: '0.2.5', platform: over.platform || 'win32', env: over.env || {}, isPackaged: over.isPackaged !== false,
+          repo: 'o/r', openExternal: (u) => opened.push(u), send: (st) => sent.push(st.status), settings: { get: () => store, set: (p) => Object.assign(store, p) },
+        });
+        return { up, au, store, sent, opened };
+      };
+      const A = mk();
+      await A.up.check({ manual: true });
+      const sAvail = A.up.state();
+      await A.up.download();
+      const sReady = A.up.state();
+      A.up.install();
+      const B = mk({ platform: 'darwin' });
+      await B.up.check({ manual: true });
+      await B.up.download();
+      const C = mk();
+      await C.up.check({ manual: true });
+      C.up.skip();
+      const quiet = (await C.up.check({ manual: false }), C.up.state().status);
+      const loud = (await C.up.check({ manual: true }), C.up.state().status);
+      const D = mk(); D.au.next = { version: '0.2.5' };
+      await D.up.check({ manual: true });
+      const E2 = mk(); E2.au.checkForUpdates = async () => { E2.au.emit('error', new Error('net::ERR_INTERNET_DISCONNECTED\nstack')); };
+      await E2.up.check({ manual: false }); const bgErr = E2.up.state().status;
+      await E2.up.check({ manual: true }); const fgErr = E2.up.state();
+      const F = mk({ isPackaged: false }); await F.up.check({ manual: true });
+      check('updates: auto on a Windows installer / AppImage, manual on mac / portable / deb, off in a dev run; check → download → install; skip; quiet background errors',
+        mode('win32', {}) === 'auto' && mode('win32', { PORTABLE_EXECUTABLE_FILE: 'x' }) === 'manual' && mode('linux', { APPIMAGE: '/a' }) === 'auto' && mode('linux', {}) === 'manual'
+        && mode('darwin', {}) === 'manual' && mode('win32', {}, false) === 'off'
+        && compareVersions('0.2.5', '0.2.10') === -1 && compareVersions('0.3.0', '0.2.9') === 1 && compareVersions('1.0.0-beta', '1.0.0') === -1 && compareVersions('0.2', '0.2.0') === 0
+        && sAvail.status === 'available' && sAvail.version === '0.9.0' && !/<p>/.test(sAvail.notes) && sReady.status === 'ready' && A.au.calls.join('|') === 'check|download|install false,true'
+        && B.up.state().mode === 'manual' && B.opened[0] === releaseUrl('o/r', '0.9.0') && !B.au.calls.includes('download')
+        && quiet === 'none' && loud === 'available' && D.up.state().status === 'none'
+        && bgErr === 'idle' && fgErr.status === 'error' && !/stack/.test(fgErr.error) && F.up.state().status === 'none' && F.up.mode === 'off',
+        JSON.stringify({ sAvail: sAvail.status, sReady: sReady.status, calls: A.au.calls, B: B.up.state().mode, opened: B.opened, quiet, loud, D: D.up.state().status, bgErr, fgErr: fgErr.status }));
+    }
+    // the update banner: what each state shows
+    const bar = await run(`
+      const out = {};
+      const st = (o) => ({ status: 'none', current: '0.2.5', mode: 'auto', version: null, progress: 0, auto: true, ...o });
+      const read = () => ({ hidden: document.getElementById('updateBar').hidden, text: document.getElementById('updateText').textContent, dl: !document.getElementById('updateDownload').hidden, dlText: document.getElementById('updateDownload').textContent, inst: !document.getElementById('updateInstall').hidden, skip: !document.getElementById('updateSkip').hidden });
+      renderUpdate(st({ status: 'available', version: '0.3.0' })); out.avail = read();
+      renderUpdate(st({ status: 'available', version: '0.3.0', mode: 'manual' })); out.manual = read();
+      renderUpdate(st({ status: 'downloading', version: '0.3.0', progress: 40 })); out.down = read();
+      renderUpdate(st({ status: 'ready', version: '0.3.0' })); out.ready = read();
+      renderUpdate(st({ status: 'none' })); out.none = read();
+      out.version = document.getElementById('appVersion').textContent;
+      return out;`);
+    check('the update banner offers Download (installs) or Open release page (mac / portable), shows progress, then Restart to install; hidden when up to date',
+      !bar.avail.hidden && /0\.3\.0 is available/.test(bar.avail.text) && bar.avail.dl && bar.avail.dlText === 'Download' && bar.avail.skip
+      && bar.manual.dlText === 'Open release page' && /by hand/.test(bar.manual.text) && /40%/.test(bar.down.text) && !bar.down.dl
+      && bar.ready.inst && !bar.ready.dl && bar.none.hidden && /0\.2\.5/.test(bar.version), JSON.stringify(bar));
     // the colour-theme dialog: chips from a chosen palette, custom colours added and removed
     const thUi = await run(`
       const r = await API.openProjectPath(${JSON.stringify(path.join(__dirname, '..', 'samples', 'sample-digital'))});

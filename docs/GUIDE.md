@@ -738,6 +738,26 @@ and lists what came across, what could not, and any notes. What does not survive
   variants and switches them at runtime imports as both layers, so the project
   checker will report the overlap it cannot know about.
 
+## Updates
+
+The installed app checks `github.com/calinhoria/dialcraft` releases (electron-updater, `core/updater.js`) a few seconds after
+start-up, when *Check for updates when the app starts* is on, and on **Check for updates** (Watchface panel, or the start
+screen). A banner shows the new version with **Download**, **Skip this version** and **Later**. Pre-releases count while the
+project is in beta; nothing downloads in the background.
+
+| Install | Update |
+|---|---|
+| Windows installer (NSIS) | in place: *Download* → *Restart to install* |
+| Linux AppImage | in place |
+| macOS `.dmg` / `.zip` | manual — the builds are unsigned and macOS will not replace a running unsigned app; the banner opens the release page |
+| Windows portable `.exe`, Linux `.deb` | manual (release page) |
+| `npm start` (development) | off |
+
+For a release to be updatable the GitHub release must carry `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and the `*.blockmap`
+files next to the installers; the release workflow (`.github/workflows/release.yml`) attaches them, and `package.json` →
+`build.publish` embeds the feed in the app (`app-update.yml`). Update checks arrived in 0.2.6; earlier installs are replaced by hand
+once. A release made by hand (not by the workflow) is invisible to the updater unless those files are uploaded too.
+
 ## Projects
 
 A designer project is `<name>.wfproj.json` next to its `images/` (and optional
@@ -775,6 +795,7 @@ core/icon.js       app icon: 248×248 circular PNG, built from the canvas render
 core/lanserver.js  LAN install server (package, preview, source.zip, landing page)
 core/zip.js        ZIP writer for /source.zip, and the safe extractor used to import a .zip
 core/toolpath.js   PATH for node / npx / zeus when the app is started from the Dock / Finder
+core/updater.js    update flow over electron-updater (which installs can update in place, skip, banner states)
 core/masks.js      per-device bezel mask generation
 assets/fonts       33 bundled OFL fonts for glyph generation
 assets/masks       generated per-device SVG masks + masks.json
