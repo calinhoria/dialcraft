@@ -2405,6 +2405,20 @@ app.whenReady().then(async () => {
         !!ip && Array.isArray(ip.positions) && ip.positions.length === 3 && ip.positions[1][1] === 190 && /x: \[px\(10\), px\(40\), px\(90\)\]/.test(codeI) && /y: \[px\(200\), px\(190\), px\(200\)\]/.test(codeI),
         JSON.stringify(ip && ip.positions));
     }
+    // the tool PATH for the Zeus build: a Dock-launched app has no shell PATH, so npx must be found from the usual places
+    {
+      const { toolPath } = require(path.join(__dirname, '..', 'core', 'toolpath'));
+      const have = new Set(['/opt/homebrew/bin', '/Users/x/.volta/bin', '/Users/x/.nvm/versions/node/v18.1.0/bin', '/Users/x/.nvm/versions/node/v20.18.3/bin']);
+      const p = toolPath({
+        platform: 'darwin', basePath: '/usr/bin:/bin', shellPath: '/Users/x/custom/bin:/usr/bin', home: '/Users/x',
+        exists: (q) => have.has(q) || q === '/usr/bin' || q === '/bin', list: () => ['v18.1.0', 'v20.18.3'],
+      }).split(':');
+      const win = toolPath({ platform: 'win32', basePath: 'C:\\Windows' });
+      check('the Zeus build finds npx from a Dock-launched app: shell PATH + Homebrew / Volta / newest nvm, no duplicates',
+        p[0] === '/usr/bin' && p.includes('/Users/x/custom/bin') && p.includes('/opt/homebrew/bin') && p.includes('/Users/x/.volta/bin')
+        && p.indexOf('/Users/x/.nvm/versions/node/v20.18.3/bin') < p.indexOf('/Users/x/.nvm/versions/node/v18.1.0/bin')
+        && new Set(p).size === p.length && win === 'C:\\Windows', p.join(':'));
+    }
     // the colour-theme dialog: chips from a chosen palette, custom colours added and removed
     const thUi = await run(`
       const r = await API.openProjectPath(${JSON.stringify(path.join(__dirname, '..', 'samples', 'sample-digital'))});

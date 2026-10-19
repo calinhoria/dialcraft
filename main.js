@@ -556,9 +556,30 @@ ipcMain.handle('open-external', async (_e, url) => {
 });
 
 // ------------------------------------------------------------ Zeus CLI build --
+// The environment tools are started in. Started from the Dock / Finder, the app has no shell PATH
+// and `npx` would not be found (spawn npx ENOENT): ask the login shell once and add the usual folders.
+let toolEnvCache = null;
+function toolEnv() {
+  if (toolEnvCache) return toolEnvCache;
+  let shellPath = '';
+  if (process.platform !== 'win32') {
+    try {
+      const sh = process.env.SHELL || '/bin/zsh';
+      const out = require('child_process').execFileSync(sh, ['-ilc', 'printf "__PATH__%s__END__" "$PATH"'], { timeout: 4000, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+      const mt = /__PATH__(.*?)__END__/s.exec(out);
+      shellPath = mt ? mt[1] : '';
+    } catch (e) { /* no login shell: the fixed folders still help */ }
+  }
+  const PATH = require('./core/toolpath').toolPath({
+    basePath: process.env.PATH || '', shellPath, home: app.getPath('home'),
+    exists: (p) => fs.existsSync(p), list: (p) => fs.readdirSync(p),
+  });
+  toolEnvCache = { ...process.env, PATH };
+  return toolEnvCache;
+}
 function zeusCommand() {
   // prefer a globally installed zeus, fall back to npx
-  const probe = spawn('zeus', ['--version'], { shell: true });
+  const probe = spawn('zeus', ['--version'], { shell: true, env: toolEnv() });
   return new Promise((resolve) => {
     probe.on('error', () => resolve(['npx', ['--yes', '@zeppos/zeus-cli@latest']]));
     probe.on('close', (code) => resolve(code === 0 ? ['zeus', []] : ['npx', ['--yes', '@zeppos/zeus-cli@latest']]));
@@ -579,12 +600,16 @@ async function runZeusBuild(outDir, payload, { apiLevel } = {}) {
   if (apiLevel) args.push(`--APILevel=${apiLevel}`);
   buildLog(`$ ${cmd} ${args.join(' ')}  (in ${outDir})`);
   return new Promise((resolve) => {
-    const child = spawn(cmd, args, { cwd: outDir, shell: process.platform === 'win32' });
+    const child = spawn(cmd, args, { cwd: outDir, shell: process.platform === 'win32', env: toolEnv() });
     let out = '';
     const onData = (buf) => { const s = buf.toString(); out += s; s.split('\n').forEach((l) => l.trim() && buildLog(l)); };
     child.stdout.on('data', onData);
     child.stderr.on('data', onData);
-    child.on('error', (err) => resolve({ ok: false, error: 'Could not run the Zeus CLI: ' + String(err.message || err), outDir, log: out }));
+    child.on('error', (err) => resolve({
+      ok: false, outDir, log: out,
+      error: 'Could not run the Zeus CLI: ' + String(err.message || err)
+        + (err && err.code === 'ENOENT' ? ` — "${cmd}" was not found. Install Node.js (https://nodejs.org) so that npx is available, then try again.` : ''),
+    }));
     child.on('close', (code) => {
       const dist = path.join(outDir, 'dist');
       let artifacts = [];
