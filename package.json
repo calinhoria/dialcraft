@@ -71,6 +71,7 @@
     },
     "portable": {
       "artifactName": "Dialcraft-${version}-portable.${ext}"
-    }
+    },
+    "afterPack": "tools/adhoc-sign.js"
   }
 }
