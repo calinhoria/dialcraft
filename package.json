@@ -27,7 +27,8 @@
   "dependencies": {
     "electron-updater": "^6.8.9",
     "pngjs": "^7.0.0",
-    "qrcode": "^1.5.4"
+    "qrcode": "^1.5.4",
+    "upng-js": "^2.1.0"
   },
   "build": {
     "appId": "com.dialcraft.app",

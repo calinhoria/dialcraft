@@ -69,7 +69,7 @@ function missingPicture(el) {
 function needsTextBake(el) {
   if (!el || el.kind !== 'TEXT') return false;
   const fill = el.fillType || 'solid';
-  return fill !== 'solid' || !!el.bold || !!el.italic;
+  return fill !== 'solid' || !!el.bold || !!el.italic || (+el.borderWidth || 0) > 0 || !!(+el.shadowX || +el.shadowY || +el.shadowBlur);
 }
 function bakeReason(el) {
   const why = [];
@@ -78,6 +78,8 @@ function bakeReason(el) {
   else if ((el.fillType || 'solid') === 'outline') why.push('outline fill');
   if (el.bold) why.push('bold');
   if (el.italic) why.push('italic');
+  if ((+el.borderWidth || 0) > 0) why.push('border');
+  if (+el.shadowX || +el.shadowY || +el.shadowBlur) why.push('shadow');
   return why.join(' + ') || 'styled text';
 }
 
@@ -98,6 +100,20 @@ function emitElement(el, ctx, out) {
   const L = [];
   const sl = `show_level: ${showLevel(el.show)}`;
   const alpha = el.alpha != null && el.alpha < 255 ? `alpha: ${Math.max(0, num(el.alpha))},` : null;
+
+  // a box behind the text (its rectangle is stamped by the designer at export time)
+  if (el.boxOn && el.boxRect) {
+    const r = el.boxRect, B = [];
+    B.push(`  // box behind ${ident(el.name)}`);
+    B.push('  ui.createWidget(ui.widget.FILL_RECT, {');
+    kv(B, 'x', p(r.x)); kv(B, 'y', p(r.y)); kv(B, 'w', p(r.w)); kv(B, 'h', p(r.h));
+    if (+el.boxRadius) kv(B, 'radius', p(el.boxRadius));
+    kv(B, 'color', `0x${hexToNum(el.boxColor || '#000000').toString(16).padStart(6, '0')}`);
+    const op = Math.max(0, Math.min(100, el.boxOpacity == null ? 60 : +el.boxOpacity));
+    if (op < 100) kv(B, 'alpha', Math.round(op * 2.55));
+    kv(B, 'show_level', showLevel(el.show));
+    out.push(B.join('\n') + '\n  })');
+  }
 
   switch (el.kind) {
     case 'POLYLINE': {

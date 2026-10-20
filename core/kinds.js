@@ -33,7 +33,7 @@ const KINDS = [
   // ------------------------------------------------------------------ time --
   {
     id: 'IMG_TIME', label: 'Digital time', group: 'Time', docs: 'IMG_TIME', box: 'natural',
-    defaults: { part: 'hour', zero: 0, follow: 0, space: 0, images: [], unit: '', am: '', pm: '', amX: 0, amY: 0, pmX: 0, pmY: 0 },
+    defaults: { part: 'hour', zero: 1, follow: 0, space: 0, images: [], unit: '', am: '', pm: '', amX: 0, amY: 0, pmX: 0, pmY: 0 },
   },
   {
     id: 'IMG_WEEK', label: 'Weekday', group: 'Time', docs: 'IMG_WEEK', box: 'natural',

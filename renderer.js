@@ -643,6 +643,34 @@ function paintGlyph(c, st, run, cellW, cellH, gx, gy) {
   if (t === 'gradient') c.fillStyle = linearFill(c, box, st.angle == null ? 90 : +st.angle, [[st.from || color, 0], [st.to || '#000000', 1]]);
   else if (t === 'css') c.fillStyle = cssGradientFill(c, { cssGradient: st.css, color }, box);
   else c.fillStyle = color;
+  // visibility aids: a border (the glyph grown by borderWidth) and a drop shadow, both painted
+  // behind the fill. The shadow is cast by an off-canvas copy, so only the shadow lands here.
+  const bw = Math.max(0, +st.borderWidth || 0);
+  const sx = +st.shadowX || 0, sy = +st.shadowY || 0, sb = Math.max(0, +st.shadowBlur || 0);
+  if (t !== 'outline' && (bw > 0 || sx || sy || sb)) {
+    const grow = (fn) => {
+      fn(0, 0);
+      if (bw > 0) {
+        const steps = Math.max(8, Math.min(24, Math.round(bw * 8)));
+        for (let i = 0; i < steps; i++) { const a2 = (i / steps) * Math.PI * 2; fn(Math.cos(a2) * bw, Math.sin(a2) * bw); }
+      }
+    };
+    if (sx || sy || sb) {
+      const OFF = 4000;
+      c.save();
+      c.shadowColor = st.shadowColor || '#000000';
+      c.shadowBlur = sb; c.shadowOffsetX = sx + OFF; c.shadowOffsetY = sy;
+      c.fillStyle = '#000000';
+      grow((dx, dy) => runFill(c, run, dx - OFF, dy));
+      c.restore();
+    }
+    if (bw > 0) {
+      c.save();
+      c.fillStyle = st.borderColor || '#000000';
+      grow((dx, dy) => runFill(c, run, dx, dy));
+      c.restore();
+    }
+  }
   if (t === 'outline') {
     // A stroked glyph puts a join disc on every corner, and at a sharp angle that
     // disc creeps into the letter ("renders inside the number"). Draw the
@@ -683,6 +711,14 @@ function paintGlyph(c, st, run, cellW, cellH, gx, gy) {
 //   align       where the ink sits in a shared (mono) cell: center/left/right
 // The returned names carry `.coverage`: the characters the font could not
 // draw natively (see coverageReport).
+// How many px of room a border / shadow adds around every glyph picture, beyond the plain cell.
+function glyphAidExtra(st) {
+  const size = +st.size || 48;
+  const aid = Math.ceil((+st.borderWidth || 0) + Math.max(Math.abs(+st.shadowX || 0), Math.abs(+st.shadowY || 0)) + (+st.shadowBlur || 0) * 1.5);
+  if (!aid || st.fill === 'outline') return 0;
+  const base = Math.max(1, Math.round(size / 28), Math.round(st.outlineWidth != null ? +st.outlineWidth : 2) + 1);
+  return Math.max(0, aid + 1 - base);
+}
 async function genGlyphImages(entries, opts = {}) {
   const {
     size = glyphOpts.size, color = glyphOpts.color, prefix = null, mono = true,
@@ -701,7 +737,8 @@ async function genGlyphImages(entries, opts = {}) {
   // so toggling Solid/Outline never shifts the digits around.
   // (2 is the outline width a style starts with — the same default for a set
   // generated from the font library, so every cell of a size has one height)
-  const pad = Math.max(1, Math.round(size / 28), Math.round(st.outlineWidth != null ? +st.outlineWidth : 2) + 1);
+  const aidPad = Math.ceil((+st.borderWidth || 0) + Math.max(Math.abs(+st.shadowX || 0), Math.abs(+st.shadowY || 0)) + (+st.shadowBlur || 0) * 1.5);
+  const pad = Math.max(1, Math.round(size / 28), Math.round(st.outlineWidth != null ? +st.outlineWidth : 2) + 1, aidPad ? aidPad + 1 : 0);
   const info = entries.map((e) => {
     const run = layoutRun(meas, fam, e.char);
     return {
@@ -1334,9 +1371,12 @@ const TEXT_FILL_TYPES = [
   { value: 'outline', label: 'Outline' },
 ];
 function textFillType(e) { return e && TEXT_FILL_TYPES.some((t) => t.value === e.fillType) ? e.fillType : 'solid'; }
+function textAids(e) {
+  return !!e && ((+e.borderWidth || 0) > 0 || !!(+e.shadowX || +e.shadowY || +e.shadowBlur));
+}
 function needsTextBake(e) {
   return !!e && e.kind === 'TEXT'
-    && (textFillType(e) !== 'solid' || !!e.bold || !!e.italic);
+    && (textFillType(e) !== 'solid' || !!e.bold || !!e.italic || textAids(e));
 }
 function bakeReason(e) {
   const why = [];
@@ -1346,6 +1386,8 @@ function bakeReason(e) {
   else if (f === 'outline') why.push('outline fill');
   if (e.bold) why.push('bold');
   if (e.italic) why.push('italic');
+  if ((+e.borderWidth || 0) > 0) why.push('border');
+  if (+e.shadowX || +e.shadowY || +e.shadowBlur) why.push('shadow');
   return why.join(' + ') || 'styled text';
 }
 // A Text layer is drawn live on the watch with the font file it ships, so a
@@ -1546,6 +1588,25 @@ function drawTextInto(c, e, b, fam, box) {
     c.strokeStyle = hexOrWhite(e.outlineColor);
     run((t, x, y) => c.strokeText(t, x, y));
   }
+  // visibility aids: a shadow (cast by an off-canvas copy) and a border behind the text
+  const bw = Math.max(0, +e.borderWidth || 0);
+  const sx = +e.shadowX || 0, sy = +e.shadowY || 0, sb = Math.max(0, +e.shadowBlur || 0);
+  if (!outline && (sx || sy || sb)) {
+    const OFF = 4000;
+    c.save();
+    c.shadowColor = e.shadowColor || '#000000'; c.shadowBlur = sb; c.shadowOffsetX = sx + OFF; c.shadowOffsetY = sy;
+    c.fillStyle = '#000000'; c.strokeStyle = '#000000';
+    c.lineJoin = 'round'; c.miterLimit = 2; c.lineWidth = bw * 2;
+    run((t, x, y) => { c.fillText(t, x - OFF, y); if (bw > 0) c.strokeText(t, x - OFF, y); });
+    c.restore();
+  }
+  if (!outline && bw > 0) {
+    c.save();
+    c.lineJoin = 'round'; c.miterLimit = 2; c.lineWidth = bw * 2;
+    c.strokeStyle = e.borderColor || '#000000';
+    run((t, x, y) => c.strokeText(t, x, y));
+    c.restore();
+  }
   run((t, x, y) => c.fillText(t, x, y));
   c.restore();
 }
@@ -1559,6 +1620,7 @@ function textStyleKey(e) {
     e.fontFile || '', textWeight(e), e.variations || '', e.alignH, e.alignV,
     e.lineSpace, e.charSpace, Math.round(+e.w || 200), Math.round(+e.h || 40),
     e.alpha != null && +e.alpha < 255 ? +e.alpha : 255,
+    e.borderColor, e.borderWidth, e.shadowColor, e.shadowX, e.shadowY, e.shadowBlur,
   ]);
 }
 function hashString(s) {
@@ -1586,6 +1648,7 @@ function bakeText(e) {
 // them. The PNGs are *not* part of the project file (they are re-derived on
 // demand and cached by style hash); `e.bakedImage` is what codegen reads.
 async function bakedTextImages() {
+  stampBoxRects();               // gives codegen the box behind each text layer
   const out = [];
   for (const e of elements()) {
     if (!needsTextBake(e)) {
@@ -1611,7 +1674,7 @@ async function bakedTextImages() {
 }
 function clearBakeCache() { bakeCache.clear(); }
 // the baked bitmaps are regenerated on demand, so they never travel in .wfproj.json
-function stripBakeKeys(e) { const { bakedImage, bakedKey, ...rest } = e; return rest; }
+function stripBakeKeys(e) { const { bakedImage, bakedKey, boxRect, ...rest } = e; return rest; }
 
 function alignTextX(c, text, e, box) {
   const a = e.alignH || 'CENTER_H';
@@ -1621,8 +1684,33 @@ function alignTextX(c, text, e, box) {
   if (a === 'RIGHT') return b.x + b.w - w;
   return b.x + (b.w - w) / 2;
 }
+// A box behind text, so it stays readable on a busy picture: as wide as the layer's box ("text") or
+// the whole screen ("full"), grown by `boxPad` on every side.
+function hasBox(e) { return !!e && !!e.boxOn && (isGlyphLayer(e) || e.kind === 'TEXT'); }
+function boxRectOf(e) {
+  const b = elBox(e), pad = Math.max(0, +e.boxPad || 0);
+  return e.boxWidth === 'full'
+    ? { x: 0, y: Math.round(b.y - pad), w: dev().w, h: Math.round(b.h + pad * 2) }
+    : { x: Math.round(b.x - pad), y: Math.round(b.y - pad), w: Math.round(b.w + pad * 2), h: Math.round(b.h + pad * 2) };
+}
+function drawBox(c, e) {
+  const r = boxRectOf(e);
+  c.save();
+  c.globalAlpha = Math.max(0, Math.min(100, e.boxOpacity == null ? 60 : +e.boxOpacity)) / 100;
+  c.fillStyle = hexOrWhite(e.boxColor || '#000000');
+  roundRect(c, r.x, r.y, r.w, r.h, +e.boxRadius || 0);
+  c.fill();
+  c.restore();
+}
+function stampBoxRects() {
+  for (const e of elements()) {
+    if (hasBox(e) && e.visible !== false) e.boxRect = boxRectOf(e);
+    else delete e.boxRect;
+  }
+}
 function drawElement(c, e) {
   const bg = (hex) => `0x${hex}`;
+  if (hasBox(e)) drawBox(c, e);
   switch (e.kind) {
     case 'TAP': {
       if (!(e.text || e.normalColor) || e.show === 'aod') break;
@@ -3439,6 +3527,12 @@ function glyphStyle(e) {
     outlineWidth: Math.max(1, Math.round(+g.outlineWidth || 2)),
     bold: !!g.bold,
     italic: !!g.italic,
+    borderColor: g.borderColor || '#000000',
+    borderWidth: Math.max(0, Math.round(+g.borderWidth || 0)),
+    shadowColor: g.shadowColor || '#000000',
+    shadowX: Math.round(+g.shadowX || 0),
+    shadowY: Math.round(+g.shadowY || 0),
+    shadowBlur: Math.max(0, Math.round(+g.shadowBlur || 0)),
   };
 }
 // the glyph list this layer's images stand for, or null when the designer must
@@ -3604,8 +3698,10 @@ function digitStyleOf(names) {
 }
 // what a layer stores as its glyph spec: the style, nothing derived
 function glyphSpecFrom(st) {
-  const { font, size, weight, variations, fill, color, from, to, angle, css, outlineColor, outlineWidth, bold, italic } = st;
-  return { font, size, weight, variations, fill, color, from, to, angle, css, outlineColor, outlineWidth, bold, italic };
+  const { font, size, weight, variations, fill, color, from, to, angle, css, outlineColor, outlineWidth, bold, italic,
+    borderColor, borderWidth, shadowColor, shadowX, shadowY, shadowBlur } = st;
+  return { font, size, weight, variations, fill, color, from, to, angle, css, outlineColor, outlineWidth, bold, italic,
+    borderColor, borderWidth, shadowColor, shadowX, shadowY, shadowBlur };
 }
 
 // ---------------------------------------------------------- Imported Font --
@@ -3895,6 +3991,16 @@ async function regenerateGlyphs(e, { targets = [e] } = {}) {
   if (e.kind === 'IMG') e.src = names[0];
   else if (e.kind === 'IMG_ANIM') e.frames = names;
   else e.images = names;
+  // the extra room a border / shadow needs is invisible: pull the layer back so the ink stays where it
+  // was, and tighten the digit spacing by the same amount (each picture grew on both sides)
+  {
+    const extra = glyphAidExtra(st), had = +e.aidPad || 0, d = extra - had;
+    if (d) {
+      e.x = (+e.x || 0) - d; e.y = (+e.y || 0) - d;
+      if (DIGIT_SET_KINDS.has(e.kind)) { const k = spaceKey(e); e[k] = (+e[k] || 0) - 2 * d; }
+      e.aidPad = extra;
+    }
+  }
   for (const key of GLYPH_ATTACHED) {
     const g = separatorGlyphFor(e[key]);
     if (!g) continue;
@@ -4058,6 +4164,21 @@ function characterCheck(e) {
 }
 // Properties rows for one glyph layer; every control writes to *all* selected
 // glyph layers, so selecting a group restyles the whole clock in one go.
+// Text layers can sit on a box (opacity, text width or full width, padding) so they stay readable.
+function boxRows(frag, add, e) {
+  if (!hasBox({ ...e, boxOn: true })) return;
+  const T = targetsWhere(e, (x) => isGlyphLayer(x) || x.kind === 'TEXT');
+  const cb = ctlCheck(T, 'boxOn', 'A filled box behind the text so it stays readable');
+  const was = cb.onchange;
+  cb.onchange = () => { was(); refreshPanels(); };
+  add('Box behind', cb);
+  if (!e.boxOn) return;
+  add('Box color', ctlColor(T, 'boxColor'));
+  add('Box opacity', ctlNum(T, 'boxOpacity', { min: 0, max: 100 }), '0–100 %');
+  add('Box width', ctlSelect(e.boxWidth || 'text', [{ value: 'text', label: 'Text width' }, { value: 'full', label: 'Full width' }], (v) => setOn(T, 'boxWidth', v)), 'Text width = this layer’s box; Full width = the whole screen');
+  add('Box padding', ctlNum(T, 'boxPad', { min: 0, max: 80 }), 'px added on every side');
+  add('Box radius', ctlNum(T, 'boxRadius', { min: 0, max: 80 }));
+}
 function glyphStyleRows(frag, add, e) {
   if (isTintLayer(e)) { tintRows(frag, add, e); if (e.kind !== 'IMG') return; }
   const spec = glyphSpecForLayer(e);
@@ -4175,6 +4296,14 @@ function glyphStyleRows(frag, add, e) {
     if (!isImp) {
       add('Bold', check('bold', 'Thickens every glyph — works with single-weight fonts too'));
       add('Italic', check('italic', 'Slants every glyph 12°'));
+    }
+    if (st.fill !== 'outline') {
+      add('Border', color('borderColor'), 'Colour of the border drawn around every glyph (0 width = none)');
+      add('Border width', num('borderWidth', { min: 0, max: 24 }), 'px; 0 = no border');
+      add('Shadow', color('shadowColor'), 'Colour of the drop shadow (all three of X, Y and blur at 0 = no shadow)');
+      add('Shadow X', num('shadowX', { min: -40, max: 40 }));
+      add('Shadow Y', num('shadowY', { min: -40, max: 40 }));
+      add('Shadow blur', num('shadowBlur', { min: 0, max: 40 }));
     }
     const btns = mkEl('div', 'rowctl wrap');
     if (isImp && (e.glyph || {}).sourceNames) {
@@ -4743,6 +4872,7 @@ function propsKind(e) {
     }
     default: break;
   }
+  boxRows(frag, add, e);
   return frag;
 }
 function alignOptions() {
@@ -5555,7 +5685,7 @@ async function clockPreset(withSeconds) {
       colonCount++;
       els.push(newElement('IMG', { src: colon, show: 'normal', x, y: Math.round((d.h - colonH) / 2), w: 0, h: 0, name: colonCount === 1 ? 'Colon' : 'Colon 2', glyph: glyphSpecFrom(style) }));
     } else {
-      els.push(newElement('IMG_TIME', { part: part.t, images: digits, zero: part.t === 'hour' ? 0 : 1, space: 0, show: 'normal', x, y, name: part.t.charAt(0).toUpperCase() + part.t.slice(1), glyph: glyphSpecFrom(style) }));
+      els.push(newElement('IMG_TIME', { part: part.t, images: digits, zero: 1, space: 0, show: 'normal', x, y, name: part.t.charAt(0).toUpperCase() + part.t.slice(1), glyph: glyphSpecFrom(style) }));
     }
     x += part.w + gap;
   }
