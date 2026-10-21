@@ -1,0 +1,200 @@
+{
+ "name": "Coin Block Clock",
+ "device": "bip-6",
+ "font": "Press Start 2P",
+ "optimizePng": 32,
+ "description": "A tiny platformer level: the time sits in a brick block and a question block. Once a minute Mario jumps, bumps the minute block and a coin pops out. A Goomba strolls across the ground, clouds drift, steps are the coin tally and a mushroom appears next to Mario when the battery is full.",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/coin-block-clock",
+ "userImports": "import { Time as DCTime } from '@zos/sensor'",
+ "userCode": "{\n  // Once a minute Mario jumps, bumps the question block (the minute) and a coin pops out. A Goomba strolls by, clouds drift.\n  const MS = 80, BLOCK_Y = 84, MARIO_Y = 296, JUMP_MS = 700, JUMP_H = 72, QX = 200, GOOMBA_S = 36\n  const img = (n) => A('act/' + n + '.png')\n  let id = null, n = 0, lastMin = -1, t0 = -9999, clock = null\n  try { clock = new DCTime() } catch (e) {}\n  const minute = () => {\n    try { if (clock) { const v = clock.getMinutes(); if (typeof v === 'number' && v >= 0) return v } } catch (e) {}\n    try { return new Date().getMinutes() } catch (e) {}\n    return 0\n  }\n  const tick = () => {\n    n++\n    const now = Date.now(), m = minute()\n    if (lastMin >= 0 && m !== lastMin) t0 = now\n    lastMin = m\n    const t = now - t0\n    // Mario: stand, or up and down in a parabola\n    const u = Math.min(1, Math.max(0, t / JUMP_MS))\n    const rise = t >= 0 && t < JUMP_MS ? Math.round(JUMP_H * 4 * u * (1 - u)) : 0\n    W.mar.setProperty(ui.prop.MORE, { x: pxv(259), y: pxv(MARIO_Y - rise), src: img(rise > 0 ? 'mario_1' : 'mario_0') })\n    // block bump at the top of the jump, coin pops out\n    const tb = t - JUMP_MS / 2\n    const bump = tb >= 0 && tb < 220 ? Math.round(-12 * Math.sin(Math.PI * tb / 220)) : 0\n    W.qb.setProperty(ui.prop.MORE, { x: pxv(QX), y: pxv(BLOCK_Y + bump) })\n    if (tb >= 0 && tb < 620) W.coin.setProperty(ui.prop.MORE, { x: pxv(271), y: pxv(Math.round(BLOCK_Y - 34 - 40 * Math.min(1, tb / 500))), src: img('coin_' + (Math.floor(tb / 70) % 4)) })\n    else W.coin.setProperty(ui.prop.MORE, { x: pxv(271), y: pxv(100), src: img('coin_0') })\n    // Goomba walks left across the ground\n    const gp = (now / 1000 % GOOMBA_S) / GOOMBA_S\n    W.gob.setProperty(ui.prop.MORE, { x: pxv(Math.round(390 - gp * 470)), y: pxv(GROUND_Y), src: img('goomba_' + (Math.floor(now / 220) % 2)) })\n    // clouds\n    W.cl0.setProperty(ui.prop.MORE, { x: pxv(Math.round(((now / 1000) * 6) % 520 - 100)), y: pxv(236), src: img('cloud_0') })\n    W.cl1.setProperty(ui.prop.MORE, { x: pxv(Math.round(((now / 1000) * 4 + 260) % 520 - 100)), y: pxv(284), src: img('cloud_1') })\n  }\n  const GROUND_Y = 320\n  const safe = () => { try { tick() } catch (e) {} }\n  const start = () => { if (id === null) { try { id = setInterval(safe, MS) } catch (e) {} } }\n  const stop = () => { if (id !== null) { try { clearInterval(id) } catch (e) {} id = null } }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  safe()\n  start()\n}",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst TAU = Math.PI * 2;\nconst GROUND = 360;\nconst px = (g, rows, pal, s, x0, y0) => rows.forEach((r, j) => [...r].forEach((ch, i) => { if (pal[ch]) { g.fillStyle = pal[ch]; g.fillRect(x0 + i * s, y0 + j * s, s, s); } }));\n\nconst c = mk(W, H), g = c.getContext('2d');\ng.fillStyle = '#5c94fc'; g.fillRect(0, 0, W, GROUND);\nconst hill = (x, w, h) => { g.fillStyle = '#00a800'; g.beginPath(); g.ellipse(x + w / 2, GROUND, w / 2, h, 0, Math.PI, 0); g.fill(); g.fillStyle = '#005800'; g.beginPath(); g.ellipse(x + w * 0.38, GROUND - h * 0.45, 5, 9, 0, 0, TAU); g.ellipse(x + w * 0.62, GROUND - h * 0.45, 5, 9, 0, 0, TAU); g.fill(); };\nhill(-40, 190, 62); hill(250, 170, 46);\nconst bush = (x, y) => { g.fillStyle = '#00a800'; for (const [dx, r] of [[0, 15], [20, 20], [42, 15]]) { g.beginPath(); g.arc(x + dx, y - r + 4, r, Math.PI, 0); g.fill(); } g.fillRect(x - 15, y - 2, 72, 6); };\nbush(170, GROUND);\n// brick ground\ng.fillStyle = '#c84c0c'; g.fillRect(0, GROUND, W, H - GROUND);\ng.fillStyle = '#000';\nconst rowH = 22;\nfor (let r = 0; r * rowH < H - GROUND; r++) {\n  const y = GROUND + r * rowH; g.fillRect(0, y, W, 2);\n  for (let x = (r % 2 ? 16 : 0); x < W; x += 32) g.fillRect(x, y, 2, rowH);\n}\ng.fillStyle = '#fc9838'; g.fillRect(0, GROUND + 2, W, 3);\n// coin icon (steps), heart (pulse), mushroom (battery)\nconst coin = (x, y) => { g.fillStyle = '#000'; g.beginPath(); g.ellipse(x + 12, y + 15, 12, 15, 0, 0, TAU); g.fill(); g.fillStyle = '#fcd800'; g.beginPath(); g.ellipse(x + 12, y + 15, 9.5, 12.5, 0, 0, TAU); g.fill(); g.fillStyle = '#e8a000'; g.fillRect(x + 10, y + 7, 4, 16); };\ncoin(28, 28);\npx(g, ['.##.##.', '#######', '#######', '.#####.', '..###..', '...#...'].map((r) => r.replace(/#/g, 'R')), { R: '#ff2d3a' }, 4, 30, 390);\nconst shroom = (x, y, s) => { px(g, ['....RRRR....', '..RRWWRRRR..', '.RRWWWRRWWR.', 'RRRWWRRRWWRR', 'RWWRRRRRRWWR', 'RWWRRRRRRRRR', '.WWWWWWWWWW.', '..WWKWWKWW..', '..WWKWWKWW..', '...WWWWWW...'], { R: '#e52521', W: '#fff0d0', K: '#000' }, s, x, y); };\nshroom(202, 386, 3);\nnames.push(addProjectImage('scene.png', c, {}).name);\n\nawait loadAllImages();\n{ const e = await addElement('IMG', { src: names[0] }); e.name = 'Level'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal' } return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst TAU = Math.PI * 2;\nconst GROUND = 360;\nconst px = (g, rows, pal, s, x0, y0) => rows.forEach((r, j) => [...r].forEach((ch, i) => { if (pal[ch]) { g.fillStyle = pal[ch]; g.fillRect(x0 + i * s, y0 + j * s, s, s); } }));\n\nconst PAL = { R: '#e52521', S: '#ffa044', B: '#6c3c00', U: '#0058f8', Y: '#fcd800', K: '#000' };\nconst STAND = ['....RRRRR....', '...RRRRRRRRR.', '...BBBSSKS...', '..BSBSSSKSSS.', '..BSBBSSSKSSS', '..BBSSSSKKKK.', '....SSSSSSS..', '...RRURRR....', '..RRRURRURRR.', '.RRRRUUUURRRR', '.SSRUYUUYURSS', '.SSSUUUUUUSSS', '.SSUUUUUUUUSS', '...UUU..UUU..', '..BBB....BBB.', '.BBBB....BBBB'];\nconst JUMP = ['....RRRRR....', '...RRRRRRRRR.', '...BBBSSKS...', '..BSBSSSKSSS.', '..BSBBSSSKSSS', 'S.BBSSSSKKKKS', 'SS..SSSSSSS.S', 'SSRRRURRR.SS.', '.RRRRURRURRR.', '.RRRRUUUURRRR', '..RRUYUUYURR.', '..UUUUUUUUUU.', '.UUUUUUUUUUU.', 'UUU.......UUU', 'BBB.......BBB', 'BBBB.....BBBB'];\nfor (const [i, rows] of [STAND, JUMP].entries()) { const c = mk(52, 64), g = c.getContext('2d'); px(g, rows, PAL, 4, 0, 0); names.push(addProjectImage('act/mario_' + i + '.png', c, {}).name); }\nconst coinW = [26, 17, 7, 17];\ncoinW.forEach((w, i) => { const c = mk(28, 36), g = c.getContext('2d'); g.fillStyle = '#000'; g.beginPath(); g.ellipse(14, 18, w / 2 + 1.5, 17, 0, 0, TAU); g.fill(); g.fillStyle = '#fcd800'; g.beginPath(); g.ellipse(14, 18, w / 2 - 1, 15, 0, 0, TAU); g.fill(); if (w > 10) { g.fillStyle = '#e8a000'; g.fillRect(14 - 2, 9, 4, 18); } names.push(addProjectImage('act/coin_' + i + '.png', c, {}).name); });\nfor (let f = 0; f < 2; f++) {\n  const c = mk(40, 40), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.beginPath(); g.moveTo(2, 28); g.bezierCurveTo(2, -2, 38, -2, 38, 28); g.closePath(); g.fill();\n  g.fillStyle = '#b8541c'; g.beginPath(); g.moveTo(4, 27); g.bezierCurveTo(4, 1, 36, 1, 36, 27); g.closePath(); g.fill();\n  g.fillStyle = '#fff'; g.fillRect(10, 14, 8, 10); g.fillRect(22, 14, 8, 10);\n  g.fillStyle = '#000'; g.fillRect(15, 18, 3, 6); g.fillRect(22, 18, 3, 6);\n  g.fillRect(8, 10, 12, 4); g.fillRect(20, 10, 12, 4);\n  g.fillStyle = '#f8c898'; g.fillRect(12, 27, 16, 8);\n  g.fillStyle = '#000'; if (f) { g.fillRect(2, 33, 14, 6); g.fillRect(24, 36, 14, 4); } else { g.fillRect(2, 36, 14, 4); g.fillRect(24, 33, 14, 6); }\n  names.push(addProjectImage('act/goomba_' + f + '.png', c, {}).name);\n}\nconst cloud = (name, s) => { const c = mk(96, 56), g = c.getContext('2d'); g.fillStyle = '#fff'; g.scale(s, s); for (const [x, y, r] of [[22, 38, 16], [44, 28, 22], [68, 36, 17]]) { g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); } g.fillRect(22, 38, 46, 16); names.push(addProjectImage(name, c, {}).name); };\ncloud('act/cloud_0.png', 1); cloud('act/cloud_1.png', 0.8);\nglobalThis.__act = names.slice();\n\nawait loadAllImages();\nconst a = names; const mkI = async (name, handle, x, y, src) => { const e = await addElement('IMG', { src }); e.name = name; e.src = src; if (handle) e.handle = handle; e.x = x; e.y = y; e.show = 'normal'; return e }; await mkI('Cloud far', 'cl1', 40, 284, a[9]); await mkI('Cloud near', 'cl0', 220, 236, a[8]); await mkI('Coin', 'coin', 271, 100, a[2]); globalThis.__a = a; return a.length"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst TAU = Math.PI * 2;\nconst GROUND = 360;\nconst px = (g, rows, pal, s, x0, y0) => rows.forEach((r, j) => [...r].forEach((ch, i) => { if (pal[ch]) { g.fillStyle = pal[ch]; g.fillRect(x0 + i * s, y0 + j * s, s, s); } }));\n\nconst BW = 170, BH = 140;\nconst rivet = (g, x, y) => { g.fillStyle = '#000'; g.fillRect(x, y, 8, 8); g.fillStyle = '#7a4400'; g.fillRect(x + 1, y + 1, 6, 6); };\n{ // hour: brick block\n  const c = mk(BW, BH), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.fillRect(0, 0, BW, BH);\n  g.fillStyle = '#c84c0c'; g.fillRect(3, 3, BW - 6, BH - 6);\n  g.fillStyle = '#000';\n  const rh = (BH - 6) / 5;\n  for (let r = 0; r < 5; r++) { const y = 3 + r * rh; g.fillRect(3, y, BW - 6, 3); for (let x = (r % 2 ? 3 + 28 : 3); x < BW - 3; x += 56) g.fillRect(x, y, 3, rh); }\n  g.fillStyle = '#fc9838'; g.fillRect(3, 3, BW - 6, 3);\n  names.push(addProjectImage('block_hour.png', c, {}).name);\n}\n{ // minute: question block\n  const c = mk(BW, BH), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.fillRect(0, 0, BW, BH);\n  g.fillStyle = '#e8a000'; g.fillRect(4, 4, BW - 8, BH - 8);\n  g.fillStyle = '#fcd860'; g.fillRect(4, 4, BW - 8, 4); g.fillRect(4, 4, 4, BH - 8);\n  g.fillStyle = '#a05c00'; g.fillRect(4, BH - 8, BW - 8, 4); g.fillRect(BW - 8, 4, 4, BH - 8);\n  for (const [x, y] of [[12, 12], [BW - 20, 12], [12, BH - 20], [BW - 20, BH - 20]]) rivet(g, x, y);\n  names.push(addProjectImage('block_min.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst b = names; const mkI = async (name, handle, x, y, src) => { const e = await addElement('IMG', { src }); e.name = name; e.src = src; if (handle) e.handle = handle; e.x = x; e.y = y; e.show = 'normal' }; await mkI('Hour block', '', 20, 84, b[0]); await mkI('Minute block', 'qb', 200, 84, b[1]); return 2"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Main'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Aod'; return 1"
+  },
+  {
+   "script": "const a = globalThis.__a; const mkI = async (name, handle, x, y, src) => { const e = await addElement('IMG', { src }); e.name = name; e.src = src; if (handle) e.handle = handle; e.x = x; e.y = y; e.show = 'normal' }; await mkI('Goomba', 'gob', 340, 320, a[6]); return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst TAU = Math.PI * 2;\nconst GROUND = 360;\nconst px = (g, rows, pal, s, x0, y0) => rows.forEach((r, j) => [...r].forEach((ch, i) => { if (pal[ch]) { g.fillStyle = pal[ch]; g.fillRect(x0 + i * s, y0 + j * s, s, s); } }));\n\nfor (let i = 0; i < 9; i++) { const c = mk(2, 2); names.push(addProjectImage('lvl_' + i + '.png', c, {}).name); }\nconst c = mk(48, 48), g = c.getContext('2d');\npx(g, ['....RRRR....', '..RRWWRRRR..', '.RRWWWRRWWR.', 'RRRWWRRRWWRR', 'RWWRRRRRRWWR', 'RWWRRRRRRRRR', '.WWWWWWWWWW.', '..WWKWWKWW..', '..WWKWWKWW..', '...WWWWWW...'].map((r) => r), { R: '#e52521', W: '#fff0d0', K: '#000' }, 4, 0, 4);\nnames.push(addProjectImage('lvl_9.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG_LEVEL', { dataType: 'BATTERY', images: names, w: 0, h: 0 }); e.name = 'Power-up'; e.images = names; e.dataType = 'BATTERY'; e.x = 190; e.y = 308; e.show = 'normal'; return names.length"
+  },
+  {
+   "script": "const a = globalThis.__a; const e = await addElement('IMG', { src: a[0] }); e.name = 'Mario'; e.src = a[0]; e.handle = 'mar'; e.x = 259; e.y = 296; e.show = 'normal'; return 1"
+  },
+  {
+   "preset": "steps"
+  },
+  {
+   "preset": "hr"
+  },
+  {
+   "preset": "battery"
+  },
+  {
+   "remove": "Colon Main"
+  },
+  {
+   "edit": "Hour Main",
+   "set": {
+    "x": 42,
+    "y": 124,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Press Start 2P",
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 4,
+    "size": 64
+   }
+  },
+  {
+   "edit": "Minute Main",
+   "set": {
+    "x": 224,
+    "y": 124,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Press Start 2P",
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 4,
+    "size": 64
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 50,
+    "y": 198,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Press Start 2P",
+    "fill": "solid",
+    "color": "#7a6a00",
+    "size": 56
+   }
+  },
+  {
+   "edit": "Colon Aod",
+   "set": {
+    "x": 180,
+    "y": 198,
+    "show": "aod"
+   },
+   "glyph": {
+    "font": "Press Start 2P",
+    "fill": "solid",
+    "color": "#7a6a00",
+    "size": 56
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 225,
+    "y": 198,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Press Start 2P",
+    "fill": "solid",
+    "color": "#7a6a00",
+    "size": 56
+   }
+  },
+  {
+   "edit": "Steps",
+   "set": {
+    "x": 62,
+    "y": 30,
+    "show": "normal",
+    "alignH": "LEFT"
+   },
+   "glyph": {
+    "font": "Press Start 2P",
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 3,
+    "size": 26
+   }
+  },
+  {
+   "edit": "Heart rate",
+   "set": {
+    "x": 66,
+    "y": 388,
+    "show": "normal",
+    "unit": ""
+   },
+   "glyph": {
+    "font": "Press Start 2P",
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 3,
+    "size": 26
+   }
+  },
+  {
+   "edit": "Battery",
+   "set": {
+    "x": 244,
+    "y": 388,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Press Start 2P",
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 3,
+    "size": 26
+   }
+  },
+  {
+   "script": "project.groups = project.groups || {}; for (const e of project.elements) { if (/ Aod$/.test(e.name) && e.group) project.groups[e.group] = 'Clock AOD' } return JSON.stringify(project.groups)"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gBlocks = 'Blocks'; let n = 0; for (const nm of [\"Coin\",\"Hour block\",\"Minute block\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gBlocks'; n++ } } return n"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gActors = 'Characters'; let n = 0; for (const nm of [\"Goomba\",\"Power-up\",\"Mario\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gActors'; n++ } } return n"
+  },
+  {
+   "script": "return project.elements.map((e) => e.name + ':' + (e.group || '-')).join(' | ')"
+  }
+ ]
+}

@@ -6775,12 +6775,14 @@ function startCodeRun() {
   if (!project || codeRun) return;
   const code = project.userCode || '';
   if (!code.trim()) { status('There is no code to run: add some under Watchface ▸ Code of your own…', true); return; }
-  codeRun = { touched: new Map(), picks: new Map(), timers: new Set(), raf: 0 };
+  codeRun = { touched: new Map(), picks: new Map(), timers: new Set(), made: new Set(), raf: 0 };
   const run = codeRun;
   const report = (where, e) => { status(`Code (${where}): ${e && e.message ? e.message : e}`, true); try { console.error('[code]', where, e); } catch (x) { /* no console */ } };
   const guard = (f, where) => (...a) => { if (codeRun !== run) return; try { return f(...a); } catch (e) { report(where, e); } };
   const names = (obj) => new Proxy(obj, { get: (t, k) => (k in t ? t[k] : String(k)) });
   const W = {}, F = {};
+  // a preview-only still of what the code draws would sit under the real thing: hide it while the code runs
+  for (const e of elements()) if (e.previewOnly) codeRunSet(e, 'visible', false);
   for (const e of elements()) {
     if (!/^[A-Za-z_$][\w$]*$/.test(e.handle || '') || ['W', 'F'].includes(e.handle)) continue;
     W[e.handle] = codeRunStub(e);
@@ -6791,11 +6793,25 @@ function startCodeRun() {
     prop: names({ MORE: 'MORE' }), widget: names({}), align: names({}), show_level: names({}), anim_status: names({}),
     event: names({}), data_type: names({}), text_style: names({}), system_status: names({}), edit_type: names({}),
     createWidget(type, opts) {
-      const w = codeRunStub(null);
-      if (type === 'WIDGET_DELEGATE' && opts) { setTimeout(guard(() => opts.resume_call && opts.resume_call(), 'resume_call'), 0); }
-      return w;
+      if (type === 'WIDGET_DELEGATE' && opts) { setTimeout(guard(() => opts.resume_call && opts.resume_call(), 'resume_call'), 0); return codeRunStub(null); }
+      // a picture the code makes itself (a game's tiles and sprites) is drawn as a temporary layer on top, gone again on Stop
+      if (type === 'IMG' && opts && opts.src) {
+        const e = newElement('IMG', { name: 'Code picture', x: Math.round(+opts.x || 0), y: Math.round(+opts.y || 0), src: String(opts.src).replace(/^images\//, ''), codeMade: true });
+        project.elements.push(e);
+        run.made.add(e);
+        codeRunRender();
+        return codeRunStub(e);
+      }
+      return codeRunStub(null);
     },
-    deleteWidget() {},
+    deleteWidget(w) {
+      const e = w && w.__layer;
+      if (!e || !run.made.has(e)) return;
+      run.made.delete(e);
+      const i = project.elements.indexOf(e);
+      if (i >= 0) project.elements.splice(i, 1);
+      codeRunRender();
+    },
   };
   const timers = {
     setInterval: (f, ms) => { const id = setInterval(guard(f, 'setInterval'), ms); run.timers.add(id); return id; },
@@ -6824,6 +6840,7 @@ function stopCodeRun() {
   codeRun = null;
   for (const id of run.timers) { clearInterval(id); clearTimeout(id); }
   if (run.raf) cancelAnimationFrame(run.raf);
+  if (project && run.made.size) project.elements = project.elements.filter((e) => !run.made.has(e));
   for (const [e, t] of run.touched) for (const [k, v] of Object.entries(t)) { if (v === undefined) delete e[k]; else e[k] = v; }
   syncRunButton();
   if (project) render();

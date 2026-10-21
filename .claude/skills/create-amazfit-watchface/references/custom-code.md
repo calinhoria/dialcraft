@@ -43,7 +43,7 @@ with the recipe as usual; give the ones the code must reach a **handle**; put th
 
 The editor's **▶ Run code** button (above the preview) runs the code against a stand-in for the watch API: `W.<handle>` is the layer,
 `setProperty` with X / Y / W / H / ALPHA / SRC / VISIBLE / TEXT / MORE moves or swaps it, timers are real, `Time` reads the
-computer clock, `console.log` goes to the status bar. Stop restores every layer. It cannot know what the firmware accepts
+computer clock, `console.log` goes to the status bar. Stop restores every layer. Pictures the code makes itself with `ui.createWidget(ui.widget.IMG, { x, y, src })` are drawn as temporary layers on top (and removed by `ui.deleteWidget`), and layers marked *Preview only* are hidden while it runs, so a game's tiles and sprites show up and the still under them does not. It cannot know what the firmware accepts
 (it moves an animation with `MORE`, the watch does not), so confirm on the watch.
 
 ## Test on the watch with logs (developer bridge)

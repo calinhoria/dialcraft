@@ -1,0 +1,275 @@
+// ---- live Mario: an AI plays a real tile-based platformer on the watch while the screen is on ----
+// One screen at a time (12 tiles wide): Mario runs right, jumps pits and pipes, stomps Goombas and bumps ? blocks from below,
+// then walks into a freshly built screen. Overworld by day, underground from 19:00 to 07:00.
+{
+  const DEBUG = false
+  const log = (m) => { if (DEBUG) { try { console.log('[mario] ' + m) } catch (e) {} } }
+  try {
+  const TS = 32, X0 = 3, COLS = 12, ROWS = 9, TOPY = 162, GY = 386, GROUND = 7   // row 0 is at y = TOPY; rows 7 and 8 are the ground
+  const MS = 90, DT = MS / 1000
+  const VX = 110                                   // running speed, px / s
+  const GOOMBA_V = 30
+  // a jump of height h px that lasts t s: v0 = 4h / t, g = 8h / t^2
+  const SHORT = { v: 4 * 80 / 0.95, g: 8 * 80 / (0.95 * 0.95) }
+  const LONG = { v: 4 * 140 / 1.3, g: 8 * 140 / (1.3 * 1.3) }
+  const FALL_G = LONG.g
+  const norm = ui.show_level.ONLY_NORMAL
+  const img = (n) => A('tiles/' + n + '.png')
+  const create = (src, x, y) => ui.createWidget(ui.widget.IMG, { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src: img(src), show_level: norm })
+  const kill = (w) => { try { ui.deleteWidget(w) } catch (e) {} }
+  const move = (w, x, y, src) => { try { w.setProperty(ui.prop.MORE, src ? { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src: img(src) } : { x: pxv(Math.round(x)), y: pxv(Math.round(y)) }) } catch (e) {} }
+
+  let clock = null
+  try { clock = new DCTime() } catch (e) {}
+  const hour = () => {
+    try { if (clock) { const h = clock.getHours(); if (typeof h === 'number' && h >= 0) return h } } catch (e) {}
+    try { return new Date().getHours() } catch (e) {}
+    return 12
+  }
+  const isNight = () => { const h = hour(); return h >= 19 || h < 7 }
+
+  const rnd = (a, b) => a + Math.random() * (b - a)
+  const ri = (a, b) => Math.floor(rnd(a, b + 1))
+
+  // ---- the screen ----
+  let grid = [], widgets = [], goombas = [], coins = [], blocks = [], pops = [], m = null
+  let state = 'play', stateT = 0, T = 'd', frame = 0, blunder = '', rooms = 0, stuck = 0, bornAt = 0
+  const track = (w) => { widgets.push(w); return w }
+  const clearRoom = () => { for (const w of widgets) kill(w); widgets = []; goombas = []; coins = []; blocks = []; pops = [] }
+
+  // 0 empty, 1 ground, 2 pipe, 3 brick, 4 ? block, 5 used block
+  const tileAt = (x, y) => {
+    const c = Math.floor((x - X0) / TS), r = Math.floor((y - TOPY) / TS)
+    if (r < 0 || r >= ROWS) return 0
+    if (c < 0 || c >= COLS) return r >= GROUND ? 1 : 0
+    return grid[r][c]
+  }
+
+  const genRoom = () => {
+    clearRoom()
+    rooms++
+    T = isNight() ? 'n' : 'd'
+    try { W.scene.setProperty(ui.prop.MORE, { x: 0, y: 0, src: img('scene_' + T) }) } catch (e) {}
+    grid = []
+    for (let r = 0; r < ROWS; r++) grid.push(new Array(COLS).fill(0))
+    for (let c = 0; c < COLS; c++) { grid[7][c] = 1; grid[8][c] = 1 }
+    const pits = [], pipes = [], rows = [], runs = []
+    let c = ri(3, 4)
+    while (c <= 9) {
+      const p = Math.random()
+      if (p < 0.27) { pipes.push({ c, h: ri(1, 2) }); c += 2 + 4 + ri(0, 1) }
+      else if (p < 0.47) { pits.push({ c }); c += 2 + 4 + ri(0, 1) }
+      else if (p < 0.75) { const n = Math.min(ri(3, 5), COLS - c); rows.push({ c, n }); c += n + 3 }
+      else if (p < 0.9) { const n = Math.min(ri(3, 5), COLS - c); runs.push({ c, n }); c += n + 3 }
+      else c += 2
+    }
+    for (const q of pits) { for (const r of [7, 8]) { grid[r][q.c] = 0; grid[r][q.c + 1] = 0 } track(create('pit_' + T, X0 + q.c * TS, GY)) }
+    for (const q of pipes) { for (let r = GROUND - q.h; r < GROUND; r++) { grid[r][q.c] = 2; grid[r][q.c + 1] = 2 } track(create('pipe' + q.h, X0 + q.c * TS, GY - q.h * TS)) }
+    for (const q of rows) {
+      for (let i = 0; i < q.n; i++) {
+        const type = i % 2 ? 3 : 4, x = X0 + (q.c + i) * TS, y = GY - 4 * TS
+        grid[3][q.c + i] = type
+        blocks.push({ w: track(create(type === 4 ? 'q0' : 'brick_' + T, x, y)), c: q.c + i, x, y, type, bump: 0, src: '' })
+      }
+    }
+    for (const q of runs) for (let i = 0; i < q.n; i++) { const x = X0 + (q.c + i) * TS, y = GY - TS; coins.push({ w: track(create('coin0', x, y)), x, y, got: false }) }
+    // Goombas stand on free ground in the right half and walk left
+    const used = {}
+    const n = ri(0, 2)
+    for (let i = 0; i < n; i++) {
+      let col = -1
+      for (let k = 0; k < 8 && col < 0; k++) { const t = ri(6, 11); if (!used[t] && grid[GROUND][t] === 1 && grid[GROUND - 1][t] === 0 && !coins.some((q) => q.x === X0 + t * TS)) col = t }
+      if (col < 0) continue
+      used[col] = 1
+      goombas.push({ w: track(create('goomba_' + T + '_0', X0 + col * TS, GY - TS)), x: X0 + col * TS, y: GY - TS, vx: -GOOMBA_V * DT, vy: 0, alive: true, flat: 0, src: '' })
+    }
+    for (let i = 0; i < 2; i++) pops.push({ w: track(create('coin0', -60, 0)), t: -1, x: 0, y: 0 })
+    m = { w: null, x: 0, y: GY - TS, vy: 0, g: FALL_G, ground: true, anim: 0, src: 's', jumped: 0 }
+    m.w = track(create('mario_s', m.x, m.y))
+    state = 'play'
+    stateT = 0
+    stuck = 0
+    bornAt = frame
+    blunder = Math.random() < 0.08 ? (Math.random() < 0.5 ? 'goomba' : 'pit') : ''
+    log('room ' + rooms + ' ' + T + ' pits=' + pits.length + ' pipes=' + pipes.length + ' rows=' + rows.length + ' goombas=' + goombas.length + ' blunder=' + blunder)
+  }
+
+  // ---- Mario ----
+  const box = () => { const x0 = Math.floor(m.x) + 3, y0 = Math.floor(m.y) + 2; return { x0, x1: x0 + 19, y0, y1: y0 + 29, ym: y0 + 14 } }
+  const solidAt = (x, y) => tileAt(x, y) !== 0
+  const hits = (b) => solidAt(b.x0, b.y0) || solidAt(b.x1, b.y0) || solidAt(b.x0, b.y1) || solidAt(b.x1, b.y1) || solidAt(b.x0, b.ym) || solidAt(b.x1, b.ym)
+  const bumpBlock = (b) => {
+    for (const x of [(b.x0 + b.x1) >> 1, b.x0, b.x1]) {
+      const c = Math.floor((x - X0) / TS), r = Math.floor((b.y0 - 1 - TOPY) / TS)
+      if (c < 0 || c >= COLS || r < 0 || r >= ROWS) continue
+      const t = grid[r][c]
+      if (t !== 3 && t !== 4) continue
+      const blk = blocks.find((q) => q.c === c)
+      if (!blk) return
+      blk.bump = 6
+      if (t === 4) {
+        grid[r][c] = 5
+        blk.type = 5
+        move(blk.w, blk.x, blk.y, 'qu')
+        const p = pops.find((q) => q.t < 0)
+        if (p) { p.t = 0; p.x = blk.x; p.y = blk.y }
+      }
+      return
+    }
+  }
+  const moveX = (dx) => {
+    const s = dx > 0 ? 1 : -1
+    for (let i = 0; i < Math.round(Math.abs(dx)); i++) { m.x += s; if (hits(box())) { m.x -= s; return false } }
+    return true
+  }
+  const moveY = (dy) => {
+    const n = Math.max(1, Math.ceil(Math.abs(dy))), s = dy / n
+    for (let i = 0; i < n; i++) {
+      m.y += s
+      if (hits(box())) {
+        m.y -= s
+        if (dy > 0) { m.y = TOPY + TS * Math.ceil((Math.floor(m.y) + 32 - TOPY) / TS) - 32; m.vy = 0; m.g = FALL_G; m.ground = true }
+        else { bumpBlock(box()); m.vy = 40 }
+        return
+      }
+    }
+    if (dy > 0) m.ground = false
+  }
+
+  const aiDecide = () => {
+    const front = m.x + 22
+    let jump = null
+    // a wall (pipe) ahead
+    for (let d = 2; d <= 44; d += 6) if (solidAt(front + d, m.y + 16)) { jump = LONG; break }
+    // a pit ahead
+    if (!jump && blunder !== 'pit') for (let d = 2; d <= 38; d += 6) if (!solidAt(front + d, GY + 4)) { jump = LONG; break }
+    // a Goomba ahead
+    if (!jump) {
+      for (const g of goombas) {
+        if (!g.alive || Math.abs(g.y - m.y) > 20) continue
+        const gap = g.x + 2 - front
+        if (gap > -22 && gap <= (blunder === 'goomba' ? 14 : 108)) { jump = SHORT; break }
+      }
+    }
+    // a ? block overhead: a short hop at the right moment bumps it from below
+    if (!jump) {
+      for (const b of blocks) if (b.type === 4 && m.x >= b.x - 34 && m.x <= b.x - 16) { jump = SHORT; break }
+    }
+    if (!jump && stuck > 3) jump = LONG
+    if (jump) { m.vy = -jump.v; m.g = jump.g; m.ground = false; m.jumped = frame }
+  }
+
+  // in the air Mario steers (like holding right or letting go): when falling towards a Goomba he aims to land on its head
+  const airSpeed = () => {
+    if (m.ground || m.vy <= 0) return VX
+    let best = null
+    for (const g of goombas) {
+      if (!g.alive || g.y !== GY - TS) continue
+      const ahead = g.x + 16 - (m.x + 13)
+      if (ahead < -6 || ahead > 160) continue
+      if (!best || Math.abs(ahead) < Math.abs(best.ahead)) best = { g, ahead }
+    }
+    if (!best) return VX
+    const dy = best.g.y + 8 - (m.y + 32)
+    if (dy <= 0) return VX
+    const gg = m.g || FALL_G
+    const t = Math.max(DT, (-m.vy + Math.sqrt(m.vy * m.vy + 2 * gg * dy)) / gg)
+    const v = (best.g.x + 16 + best.g.vx / DT * t - (m.x + 13)) / t
+    return Math.max(0, Math.min(170, v))
+  }
+
+  const die = () => { state = 'dead'; stateT = 0; m.vy = 0; log('Mario died in room ' + rooms) }
+  const hurt = (g, vyBefore) => {
+    if (m.inv > 0) return
+    const mb = box(), gx0 = g.x + 2, gx1 = g.x + 30, gy0 = g.y + 8, gy1 = g.y + 31
+    if (mb.x1 < gx0 || mb.x0 > gx1 || mb.y1 < gy0 || mb.y0 > gy1) return
+    if (vyBefore > 0 && mb.y1 - gy0 < 30) { g.alive = false; g.flat = 8; m.vy = -260; m.g = SHORT.g; m.inv = 3; move(g.w, g.x, g.y, 'goomba_' + T + '_f'); return }
+    die()
+  }
+
+  const stepMario = () => {
+    if (m.inv > 0) m.inv--
+    if (m.ground) aiDecide()
+    else m.vy += (m.g || LONG.g) * DT
+    if (m.ground && m.vy === 0) m.vy = FALL_G * DT
+    const before = m.x
+    moveX(airSpeed() * DT)
+    stuck = m.x - before < 1 ? stuck + 1 : 0
+    const vyBefore = m.vy
+    moveY(m.vy * DT)
+    if (m.y > 460) { die(); return }
+    for (const g of goombas) { if (g.alive) { hurt(g, vyBefore); if (state === 'dead') return } }
+    for (const c of coins) {
+      if (c.got) continue
+      if (Math.abs(m.x + 13 - (c.x + 16)) < 20 && Math.abs(m.y + 16 - (c.y + 16)) < 24) { c.got = true; move(c.w, -60, 0) }
+    }
+    if (m.x > 394) { genRoom(); return }
+    // animation
+    let src = 'mario_j'
+    if (m.ground) { m.anim++; src = ['mario_r1', 'mario_s', 'mario_r2', 'mario_s'][m.anim % 4] }
+    move(m.w, m.x, m.y, src === m.src ? null : src)
+    m.src = src
+  }
+
+  const stepGoombas = () => {
+    for (const g of goombas) {
+      if (g.flat > 0) { g.flat--; if (g.flat === 0) { move(g.w, -60, 0) } continue }
+      if (!g.alive) continue
+      const nx = g.x + g.vx, probe = g.vx < 0 ? nx + 2 : nx + 30
+      if (solidAt(probe, g.y + 16) || !solidAt(probe, g.y + 36)) g.vx = -g.vx
+      else g.x = nx
+      if (g.x < -36 || g.x > 396) { g.alive = false; move(g.w, -60, 0); continue }
+      const s = 'goomba_' + T + '_' + (Math.floor(frame / 4) % 2)
+      move(g.w, g.x, g.y, s === g.src ? null : s)
+      g.src = s
+    }
+  }
+
+  const stepProps = () => {
+    for (const b of blocks) {
+      if (b.bump > 0) { b.bump--; move(b.w, b.x, b.y - Math.round(10 * Math.sin(Math.PI * (6 - b.bump) / 6))) }
+      else if (b.type === 4 && frame % 6 === 0) move(b.w, b.x, b.y, 'q' + (Math.floor(frame / 6) % 3))
+    }
+    if (frame % 3 === 0) for (const c of coins) if (!c.got) move(c.w, c.x, c.y, 'coin' + (Math.floor(frame / 3) % 4))
+    for (const p of pops) {
+      if (p.t < 0) continue
+      p.t++
+      if (p.t > 8) { p.t = -1; move(p.w, -60, 0); continue }
+      move(p.w, p.x, p.y - 8 - p.t * 7, 'coin' + (p.t % 4))
+    }
+  }
+
+  const tick = () => {
+    frame++
+    if (state === 'play') {
+      stepMario()
+      if (state === 'play') { stepGoombas(); stepProps() }
+    } else if (state === 'dead') {
+      stateT++
+      if (stateT === 1) move(m.w, m.x, m.y, 'mario_j')
+      if (stateT === 7) m.vy = -360
+      if (stateT > 7) { m.vy += FALL_G * DT; m.y += m.vy * DT; move(m.w, m.x, m.y) }
+      if (stateT > 26) genRoom()
+    }
+  }
+
+  // ---- timer ----
+  let timerId = null, via = ''
+  const safeTick = () => { try { tick() } catch (e) { log('game: ' + (e && e.message ? e.message : e)); stop() } }
+  const start = () => {
+    if (timerId !== null) return
+    try {
+      if (typeof setInterval === 'function') { timerId = setInterval(safeTick, MS); via = 'i' }
+      else if (typeof timer !== 'undefined' && timer && timer.createTimer) { timerId = timer.createTimer(0, MS, safeTick); via = 't' }
+    } catch (e) { log('timer: ' + (e && e.message ? e.message : e)) }
+  }
+  function stop() {
+    if (timerId === null) return
+    try { if (via === 't') timer.stopTimer(timerId); else clearInterval(timerId) } catch (e) {}
+    timerId = null
+  }
+  genRoom()
+  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })
+  start()
+  } catch (e) { log('FATAL ' + (e && e.message ? e.message : e) + ' | ' + String(e && e.stack ? e.stack : '').replace(/\s+/g, ' ').slice(0, 300)) }
+}

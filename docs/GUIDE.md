@@ -760,8 +760,9 @@ Pictures the code needs only have to be in the project (they are all exported); 
 **▶ Run code** (the button above the preview) runs your code in the editor against a stand-in for the watch API, so you can see it work
 without installing: `W.<handle>` is the layer itself, `setProperty` with `X`, `Y`, `W`, `H`, `ALPHA`, `SRC`, `VISIBLE`, `TEXT` or `MORE`
 moves or swaps it on the canvas (a layer with several pictures follows `SRC`), `setInterval` / `setTimeout` are real, and the `Time`
-sensor reads the computer's clock. Widgets the code creates itself (a text, a group) are accepted but not drawn, and other watch modules
-are quiet stand-ins that return 0. **Stop** puts every layer back as it was, and nothing that ran is saved or exported (saving, exporting
+sensor reads the computer's clock. A picture the code creates itself (`ui.createWidget(ui.widget.IMG, { x, y, src })`) is drawn as a temporary layer on top and
+removed again by `ui.deleteWidget` or Stop, and layers marked *Preview only* are hidden while the code runs; other widgets the code
+creates (a text, a group) are accepted but not drawn, and other watch modules are quiet stand-ins that return 0. **Stop** puts every layer back as it was, and nothing that ran is saved or exported (saving, exporting
 or installing stops the run first). It is your own code running in the editor, so it only starts on a click; a project from someone
 else deserves a read before you press it. The final word is still the watch: the stand-in cannot tell you which calls the firmware
 accepts (for instance `MORE` does not move an animation there, `Y` does). Samples: `sample-watchfaces/tetris-live`.

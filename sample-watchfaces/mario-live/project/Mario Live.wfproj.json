@@ -1,0 +1,861 @@
+{
+  "version": 1,
+  "name": "Mario Live",
+  "device": "bip-6",
+  "appId": 2499613,
+  "vender": "dialcraft",
+  "description": "An AI plays Super-Mario-style platformer screens live on the watch: Mario runs, jumps pits and pipes, stomps Goombas and bumps ? blocks, then walks into a fresh screen. Overworld in daylight, underground from 19:00 to 07:00. Big time on top, battery as a mushroom.",
+  "font": "Press Start 2P",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gmvike5cqmq": "Clock",
+    "gmvike5d95a": "Clock AOD",
+    "gClock": "Clock"
+  },
+  "elements": [
+    {
+      "id": "elmvike57u2jl",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvike58t367",
+      "kind": "IMG",
+      "name": "Level scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "tiles/scene_d.png",
+      "handle": "scene"
+    },
+    {
+      "id": "elmvike5a47p4",
+      "kind": "IMG",
+      "name": "Demo still",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "demo_d.png",
+      "previewOnly": true
+    },
+    {
+      "id": "elmvike5cp4kl",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 212,
+      "y": 54,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -4,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Press Start 2P",
+        "size": 68,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "aidPad": 2
+    },
+    {
+      "id": "elmvike5cp5fe",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 179,
+      "y": 54,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Press Start 2P",
+        "size": 68,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 2
+    },
+    {
+      "id": "elmvike5cp6i6",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 38,
+      "y": 54,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -4,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Press Start 2P",
+        "size": 68,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "aidPad": 2
+    },
+    {
+      "id": "elmvike5d95yn",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 214,
+      "y": 190,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvike5d95a",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Press Start 2P",
+        "size": 68,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#6a5a10",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvike5d91t3",
+      "kind": "IMG",
+      "name": "Colon Aod",
+      "x": 181,
+      "y": 190,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvike5d95a",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Press Start 2P",
+        "size": 68,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#6a5a10",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmvike5d92ty",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 40,
+      "y": 190,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvike5d95a",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Press Start 2P",
+        "size": 68,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#6a5a10",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvike5dr5kb",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 168,
+      "y": 10,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -1,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Press Start 2P",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "aidPad": 2
+    }
+  ],
+  "images": [
+    {
+      "name": "tiles/scene_d.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "tiles/scene_n.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "demo_d.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "tiles/brick_d.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/pit_d.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "tiles/goomba_d_0.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/goomba_d_1.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/goomba_d_f.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/brick_n.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/pit_n.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "tiles/goomba_n_0.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/goomba_n_1.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/goomba_n_f.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/q0.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/q1.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/q2.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/qu.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/pipe1.png",
+      "width": 64,
+      "height": 32
+    },
+    {
+      "name": "tiles/pipe2.png",
+      "width": 64,
+      "height": 64
+    },
+    {
+      "name": "tiles/mario_s.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "tiles/mario_r1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "tiles/mario_r2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "tiles/mario_j.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "tiles/coin0.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/coin1.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/coin2.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "tiles/coin3.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "colon.png",
+      "width": 18,
+      "height": 54
+    },
+    {
+      "name": "colon_2.png",
+      "width": 18,
+      "height": 54
+    },
+    {
+      "name": "percent.png",
+      "width": 35,
+      "height": 38
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 27,
+      "height": 70
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 70,
+      "height": 78
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 23,
+      "height": 66
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 66,
+      "height": 74
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 66,
+      "height": 74
+    }
+  ],
+  "savePath": null,
+  "userImports": "import { Time as DCTime } from '@zos/sensor'",
+  "userCode": "// ---- live Mario: an AI plays a real tile-based platformer on the watch while the screen is on ----\n// One screen at a time (12 tiles wide): Mario runs right, jumps pits and pipes, stomps Goombas and bumps ? blocks from below,\n// then walks into a freshly built screen. Overworld by day, underground from 19:00 to 07:00.\n{\n  const DEBUG = false\n  const log = (m) => { if (DEBUG) { try { console.log('[mario] ' + m) } catch (e) {} } }\n  try {\n  const TS = 32, X0 = 3, COLS = 12, ROWS = 9, TOPY = 162, GY = 386, GROUND = 7   // row 0 is at y = TOPY; rows 7 and 8 are the ground\n  const MS = 90, DT = MS / 1000\n  const VX = 110                                   // running speed, px / s\n  const GOOMBA_V = 30\n  // a jump of height h px that lasts t s: v0 = 4h / t, g = 8h / t^2\n  const SHORT = { v: 4 * 80 / 0.95, g: 8 * 80 / (0.95 * 0.95) }\n  const LONG = { v: 4 * 140 / 1.3, g: 8 * 140 / (1.3 * 1.3) }\n  const FALL_G = LONG.g\n  const norm = ui.show_level.ONLY_NORMAL\n  const img = (n) => A('tiles/' + n + '.png')\n  const create = (src, x, y) => ui.createWidget(ui.widget.IMG, { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src: img(src), show_level: norm })\n  const kill = (w) => { try { ui.deleteWidget(w) } catch (e) {} }\n  const move = (w, x, y, src) => { try { w.setProperty(ui.prop.MORE, src ? { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src: img(src) } : { x: pxv(Math.round(x)), y: pxv(Math.round(y)) }) } catch (e) {} }\n\n  let clock = null\n  try { clock = new DCTime() } catch (e) {}\n  const hour = () => {\n    try { if (clock) { const h = clock.getHours(); if (typeof h === 'number' && h >= 0) return h } } catch (e) {}\n    try { return new Date().getHours() } catch (e) {}\n    return 12\n  }\n  const isNight = () => { const h = hour(); return h >= 19 || h < 7 }\n\n  const rnd = (a, b) => a + Math.random() * (b - a)\n  const ri = (a, b) => Math.floor(rnd(a, b + 1))\n\n  // ---- the screen ----\n  let grid = [], widgets = [], goombas = [], coins = [], blocks = [], pops = [], m = null\n  let state = 'play', stateT = 0, T = 'd', frame = 0, blunder = '', rooms = 0, stuck = 0, bornAt = 0\n  const track = (w) => { widgets.push(w); return w }\n  const clearRoom = () => { for (const w of widgets) kill(w); widgets = []; goombas = []; coins = []; blocks = []; pops = [] }\n\n  // 0 empty, 1 ground, 2 pipe, 3 brick, 4 ? block, 5 used block\n  const tileAt = (x, y) => {\n    const c = Math.floor((x - X0) / TS), r = Math.floor((y - TOPY) / TS)\n    if (r < 0 || r >= ROWS) return 0\n    if (c < 0 || c >= COLS) return r >= GROUND ? 1 : 0\n    return grid[r][c]\n  }\n\n  const genRoom = () => {\n    clearRoom()\n    rooms++\n    T = isNight() ? 'n' : 'd'\n    try { W.scene.setProperty(ui.prop.MORE, { x: 0, y: 0, src: img('scene_' + T) }) } catch (e) {}\n    grid = []\n    for (let r = 0; r < ROWS; r++) grid.push(new Array(COLS).fill(0))\n    for (let c = 0; c < COLS; c++) { grid[7][c] = 1; grid[8][c] = 1 }\n    const pits = [], pipes = [], rows = [], runs = []\n    let c = ri(3, 4)\n    while (c <= 9) {\n      const p = Math.random()\n      if (p < 0.27) { pipes.push({ c, h: ri(1, 2) }); c += 2 + 4 + ri(0, 1) }\n      else if (p < 0.47) { pits.push({ c }); c += 2 + 4 + ri(0, 1) }\n      else if (p < 0.75) { const n = Math.min(ri(3, 5), COLS - c); rows.push({ c, n }); c += n + 3 }\n      else if (p < 0.9) { const n = Math.min(ri(3, 5), COLS - c); runs.push({ c, n }); c += n + 3 }\n      else c += 2\n    }\n    for (const q of pits) { for (const r of [7, 8]) { grid[r][q.c] = 0; grid[r][q.c + 1] = 0 } track(create('pit_' + T, X0 + q.c * TS, GY)) }\n    for (const q of pipes) { for (let r = GROUND - q.h; r < GROUND; r++) { grid[r][q.c] = 2; grid[r][q.c + 1] = 2 } track(create('pipe' + q.h, X0 + q.c * TS, GY - q.h * TS)) }\n    for (const q of rows) {\n      for (let i = 0; i < q.n; i++) {\n        const type = i % 2 ? 3 : 4, x = X0 + (q.c + i) * TS, y = GY - 4 * TS\n        grid[3][q.c + i] = type\n        blocks.push({ w: track(create(type === 4 ? 'q0' : 'brick_' + T, x, y)), c: q.c + i, x, y, type, bump: 0, src: '' })\n      }\n    }\n    for (const q of runs) for (let i = 0; i < q.n; i++) { const x = X0 + (q.c + i) * TS, y = GY - TS; coins.push({ w: track(create('coin0', x, y)), x, y, got: false }) }\n    // Goombas stand on free ground in the right half and walk left\n    const used = {}\n    const n = ri(0, 2)\n    for (let i = 0; i < n; i++) {\n      let col = -1\n      for (let k = 0; k < 8 && col < 0; k++) { const t = ri(6, 11); if (!used[t] && grid[GROUND][t] === 1 && grid[GROUND - 1][t] === 0 && !coins.some((q) => q.x === X0 + t * TS)) col = t }\n      if (col < 0) continue\n      used[col] = 1\n      goombas.push({ w: track(create('goomba_' + T + '_0', X0 + col * TS, GY - TS)), x: X0 + col * TS, y: GY - TS, vx: -GOOMBA_V * DT, vy: 0, alive: true, flat: 0, src: '' })\n    }\n    for (let i = 0; i < 2; i++) pops.push({ w: track(create('coin0', -60, 0)), t: -1, x: 0, y: 0 })\n    m = { w: null, x: 0, y: GY - TS, vy: 0, g: FALL_G, ground: true, anim: 0, src: 's', jumped: 0 }\n    m.w = track(create('mario_s', m.x, m.y))\n    state = 'play'\n    stateT = 0\n    stuck = 0\n    bornAt = frame\n    blunder = Math.random() < 0.08 ? (Math.random() < 0.5 ? 'goomba' : 'pit') : ''\n    log('room ' + rooms + ' ' + T + ' pits=' + pits.length + ' pipes=' + pipes.length + ' rows=' + rows.length + ' goombas=' + goombas.length + ' blunder=' + blunder)\n  }\n\n  // ---- Mario ----\n  const box = () => { const x0 = Math.floor(m.x) + 3, y0 = Math.floor(m.y) + 2; return { x0, x1: x0 + 19, y0, y1: y0 + 29, ym: y0 + 14 } }\n  const solidAt = (x, y) => tileAt(x, y) !== 0\n  const hits = (b) => solidAt(b.x0, b.y0) || solidAt(b.x1, b.y0) || solidAt(b.x0, b.y1) || solidAt(b.x1, b.y1) || solidAt(b.x0, b.ym) || solidAt(b.x1, b.ym)\n  const bumpBlock = (b) => {\n    for (const x of [(b.x0 + b.x1) >> 1, b.x0, b.x1]) {\n      const c = Math.floor((x - X0) / TS), r = Math.floor((b.y0 - 1 - TOPY) / TS)\n      if (c < 0 || c >= COLS || r < 0 || r >= ROWS) continue\n      const t = grid[r][c]\n      if (t !== 3 && t !== 4) continue\n      const blk = blocks.find((q) => q.c === c)\n      if (!blk) return\n      blk.bump = 6\n      if (t === 4) {\n        grid[r][c] = 5\n        blk.type = 5\n        move(blk.w, blk.x, blk.y, 'qu')\n        const p = pops.find((q) => q.t < 0)\n        if (p) { p.t = 0; p.x = blk.x; p.y = blk.y }\n      }\n      return\n    }\n  }\n  const moveX = (dx) => {\n    const s = dx > 0 ? 1 : -1\n    for (let i = 0; i < Math.round(Math.abs(dx)); i++) { m.x += s; if (hits(box())) { m.x -= s; return false } }\n    return true\n  }\n  const moveY = (dy) => {\n    const n = Math.max(1, Math.ceil(Math.abs(dy))), s = dy / n\n    for (let i = 0; i < n; i++) {\n      m.y += s\n      if (hits(box())) {\n        m.y -= s\n        if (dy > 0) { m.y = TOPY + TS * Math.ceil((Math.floor(m.y) + 32 - TOPY) / TS) - 32; m.vy = 0; m.g = FALL_G; m.ground = true }\n        else { bumpBlock(box()); m.vy = 40 }\n        return\n      }\n    }\n    if (dy > 0) m.ground = false\n  }\n\n  const aiDecide = () => {\n    const front = m.x + 22\n    let jump = null\n    // a wall (pipe) ahead\n    for (let d = 2; d <= 44; d += 6) if (solidAt(front + d, m.y + 16)) { jump = LONG; break }\n    // a pit ahead\n    if (!jump && blunder !== 'pit') for (let d = 2; d <= 38; d += 6) if (!solidAt(front + d, GY + 4)) { jump = LONG; break }\n    // a Goomba ahead\n    if (!jump) {\n      for (const g of goombas) {\n        if (!g.alive || Math.abs(g.y - m.y) > 20) continue\n        const gap = g.x + 2 - front\n        if (gap > -22 && gap <= (blunder === 'goomba' ? 14 : 108)) { jump = SHORT; break }\n      }\n    }\n    // a ? block overhead: a short hop at the right moment bumps it from below\n    if (!jump) {\n      for (const b of blocks) if (b.type === 4 && m.x >= b.x - 34 && m.x <= b.x - 16) { jump = SHORT; break }\n    }\n    if (!jump && stuck > 3) jump = LONG\n    if (jump) { m.vy = -jump.v; m.g = jump.g; m.ground = false; m.jumped = frame }\n  }\n\n  // in the air Mario steers (like holding right or letting go): when falling towards a Goomba he aims to land on its head\n  const airSpeed = () => {\n    if (m.ground || m.vy <= 0) return VX\n    let best = null\n    for (const g of goombas) {\n      if (!g.alive || g.y !== GY - TS) continue\n      const ahead = g.x + 16 - (m.x + 13)\n      if (ahead < -6 || ahead > 160) continue\n      if (!best || Math.abs(ahead) < Math.abs(best.ahead)) best = { g, ahead }\n    }\n    if (!best) return VX\n    const dy = best.g.y + 8 - (m.y + 32)\n    if (dy <= 0) return VX\n    const gg = m.g || FALL_G\n    const t = Math.max(DT, (-m.vy + Math.sqrt(m.vy * m.vy + 2 * gg * dy)) / gg)\n    const v = (best.g.x + 16 + best.g.vx / DT * t - (m.x + 13)) / t\n    return Math.max(0, Math.min(170, v))\n  }\n\n  const die = () => { state = 'dead'; stateT = 0; m.vy = 0; log('Mario died in room ' + rooms) }\n  const hurt = (g, vyBefore) => {\n    if (m.inv > 0) return\n    const mb = box(), gx0 = g.x + 2, gx1 = g.x + 30, gy0 = g.y + 8, gy1 = g.y + 31\n    if (mb.x1 < gx0 || mb.x0 > gx1 || mb.y1 < gy0 || mb.y0 > gy1) return\n    if (vyBefore > 0 && mb.y1 - gy0 < 30) { g.alive = false; g.flat = 8; m.vy = -260; m.g = SHORT.g; m.inv = 3; move(g.w, g.x, g.y, 'goomba_' + T + '_f'); return }\n    die()\n  }\n\n  const stepMario = () => {\n    if (m.inv > 0) m.inv--\n    if (m.ground) aiDecide()\n    else m.vy += (m.g || LONG.g) * DT\n    if (m.ground && m.vy === 0) m.vy = FALL_G * DT\n    const before = m.x\n    moveX(airSpeed() * DT)\n    stuck = m.x - before < 1 ? stuck + 1 : 0\n    const vyBefore = m.vy\n    moveY(m.vy * DT)\n    if (m.y > 460) { die(); return }\n    for (const g of goombas) { if (g.alive) { hurt(g, vyBefore); if (state === 'dead') return } }\n    for (const c of coins) {\n      if (c.got) continue\n      if (Math.abs(m.x + 13 - (c.x + 16)) < 20 && Math.abs(m.y + 16 - (c.y + 16)) < 24) { c.got = true; move(c.w, -60, 0) }\n    }\n    if (m.x > 394) { genRoom(); return }\n    // animation\n    let src = 'mario_j'\n    if (m.ground) { m.anim++; src = ['mario_r1', 'mario_s', 'mario_r2', 'mario_s'][m.anim % 4] }\n    move(m.w, m.x, m.y, src === m.src ? null : src)\n    m.src = src\n  }\n\n  const stepGoombas = () => {\n    for (const g of goombas) {\n      if (g.flat > 0) { g.flat--; if (g.flat === 0) { move(g.w, -60, 0) } continue }\n      if (!g.alive) continue\n      const nx = g.x + g.vx, probe = g.vx < 0 ? nx + 2 : nx + 30\n      if (solidAt(probe, g.y + 16) || !solidAt(probe, g.y + 36)) g.vx = -g.vx\n      else g.x = nx\n      if (g.x < -36 || g.x > 396) { g.alive = false; move(g.w, -60, 0); continue }\n      const s = 'goomba_' + T + '_' + (Math.floor(frame / 4) % 2)\n      move(g.w, g.x, g.y, s === g.src ? null : s)\n      g.src = s\n    }\n  }\n\n  const stepProps = () => {\n    for (const b of blocks) {\n      if (b.bump > 0) { b.bump--; move(b.w, b.x, b.y - Math.round(10 * Math.sin(Math.PI * (6 - b.bump) / 6))) }\n      else if (b.type === 4 && frame % 6 === 0) move(b.w, b.x, b.y, 'q' + (Math.floor(frame / 6) % 3))\n    }\n    if (frame % 3 === 0) for (const c of coins) if (!c.got) move(c.w, c.x, c.y, 'coin' + (Math.floor(frame / 3) % 4))\n    for (const p of pops) {\n      if (p.t < 0) continue\n      p.t++\n      if (p.t > 8) { p.t = -1; move(p.w, -60, 0); continue }\n      move(p.w, p.x, p.y - 8 - p.t * 7, 'coin' + (p.t % 4))\n    }\n  }\n\n  const tick = () => {\n    frame++\n    if (state === 'play') {\n      stepMario()\n      if (state === 'play') { stepGoombas(); stepProps() }\n    } else if (state === 'dead') {\n      stateT++\n      if (stateT === 1) move(m.w, m.x, m.y, 'mario_j')\n      if (stateT === 7) m.vy = -360\n      if (stateT > 7) { m.vy += FALL_G * DT; m.y += m.vy * DT; move(m.w, m.x, m.y) }\n      if (stateT > 26) genRoom()\n    }\n  }\n\n  // ---- timer ----\n  let timerId = null, via = ''\n  const safeTick = () => { try { tick() } catch (e) { log('game: ' + (e && e.message ? e.message : e)); stop() } }\n  const start = () => {\n    if (timerId !== null) return\n    try {\n      if (typeof setInterval === 'function') { timerId = setInterval(safeTick, MS); via = 'i' }\n      else if (typeof timer !== 'undefined' && timer && timer.createTimer) { timerId = timer.createTimer(0, MS, safeTick); via = 't' }\n    } catch (e) { log('timer: ' + (e && e.message ? e.message : e)) }\n  }\n  function stop() {\n    if (timerId === null) return\n    try { if (via === 't') timer.stopTimer(timerId); else clearInterval(timerId) } catch (e) {}\n    timerId = null\n  }\n  genRoom()\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  start()\n  } catch (e) { log('FATAL ' + (e && e.message ? e.message : e) + ' | ' + String(e && e.stack ? e.stack : '').replace(/\\s+/g, ' ').slice(0, 300)) }\n}\n",
+  "optimizePng": 32
+}
