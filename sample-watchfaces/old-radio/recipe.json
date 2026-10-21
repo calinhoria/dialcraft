@@ -1,0 +1,125 @@
+{
+ "name": "Old Radio",
+ "device": "bip-6",
+ "font": "Cinzel",
+ "description": "Vintage tube radio: glowing dial with a drifting tuning needle, amber time and a pulsing magic eye.",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/old-radio",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "const names = [];\n\nconst W = dev().w, H = dev().h;\nconst mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c; };\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };\nconst EYE = [195, 410];\n\nconst c = mk(), g = c.getContext('2d');\n// walnut cabinet\nconst wg = g.createLinearGradient(0, 0, 0, H); wg.addColorStop(0, '#3a2012'); wg.addColorStop(1, '#24130a');\ng.fillStyle = wg; g.fillRect(0, 0, W, H);\ng.globalAlpha = 0.18; g.strokeStyle = '#8a5a30'; g.lineWidth = 1;\nfor (let y = 6; y < H; y += 9) { g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(100, y + 4, 250, y - 5, W, y + 2); g.stroke(); }\ng.globalAlpha = 1;\n// dial window\nrr(g, 18, 16, 354, 128, 14); g.fillStyle = '#c9a24e'; g.fill();\nrr(g, 24, 22, 342, 116, 10);\nconst dg = g.createLinearGradient(0, 22, 0, 138); dg.addColorStop(0, '#ffe9b0'); dg.addColorStop(1, '#f2b657');\ng.fillStyle = dg; g.fill();\ng.save(); rr(g, 24, 22, 342, 116, 10); g.clip();\ng.strokeStyle = 'rgba(60,25,5,0.8)'; g.fillStyle = 'rgba(60,25,5,0.9)'; g.lineWidth = 1.5;\ng.beginPath(); g.moveTo(34, 112); g.lineTo(356, 112); g.stroke();\nfor (let i = 0; i <= 40; i++) { const x = 40 + i * 7.8; const long = i % 5 === 0; g.beginPath(); g.moveTo(x, 112); g.lineTo(x, long ? 92 : 102); g.stroke(); }\ng.font = 'bold 15px Cinzel'; g.textAlign = 'center';\n['88', '92', '96', '100', '104', '108'].forEach((t, i) => g.fillText(t, 40 + i * 5 * 7.8 * 1.6 / 1.6 * 1, 84));\ng.font = 'bold 12px Cinzel'; g.textAlign = 'left'; g.fillText('FM', 34, 48); g.textAlign = 'right'; g.fillText('MHz', 356, 48);\ng.restore();\n// inset panel behind the time\nrr(g, 22, 160, 346, 130, 12); g.fillStyle = '#0b0603'; g.fill(); g.strokeStyle = '#c9a24e'; g.lineWidth = 3; g.stroke();\n// speaker grille\nrr(g, 22, 312, 346, 126, 12); g.fillStyle = '#150b05'; g.fill();\ng.strokeStyle = '#6b4724'; g.lineWidth = 3;\nfor (let y = 380; y < 432; y += 9) { g.beginPath(); g.moveTo(30, y); g.lineTo(360, y); g.stroke(); }\n// knobs\nfor (const kx of [58, 332]) {\n  const kg = g.createRadialGradient(kx - 6, 366 - 6, 4, kx, 366, 26); kg.addColorStop(0, '#f1d58a'); kg.addColorStop(1, '#6b4a14');\n  g.fillStyle = kg; g.beginPath(); g.arc(kx, 366, 24, 0, 7); g.fill();\n  g.strokeStyle = '#2a1706'; g.lineWidth = 3; g.beginPath(); g.moveTo(kx, 366); g.lineTo(kx + (kx < 195 ? -8 : 8), 346); g.stroke();\n}\n// magic eye socket\ng.fillStyle = '#c9a24e'; g.beginPath(); g.arc(EYE[0], EYE[1], 40, 0, 7); g.fill();\ng.fillStyle = '#0a0a06'; g.beginPath(); g.arc(EYE[0], EYE[1], 35, 0, 7); g.fill();\nnames.push(addProjectImage('radio_body.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Radio body'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return names;"
+  },
+  {
+   "script": "const names = [];\n\nconst W = dev().w, H = dev().h;\nconst mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c; };\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };\nconst EYE = [195, 410];\n\nconst N = 24;\nfor (let k = 0; k < N; k++) {\n  const c = mk(), g = c.getContext('2d');\n  const x = 195 + 150 * Math.sin(2 * Math.PI * k / N);\n  g.shadowColor = '#ff2a1a'; g.shadowBlur = 8; g.strokeStyle = '#d3180c'; g.lineWidth = 3;\n  g.beginPath(); g.moveTo(x, 24); g.lineTo(x, 136); g.stroke();\n  g.shadowBlur = 0; g.fillStyle = '#ff6a50'; g.fillRect(x - 3, 130, 6, 6);\n  names.push(addProjectImage('anim/or_needle_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG_ANIM', { frames: names, fps: 8, animPrefix: 'or_needle', repeat: 0 }); e.name = 'Tuning needle'; e.frames = names; e.x = 0; e.y = 0; e.show = 'normal'; return names.length;"
+  },
+  {
+   "script": "const names = [];\n\nconst W = dev().w, H = dev().h;\nconst mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c; };\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };\nconst EYE = [195, 410];\n\nconst N = 8;\nfor (let k = 0; k < N; k++) {\n  const c = mk(), g = c.getContext('2d');\n  const open = 0.25 + 0.75 * Math.abs(Math.sin(Math.PI * k / N * 1.0 + 0.3));\n  const rg = g.createRadialGradient(EYE[0], EYE[1], 4, EYE[0], EYE[1], 33);\n  rg.addColorStop(0, '#eaffd8'); rg.addColorStop(0.55, '#7dff4a'); rg.addColorStop(1, '#1f8a1c');\n  g.shadowColor = '#5cff3a'; g.shadowBlur = 14; g.fillStyle = rg; g.beginPath(); g.arc(EYE[0], EYE[1], 33, 0, 7); g.fill(); g.shadowBlur = 0;\n  // dark wedge: narrower when the signal is stronger\n  const half = (1 - open) * 1.1 + 0.12;\n  g.fillStyle = '#0a0a06'; g.beginPath(); g.moveTo(EYE[0], EYE[1]); g.arc(EYE[0], EYE[1], 34, Math.PI / 2 - half, Math.PI / 2 + half); g.closePath(); g.fill();\n  g.fillStyle = '#0a0a06'; g.beginPath(); g.arc(EYE[0], EYE[1], 5, 0, 7); g.fill();\n  names.push(addProjectImage('anim/or_eye_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG_ANIM', { frames: names, fps: 6, animPrefix: 'or_eye', repeat: 0 }); e.name = 'Magic eye'; e.frames = names; e.x = 0; e.y = 0; e.show = 'normal'; return names.length;"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Main'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Aod'; return 1"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "steps"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "edit": "Hour Main",
+   "set": {
+    "x": 70,
+    "y": 185,
+    "show": "normal"
+   },
+   "glyph": {
+    "color": "#ffb23a",
+    "size": 84
+   }
+  },
+  {
+   "edit": "Colon Main",
+   "set": {
+    "show": "normal"
+   },
+   "glyph": {
+    "color": "#ffb23a",
+    "size": 84
+   }
+  },
+  {
+   "edit": "Minute Main",
+   "set": {
+    "x": 218,
+    "y": 185,
+    "show": "normal"
+   },
+   "glyph": {
+    "color": "#ffb23a",
+    "size": 84
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 40,
+    "y": 150,
+    "show": "aod"
+   },
+   "glyph": {
+    "color": "#6b4a1a",
+    "size": 110
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 40,
+    "y": 280,
+    "show": "aod"
+   },
+   "glyph": {
+    "color": "#6b4a1a",
+    "size": 110
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 30,
+    "y": 316
+   },
+   "glyph": {
+    "color": "#f1d58a",
+    "size": 24
+   }
+  },
+  {
+   "edit": "Steps",
+   "set": {
+    "x": 250,
+    "y": 316
+   },
+   "glyph": {
+    "color": "#f1d58a",
+    "size": 24
+   }
+  }
+ ]
+}

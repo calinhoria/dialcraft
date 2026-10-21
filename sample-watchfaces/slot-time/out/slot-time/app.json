@@ -1,0 +1,61 @@
+{
+  "configVersion": "v3",
+  "app": {
+    "appId": 2787292,
+    "appName": "Slot Time",
+    "appType": "watchface",
+    "version": {
+      "code": 1,
+      "name": "1.0.0"
+    },
+    "icon": "images/preview.png",
+    "vender": "dialcraft",
+    "description": "A slot machine that tells the time: cream reels with red digits, chrome and gold, blinking marquee, a lever that pulls a"
+  },
+  "permissions": [],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "4.0",
+      "target": "4.0",
+      "minVersion": "4.0"
+    },
+    "type": 0
+  },
+  "targets": {
+    "bip-6": {
+      "module": {
+        "watchface": {
+          "path": "watchface/bip-6/index",
+          "main": 1,
+          "editable": 0,
+          "lockscreen": 1
+        }
+      },
+      "platforms": [
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 9765120
+        },
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 9765121
+        },
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 10158337
+        }
+      ],
+      "designWidth": 390
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "appName": "Slot Time"
+    }
+  },
+  "defaultLanguage": "en-US",
+  "debug": false
+}

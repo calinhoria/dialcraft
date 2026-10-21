@@ -1,0 +1,1251 @@
+{
+  "version": 1,
+  "name": "Block Stack",
+  "device": "bip-6",
+  "appId": 2888684,
+  "vender": "dialcraft",
+  "description": "Falling blocks, built from real materials: the time is spelled in oak, walnut, brushed steel and copper blocks on a board-formed concrete wall, with a steel-framed well where a walnut piece keeps landing on a stack of metal, wood and concrete.",
+  "font": "Barlow Condensed",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {},
+  "elements": [
+    {
+      "id": "elmvi1rjss19e",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvi1rjyj5i5",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene.png"
+    },
+    {
+      "id": "elmvi1rk13ed",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 22,
+      "y": 22,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "blk/hour_0.png",
+        "blk/hour_1.png",
+        "blk/hour_2.png",
+        "blk/hour_3.png",
+        "blk/hour_4.png",
+        "blk/hour_5.png",
+        "blk/hour_6.png",
+        "blk/hour_7.png",
+        "blk/hour_8.png",
+        "blk/hour_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null
+    },
+    {
+      "id": "elmvi1rk1322i",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 222,
+      "y": 22,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "blk/minute_0.png",
+        "blk/minute_1.png",
+        "blk/minute_2.png",
+        "blk/minute_3.png",
+        "blk/minute_4.png",
+        "blk/minute_5.png",
+        "blk/minute_6.png",
+        "blk/minute_7.png",
+        "blk/minute_8.png",
+        "blk/minute_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null
+    },
+    {
+      "id": "elmvi1rk1hle",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 34,
+      "y": 126,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "hSpace": 2,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Barlow Condensed",
+        "size": 26,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1b1d21",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#e8ecf2",
+        "shadowX": 0,
+        "shadowY": 1,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvi1rk1w2ot",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 184,
+      "y": 126,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "part": "day",
+      "zero": 1,
+      "follow": 0,
+      "space": -2,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Barlow Condensed",
+        "size": 26,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1b1d21",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#e8ecf2",
+        "shadowX": 0,
+        "shadowY": 1,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvi1rk254xa",
+      "kind": "IMG_DATE",
+      "name": "Month",
+      "x": 228,
+      "y": 126,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "month",
+      "zero": 1,
+      "follow": 0,
+      "space": -2,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Barlow Condensed",
+        "size": 26,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1b1d21",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#e8ecf2",
+        "shadowX": 0,
+        "shadowY": 1,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvi1rk2s2b4",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 304,
+      "y": 126,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": 2,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Barlow Condensed",
+        "size": 26,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1b1d21",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#e8ecf2",
+        "shadowX": 0,
+        "shadowY": 1,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvi1rk338o",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 324,
+      "y": 186,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Barlow Condensed",
+        "size": 22,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1b1d21",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#e8ecf2",
+        "shadowX": 0,
+        "shadowY": 1,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvi1rk414hq",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 70,
+      "y": 120,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Barlow Condensed",
+        "size": 150,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#80858c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvi1rk417le",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 70,
+      "y": 260,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Barlow Condensed",
+        "size": 150,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#80858c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvi1rka35xi",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 172,
+      "y": 22,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "blk/colon.png"
+    },
+    {
+      "id": "elmvi1rkae3ba",
+      "kind": "BAR",
+      "name": "Battery gauge",
+      "x": 48,
+      "y": 262,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "length": 156,
+      "lineWidth": 14,
+      "rounded": false,
+      "vertical": true,
+      "inversion": true,
+      "mirror": false,
+      "color": "#ffb02e",
+      "dataType": "BATTERY",
+      "level": 0
+    },
+    {
+      "id": "elmvi1rkdm7jk",
+      "kind": "IMG_ANIM",
+      "name": "Falling piece",
+      "x": 85,
+      "y": 164,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "frames": [
+        "anim/fall_0.png",
+        "anim/fall_1.png",
+        "anim/fall_2.png",
+        "anim/fall_3.png",
+        "anim/fall_4.png",
+        "anim/fall_5.png",
+        "anim/fall_6.png",
+        "anim/fall_7.png",
+        "anim/fall_8.png",
+        "anim/fall_9.png",
+        "anim/fall_10.png",
+        "anim/fall_11.png",
+        "anim/fall_12.png",
+        "anim/fall_13.png",
+        "anim/fall_14.png",
+        "anim/fall_15.png",
+        "anim/fall_16.png",
+        "anim/fall_17.png",
+        "anim/fall_18.png",
+        "anim/fall_19.png",
+        "anim/fall_20.png",
+        "anim/fall_21.png",
+        "anim/fall_22.png",
+        "anim/fall_23.png",
+        "anim/fall_24.png",
+        "anim/fall_25.png",
+        "anim/fall_26.png",
+        "anim/fall_27.png",
+        "anim/fall_28.png",
+        "anim/fall_29.png",
+        "anim/fall_30.png",
+        "anim/fall_31.png",
+        "anim/fall_32.png",
+        "anim/fall_33.png",
+        "anim/fall_34.png",
+        "anim/fall_35.png",
+        "anim/fall_36.png",
+        "anim/fall_37.png",
+        "anim/fall_38.png",
+        "anim/fall_39.png"
+      ],
+      "fps": 8,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "fall"
+    }
+  ],
+  "images": [
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "colon.png",
+      "width": 13,
+      "height": 42
+    },
+    {
+      "name": "degree.png",
+      "width": 15,
+      "height": 29
+    },
+    {
+      "name": "negative.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "week_w1.png",
+      "width": 40,
+      "height": 32
+    },
+    {
+      "name": "week_w2.png",
+      "width": 40,
+      "height": 32
+    },
+    {
+      "name": "week_w3.png",
+      "width": 40,
+      "height": 32
+    },
+    {
+      "name": "week_w4.png",
+      "width": 40,
+      "height": 32
+    },
+    {
+      "name": "week_w5.png",
+      "width": 40,
+      "height": 32
+    },
+    {
+      "name": "week_w6.png",
+      "width": 40,
+      "height": 32
+    },
+    {
+      "name": "week_w7.png",
+      "width": 40,
+      "height": 32
+    },
+    {
+      "name": "colon_2.png",
+      "width": 13,
+      "height": 42
+    },
+    {
+      "name": "blk/hour_0.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_1.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_2.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_3.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_4.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_5.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_6.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_7.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_8.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/hour_9.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_0.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_1.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_2.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_3.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_4.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_5.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_6.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_7.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_8.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/minute_9.png",
+      "width": 74,
+      "height": 98
+    },
+    {
+      "name": "blk/colon.png",
+      "width": 34,
+      "height": 98
+    },
+    {
+      "name": "anim/fall_0.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_1.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_2.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_3.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_4.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_5.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_6.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_7.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_8.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_9.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_10.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_11.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_12.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_13.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_14.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_15.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_16.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_17.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_18.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_19.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_20.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_21.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_22.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_23.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_24.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_25.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_26.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_27.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_28.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_29.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_30.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_31.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_32.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_33.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_34.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_35.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_36.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_37.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_38.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_39.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 74,
+      "height": 119
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 74,
+      "height": 119
+    }
+  ],
+  "savePath": null
+}

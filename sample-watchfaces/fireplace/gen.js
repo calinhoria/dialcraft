@@ -1,0 +1,154 @@
+const fs = require('fs');
+const pre = `
+const W = dev().w, H = dev().h;
+let seed = 17; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+const names = [];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const hex = (s) => [parseInt(s.slice(1, 3), 16), parseInt(s.slice(3, 5), 16), parseInt(s.slice(5, 7), 16)];
+const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const rr = (g, x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };
+// firebox opening (arched) and where the logs lie
+const OX0 = 72, OX1 = 318, OY0 = 206, OY1 = 408, OR_ = 72;
+// a log lying along angle a, centre (cx,cy), length L, radius r; the end cap faces right
+function log(g, cx, cy, L, r, a, lit) {
+  g.save(); g.translate(cx, cy); g.rotate(a);
+  g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 8; g.shadowOffsetY = 4;
+  g.beginPath(); g.roundRect(-L / 2, -r, L, r * 2, [r * 0.5, r * 0.4, r * 0.4, r * 0.5]); let gr = g.createLinearGradient(0, -r, 0, r); gr.addColorStop(0, '#6b4a30'); gr.addColorStop(0.35, '#4a301d'); gr.addColorStop(0.75, '#2a180d'); gr.addColorStop(1, '#120a05'); g.fillStyle = gr; g.fill(); g.shadowColor = 'transparent';
+  g.save(); g.beginPath(); g.roundRect(-L / 2, -r, L, r * 2, [r * 0.5, r * 0.4, r * 0.4, r * 0.5]); g.clip();
+  for (let i = 0; i < 70; i++) { const y = -r + rnd() * r * 2, x0 = -L / 2 + rnd() * L, len = 10 + rnd() * 40; g.strokeStyle = 'rgba(' + (rnd() > 0.45 ? '10,5,2' : '120,85,55') + ',' + (0.25 + rnd() * 0.4) + ')'; g.lineWidth = 0.8 + rnd() * 1.6; g.beginPath(); g.moveTo(x0, y); g.bezierCurveTo(x0 + len * 0.3, y + (rnd() - 0.5) * 3, x0 + len * 0.7, y + (rnd() - 0.5) * 3, x0 + len, y + (rnd() - 0.5) * 2); g.stroke(); }
+  // charred patches and glowing cracks
+  for (let i = 0; i < 6; i++) { const x = -L / 2 + rnd() * L, y = -r * 0.5 + rnd() * r; g.fillStyle = 'rgba(8,4,2,0.45)'; g.beginPath(); g.ellipse(x, y, 10 + rnd() * 24, 3 + rnd() * 5, 0, 0, 7); g.fill(); }
+  if (lit) for (let i = 0; i < 16; i++) { const x = -L / 2 + 8 + rnd() * (L - 16), y = -r + rnd() * r * 1.6, len = 6 + rnd() * 16; g.strokeStyle = 'rgba(255,' + (90 + rnd() * 90 | 0) + ',20,' + (0.6 + rnd() * 0.4) + ')'; g.shadowColor = '#ff6a10'; g.shadowBlur = 5; g.lineWidth = 1 + rnd() * 1.2; g.beginPath(); g.moveTo(x, y); g.lineTo(x + len, y + (rnd() - 0.5) * 5); g.stroke(); }
+  g.shadowBlur = 0; gr = g.createLinearGradient(0, -r, 0, 0); gr.addColorStop(0, 'rgba(255,120,40,' + (lit ? 0.5 : 0.18) + ')'); gr.addColorStop(1, 'rgba(255,120,40,0)'); g.fillStyle = gr; g.fillRect(-L / 2, -r, L, r);
+  g.restore();
+  // end cap with growth rings
+  g.beginPath(); g.ellipse(L / 2 - 2, 0, r * 0.38, r, 0, 0, 7); gr = g.createRadialGradient(L / 2 - 4, -2, 1, L / 2 - 2, 0, r); gr.addColorStop(0, '#e2bb86'); gr.addColorStop(0.6, '#b98a58'); gr.addColorStop(1, '#6a4527'); g.fillStyle = gr; g.fill();
+  for (let k = 1; k < 7; k++) { g.beginPath(); g.ellipse(L / 2 - 2, 0, r * 0.38 * k / 7, r * k / 7, 0, 0, 7); g.strokeStyle = 'rgba(80,50,25,' + (0.25 + 0.05 * k) + ')'; g.lineWidth = 0.7; g.stroke(); }
+  g.beginPath(); g.ellipse(L / 2 - 2, 0, r * 0.38, r, 0, 0, 7); g.strokeStyle = 'rgba(30,15,5,0.7)'; g.lineWidth = 1.2; g.stroke();
+  g.restore();
+}
+`;
+const sceneJS = pre + `
+const c = mk(W, H), g = c.getContext('2d');
+// wall
+let gr = g.createLinearGradient(0, 0, 0, 160); gr.addColorStop(0, '#2b1c19'); gr.addColorStop(1, '#201411'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+for (let x = 0; x < W; x += 26) { g.fillStyle = 'rgba(255,200,160,' + (x % 52 ? 0.015 : 0.03) + ')'; g.fillRect(x, 0, 13, 160); }
+for (let i = 0; i < 2500; i++) { g.fillStyle = 'rgba(' + (rnd() > 0.5 ? '255,210,170' : '0,0,0') + ',' + (0.02 + rnd() * 0.03) + ')'; g.fillRect(rnd() * W, rnd() * 160, 1, 1); }
+// stone surround
+const SY = 164;
+for (let row = 0, y = SY; y < H; row++) { const h = 26 + (row % 3) * 4; let x = -((row % 2) * 30) - 6; while (x < W) { const w = 52 + rnd() * 26; const v = 118 + rnd() * 36 | 0; g.fillStyle = 'rgb(' + v + ',' + (v - 6) + ',' + (v - 16) + ')'; rr(g, x + 1, y + 1, w - 2, h - 2, 3); g.fill(); g.fillStyle = 'rgba(255,255,255,0.07)'; g.fillRect(x + 2, y + 2, w - 4, 2); g.fillStyle = 'rgba(0,0,0,0.1)'; g.fillRect(x + 2, y + h - 4, w - 4, 2); for (let i = 0; i < 24; i++) { g.fillStyle = 'rgba(' + (rnd() > 0.5 ? '255,255,255' : '40,30,20') + ',' + (0.05 + rnd() * 0.08) + ')'; g.fillRect(x + 2 + rnd() * (w - 4), y + 2 + rnd() * (h - 4), 1.5, 1.5); } x += w; } y += h; }
+gr = g.createLinearGradient(0, SY, 0, H); gr.addColorStop(0, 'rgba(10,6,4,0.45)'); gr.addColorStop(0.5, 'rgba(10,6,4,0.2)'); gr.addColorStop(1, 'rgba(10,6,4,0.35)'); g.fillStyle = gr; g.fillRect(0, SY, W, H - SY);
+// mantel shelf
+g.save(); g.shadowColor = 'rgba(0,0,0,0.65)'; g.shadowBlur = 12; g.shadowOffsetY = 6; rr(g, 6, 134, 378, 30, 4); gr = g.createLinearGradient(0, 134, 0, 164); gr.addColorStop(0, '#9a6c42'); gr.addColorStop(0.3, '#7c5230'); gr.addColorStop(1, '#4a2f1a'); g.fillStyle = gr; g.fill(); g.restore();
+g.save(); rr(g, 6, 134, 378, 30, 4); g.clip(); for (let i = 0; i < 24; i++) { const y = 136 + rnd() * 26; g.strokeStyle = 'rgba(' + (rnd() > 0.5 ? '40,22,10' : '190,140,90') + ',' + (0.1 + rnd() * 0.2) + ')'; g.lineWidth = 0.6 + rnd(); g.beginPath(); g.moveTo(6, y); g.bezierCurveTo(100, y + rnd() * 3 - 1.5, 260, y + rnd() * 3 - 1.5, 384, y); g.stroke(); } g.fillStyle = 'rgba(255,230,190,0.35)'; g.fillRect(6, 135, 378, 1.5); g.fillStyle = 'rgba(0,0,0,0.3)'; g.fillRect(6, 150, 378, 1.2); g.restore();
+// firebox: arched opening, fire-brick back wall, soot
+const arch = () => { g.beginPath(); g.moveTo(OX0, OY1); g.lineTo(OX0, OY0 + OR_); g.arcTo(OX0, OY0, OX0 + OR_, OY0, OR_); g.lineTo(OX1 - OR_, OY0); g.arcTo(OX1, OY0, OX1, OY0 + OR_, OR_); g.lineTo(OX1, OY1); g.closePath(); };
+g.save(); g.shadowColor = 'rgba(0,0,0,0.8)'; g.shadowBlur = 16; arch(); g.fillStyle = '#0d0706'; g.fill(); g.restore();
+g.save(); arch(); g.clip();
+g.fillStyle = '#150b08'; g.fillRect(OX0, OY0, OX1 - OX0, OY1 - OY0);
+for (let row = 0, y = OY0; y < OY1; row++) { let x = OX0 - ((row % 2) * 13); while (x < OX1) { const w = 26, h = 11; const v = rnd(); g.fillStyle = 'rgb(' + (46 + v * 26 | 0) + ',' + (22 + v * 10 | 0) + ',' + (16 + v * 8 | 0) + ')'; g.fillRect(x + 1, y + 1, w - 2, h - 2); x += w; } y += 11; }
+gr = g.createLinearGradient(0, OY0, 0, OY1); gr.addColorStop(0, 'rgba(0,0,0,0.85)'); gr.addColorStop(0.55, 'rgba(0,0,0,0.25)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(OX0, OY0, OX1 - OX0, OY1 - OY0);
+gr = g.createRadialGradient(195, 372, 8, 195, 340, 190); gr.addColorStop(0, 'rgba(255,150,50,0.75)'); gr.addColorStop(0.35, 'rgba(230,80,20,0.4)'); gr.addColorStop(1, 'rgba(120,30,5,0)'); g.fillStyle = gr; g.fillRect(OX0, OY0, OX1 - OX0, OY1 - OY0);
+// side shading of the opening
+for (const left of [true, false]) { const s = g.createLinearGradient(left ? OX0 : OX1, 0, left ? OX0 + 24 : OX1 - 24, 0); s.addColorStop(0, 'rgba(0,0,0,0.55)'); s.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = s; g.fillRect(left ? OX0 : OX1 - 24, OY0, 24, OY1 - OY0); }
+// coal bed
+for (let i = 0; i < 90; i++) { const x = 105 + rnd() * 180, y = 384 + rnd() * 22, r = 3 + rnd() * 7; const q = g.createRadialGradient(x, y, 0.5, x, y, r); q.addColorStop(0, 'rgba(255,' + (200 - rnd() * 80 | 0) + ',80,' + (0.7 + rnd() * 0.3) + ')'); q.addColorStop(0.5, 'rgba(240,70,10,0.7)'); q.addColorStop(1, 'rgba(90,10,0,0)'); g.fillStyle = q; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+log(g, 176, 372, 160, 14, -0.22, true); log(g, 212, 368, 150, 13, 0.3, true);
+g.restore();
+// inner edge of the opening
+arch(); g.strokeStyle = 'rgba(0,0,0,0.75)'; g.lineWidth = 3; g.stroke();
+// hearth slab
+gr = g.createLinearGradient(0, 408, 0, H); gr.addColorStop(0, '#8d857a'); gr.addColorStop(0.15, '#a69e92'); gr.addColorStop(1, '#6f685e'); g.fillStyle = gr; g.fillRect(0, 408, W, H - 408);
+for (let i = 0; i < 1800; i++) { g.fillStyle = 'rgba(' + (rnd() > 0.5 ? '255,250,240' : '40,30,20') + ',' + (0.05 + rnd() * 0.09) + ')'; g.fillRect(rnd() * W, 410 + rnd() * 40, 1, 1); }
+g.fillStyle = 'rgba(255,240,215,0.5)'; g.fillRect(0, 408, W, 1.5); g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, 409.5, W, 3);
+gr = g.createRadialGradient(195, 410, 10, 195, 420, 220); gr.addColorStop(0, 'rgba(255,140,50,0.4)'); gr.addColorStop(1, 'rgba(255,140,50,0)'); g.fillStyle = gr; g.fillRect(0, 408, W, H - 408);
+// mantel dressing: brass candlestick and a small vase
+g.save(); g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 6; g.shadowOffsetY = 3;
+const brass = (x0, x1) => { const q = g.createLinearGradient(x0, 0, x1, 0); q.addColorStop(0, '#6a4b14'); q.addColorStop(0.35, '#f1d27a'); q.addColorStop(0.6, '#c49a38'); q.addColorStop(1, '#5a3d0e'); return q; };
+g.fillStyle = brass(36, 62); g.beginPath(); g.moveTo(40, 134); g.lineTo(58, 134); g.lineTo(54, 126); g.lineTo(47, 114); g.lineTo(44, 126); g.closePath(); g.fill(); g.fillRect(44, 100, 10, 14); g.fillStyle = '#f2ead4'; g.fillRect(43, 80, 12, 22); g.fillStyle = '#d9cdb0'; g.fillRect(52, 80, 3, 22);
+g.restore(); g.fillStyle = '#2b1a0c'; g.fillRect(48.6, 74, 1.4, 6);
+g.beginPath(); g.ellipse(49.3, 70, 3, 6, 0, 0, 7); const fl = g.createRadialGradient(49.3, 72, 0.5, 49.3, 70, 7); fl.addColorStop(0, '#fff6c8'); fl.addColorStop(0.5, '#ffb630'); fl.addColorStop(1, 'rgba(255,120,20,0)'); g.fillStyle = fl; g.fill();
+g.save(); g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 6; g.shadowOffsetY = 3; g.beginPath(); g.moveTo(336, 134); g.bezierCurveTo(326, 130, 322, 110, 332, 100); g.lineTo(334, 92); g.lineTo(346, 92); g.lineTo(348, 100); g.bezierCurveTo(358, 110, 354, 130, 344, 134); g.closePath(); gr = g.createLinearGradient(322, 0, 358, 0); gr.addColorStop(0, '#2c4a5a'); gr.addColorStop(0.4, '#5f8da3'); gr.addColorStop(1, '#1f3441'); g.fillStyle = gr; g.fill(); g.restore();
+g.strokeStyle = '#3d2a14'; g.lineWidth = 1.6; for (const [x, y] of [[338, 70], [344, 62], [350, 74]]) { g.beginPath(); g.moveTo(340, 94); g.quadraticCurveTo((340 + x) / 2, 80, x, y); g.stroke(); g.beginPath(); g.arc(x, y, 3.2, 0, 7); g.fillStyle = '#c9553a'; g.fill(); }
+names.push(addProjectImage('scene.png', c, {}).name);
+`;
+const flameJS = pre + `
+const FW = 240, FH = 210, BASE = 192, HM = 150, N = 16;
+const T = [{ c: -0.5, w: 0.22, h: 0.62, m: 1, p: 0.3 }, { c: -0.18, w: 0.2, h: 0.95, m: 2, p: 1.1 }, { c: 0.14, w: 0.21, h: 1.0, m: 1, p: 2.0 }, { c: 0.46, w: 0.2, h: 0.7, m: 3, p: 0.7 }, { c: 0, w: 0.34, h: 0.66, m: 2, p: 4 }];
+const stops = [[0, [58, 8, 0]], [0.1, [184, 29, 4]], [0.26, [255, 90, 12]], [0.5, [255, 157, 28]], [0.75, [255, 208, 74]], [1, [255, 244, 200]]];
+const cmap = (t) => { for (let i = 1; i < stops.length; i++) if (t <= stops[i][0]) return mix(stops[i - 1][1], stops[i][1], (t - stops[i - 1][0]) / (stops[i][0] - stops[i - 1][0])); return stops[stops.length - 1][1]; };
+for (let k = 0; k < N; k++) {
+  const ph = 2 * Math.PI * k / N, tmp = mk(FW, FH), tg = tmp.getContext('2d'), id = tg.createImageData(FW, FH), d = id.data;
+  for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+    const u = (x - FW / 2) / (FW / 2 * 0.85), v = (BASE - y) / HM;
+    const ux = u + 0.13 * Math.sin(v * 5 + ph * 2 + u * 2) * v + 0.06 * Math.sin(v * 11 - ph * 3) * v;
+    let hh = 0; for (const t of T) hh += t.h * (0.72 + 0.28 * Math.sin(ph * t.m + t.p)) * Math.exp(-Math.pow((ux - t.c) / t.w, 2));
+    hh = Math.min(hh, 1.15);
+    let dd = hh > 0.02 ? 1 - v / hh : 0; if (v < 0) dd *= clamp(1 + v / 0.07, 0, 1);
+    if (dd <= 0) continue;
+    let tt = Math.pow(dd, 0.85) * (0.88 + 0.12 * Math.sin(v * 16 + ph * 3 + ux * 7));
+    tt = clamp(tt, 0, 1); const col = cmap(tt), a = clamp(tt * 2.6, 0, 1), i = (y * FW + x) * 4;
+    d[i] = col[0]; d[i + 1] = col[1]; d[i + 2] = col[2]; d[i + 3] = a * 255;
+  }
+  tg.putImageData(id, 0, 0);
+  const c = mk(FW, FH), g = c.getContext('2d');
+  g.filter = 'blur(10px)'; g.globalAlpha = 0.75; g.drawImage(tmp, 0, 0); g.filter = 'none'; g.globalAlpha = 1; g.drawImage(tmp, 0, 0);
+  names.push(addProjectImage('anim/flame_' + k + '.png', c, {}).name);
+}
+`;
+const sparkJS = pre + `
+const SW = 240, SH = 240, N = 16, BASEY = 222;
+const S = Array.from({ length: 16 }, () => ({ x: 60 + rnd() * 120, off: rnd(), m: rnd() > 0.5 ? 1 : 2, travel: 90 + rnd() * 130, amp: 6 + rnd() * 16, r: 0.9 + rnd() * 1.6, ph: rnd() * 6 }));
+for (let k = 0; k < N; k++) {
+  const c = mk(SW, SH), g = c.getContext('2d');
+  for (const s of S) {
+    const f = (((k * s.m / N) + s.off) % 1 + 1) % 1, y = BASEY - f * s.travel, x = s.x + s.amp * Math.sin(2 * Math.PI * f * s.m + s.ph) * f, a = (1 - f) * (f < 0.06 ? f / 0.06 : 1);
+    const q = g.createRadialGradient(x, y, 0, x, y, s.r * 4); q.addColorStop(0, 'rgba(255,240,170,' + a + ')'); q.addColorStop(0.3, 'rgba(255,170,50,' + a * 0.8 + ')'); q.addColorStop(1, 'rgba(255,90,10,0)'); g.fillStyle = q; g.beginPath(); g.arc(x, y, s.r * 4, 0, 7); g.fill();
+  }
+  names.push(addProjectImage('anim/spark_' + k + '.png', c, {}).name);
+}
+`;
+const glowJS = pre + `
+const N = 8, GH = 290;
+for (let k = 0; k < N; k++) {
+  const ph = 2 * Math.PI * k / N, a = 0.1 + 0.05 * Math.sin(ph * 2 + 0.4) + 0.04 * Math.sin(ph * 3 + 1.7) + 0.03 * Math.sin(ph + 2.5);
+  const c = mk(W, GH), g = c.getContext('2d'), gr = g.createRadialGradient(195, 230 + 4 * Math.sin(ph), 10, 195, 230, 230); gr.addColorStop(0, 'rgba(255,140,40,' + a * 1.6 + ')'); gr.addColorStop(0.5, 'rgba(255,110,30,' + a * 0.7 + ')'); gr.addColorStop(1, 'rgba(255,90,20,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, W, GH); names.push(addProjectImage('anim/glow_' + k + '.png', c, {}).name);
+}
+`;
+const frontJS = pre + `
+const c = mk(W, 130), g = c.getContext('2d'); g.translate(0, -320);
+// andirons
+const iron = (x0, x1) => { const q = g.createLinearGradient(x0, 0, x1, 0); q.addColorStop(0, '#0a0a0b'); q.addColorStop(0.4, '#4a4a50'); q.addColorStop(1, '#0a0a0b'); return q; };
+for (const x of [96, 294]) { g.save(); g.shadowColor = 'rgba(0,0,0,0.7)'; g.shadowBlur = 6; g.shadowOffsetY = 3; g.fillStyle = iron(x - 6, x + 6); g.fillRect(x - 5, 372, 10, 36); g.beginPath(); g.arc(x, 368, 9, 0, 7); const q = g.createRadialGradient(x - 3, 364, 1, x, 368, 9); q.addColorStop(0, '#8a8a92'); q.addColorStop(1, '#0c0c0e'); g.fillStyle = q; g.fill(); g.fillStyle = iron(x - 12, x + 12); g.beginPath(); g.roundRect(x - 12, 404, 24, 7, 2); g.fill(); g.restore(); }
+log(g, 192, 394, 210, 19, 0.04, true);
+// ash and embers in front
+for (let i = 0; i < 60; i++) { const x = 90 + rnd() * 210, y = 406 + rnd() * 8; g.fillStyle = 'rgba(' + (rnd() > 0.6 ? '60,50,45' : '30,24,20') + ',0.6)'; g.beginPath(); g.ellipse(x, y, 2 + rnd() * 5, 1 + rnd() * 2, 0, 0, 7); g.fill(); }
+names.push(addProjectImage('front.png', c, {}).name);
+`;
+const wrap = (body, tail) => ({ script: `${body}\nawait loadAllImages();\n${tail}` });
+const F = 'Cinzel';
+const steps = [{ preset: 'bg' },
+  wrap(sceneJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Scene'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1`),
+  { preset: 'clock' }, { preset: 'weekday' }, { preset: 'day' }, { preset: 'battery' }, { preset: 'steps' }, { preset: 'clock' },
+  { script: `const n = project.elements.length; ['Hour','Colon','Minute'].forEach((nm,i)=>{ project.elements[n-3+i].name = nm + ' Aod'; }); return 1` },
+  { remove: 'Colon Aod' },
+  wrap(glowJS, `const e = await addElement('IMG_ANIM', { frames: names, fps: 8, animPrefix: 'glow', repeat: 0 }); e.name = 'Firelight'; e.frames = names; e.x = 0; e.y = 160; e.show = 'normal'; return names.length`),
+  wrap(flameJS, `const e = await addElement('IMG_ANIM', { frames: names, fps: 12, animPrefix: 'flame', repeat: 0 }); e.name = 'Flames'; e.frames = names; e.x = 75; e.y = 185; e.show = 'normal'; return names.length`),
+  wrap(sparkJS, `const e = await addElement('IMG_ANIM', { frames: names, fps: 10, animPrefix: 'spark', repeat: 0 }); e.name = 'Sparks'; e.frames = names; e.x = 75; e.y = 150; e.show = 'normal'; return names.length`),
+  wrap(frontJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Front log'; e.src = names[0]; e.x = 0; e.y = 320; e.show = 'normal'; return 1`),
+];
+const warm = (size, color, extra) => ({ font: F, size, weight: 600, fill: 'solid', color, shadowColor: '#ff7a1a', shadowX: 0, shadowY: 0, shadowBlur: 10, ...extra });
+steps.push(
+  { edit: 'Hour', set: { x: 40, y: 16, zero: 1 }, glyph: warm(78, '#ffe9c8') },
+  { edit: 'Colon', set: { x: 164, y: 24 }, glyph: warm(78, '#ffe9c8') },
+  { edit: 'Minute', set: { x: 206, y: 16, zero: 1 }, glyph: warm(78, '#ffe9c8') },
+  { edit: 'Weekday', set: { x: 100, y: 100 }, glyph: warm(20, '#f2cfa0', { shadowBlur: 6 }) },
+  { edit: 'Day', set: { x: 170, y: 100 }, glyph: warm(20, '#f2cfa0', { shadowBlur: 6 }) },
+  { edit: 'Battery', set: { x: 215, y: 100 }, glyph: warm(20, '#f2cfa0', { shadowBlur: 6 }) },
+  { edit: 'Steps', set: { x: 120, y: 418, alignH: 'CENTER_H', w: 150 }, glyph: { font: F, size: 28, weight: 700, fill: 'solid', color: '#3b2f25', borderColor: '#d8cdbb', borderWidth: 1, shadowColor: '#e8dfcf', shadowX: 0, shadowY: 1, shadowBlur: 0 } },
+  { edit: 'Hour Aod', set: { x: 70, y: 120, show: 'aod', zero: 1 }, glyph: { font: F, size: 100, weight: 600, fill: 'solid', color: '#8a5a30' } },
+  { edit: 'Minute Aod', set: { x: 70, y: 260, show: 'aod', zero: 1 }, glyph: { font: F, size: 100, weight: 600, fill: 'solid', color: '#8a5a30' } },
+);
+fs.writeFileSync('recipe.json', JSON.stringify({ name: 'Fireplace', device: 'bip-6', font: F, description: 'A crackling fire in a stone fireplace: animated flames, rising sparks, flickering firelight on the stone, glowing logs, a mantel with the time.', preview: 'preview.png', previewAod: 'preview-aod.png', save: 'project', out: 'out/fireplace', steps }, null, 1));

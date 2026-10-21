@@ -1,0 +1,3160 @@
+{
+  "version": 1,
+  "name": "Beer Glass",
+  "device": "bip-6",
+  "appId": 2201058,
+  "vender": "dialcraft",
+  "description": "A beer mug that fills with beer every minute: thick foam head, calm surface, rising bubbles.",
+  "font": "Bebas Neue",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {},
+  "elements": [
+    {
+      "id": "elmvhafdprwg",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvhafdyz7bq",
+      "kind": "IMG_ANIM",
+      "name": "Beer",
+      "x": 0,
+      "y": 400,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "frames": [
+        "anim/bg_beer_0.png",
+        "anim/bg_beer_1.png",
+        "anim/bg_beer_2.png",
+        "anim/bg_beer_3.png",
+        "anim/bg_beer_4.png",
+        "anim/bg_beer_5.png",
+        "anim/bg_beer_6.png",
+        "anim/bg_beer_7.png",
+        "anim/bg_beer_8.png",
+        "anim/bg_beer_9.png"
+      ],
+      "fps": 10,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "bg_beer",
+      "riseBy": "SECOND",
+      "riseDebug": true,
+      "riseY0": 400,
+      "riseY1": -46,
+      "w": 390,
+      "h": 500
+    },
+    {
+      "id": "elmvhafe2b4z7",
+      "kind": "IMG_TIME",
+      "name": "Hour S0",
+      "x": 41,
+      "y": 154,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe2b536",
+      "kind": "IMG",
+      "name": "Colon S0",
+      "x": 178,
+      "y": 171,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmvhafe2b2zg",
+      "kind": "IMG_TIME",
+      "name": "Minute S0",
+      "x": 210,
+      "y": 154,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe3w34a",
+      "kind": "IMG_TIME",
+      "name": "Hour S1",
+      "x": 49,
+      "y": 154,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe3w719",
+      "kind": "IMG",
+      "name": "Colon S1",
+      "x": 186,
+      "y": 171,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmvhafe3w7j8",
+      "kind": "IMG_TIME",
+      "name": "Minute S1",
+      "x": 218,
+      "y": 154,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe5f79w",
+      "kind": "IMG_TIME",
+      "name": "Hour S2",
+      "x": 41,
+      "y": 146,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe5fib",
+      "kind": "IMG",
+      "name": "Colon S2",
+      "x": 178,
+      "y": 163,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_3.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_3.png"
+      }
+    },
+    {
+      "id": "elmvhafe5f72x",
+      "kind": "IMG_TIME",
+      "name": "Minute S2",
+      "x": 210,
+      "y": 146,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe6v4un",
+      "kind": "IMG_TIME",
+      "name": "Hour S3",
+      "x": 49,
+      "y": 146,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe6v7de",
+      "kind": "IMG",
+      "name": "Colon S3",
+      "x": 186,
+      "y": 163,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_4.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_4.png"
+      }
+    },
+    {
+      "id": "elmvhafe6v3fv",
+      "kind": "IMG_TIME",
+      "name": "Minute S3",
+      "x": 218,
+      "y": 146,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_9_0.png",
+        "font_9_1.png",
+        "font_9_2.png",
+        "font_9_3.png",
+        "font_9_4.png",
+        "font_9_5.png",
+        "font_9_6.png",
+        "font_9_7.png",
+        "font_9_8.png",
+        "font_9_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe914uj",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 45,
+      "y": 150,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_10_0.png",
+        "font_10_1.png",
+        "font_10_2.png",
+        "font_10_3.png",
+        "font_10_4.png",
+        "font_10_5.png",
+        "font_10_6.png",
+        "font_10_7.png",
+        "font_10_8.png",
+        "font_10_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffd36b",
+        "to": "#ff8a00",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafe912ex",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 182,
+      "y": 167,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_5.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffd36b",
+        "to": "#ff8a00",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_5.png"
+      }
+    },
+    {
+      "id": "elmvhafe91565",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 214,
+      "y": 150,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_11_0.png",
+        "font_11_1.png",
+        "font_11_2.png",
+        "font_11_3.png",
+        "font_11_4.png",
+        "font_11_5.png",
+        "font_11_6.png",
+        "font_11_7.png",
+        "font_11_8.png",
+        "font_11_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffd36b",
+        "to": "#ff8a00",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafeb27lu",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 60,
+      "y": 90,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_12_0.png",
+        "font_12_1.png",
+        "font_12_2.png",
+        "font_12_3.png",
+        "font_12_4.png",
+        "font_12_5.png",
+        "font_12_6.png",
+        "font_12_7.png",
+        "font_12_8.png",
+        "font_12_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8a5a1a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafeb26bl",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 60,
+      "y": 230,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_13_0.png",
+        "font_13_1.png",
+        "font_13_2.png",
+        "font_13_3.png",
+        "font_13_4.png",
+        "font_13_5.png",
+        "font_13_6.png",
+        "font_13_7.png",
+        "font_13_8.png",
+        "font_13_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8a5a1a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafec453g",
+      "kind": "IMG_WEEK",
+      "name": "Weekday S0",
+      "x": 131,
+      "y": 47,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafee22pn",
+      "kind": "IMG_WEEK",
+      "name": "Weekday S1",
+      "x": 137,
+      "y": 47,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week2_w1.png",
+        "week2_w2.png",
+        "week2_w3.png",
+        "week2_w4.png",
+        "week2_w5.png",
+        "week2_w6.png",
+        "week2_w7.png"
+      ],
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafeg3gs",
+      "kind": "IMG_WEEK",
+      "name": "Weekday S2",
+      "x": 131,
+      "y": 41,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week3_w1.png",
+        "week3_w2.png",
+        "week3_w3.png",
+        "week3_w4.png",
+        "week3_w5.png",
+        "week3_w6.png",
+        "week3_w7.png"
+      ],
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafehz2s8",
+      "kind": "IMG_WEEK",
+      "name": "Weekday S3",
+      "x": 137,
+      "y": 41,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week4_w1.png",
+        "week4_w2.png",
+        "week4_w3.png",
+        "week4_w4.png",
+        "week4_w5.png",
+        "week4_w6.png",
+        "week4_w7.png"
+      ],
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafejw7a2",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 134,
+      "y": 44,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week5_w1.png",
+        "week5_w2.png",
+        "week5_w3.png",
+        "week5_w4.png",
+        "week5_w5.png",
+        "week5_w6.png",
+        "week5_w7.png"
+      ],
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffd36b",
+        "to": "#ff8a00",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafelt47t",
+      "kind": "IMG_DATE",
+      "name": "Day S0",
+      "x": 203,
+      "y": 47,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_14_0.png",
+        "font_14_1.png",
+        "font_14_2.png",
+        "font_14_3.png",
+        "font_14_4.png",
+        "font_14_5.png",
+        "font_14_6.png",
+        "font_14_7.png",
+        "font_14_8.png",
+        "font_14_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafems691",
+      "kind": "IMG_DATE",
+      "name": "Day S1",
+      "x": 209,
+      "y": 47,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_15_0.png",
+        "font_15_1.png",
+        "font_15_2.png",
+        "font_15_3.png",
+        "font_15_4.png",
+        "font_15_5.png",
+        "font_15_6.png",
+        "font_15_7.png",
+        "font_15_8.png",
+        "font_15_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafenr35f",
+      "kind": "IMG_DATE",
+      "name": "Day S2",
+      "x": 203,
+      "y": 41,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_16_0.png",
+        "font_16_1.png",
+        "font_16_2.png",
+        "font_16_3.png",
+        "font_16_4.png",
+        "font_16_5.png",
+        "font_16_6.png",
+        "font_16_7.png",
+        "font_16_8.png",
+        "font_16_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafeopkh",
+      "kind": "IMG_DATE",
+      "name": "Day S3",
+      "x": 209,
+      "y": 41,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_17_0.png",
+        "font_17_1.png",
+        "font_17_2.png",
+        "font_17_3.png",
+        "font_17_4.png",
+        "font_17_5.png",
+        "font_17_6.png",
+        "font_17_7.png",
+        "font_17_8.png",
+        "font_17_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafepm2tp",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 206,
+      "y": 44,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_18_0.png",
+        "font_18_1.png",
+        "font_18_2.png",
+        "font_18_3.png",
+        "font_18_4.png",
+        "font_18_5.png",
+        "font_18_6.png",
+        "font_18_7.png",
+        "font_18_8.png",
+        "font_18_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffd36b",
+        "to": "#ff8a00",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafes17lu",
+      "kind": "TEXT_IMG",
+      "name": "Temperature S0",
+      "x": 152,
+      "y": 381,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_19_0.png",
+        "font_19_1.png",
+        "font_19_2.png",
+        "font_19_3.png",
+        "font_19_4.png",
+        "font_19_5.png",
+        "font_19_6.png",
+        "font_19_7.png",
+        "font_19_8.png",
+        "font_19_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 58,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafeu05ep",
+      "kind": "TEXT_IMG",
+      "name": "Temperature S1",
+      "x": 158,
+      "y": 381,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_20_0.png",
+        "font_20_1.png",
+        "font_20_2.png",
+        "font_20_3.png",
+        "font_20_4.png",
+        "font_20_5.png",
+        "font_20_6.png",
+        "font_20_7.png",
+        "font_20_8.png",
+        "font_20_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "degree_2.png",
+      "dot": "",
+      "negative": "negative_2.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 58,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafew16x6",
+      "kind": "TEXT_IMG",
+      "name": "Temperature S2",
+      "x": 152,
+      "y": 375,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_21_0.png",
+        "font_21_1.png",
+        "font_21_2.png",
+        "font_21_3.png",
+        "font_21_4.png",
+        "font_21_5.png",
+        "font_21_6.png",
+        "font_21_7.png",
+        "font_21_8.png",
+        "font_21_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "degree_3.png",
+      "dot": "",
+      "negative": "negative_3.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 58,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhafexy6ev",
+      "kind": "TEXT_IMG",
+      "name": "Temperature S3",
+      "x": 158,
+      "y": 375,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_22_0.png",
+        "font_22_1.png",
+        "font_22_2.png",
+        "font_22_3.png",
+        "font_22_4.png",
+        "font_22_5.png",
+        "font_22_6.png",
+        "font_22_7.png",
+        "font_22_8.png",
+        "font_22_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "degree_4.png",
+      "dot": "",
+      "negative": "negative_4.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 58,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1c0b00",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhaff002l",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 155,
+      "y": 378,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "degree_5.png",
+      "dot": "",
+      "negative": "negative_5.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 58,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffd36b",
+        "to": "#ff8a00",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhaff1o4o3",
+      "kind": "IMG",
+      "name": "Glass",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "glass_front.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "anim/bg_beer_0.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_1.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_2.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_3.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_4.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_5.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_6.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_7.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_8.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "anim/bg_beer_9.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "colon.png",
+      "width": 12,
+      "height": 42
+    },
+    {
+      "name": "colon_2.png",
+      "width": 12,
+      "height": 42
+    },
+    {
+      "name": "colon_3.png",
+      "width": 12,
+      "height": 42
+    },
+    {
+      "name": "colon_4.png",
+      "width": 12,
+      "height": 42
+    },
+    {
+      "name": "colon_5.png",
+      "width": 12,
+      "height": 42
+    },
+    {
+      "name": "colon_6.png",
+      "width": 12,
+      "height": 42
+    },
+    {
+      "name": "week_w1.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week_w2.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week_w3.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week_w4.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week_w5.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week_w6.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week_w7.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week2_w1.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week2_w2.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week2_w3.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week2_w4.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week2_w5.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week2_w6.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week2_w7.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week3_w1.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week3_w2.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week3_w3.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week3_w4.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week3_w5.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week3_w6.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week3_w7.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week4_w1.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week4_w2.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week4_w3.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week4_w4.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week4_w5.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week4_w6.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week4_w7.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week5_w1.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week5_w2.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week5_w3.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week5_w4.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week5_w5.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week5_w6.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "week5_w7.png",
+      "width": 66,
+      "height": 40
+    },
+    {
+      "name": "degree.png",
+      "width": 21,
+      "height": 49
+    },
+    {
+      "name": "negative.png",
+      "width": 19,
+      "height": 49
+    },
+    {
+      "name": "degree_2.png",
+      "width": 21,
+      "height": 49
+    },
+    {
+      "name": "negative_2.png",
+      "width": 19,
+      "height": 49
+    },
+    {
+      "name": "degree_3.png",
+      "width": 21,
+      "height": 49
+    },
+    {
+      "name": "negative_3.png",
+      "width": 19,
+      "height": 49
+    },
+    {
+      "name": "degree_4.png",
+      "width": 21,
+      "height": 49
+    },
+    {
+      "name": "negative_4.png",
+      "width": 19,
+      "height": 49
+    },
+    {
+      "name": "degree_5.png",
+      "width": 21,
+      "height": 49
+    },
+    {
+      "name": "negative_5.png",
+      "width": 19,
+      "height": 49
+    },
+    {
+      "name": "glass_front.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 26,
+      "height": 84
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 26,
+      "height": 84
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "symbol_u003a_3.png",
+      "width": 26,
+      "height": 84
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "symbol_u003a_4.png",
+      "width": 26,
+      "height": 84
+    },
+    {
+      "name": "font_9_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_9_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_10_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "symbol_u003a_5.png",
+      "width": 26,
+      "height": 84
+    },
+    {
+      "name": "font_11_0.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_1.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_2.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_3.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_4.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_5.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_6.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_7.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_8.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_11_9.png",
+      "width": 66,
+      "height": 119
+    },
+    {
+      "name": "font_12_0.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_1.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_2.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_3.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_4.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_5.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_6.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_7.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_8.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_12_9.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_0.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_1.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_2.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_3.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_4.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_5.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_6.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_7.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_8.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_13_9.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_14_0.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_1.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_2.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_3.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_4.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_5.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_6.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_7.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_8.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_14_9.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_0.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_1.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_2.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_3.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_4.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_5.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_6.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_7.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_8.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_15_9.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_0.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_1.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_2.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_3.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_4.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_5.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_6.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_7.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_8.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_16_9.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_0.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_1.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_2.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_3.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_4.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_5.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_6.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_7.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_8.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_17_9.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_0.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_1.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_2.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_3.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_4.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_5.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_6.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_7.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_8.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_18_9.png",
+      "width": 24,
+      "height": 40
+    },
+    {
+      "name": "font_19_0.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_1.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_2.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_3.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_4.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_5.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_6.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_7.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_8.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_19_9.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_0.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_1.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_2.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_3.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_4.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_5.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_6.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_7.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_8.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_20_9.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_0.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_1.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_2.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_3.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_4.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_5.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_6.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_7.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_8.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_21_9.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_0.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_1.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_2.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_3.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_4.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_5.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_6.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_7.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_8.png",
+      "width": 28,
+      "height": 49
+    },
+    {
+      "name": "font_22_9.png",
+      "width": 28,
+      "height": 49
+    }
+  ],
+  "savePath": null
+}

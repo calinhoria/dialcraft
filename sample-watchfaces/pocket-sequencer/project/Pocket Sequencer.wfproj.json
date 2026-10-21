@@ -1,0 +1,1411 @@
+{
+  "version": 1,
+  "name": "Pocket Sequencer",
+  "device": "bip-6",
+  "appId": 2509173,
+  "vender": "dialcraft",
+  "description": "A pocket-synth style face: LCD time, a 16-key step sequencer that lights up with your daily steps, and a playhead running across the keys.",
+  "font": "DSEG14 Classic",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {},
+  "elements": [
+    {
+      "id": "elmvhc7ysf7mv",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvhc7yun68x",
+      "kind": "IMG",
+      "name": "Body",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "body.png"
+    },
+    {
+      "id": "elmvhc7ywp4oq",
+      "kind": "IMG_PROGRESS",
+      "name": "Lit keys",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "keys/lit_0.png",
+        "keys/lit_1.png",
+        "keys/lit_2.png",
+        "keys/lit_3.png",
+        "keys/lit_4.png",
+        "keys/lit_5.png",
+        "keys/lit_6.png",
+        "keys/lit_7.png",
+        "keys/lit_8.png",
+        "keys/lit_9.png",
+        "keys/lit_10.png",
+        "keys/lit_11.png",
+        "keys/lit_12.png",
+        "keys/lit_13.png",
+        "keys/lit_14.png",
+        "keys/lit_15.png"
+      ],
+      "dataType": "STEP",
+      "level": 0,
+      "spread": 24,
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 48,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      },
+      "positions": [
+        [
+          13,
+          190
+        ],
+        [
+          103,
+          190
+        ],
+        [
+          193,
+          190
+        ],
+        [
+          283,
+          190
+        ],
+        [
+          13,
+          242
+        ],
+        [
+          103,
+          242
+        ],
+        [
+          193,
+          242
+        ],
+        [
+          283,
+          242
+        ],
+        [
+          13,
+          294
+        ],
+        [
+          103,
+          294
+        ],
+        [
+          193,
+          294
+        ],
+        [
+          283,
+          294
+        ],
+        [
+          13,
+          346
+        ],
+        [
+          103,
+          346
+        ],
+        [
+          193,
+          346
+        ],
+        [
+          283,
+          346
+        ]
+      ]
+    },
+    {
+      "id": "elmvhc7yz6710",
+      "kind": "IMG_ANIM",
+      "name": "Playhead",
+      "x": 8,
+      "y": 192,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "frames": [
+        "anim/head_0.png",
+        "anim/head_1.png",
+        "anim/head_2.png",
+        "anim/head_3.png",
+        "anim/head_4.png",
+        "anim/head_5.png",
+        "anim/head_6.png",
+        "anim/head_7.png",
+        "anim/head_8.png",
+        "anim/head_9.png",
+        "anim/head_10.png",
+        "anim/head_11.png",
+        "anim/head_12.png",
+        "anim/head_13.png",
+        "anim/head_14.png",
+        "anim/head_15.png"
+      ],
+      "fps": 8,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "head"
+    },
+    {
+      "id": "elmvhc7yzn5fk",
+      "kind": "IMG_TIME",
+      "name": "Ghost Hour",
+      "x": 36,
+      "y": 52,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 32,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_8.png",
+        "font_2_8.png",
+        "font_2_8.png",
+        "font_2_8.png",
+        "font_2_8.png",
+        "font_2_8.png",
+        "font_2_8.png",
+        "font_2_8.png",
+        "font_2_8.png",
+        "font_2_8.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null
+    },
+    {
+      "id": "elmvhc7yzn6fp",
+      "kind": "IMG_TIME",
+      "name": "Ghost Minute",
+      "x": 206,
+      "y": 52,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 32,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_8.png",
+        "font_3_8.png",
+        "font_3_8.png",
+        "font_3_8.png",
+        "font_3_8.png",
+        "font_3_8.png",
+        "font_3_8.png",
+        "font_3_8.png",
+        "font_3_8.png",
+        "font_3_8.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null
+    },
+    {
+      "id": "elmvhc7z0d384",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 36,
+      "y": 52,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1e2616",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhc7z0d6fr",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 186,
+      "y": 66,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1e2616",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmvhc7z0d4vx",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 206,
+      "y": 52,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1e2616",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhc7z0p5fp",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 30,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 18,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1e2616",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhc7z1fse",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 110,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 18,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1e2616",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhc7z1w32e",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 300,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "hSpace": 2,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 18,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#1e2616",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhc7z28492",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 130,
+      "y": 404,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "hSpace": 2,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#26282a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhc7z2p6av",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 70,
+      "y": 130,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_9_0.png",
+        "font_9_1.png",
+        "font_9_2.png",
+        "font_9_3.png",
+        "font_9_4.png",
+        "font_9_5.png",
+        "font_9_6.png",
+        "font_9_7.png",
+        "font_9_8.png",
+        "font_9_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 110,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5f6a4c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvhc7z2prk",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 70,
+      "y": 270,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DSEG14 Classic",
+        "size": 110,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5f6a4c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    }
+  ],
+  "images": [
+    {
+      "name": "body.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "keys/lit_0.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_1.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_2.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_3.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_4.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_5.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_6.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_7.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_8.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_9.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_10.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_11.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_12.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_13.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_14.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "keys/lit_15.png",
+      "width": 94,
+      "height": 60
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "anim/head_0.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_1.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_2.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_3.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_4.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_5.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_6.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_7.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_8.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_9.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_10.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_11.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_12.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_13.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_14.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "anim/head_15.png",
+      "width": 374,
+      "height": 214
+    },
+    {
+      "name": "colon.png",
+      "width": 12,
+      "height": 54
+    },
+    {
+      "name": "colon_2.png",
+      "width": 12,
+      "height": 54
+    },
+    {
+      "name": "week_w1.png",
+      "width": 47,
+      "height": 24
+    },
+    {
+      "name": "week_w2.png",
+      "width": 47,
+      "height": 24
+    },
+    {
+      "name": "week_w3.png",
+      "width": 47,
+      "height": 24
+    },
+    {
+      "name": "week_w4.png",
+      "width": 47,
+      "height": 24
+    },
+    {
+      "name": "week_w5.png",
+      "width": 47,
+      "height": 24
+    },
+    {
+      "name": "week_w6.png",
+      "width": 47,
+      "height": 24
+    },
+    {
+      "name": "week_w7.png",
+      "width": 47,
+      "height": 24
+    },
+    {
+      "name": "percent.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "colon_3.png",
+      "width": 12,
+      "height": 54
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 18,
+      "height": 79
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 66,
+      "height": 102
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 24,
+      "height": 34
+    },
+    {
+      "name": "font_9_0.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_1.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_2.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_3.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_4.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_5.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_6.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_7.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_8.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_9_9.png",
+      "width": 76,
+      "height": 118
+    }
+  ],
+  "savePath": null
+}

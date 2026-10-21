@@ -1,0 +1,238 @@
+{
+ "name": "Vintage Teen",
+ "device": "bip-6",
+ "font": "DSEG7 Classic",
+ "description": "A vintage pocket-sampler face made for reading: a big LCD time and six large readout screens for steps, date, pulse, temperature, battery and weekday, plus one orange button.",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/vintage-teen",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 31; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };\nconst OR = '#ff4f12', LAB = '#ff6a2b', FONT = '\"Helvetica Neue\", Arial, sans-serif';\n// panels: [x, y, w, h, label]\nconst PH = 68;\nconst PANELS = [[14, 158, 192, PH, 'STEPS'], [214, 158, 162, PH, 'DATE  DD.MM'], [14, 232, 172, PH, 'PULSE  BPM'], [194, 232, 182, PH, 'TEMP  \\u00B0C'], [14, 306, 172, PH, 'BATTERY'], [194, 306, 182, PH, 'DAY']];\n\nconst c = mk(W, H), g = c.getContext('2d');\nlet gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#dcdbd6'); gr.addColorStop(1, '#c9c8c3'); g.fillStyle = gr; g.fillRect(0, 0, W, H);\nfor (let i = 0; i < 260; i++) { g.fillStyle = 'rgba(' + (rnd() > 0.5 ? '255,255,255' : '80,78,70') + ',' + (0.02 + rnd() * 0.035) + ')'; g.fillRect(0, rnd() * H, W, 1); }\nfor (let i = 0; i < 4000; i++) { g.fillStyle = 'rgba(' + (rnd() > 0.5 ? '255,255,255' : '70,68,60') + ',' + (0.03 + rnd() * 0.05) + ')'; g.fillRect(rnd() * W, rnd() * H, 1, 1); }\n// top strip with I/O tags\ng.fillStyle = '#cfcec9'; g.fillRect(0, 0, W, 32); g.fillStyle = 'rgba(0,0,0,0.12)'; g.fillRect(0, 32, W, 1);\nconst tag = (x, w, bg, fg, t) => { rr(g, x, 8, w, 19, 3); g.fillStyle = bg; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 0.8; g.stroke(); g.fillStyle = fg; g.font = '600 8.5px ' + FONT; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(t, x + w / 2, 18); };\ntag(46, 58, '#f6f5f1', '#333', 'OUTPUT'); tag(112, 58, OR, '#fff', 'INPUT'); tag(178, 74, '#1c1c1f', '#e9e9e9', 'SYNC   MIDI'); tag(260, 40, '#8f8e8a', '#eee', 'USB'); g.fillStyle = '#555'; g.font = '600 8.5px ' + FONT; g.fillText('POWER', 330, 18);\n// black glass panel\nconst glass = (x, y, w, h, r, label) => {\n  g.save(); g.shadowColor = 'rgba(0,0,0,0.4)'; g.shadowBlur = 7; g.shadowOffsetY = 3; rr(g, x, y, w, h, r); const q = g.createLinearGradient(0, y, 0, y + h); q.addColorStop(0, '#09090b'); q.addColorStop(1, '#17171c'); g.fillStyle = q; g.fill(); g.restore();\n  rr(g, x, y, w, h, r); g.strokeStyle = 'rgba(255,255,255,0.15)'; g.lineWidth = 1; g.stroke();\n  g.save(); rr(g, x, y, w, h, r); g.clip(); g.fillStyle = 'rgba(255,255,255,0.05)'; g.beginPath(); g.moveTo(x, y); g.lineTo(x + w * 0.55, y); g.lineTo(x + w * 0.2, y + h); g.lineTo(x, y + h); g.closePath(); g.fill(); g.restore();\n  if (label) { g.fillStyle = LAB; g.font = '700 10px ' + FONT; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(label, x + 13, y + 13); }\n};\nglass(14, 40, 362, 110, 12, null);\ng.fillStyle = LAB; g.font = '700 10px ' + FONT; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText('TIME', 28, 54); g.fillStyle = 'rgba(255,255,255,0.8)'; g.beginPath(); g.moveTo(350, 49); g.lineTo(350, 61); g.lineTo(360, 55); g.closePath(); g.fill();\nfor (const [x, y, w, h, l] of PANELS) glass(x, y, w, h, 10, l);\n// battery bar track\ng.fillStyle = '#2a2c36'; rr(g, 26, 367, 148, 5, 2.5); g.fill();\n// date separator dot\ng.fillStyle = '#f4f4f4'; g.fillRect(291, 211, 6, 6);\n// bottom: title, grille, the one button\ng.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.fillStyle = '#26262a'; g.font = '700 24px ' + FONT; g.fillText('B.P. VI', 28, 418);\ng.fillStyle = '#e8481c'; g.font = '600 9.5px ' + FONT; g.fillText('VINTAGE  SAMPLER', 29, 433);\ng.save(); g.shadowColor = 'rgba(0,0,0,0.3)'; g.shadowBlur = 4; g.shadowOffsetY = 2; rr(g, 126, 388, 126, 50, 8); gr = g.createLinearGradient(0, 388, 0, 438); gr.addColorStop(0, '#b5b4af'); gr.addColorStop(1, '#9c9b96'); g.fillStyle = gr; g.fill(); g.restore();\ng.save(); rr(g, 126, 388, 126, 50, 8); g.clip(); for (let y = 395, r = 0; y < 438; y += 7.4, r++) for (let x = 133 + (r % 2) * 3.7; x < 252; x += 7.4) { g.beginPath(); g.arc(x, y, 2.4, 0, 7); g.fillStyle = '#26262a'; g.fill(); g.beginPath(); g.arc(x, y + 0.9, 2.4, 0, 3.14); g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 0.7; g.stroke(); } g.restore();\nconst knob = (cx, cy, r, c0, c1, c2) => {\n  g.beginPath(); g.arc(cx, cy, r + 6, 0, 7); gr = g.createLinearGradient(0, cy - r, 0, cy + r + 6); gr.addColorStop(0, '#a9a8a3'); gr.addColorStop(1, '#e3e2dd'); g.fillStyle = gr; g.fill();\n  g.save(); g.shadowColor = 'rgba(0,0,0,0.55)'; g.shadowBlur = 8; g.shadowOffsetY = 4; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.fillStyle = c2; g.fill(); g.restore();\n  gr = g.createRadialGradient(cx - r * 0.35, cy - r * 0.45, r * 0.1, cx, cy, r); gr.addColorStop(0, c0); gr.addColorStop(1, c1); g.beginPath(); g.arc(cx, cy, r, 0, 7); g.fillStyle = gr; g.fill();\n  g.beginPath(); g.arc(cx, cy, r * 0.6, 0, 7); gr = g.createRadialGradient(cx - r * 0.25, cy - r * 0.3, 1, cx, cy, r * 0.6); gr.addColorStop(0, c0); gr.addColorStop(1, c1); g.fillStyle = gr; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.28)'; g.lineWidth = 1; g.stroke();\n  g.beginPath(); g.arc(cx, cy, r - 0.5, 3.4, 5.2); g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 1.4; g.stroke();\n};\nknob(322, 411, 20, '#ff8a56', '#f0420c', '#7a2204');\ng.fillStyle = '#555'; g.font = '700 8px ' + FONT; g.textAlign = 'center'; g.fillText('REC', 322, 444);\nnames.push(addProjectImage('body.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Body'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "preset": "steps"
+  },
+  {
+   "preset": "day"
+  },
+  {
+   "preset": "month"
+  },
+  {
+   "preset": "hr"
+  },
+  {
+   "preset": "temp"
+  },
+  {
+   "preset": "battery"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; ['Hour','Colon','Minute'].forEach((nm,i)=>{ project.elements[n-3+i].name = nm + ' Aod'; }); return 1"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "edit": "Hour",
+   "set": {
+    "x": 26,
+    "y": 54,
+    "zero": 1
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 84,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Colon",
+   "set": {
+    "x": 178,
+    "y": 70
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 84,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Minute",
+   "set": {
+    "x": 208,
+    "y": 54,
+    "zero": 1
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 84,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Steps",
+   "set": {
+    "x": 26,
+    "y": 180,
+    "alignH": "LEFT"
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 36,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Day",
+   "set": {
+    "x": 224,
+    "y": 180,
+    "zero": 1,
+    "space": -3
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 36,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Month",
+   "set": {
+    "x": 304,
+    "y": 180,
+    "zero": 1,
+    "space": -3
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 36,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Heart",
+   "set": {
+    "x": 26,
+    "y": 254,
+    "unit": ""
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 36,
+    "fill": "solid",
+    "color": "#ff6a3a"
+   }
+  },
+  {
+   "edit": "Temp",
+   "set": {
+    "x": 206,
+    "y": 254
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 36,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Battery",
+   "set": {
+    "x": 26,
+    "y": 322
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 36,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 206,
+    "y": 322
+   },
+   "glyph": {
+    "font": "DSEG14 Classic",
+    "size": 36,
+    "fill": "solid",
+    "color": "#f4f4f4"
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 70,
+    "y": 120,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 100,
+    "fill": "solid",
+    "color": "#8a8a8a"
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 70,
+    "y": 260,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "DSEG7 Classic",
+    "size": 100,
+    "fill": "solid",
+    "color": "#8a8a8a"
+   }
+  },
+  {
+   "add": "BAR",
+   "name": "Battery bar",
+   "patch": {
+    "dataType": "BATTERY"
+   },
+   "set": {
+    "x": 26,
+    "y": 367,
+    "length": 148,
+    "lineWidth": 5,
+    "color": "#ff4f12",
+    "rounded": true,
+    "show": "normal"
+   }
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 31; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };\nconst OR = '#ff4f12', LAB = '#ff6a2b', FONT = '\"Helvetica Neue\", Arial, sans-serif';\n// panels: [x, y, w, h, label]\nconst PH = 68;\nconst PANELS = [[14, 158, 192, PH, 'STEPS'], [214, 158, 162, PH, 'DATE  DD.MM'], [14, 232, 172, PH, 'PULSE  BPM'], [194, 232, 182, PH, 'TEMP  \\u00B0C'], [14, 306, 172, PH, 'BATTERY'], [194, 306, 182, PH, 'DAY']];\n\nfor (const on of [true, false]) { const c = mk(16, 16), g = c.getContext('2d');\n  if (on) { g.shadowColor = '#ff2a1a'; g.shadowBlur = 7; g.beginPath(); g.arc(8, 8, 4.5, 0, 7); const gr = g.createRadialGradient(6.5, 6.5, 0.5, 8, 8, 4.5); gr.addColorStop(0, '#ff9a8c'); gr.addColorStop(1, '#ff2a1a'); g.fillStyle = gr; g.fill(); }\n  names.push(addProjectImage('anim/rec_' + (on ? 'on' : 'off') + '.png', c, {}).name); }\n\nawait loadAllImages();\nconst e = await addElement('IMG_ANIM', { frames: names, fps: 2, animPrefix: 'rec', repeat: 0 }); e.name = 'REC LED'; e.frames = names; e.x = 351; e.y = 395; e.show = 'normal'; return names.length"
+  }
+ ]
+}

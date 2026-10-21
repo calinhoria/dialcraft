@@ -2,6 +2,3 @@ node_modules/
 dist/
 .DS_Store
 *.log
-
-# generated watchfaces
-my-watchfaces/

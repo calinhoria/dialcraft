@@ -1,0 +1,253 @@
+{
+ "name": "Cosmic Pinball",
+ "device": "bip-6",
+ "font": "Doto",
+ "description": "A pinball machine that tells the time: a retro space backglass, an orange dot-matrix display, mushroom bumpers that flash, flippers that flick and a steel ball that never stops.",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/cosmic-pinball",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 55; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };\nconst CHROME = (g, x0, y0, x1, y1) => { const q = g.createLinearGradient(x0, y0, x1, y1); q.addColorStop(0, '#fbfcff'); q.addColorStop(0.25, '#aeb4c0'); q.addColorStop(0.5, '#f2f4f8'); q.addColorStop(0.75, '#7b808c'); q.addColorStop(1, '#d4d8e0'); return q; };\nconst BUMP = [[120, 225, '#e8283c', '#ff8a96'], [195, 198, '#ffc61a', '#fff0a0'], [270, 225, '#2a8cff', '#9ad0ff']];\nconst BR = 24, BALL = 9, FL = [122, 404], FR = [268, 404], FLEN = 56;\n\ntry { await document.fonts.load('40px \"Anton\"'); } catch (e) {}\nconst c = mk(W, H), g = c.getContext('2d');\n// ---- backglass\nlet gr = g.createLinearGradient(0, 0, 0, 158); gr.addColorStop(0, '#190838'); gr.addColorStop(0.45, '#5a1a7c'); gr.addColorStop(0.8, '#d0467c'); gr.addColorStop(1, '#ff9a52'); g.fillStyle = gr; g.fillRect(0, 0, W, 158);\ng.save(); g.beginPath(); g.rect(0, 0, W, 158); g.clip(); for (let i = 0; i < 26; i++) { const a = -Math.PI + i * Math.PI / 25, a2 = a + Math.PI / 52; g.fillStyle = 'rgba(255,230,190,0.07)'; g.beginPath(); g.moveTo(195, 160); g.lineTo(195 + Math.cos(a) * 400, 160 + Math.sin(a) * 400); g.lineTo(195 + Math.cos(a2) * 400, 160 + Math.sin(a2) * 400); g.closePath(); g.fill(); } g.restore();\nfor (let i = 0; i < 60; i++) { g.fillStyle = 'rgba(255,255,255,' + (0.3 + rnd() * 0.6) + ')'; const s = rnd() < 0.15 ? 2 : 1; g.fillRect(rnd() * W, rnd() * 70, s, s); }\n// ringed planet\ng.save(); g.translate(334, 34); g.rotate(-0.35); g.beginPath(); g.arc(0, 0, 17, 0, 7); const pg = g.createRadialGradient(-6, -6, 2, 0, 0, 19); pg.addColorStop(0, '#ffe39a'); pg.addColorStop(0.6, '#e8832a'); pg.addColorStop(1, '#7a2a10'); g.fillStyle = pg; g.fill(); g.beginPath(); g.ellipse(0, 0, 30, 7, 0, 0, Math.PI); g.strokeStyle = 'rgba(255,220,150,0.85)'; g.lineWidth = 3; g.stroke(); g.restore();\n// title\ng.font = '38px \"Anton\"'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.save(); g.shadowColor = '#ff3aa0'; g.shadowBlur = 14; g.lineJoin = 'round'; g.lineWidth = 5; g.strokeStyle = '#2a0a40'; g.strokeText('COSMIC PINBALL', 190, 28); const tg = g.createLinearGradient(0, 12, 0, 44); tg.addColorStop(0, '#fff6c0'); tg.addColorStop(0.5, '#ffc83a'); tg.addColorStop(0.55, '#ff7a2a'); tg.addColorStop(1, '#ffe27a'); g.fillStyle = tg; g.fillText('COSMIC PINBALL', 190, 28); g.restore();\n// dot-matrix display\ng.save(); g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 8; g.shadowOffsetY = 3; rr(g, 34, 52, 322, 98, 8); g.fillStyle = CHROME(g, 34, 52, 356, 150); g.fill(); g.restore();\nrr(g, 41, 59, 308, 84, 5); gr = g.createLinearGradient(0, 59, 0, 143); gr.addColorStop(0, '#0b0503'); gr.addColorStop(1, '#170a05'); g.fillStyle = gr; g.fill();\ngr = g.createRadialGradient(195, 100, 10, 195, 100, 190); gr.addColorStop(0, 'rgba(255,120,20,0.10)'); gr.addColorStop(1, 'rgba(255,120,20,0)'); g.fillStyle = gr; g.fillRect(41, 59, 308, 84);\ng.save(); g.shadowColor = '#ff6a00'; g.shadowBlur = 5; g.fillStyle = '#ffc15a'; g.fillRect(147, 132, 3, 3); g.restore();\n// lock bar\ng.fillStyle = CHROME(g, 0, 152, 0, 160); g.fillRect(0, 152, W, 8); g.fillStyle = 'rgba(0,0,0,0.5)'; g.fillRect(0, 160, W, 3);\n// ---- playfield\ngr = g.createLinearGradient(0, 160, 0, H); gr.addColorStop(0, '#103076'); gr.addColorStop(0.5, '#15429a'); gr.addColorStop(1, '#0a2058'); g.fillStyle = gr; g.fillRect(0, 160, W, H - 160);\nfor (let i = 0; i < 40; i++) { const y = 164 + rnd() * 290; g.strokeStyle = 'rgba(' + (rnd() > 0.5 ? '255,255,255' : '0,0,30') + ',0.04)'; g.lineWidth = 1 + rnd() * 2; g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(100, y + 3, 280, y - 3, W, y + 2); g.stroke(); }\n// painted ring and star insert in the middle\ng.beginPath(); g.arc(195, 292, 74, 0, 7); g.strokeStyle = 'rgba(255,170,40,0.55)'; g.lineWidth = 5; g.stroke(); g.beginPath(); g.arc(195, 292, 66, 0, 7); g.strokeStyle = 'rgba(255,255,255,0.2)'; g.lineWidth = 1.5; g.stroke();\nconst star = (cx, cy, r, col) => { g.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r * 0.45 : r; g.lineTo(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad); } g.closePath(); g.fillStyle = col; g.fill(); };\nstar(195, 340, 20, 'rgba(255,200,60,0.55)'); star(100, 270, 10, 'rgba(255,70,120,0.6)'); star(290, 270, 10, 'rgba(60,220,255,0.6)');\n// rollover lanes\nfor (const x of [150, 195, 240]) { rr(g, x - 9, 170, 18, 34, 9); g.fillStyle = 'rgba(0,0,20,0.55)'; g.fill(); rr(g, x - 4, 176, 8, 22, 4); const q = g.createLinearGradient(0, 176, 0, 198); q.addColorStop(0, '#fff1a0'); q.addColorStop(1, '#ffb020'); g.fillStyle = q; g.fill(); }\n// inserts: arrows\nfor (const [x, y, a] of [[84, 246, 0.5], [306, 246, -0.5], [195, 252, 0]]) { g.save(); g.translate(x, y); g.rotate(a); g.beginPath(); g.moveTo(0, -12); g.lineTo(9, 6); g.lineTo(0, 1); g.lineTo(-9, 6); g.closePath(); g.fillStyle = 'rgba(255,230,120,0.7)'; g.shadowColor = '#ffd040'; g.shadowBlur = 6; g.fill(); g.restore(); }\n// mushroom bumpers (unlit bodies)\nfor (const [x, y, c0, c1] of BUMP) { g.save(); g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 8; g.shadowOffsetY = 5; g.beginPath(); g.arc(x, y, BR + 3, 0, 7); g.fillStyle = '#9a9ea8'; g.fill(); g.restore();\n  g.beginPath(); g.arc(x, y, BR + 3, 0, 7); g.fillStyle = CHROME(g, x - 26, y - 26, x + 26, y + 26); g.fill();\n  g.beginPath(); g.arc(x, y, BR - 2, 0, 7); const q = g.createRadialGradient(x - 8, y - 9, 2, x, y, BR); q.addColorStop(0, c1); q.addColorStop(0.5, c0); q.addColorStop(1, '#10101a'); g.fillStyle = q; g.fill();\n  g.beginPath(); g.arc(x, y, 11, 0, 7); const q2 = g.createRadialGradient(x - 3, y - 4, 1, x, y, 11); q2.addColorStop(0, '#ffffff'); q2.addColorStop(1, c0); g.fillStyle = q2; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.5)'; g.lineWidth = 1; g.stroke(); }\n// slingshots (rubber triangles) and posts\nconst sling = (pts) => { g.save(); g.shadowColor = 'rgba(0,0,0,0.5)'; g.shadowBlur = 5; g.shadowOffsetY = 3; g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.closePath(); g.fillStyle = '#0a1a48'; g.fill(); g.restore(); g.strokeStyle = '#ff3a4a'; g.lineWidth = 4; g.lineJoin = 'round'; g.stroke(); g.strokeStyle = 'rgba(255,200,200,0.6)'; g.lineWidth = 1; g.stroke(); for (const [x, y] of pts) { g.beginPath(); g.arc(x, y, 5, 0, 7); const q = g.createRadialGradient(x - 1.5, y - 1.5, 0.5, x, y, 5); q.addColorStop(0, '#fff'); q.addColorStop(1, '#9aa0ac'); g.fillStyle = q; g.fill(); } };\nsling([[56, 316], [56, 368], [102, 386]]); sling([[334, 316], [334, 368], [288, 386]]);\n// inlane / outlane guides: chrome wire\nconst wire = (pts) => { g.save(); g.shadowColor = 'rgba(0,0,0,0.55)'; g.shadowBlur = 4; g.shadowOffsetY = 2; g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = '#6a707c'; g.lineWidth = 5; g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke(); g.shadowColor = 'transparent'; g.strokeStyle = CHROME(g, 0, 300, 0, 420); g.lineWidth = 3; g.stroke(); g.restore(); };\nwire([[34, 300], [34, 398], [100, 424]]); wire([[356, 300], [356, 398], [290, 424]]); wire([[18, 270], [34, 300]]); wire([[372, 270], [356, 300]]);\n// steps plate\ng.save(); g.shadowColor = 'rgba(0,0,0,0.55)'; g.shadowBlur = 6; g.shadowOffsetY = 3; rr(g, 125, 266, 140, 50, 8); g.fillStyle = CHROME(g, 125, 266, 265, 316); g.fill(); g.restore();\nrr(g, 129, 270, 132, 42, 6); gr = g.createLinearGradient(0, 270, 0, 312); gr.addColorStop(0, '#0b0503'); gr.addColorStop(1, '#190a05'); g.fillStyle = gr; g.fill(); g.fillStyle = '#ffb04a'; g.font = '700 7.5px \"Helvetica Neue\", Arial, sans-serif'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText('BONUS', 137, 278);\n// side rails (chrome) and wooden outer frame\nfor (const x of [0, 372]) { const q = g.createLinearGradient(x, 0, x + 18, 0); q.addColorStop(0, '#5a606c'); q.addColorStop(0.35, '#f6f8fc'); q.addColorStop(0.7, '#a6adba'); q.addColorStop(1, '#4a505c'); g.save(); g.shadowColor = 'rgba(0,0,0,0.55)'; g.shadowBlur = 8; g.fillStyle = q; g.fillRect(x, 160, 18, H - 160); g.restore(); }\n// drain shadow\ngr = g.createLinearGradient(0, 424, 0, H); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,10,0.7)'); g.fillStyle = gr; g.fillRect(0, 424, W, H - 424);\nnames.push(addProjectImage('scene.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Machine'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "day"
+  },
+  {
+   "preset": "month"
+  },
+  {
+   "preset": "battery"
+  },
+  {
+   "preset": "temp"
+  },
+  {
+   "preset": "steps"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; ['Hour','Colon','Minute'].forEach((nm,i)=>{ project.elements[n-3+i].name = nm + ' Aod'; }); return 1"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 55; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };\nconst CHROME = (g, x0, y0, x1, y1) => { const q = g.createLinearGradient(x0, y0, x1, y1); q.addColorStop(0, '#fbfcff'); q.addColorStop(0.25, '#aeb4c0'); q.addColorStop(0.5, '#f2f4f8'); q.addColorStop(0.75, '#7b808c'); q.addColorStop(1, '#d4d8e0'); return q; };\nconst BUMP = [[120, 225, '#e8283c', '#ff8a96'], [195, 198, '#ffc61a', '#fff0a0'], [270, 225, '#2a8cff', '#9ad0ff']];\nconst BR = 24, BALL = 9, FL = [122, 404], FR = [268, 404], FLEN = 56;\n\nconst N = 48, OY = 156, OH = 286;\nconst P = [[219, 398], [296, 336], [338, 252], [302, 214], [230, 203], [152, 216], [88, 262], [76, 304], [100, 350], [146, 384], [190, 332], [196, 266], [196, 232], [234, 296], [212, 376]];\nconst cr = (p0, p1, p2, p3, t) => [0, 1].map((i) => 0.5 * ((2 * p1[i]) + (-p0[i] + p2[i]) * t + (2 * p0[i] - 5 * p1[i] + 4 * p2[i] - p3[i]) * t * t + (-p0[i] + 3 * p1[i] - 3 * p2[i] + p3[i]) * t * t * t));\nconst at = (u) => { const n = P.length, f = ((u % 1) + 1) % 1 * n, i = Math.floor(f), t = f - i; return cr(P[(i + n - 1) % n], P[i % n], P[(i + 1) % n], P[(i + 2) % n], t); };\nconst pos = Array.from({ length: N }, (_, k) => at(k / N));\nconst lit = pos.map((p) => BUMP.map(([x, y]) => clamp(1 - (Math.hypot(p[0] - x, p[1] - y) - (BR + BALL + 3)) / 14, 0, 1)));\nconst flipper = (g, pivot, dir, up) => { g.save(); g.translate(pivot[0], pivot[1]); g.rotate(dir * (up ? -0.52 : 0.5)); g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 6; g.shadowOffsetY = 4; g.beginPath(); g.moveTo(0, -8); g.lineTo(dir * FLEN, -4); g.arc(dir * FLEN, 0, 4, -Math.PI / 2, Math.PI / 2, dir < 0); g.lineTo(0, 8); g.arc(0, 0, 8, Math.PI / 2, -Math.PI / 2, dir > 0 ? false : true); g.closePath(); const q = g.createLinearGradient(0, -8, 0, 8); q.addColorStop(0, '#ff7a86'); q.addColorStop(0.5, '#e8283c'); q.addColorStop(1, '#7a0a18'); g.fillStyle = q; g.fill(); g.shadowColor = 'transparent'; g.strokeStyle = 'rgba(255,255,255,0.45)'; g.lineWidth = 1; g.stroke(); g.beginPath(); g.arc(0, 0, 4, 0, 7); g.fillStyle = CHROME(g, -4, -4, 4, 4); g.fill(); g.restore(); };\nfor (let k = 0; k < N; k++) {\n  const c = mk(W, OH), g = c.getContext('2d'); g.translate(0, -OY);\n  // bumper hits: ring flash, bright cap, sparks\n  BUMP.forEach(([x, y, c0, c1], i) => { const a = Math.max(lit[k][i], 0.55 * lit[(k + N - 1) % N][i]); if (a <= 0.02) return;\n    g.save(); g.globalCompositeOperation = 'lighter'; let q = g.createRadialGradient(x, y, 8, x, y, 50); q.addColorStop(0, 'rgba(255,255,255,' + 0.55 * a + ')'); q.addColorStop(0.4, c1 + Math.round(a * 110 + 20).toString(16).padStart(2, '0')); q.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = q; g.beginPath(); g.arc(x, y, 50, 0, 7); g.fill();\n    g.beginPath(); g.arc(x, y, 11, 0, 7); g.fillStyle = 'rgba(255,255,255,' + 0.8 * a + ')'; g.fill(); g.restore();\n    for (let s = 0; s < 8; s++) { const ang = s * Math.PI / 4 + i, d = 30 + 8 * (1 - a); g.strokeStyle = 'rgba(255,240,170,' + a + ')'; g.lineWidth = 1.6; g.beginPath(); g.moveTo(x + Math.cos(ang) * d, y + Math.sin(ang) * d); g.lineTo(x + Math.cos(ang) * (d + 8), y + Math.sin(ang) * (d + 8)); g.stroke(); } });\n  const b = pos[k], nx = pos[(k + 1) % N];\n  const lUp = b[1] > 366 && b[0] < 200, rUp = b[1] > 366 && b[0] >= 200;\n  flipper(g, FL, 1, lUp); flipper(g, FR, -1, rUp);\n  // ball with a short trail\n  for (let t = 3; t >= 0; t--) { const p = pos[(k + N - t) % N]; if (t) { g.beginPath(); g.arc(p[0], p[1], BALL * (1 - t * 0.12), 0, 7); g.fillStyle = 'rgba(220,230,255,' + (0.1 - t * 0.02) + ')'; g.fill(); } }\n  g.save(); g.shadowColor = 'rgba(0,0,0,0.55)'; g.shadowBlur = 5; g.shadowOffsetX = 3; g.shadowOffsetY = 5; g.beginPath(); g.arc(b[0], b[1], BALL, 0, 7); g.fillStyle = '#555a66'; g.fill(); g.restore();\n  const q = g.createRadialGradient(b[0] - 3, b[1] - 3.5, 0.8, b[0], b[1], BALL * 1.05); q.addColorStop(0, '#ffffff'); q.addColorStop(0.3, '#c9ced8'); q.addColorStop(0.75, '#4c5260'); q.addColorStop(1, '#15171d'); g.beginPath(); g.arc(b[0], b[1], BALL, 0, 7); g.fillStyle = q; g.fill();\n  g.beginPath(); g.ellipse(b[0] + 1.5, b[1] + 4, 4.5, 1.8, 0, 0, 7); g.fillStyle = 'rgba(160,200,255,0.4)'; g.fill();\n  g.beginPath(); g.arc(b[0] - 3, b[1] - 3.5, 1.6, 0, 7); g.fillStyle = 'rgba(255,255,255,0.95)'; g.fill();\n  names.push(addProjectImage('anim/play_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG_ANIM', { frames: names, fps: 12, animPrefix: 'play', repeat: 0 }); e.name = 'Ball and flippers'; e.frames = names; e.x = 0; e.y = 156; e.show = 'normal'; return names.length"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 55; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };\nconst CHROME = (g, x0, y0, x1, y1) => { const q = g.createLinearGradient(x0, y0, x1, y1); q.addColorStop(0, '#fbfcff'); q.addColorStop(0.25, '#aeb4c0'); q.addColorStop(0.5, '#f2f4f8'); q.addColorStop(0.75, '#7b808c'); q.addColorStop(1, '#d4d8e0'); return q; };\nconst BUMP = [[120, 225, '#e8283c', '#ff8a96'], [195, 198, '#ffc61a', '#fff0a0'], [270, 225, '#2a8cff', '#9ad0ff']];\nconst BR = 24, BALL = 9, FL = [122, 404], FR = [268, 404], FLEN = 56;\n\nconst c = mk(W, 292), g = c.getContext('2d');\nlet q = g.createLinearGradient(0, 0, 300, 292); q.addColorStop(0, 'rgba(255,255,255,0.16)'); q.addColorStop(0.3, 'rgba(255,255,255,0.04)'); q.addColorStop(0.32, 'rgba(255,255,255,0)'); g.fillStyle = q; g.beginPath(); g.moveTo(0, 0); g.lineTo(260, 0); g.lineTo(80, 292); g.lineTo(0, 292); g.closePath(); g.fill();\nq = g.createLinearGradient(0, 0, 0, 22); q.addColorStop(0, 'rgba(255,255,255,0.18)'); q.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = q; g.fillRect(0, 0, W, 22);\nnames.push(addProjectImage('glare.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Glass glare'; e.src = names[0]; e.x = 0; e.y = 158; e.show = 'normal'; return 1"
+  },
+  {
+   "edit": "Hour",
+   "set": {
+    "x": 86,
+    "y": 58,
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 64,
+    "weight": 700,
+    "fill": "solid",
+    "color": "#ff9a24",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Colon",
+   "set": {
+    "x": 196,
+    "y": 64
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 64,
+    "weight": 700,
+    "fill": "solid",
+    "color": "#ff9a24",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Minute",
+   "set": {
+    "x": 230,
+    "y": 58,
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 64,
+    "weight": 700,
+    "fill": "solid",
+    "color": "#ff9a24",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 52,
+    "y": 118
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 20,
+    "weight": 600,
+    "fill": "solid",
+    "color": "#ffc15a",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Day",
+   "set": {
+    "x": 112,
+    "y": 118,
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 20,
+    "weight": 600,
+    "fill": "solid",
+    "color": "#ffc15a",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Month",
+   "set": {
+    "x": 154,
+    "y": 118,
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 20,
+    "weight": 600,
+    "fill": "solid",
+    "color": "#ffc15a",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Temperature",
+   "set": {
+    "x": 218,
+    "y": 118
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 20,
+    "weight": 600,
+    "fill": "solid",
+    "color": "#ffc15a",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Battery",
+   "set": {
+    "x": 276,
+    "y": 118
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 20,
+    "weight": 600,
+    "fill": "solid",
+    "color": "#ffc15a",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Steps",
+   "set": {
+    "x": 133,
+    "y": 284,
+    "alignH": "LEFT"
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 28,
+    "weight": 700,
+    "fill": "solid",
+    "color": "#ff9a24",
+    "shadowColor": "#ff6a00",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 7
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 70,
+    "y": 120,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 130,
+    "weight": 700,
+    "fill": "solid",
+    "color": "#8a5a22"
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 70,
+    "y": 260,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Doto",
+    "size": 130,
+    "weight": 700,
+    "fill": "solid",
+    "color": "#8a5a22"
+   }
+  }
+ ]
+}
