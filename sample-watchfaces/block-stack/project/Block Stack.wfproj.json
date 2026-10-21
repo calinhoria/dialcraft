@@ -2,7 +2,7 @@
   "version": 1,
   "name": "Block Stack",
   "device": "bip-6",
-  "appId": 2888684,
+  "appId": 2667710,
   "vender": "dialcraft",
   "description": "Falling blocks, built from real materials: the time is spelled in oak, walnut, brushed steel and copper blocks on a board-formed concrete wall, with a steel-framed well where a walnut piece keeps landing on a stack of metal, wood and concrete.",
   "font": "Barlow Condensed",
@@ -11,7 +11,7 @@
   "groups": {},
   "elements": [
     {
-      "id": "elmvi1rjss19e",
+      "id": "elmvi20co277a",
       "kind": "FILL_RECT",
       "name": "Background",
       "x": 0,
@@ -28,7 +28,7 @@
       "angle": 0
     },
     {
-      "id": "elmvi1rjyj5i5",
+      "id": "elmvi20cry1ug",
       "kind": "IMG",
       "name": "Scene",
       "x": 0,
@@ -46,7 +46,7 @@
       "src": "scene.png"
     },
     {
-      "id": "elmvi1rk13ed",
+      "id": "elmvi20cttya",
       "kind": "IMG_TIME",
       "name": "Hour",
       "x": 22,
@@ -82,7 +82,7 @@
       "glyph": null
     },
     {
-      "id": "elmvi1rk1322i",
+      "id": "elmvi20ctt2ek",
       "kind": "IMG_TIME",
       "name": "Minute",
       "x": 222,
@@ -118,7 +118,7 @@
       "glyph": null
     },
     {
-      "id": "elmvi1rk1hle",
+      "id": "elmvi20cu75kl",
       "kind": "TEXT_IMG",
       "name": "Steps",
       "x": 34,
@@ -170,7 +170,7 @@
       }
     },
     {
-      "id": "elmvi1rk1w2ot",
+      "id": "elmvi20cuh37i",
       "kind": "IMG_DATE",
       "name": "Day",
       "x": 184,
@@ -222,7 +222,7 @@
       }
     },
     {
-      "id": "elmvi1rk254xa",
+      "id": "elmvi20cuq29l",
       "kind": "IMG_DATE",
       "name": "Month",
       "x": 228,
@@ -274,7 +274,7 @@
       }
     },
     {
-      "id": "elmvi1rk2s2b4",
+      "id": "elmvi20cva5br",
       "kind": "TEXT_IMG",
       "name": "Temperature",
       "x": 304,
@@ -326,7 +326,7 @@
       }
     },
     {
-      "id": "elmvi1rk338o",
+      "id": "elmvi20cvk22r",
       "kind": "IMG_WEEK",
       "name": "Weekday",
       "x": 324,
@@ -369,7 +369,7 @@
       }
     },
     {
-      "id": "elmvi1rk414hq",
+      "id": "elmvi20cwh1oy",
       "kind": "IMG_TIME",
       "name": "Hour Aod",
       "x": 70,
@@ -426,7 +426,7 @@
       }
     },
     {
-      "id": "elmvi1rk417le",
+      "id": "elmvi20cwh71d",
       "kind": "IMG_TIME",
       "name": "Minute Aod",
       "x": 70,
@@ -483,7 +483,7 @@
       }
     },
     {
-      "id": "elmvi1rka35xi",
+      "id": "elmvi20d2w6ht",
       "kind": "IMG",
       "name": "Colon",
       "x": 172,
@@ -501,7 +501,7 @@
       "src": "blk/colon.png"
     },
     {
-      "id": "elmvi1rkae3ba",
+      "id": "elmvi20d392jl",
       "kind": "BAR",
       "name": "Battery gauge",
       "x": 48,
@@ -522,7 +522,7 @@
       "level": 0
     },
     {
-      "id": "elmvi1rkdm7jk",
+      "id": "elmvi20dkz3u",
       "kind": "IMG_ANIM",
       "name": "Falling piece",
       "x": 85,
@@ -572,9 +572,49 @@
         "anim/fall_36.png",
         "anim/fall_37.png",
         "anim/fall_38.png",
-        "anim/fall_39.png"
+        "anim/fall_39.png",
+        "anim/fall_40.png",
+        "anim/fall_41.png",
+        "anim/fall_42.png",
+        "anim/fall_43.png",
+        "anim/fall_44.png",
+        "anim/fall_45.png",
+        "anim/fall_46.png",
+        "anim/fall_47.png",
+        "anim/fall_48.png",
+        "anim/fall_49.png",
+        "anim/fall_50.png",
+        "anim/fall_51.png",
+        "anim/fall_52.png",
+        "anim/fall_53.png",
+        "anim/fall_54.png",
+        "anim/fall_55.png",
+        "anim/fall_56.png",
+        "anim/fall_57.png",
+        "anim/fall_58.png",
+        "anim/fall_59.png",
+        "anim/fall_60.png",
+        "anim/fall_61.png",
+        "anim/fall_62.png",
+        "anim/fall_63.png",
+        "anim/fall_64.png",
+        "anim/fall_65.png",
+        "anim/fall_66.png",
+        "anim/fall_67.png",
+        "anim/fall_68.png",
+        "anim/fall_69.png",
+        "anim/fall_70.png",
+        "anim/fall_71.png",
+        "anim/fall_72.png",
+        "anim/fall_73.png",
+        "anim/fall_74.png",
+        "anim/fall_75.png",
+        "anim/fall_76.png",
+        "anim/fall_77.png",
+        "anim/fall_78.png",
+        "anim/fall_79.png"
       ],
-      "fps": 8,
+      "fps": 10,
       "repeat": 0,
       "step": 1,
       "animPrefix": "fall"
@@ -997,6 +1037,206 @@
       "height": 264
     },
     {
+      "name": "anim/fall_40.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_41.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_42.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_43.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_44.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_45.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_46.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_47.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_48.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_49.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_50.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_51.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_52.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_53.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_54.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_55.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_56.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_57.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_58.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_59.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_60.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_61.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_62.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_63.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_64.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_65.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_66.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_67.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_68.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_69.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_70.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_71.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_72.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_73.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_74.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_75.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_76.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_77.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_78.png",
+      "width": 220,
+      "height": 264
+    },
+    {
+      "name": "anim/fall_79.png",
+      "width": 220,
+      "height": 264
+    },
+    {
       "name": "font_2_0.png",
       "width": 18,
       "height": 26
@@ -1247,5 +1487,6 @@
       "height": 119
     }
   ],
-  "savePath": null
+  "savePath": null,
+  "optimizePng": true
 }

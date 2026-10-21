@@ -80,8 +80,6 @@ g.fillStyle = '#17181b'; g.fillRect(WX, WY, COLS * CS, ROWS * CS);
 const wall = g.createLinearGradient(0, WY, 0, WY + ROWS * CS); wall.addColorStop(0, '#202125'); wall.addColorStop(1, '#101113'); g.fillStyle = wall; g.fillRect(WX, WY, COLS * CS, ROWS * CS);
 for (let i = 0; i < 1400; i++) { g.fillStyle = 'rgba(' + (rnd() > 0.5 ? '255,255,255' : '0,0,0') + ',' + (0.03 + rnd() * 0.05) + ')'; g.fillRect(WX + rnd() * COLS * CS, WY + rnd() * ROWS * CS, 1, 1); }
 g.strokeStyle = 'rgba(255,255,255,0.045)'; g.lineWidth = 1; for (let i = 1; i < COLS; i++) { g.beginPath(); g.moveTo(WX + i * CS + 0.5, WY); g.lineTo(WX + i * CS + 0.5, WY + ROWS * CS); g.stroke(); } for (let j = 1; j < ROWS; j++) { g.beginPath(); g.moveTo(WX, WY + j * CS + 0.5); g.lineTo(WX + COLS * CS, WY + j * CS + 0.5); g.stroke(); }
-// the settled stack
-STACK.forEach((row, ri) => [...row].forEach((ch, ci) => { if (ch === '.') return; const m = PIECE[ch], x = WX + ci * CS, y = WY + (ROWS - STACK.length + ri) * CS; g.save(); g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 5; g.shadowOffsetY = 2; g.drawImage(tile(m, CS), x, y); g.restore(); }));
 // inner shadow at the top of the well
 const ish = g.createLinearGradient(0, WY, 0, WY + 22); ish.addColorStop(0, 'rgba(0,0,0,0.55)'); ish.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = ish; g.fillRect(WX, WY, COLS * CS, 22);
 names.push(addProjectImage('scene.png', c, {}).name);
@@ -96,21 +94,58 @@ for (const part of ['hour', 'minute']) for (let n = 0; n < 10; n++) {
 { const c = mk(34, DH), g = c.getContext('2d'); for (const ry of [2, 4]) { g.save(); g.shadowColor = 'rgba(0,0,0,0.65)'; g.shadowBlur = 5; g.shadowOffsetX = 2; g.shadowOffsetY = 3; g.drawImage(tile('copper', CSZ), 10, 2 + ry * CSZ); g.restore(); } names.push(addProjectImage('blk/colon.png', c, {}).name); }
 `;
 const fallJS = pre + `
-const N = 40, FW = COLS * CS, FH = ROWS * CS;
-// a walnut J piece falls column by column and locks on the stack
-const cells = [[0, 0], [0, 1], [1, 1], [2, 1]].map(([dx, dy]) => [5 + dx, dy]);     // col, row (top-left based)
-const tiles = cells.map(() => tile('walnut', CS));
-const landRow = 8;                                                                    // top row of the piece when it rests (its lower cells are on row 9, above the stack)
-for (let k = 0; k < N; k++) {
-  const c = mk(FW, FH), g = c.getContext('2d');
-  const fallFrames = 22, stepRow = Math.floor(k / 2), locked = k >= fallFrames, gone = k >= fallFrames + 6, fade = k >= fallFrames + 3;
-  if (k < fallFrames + 6) {
-    const row = locked ? landRow : Math.min(stepRow - 2, landRow);
-    cells.forEach(([cx, cy], i) => { const x = cx * CS, y = (row + cy) * CS; g.save(); g.globalAlpha = fade ? 1 - (k - fallFrames - 3) / 3 : 1; g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 5; g.shadowOffsetY = 2; g.drawImage(tiles[i], x, y); g.restore();
-      if (locked && !fade) { g.fillStyle = 'rgba(255,255,255,0.35)'; g.fillRect(x, y, CS, CS); } });
-  }
-  names.push(addProjectImage('anim/fall_' + k + '.png', c, {}).name);
+const FW = COLS * CS, FH = ROWS * CS;
+const SH = { I_h: [[0, 0], [1, 0], [2, 0], [3, 0]], I_v: [[0, 0], [0, 1], [0, 2], [0, 3]], O: [[0, 0], [1, 0], [0, 1], [1, 1]] };
+const board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+const frames = [];
+let uid = 1;
+const cellsNow = () => { const out = []; for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (board[r][c]) out.push({ r, c, cell: board[r][c], dy: 0 }); return out; };
+const collide = (shape, x, y) => SH[shape].some(([dx, dy]) => { const c = x + dx, r = y + dy; return c < 0 || c >= COLS || r >= ROWS || (r >= 0 && board[r][c]); });
+const landY = (shape, x, y) => { while (!collide(shape, x, y + 1)) y++; return y; };
+let mark = 0;
+function dropPiece(mat, shape, x, y, rotAt, targetX) {
+  const tiles = Array.from({ length: 4 }, () => tile(mat, CS));
+  const push = (flash) => frames.push({ cells: cellsNow(), piece: { shape, x, y, tiles, flash } });
+  if (rotAt != null) { while (y < rotAt) { push(); y++; } shape = 'I_h'; x -= 1; y += 1; }
+  while (x !== targetX) { push(); x += Math.sign(targetX - x); y++; }
+  const ly = landY(shape, x, y);
+  while (y < ly) { push(); y = Math.min(y + (y < 3 ? 1 : 2), ly); }
+  push();
+  push(true);
+  SH[shape].forEach(([dx, dy], i) => { board[y + dy][x + dx] = { id: uid++, tile: tiles[i] }; });
 }
+function clearFullRows() {
+  const full = []; for (let r = 0; r < ROWS; r++) if (board[r].every(Boolean)) full.push(r);
+  if (!full.length) return;
+  const bright = () => cellsNow().map((o) => full.includes(o.r) ? { ...o, flash: true } : o);
+  frames.push({ cells: bright() });
+  const T = 8;
+  for (let i = 1; i <= T; i++) frames.push({ cells: cellsNow().map((o) => full.includes(o.r) ? { ...o, dis: i / T } : o), sparks: { rows: full, t: i / T } });
+  for (const r of full) for (let c = 0; c < COLS; c++) board[r][c] = null;
+  // what sat above the cleared rows drops down, first halfway, then onto the stack
+  for (const r of full) {
+    frames.push({ cells: cellsNow().map((o) => o.r < r ? { ...o, dy: 0.5 } : o) });
+    for (let rr = r - 1; rr >= 0; rr--) for (let c = 0; c < COLS; c++) { board[rr + 1][c] = board[rr][c]; board[rr][c] = null; }
+  }
+}
+const piece = (mat, shape, x, y, rotAt, tx) => { dropPiece(mat, shape, x, y, rotAt, tx); clearFullRows(); };
+piece('steel', 'I_v', 4, -4, 1, 0);
+piece('oak', 'O', 4, -2, null, 4);
+mark = frames.length;   // the animation starts here, so the still preview shows a stack
+piece('copper', 'I_h', 3, -1, null, 6);
+piece('concrete', 'I_v', 2, -4, 1, 0);
+piece('rust', 'I_h', 3, -1, null, 6);
+for (let i = 0; i < 4; i++) frames.push({ cells: cellsNow() });
+const dissolve = (t, id, tl) => { const c = mk(CS, CS), g = c.getContext('2d'); g.drawImage(tl, 0, 0); const im = g.getImageData(0, 0, CS, CS), d = im.data, thr = t * 1.3; for (let y = 0; y < CS; y++) for (let x = 0; x < CS; x++) { const n = h2(x * 1.7, y * 1.3, id), i = (y * CS + x) * 4; if (n < thr - 0.16) d[i + 3] = 0; else if (n < thr) { const k = (n - (thr - 0.16)) / 0.16; d[i] = 255; d[i + 1] = 150 + 90 * k; d[i + 2] = 60 + 60 * k; d[i + 3] = 255 * (0.4 + 0.6 * k); } } g.putImageData(im, 0, 0); return c; };
+const order = frames.map((_, i) => (i + mark) % frames.length);
+order.forEach((fi, k) => {
+  const f = frames[fi], c = mk(FW, FH), g = c.getContext('2d');
+  const put = (tl, x, y, flash) => { g.save(); g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 5; g.shadowOffsetY = 2; g.drawImage(tl, x, y); g.restore(); if (flash) { g.fillStyle = 'rgba(255,255,255,0.55)'; g.fillRect(x, y, CS, CS); } };
+  for (const o of f.cells) { const x = o.c * CS, y = (o.r + (o.dy || 0)) * CS; if (o.dis != null) { g.drawImage(dissolve(o.dis, o.cell.id, o.cell.tile), x, y); } else put(o.cell.tile, x, y, o.flash); }
+  if (f.piece) SH[f.piece.shape].forEach(([dx, dy], i) => { const x = (f.piece.x + dx) * CS, y = (f.piece.y + dy) * CS; if (y > -CS) put(f.piece.tiles[i], x, y, f.piece.flash); });
+  if (f.sparks) for (const r of f.sparks.rows) for (let i = 0; i < 46; i++) { const sx = (i / 46) * FW + h2(i, 3, 5) * 8, sy0 = r * CS + h2(i, 9, 7) * CS, t = f.sparks.t, y = sy0 - t * (20 + h2(i, 4, 2) * 40), x = sx + (h2(i, 6, 1) - 0.5) * 24 * t, a = Math.max(0, 1 - t) * (0.4 + 0.6 * h2(i, 8, 3)); g.fillStyle = h2(i, 1, 1) > 0.5 ? 'rgba(255,200,110,' + a + ')' : 'rgba(190,190,190,' + a * 0.8 + ')'; g.fillRect(x, y, 1.5 + h2(i, 2, 2) * 2, 1.5 + h2(i, 2, 8) * 2); }
+  names.push(addProjectImage('anim/fall_' + k + '.png', c, {}).name);
+});
 `;
 const wrap = (body, tail) => ({ script: `${body}\nawait loadAllImages();\n${tail}` });
 const F = 'Barlow Condensed';
@@ -126,7 +161,7 @@ const steps = [{ preset: 'bg' },
     project.elements = project.elements.filter((q) => q.name !== 'Colon');
     const ce = await addElement('IMG', { src: colon }); ce.name = 'Colon'; ce.src = colon; ce.x = 172; ce.y = 22; ce.show = 'normal'; return 1`),
   { add: 'BAR', name: 'Battery gauge', patch: { dataType: 'BATTERY' }, set: { x: 48, y: 262, length: 156, lineWidth: 14, vertical: true, inversion: true, color: '#ffb02e', show: 'normal' } },
-  wrap(fallJS, `const e = await addElement('IMG_ANIM', { frames: names, fps: 8, animPrefix: 'fall', repeat: 0 }); e.name = 'Falling piece'; e.frames = names; e.x = 85; e.y = 164; e.show = 'normal'; return names.length`),
+  wrap(fallJS, `const e = await addElement('IMG_ANIM', { frames: names, fps: 10, animPrefix: 'fall', repeat: 0 }); e.name = 'Falling piece'; e.frames = names; e.x = 85; e.y = 164; e.show = 'normal'; return names.length`),
 ];
 const ink = (size, color, extra) => ({ font: F, size, weight: 700, fill: 'solid', color, shadowColor: '#e8ecf2', shadowX: 0, shadowY: 1, shadowBlur: 0, ...extra });
 steps.push(
@@ -138,4 +173,4 @@ steps.push(
   { edit: 'Hour Aod', set: { x: 70, y: 120, show: 'aod', zero: 1 }, glyph: { font: F, size: 150, weight: 700, fill: 'solid', color: '#80858c' } },
   { edit: 'Minute Aod', set: { x: 70, y: 260, show: 'aod', zero: 1 }, glyph: { font: F, size: 150, weight: 700, fill: 'solid', color: '#80858c' } },
 );
-fs.writeFileSync('recipe.json', JSON.stringify({ name: 'Block Stack', device: 'bip-6', font: F, description: 'Falling blocks, built from real materials: the time is spelled in oak, walnut, brushed steel and copper blocks on a board-formed concrete wall, with a steel-framed well where a walnut piece keeps landing on a stack of metal, wood and concrete.', preview: 'preview.png', previewAod: 'preview-aod.png', save: 'project', out: 'out/block-stack', steps }, null, 1));
+fs.writeFileSync('recipe.json', JSON.stringify({ name: 'Block Stack', device: 'bip-6', font: F, description: 'Falling blocks, built from real materials: the time is spelled in oak, walnut, brushed steel and copper blocks on a board-formed concrete wall, with a steel-framed well where a walnut piece keeps landing on a stack of metal, wood and concrete.', preview: 'preview.png', previewAod: 'preview-aod.png', save: 'project', optimizePng: true, out: 'out/block-stack', steps }, null, 1));

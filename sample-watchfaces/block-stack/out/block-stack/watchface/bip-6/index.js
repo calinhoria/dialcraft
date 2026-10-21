@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Hour_13ed = [
+const img_Hour_ttya = [
   A('blk/hour_0.png'),
   A('blk/hour_1.png'),
   A('blk/hour_2.png'),
@@ -27,7 +27,7 @@ const img_Hour_13ed = [
   A('blk/hour_9.png'),
 ]
 
-const img_Minute_322i = [
+const img_Minute_t2ek = [
   A('blk/minute_0.png'),
   A('blk/minute_1.png'),
   A('blk/minute_2.png'),
@@ -40,7 +40,7 @@ const img_Minute_322i = [
   A('blk/minute_9.png'),
 ]
 
-const img_Steps_1hle = [
+const img_Steps_75kl = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -53,7 +53,7 @@ const img_Steps_1hle = [
   A('font_2_9.png'),
 ]
 
-const img_Day_w2ot = [
+const img_Day_h37i = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -66,7 +66,7 @@ const img_Day_w2ot = [
   A('font_3_9.png'),
 ]
 
-const img_Month_54xa = [
+const img_Month_q29l = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -79,7 +79,7 @@ const img_Month_54xa = [
   A('font_4_9.png'),
 ]
 
-const img_Temperature_s2b4 = [
+const img_Temperature_a5br = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -92,7 +92,7 @@ const img_Temperature_s2b4 = [
   A('font_5_9.png'),
 ]
 
-const img_Weekday_338o = [
+const img_Weekday_k22r = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -102,7 +102,7 @@ const img_Weekday_338o = [
   A('week_w7.png'),
 ]
 
-const img_Hour_Aod_14hq = [
+const img_Hour_Aod_h1oy = [
   A('font_6_0.png'),
   A('font_6_1.png'),
   A('font_6_2.png'),
@@ -115,7 +115,7 @@ const img_Hour_Aod_14hq = [
   A('font_6_9.png'),
 ]
 
-const img_Minute_Aod_17le = [
+const img_Minute_Aod_h71d = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -155,7 +155,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_13ed,
+      hour_array: img_Hour_ttya,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -167,7 +167,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_322i,
+      minute_array: img_Minute_t2ek,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -177,7 +177,7 @@ WatchFace({
       x: px(34),
       y: px(126),
       type: ui.data_type.STEP,
-      font_array: img_Steps_1hle,
+      font_array: img_Steps_75kl,
       h_space: px(2),
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
@@ -191,9 +191,9 @@ WatchFace({
       day_space: px(-2),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_w2ot,
-      day_sc_array: img_Day_w2ot,
-      day_tc_array: img_Day_w2ot,
+      day_en_array: img_Day_h37i,
+      day_sc_array: img_Day_h37i,
+      day_tc_array: img_Day_h37i,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -205,9 +205,9 @@ WatchFace({
       month_space: px(-2),
       month_align: ui.align.LEFT,
       month_follow: 0,
-      month_en_array: img_Month_54xa,
-      month_sc_array: img_Month_54xa,
-      month_tc_array: img_Month_54xa,
+      month_en_array: img_Month_q29l,
+      month_sc_array: img_Month_q29l,
+      month_tc_array: img_Month_q29l,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -216,7 +216,7 @@ WatchFace({
       x: px(304),
       y: px(126),
       type: ui.data_type.WEATHER_CURRENT,
-      font_array: img_Temperature_s2b4,
+      font_array: img_Temperature_a5br,
       h_space: px(2),
       align_h: ui.align.LEFT,
       unit_en: A('degree.png'),
@@ -230,9 +230,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(324),
       y: px(186),
-      week_en: img_Weekday_338o,
-      week_sc: img_Weekday_338o,
-      week_tc: img_Weekday_338o,
+      week_en: img_Weekday_k22r,
+      week_sc: img_Weekday_k22r,
+      week_tc: img_Weekday_k22r,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -243,7 +243,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Aod_14hq,
+      hour_array: img_Hour_Aod_h1oy,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -255,7 +255,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Aod_17le,
+      minute_array: img_Minute_Aod_h71d,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -292,8 +292,8 @@ WatchFace({
       anim_path: 'images/anim',
       anim_prefix: 'fall',
       anim_ext: 'png',
-      anim_fps: 8,
-      anim_size: 40,
+      anim_fps: 10,
+      anim_size: 80,
       repeat_count: 0,
       step: 1,
       anim_status: ui.anim_status.START,
