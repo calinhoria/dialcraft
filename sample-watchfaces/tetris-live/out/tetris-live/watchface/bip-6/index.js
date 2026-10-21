@@ -15,7 +15,7 @@ import { Battery } from '@zos/sensor'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Hour_v2ri = [
+const img_Hour_03g5 = [
   A('blk/hour_0.png'),
   A('blk/hour_1.png'),
   A('blk/hour_2.png'),
@@ -28,7 +28,7 @@ const img_Hour_v2ri = [
   A('blk/hour_9.png'),
 ]
 
-const img_Minute_cvkl = [
+const img_Minute_b04e = [
   A('blk/minute_0.png'),
   A('blk/minute_1.png'),
   A('blk/minute_2.png'),
@@ -41,7 +41,7 @@ const img_Minute_cvkl = [
   A('blk/minute_9.png'),
 ]
 
-const img_Steps_87et = [
+const img_Steps_d412 = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -54,7 +54,7 @@ const img_Steps_87et = [
   A('font_2_9.png'),
 ]
 
-const img_Day_g3da = [
+const img_Day_l290 = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -67,7 +67,7 @@ const img_Day_g3da = [
   A('font_3_9.png'),
 ]
 
-const img_Month_o517 = [
+const img_Month_s79s = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -80,7 +80,7 @@ const img_Month_o517 = [
   A('font_4_9.png'),
 ]
 
-const img_Temperature_e5gb = [
+const img_Temperature_a1n0 = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -93,7 +93,7 @@ const img_Temperature_e5gb = [
   A('font_5_9.png'),
 ]
 
-const img_Weekday_e7e0 = [
+const img_Weekday_j7g8 = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -103,7 +103,7 @@ const img_Weekday_e7e0 = [
   A('week_w7.png'),
 ]
 
-const img_Hour_Aod_b1st = [
+const img_Hour_Aod_a5vz = [
   A('font_6_0.png'),
   A('font_6_1.png'),
   A('font_6_2.png'),
@@ -116,7 +116,7 @@ const img_Hour_Aod_b1st = [
   A('font_6_9.png'),
 ]
 
-const img_Minute_Aod_ifb2 = [
+const img_Minute_Aod_a4uy = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -159,7 +159,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_v2ri,
+      hour_array: img_Hour_03g5,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -171,7 +171,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_cvkl,
+      minute_array: img_Minute_b04e,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -181,7 +181,7 @@ WatchFace({
       x: px(32),
       y: px(130),
       type: ui.data_type.STEP,
-      font_array: img_Steps_87et,
+      font_array: img_Steps_d412,
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -194,9 +194,9 @@ WatchFace({
       day_space: px(-2),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_g3da,
-      day_sc_array: img_Day_g3da,
-      day_tc_array: img_Day_g3da,
+      day_en_array: img_Day_l290,
+      day_sc_array: img_Day_l290,
+      day_tc_array: img_Day_l290,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -208,9 +208,9 @@ WatchFace({
       month_space: px(-2),
       month_align: ui.align.LEFT,
       month_follow: 0,
-      month_en_array: img_Month_o517,
-      month_sc_array: img_Month_o517,
-      month_tc_array: img_Month_o517,
+      month_en_array: img_Month_s79s,
+      month_sc_array: img_Month_s79s,
+      month_tc_array: img_Month_s79s,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -219,7 +219,7 @@ WatchFace({
       x: px(304),
       y: px(130),
       type: ui.data_type.WEATHER_CURRENT,
-      font_array: img_Temperature_e5gb,
+      font_array: img_Temperature_a1n0,
       h_space: px(3),
       align_h: ui.align.LEFT,
       unit_en: A('degree.png'),
@@ -233,9 +233,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(322),
       y: px(188),
-      week_en: img_Weekday_e7e0,
-      week_sc: img_Weekday_e7e0,
-      week_tc: img_Weekday_e7e0,
+      week_en: img_Weekday_j7g8,
+      week_sc: img_Weekday_j7g8,
+      week_tc: img_Weekday_j7g8,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -246,7 +246,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Aod_b1st,
+      hour_array: img_Hour_Aod_a5vz,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -258,7 +258,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Aod_ifb2,
+      minute_array: img_Minute_Aod_a4uy,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -491,7 +491,7 @@ WatchFace({
         } else place()
       }
       const dissolveRows = (rows) => {
-        for (const r of rows) for (let c = 0; c < COLS; c++) { const cell = board[r][c]; if (cell) cell.w.setProperty(ui.prop.SRC, A('tiles/' + cell.mat + '_d' + (anim - 1) + '.png')) }
+        for (const r of rows) for (let c = 0; c < COLS; c++) { const cell = board[r][c]; if (cell) cell.w.setProperty(ui.prop.MORE, { x: pxv(WX + c * CS), y: pxv(WY + r * CS), src: A('tiles/' + cell.mat + '_d' + (anim - 1) + '.png') }) }
       }
       const tick = () => {
         if (state === 'play') {

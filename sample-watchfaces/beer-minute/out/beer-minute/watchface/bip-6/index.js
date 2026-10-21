@@ -15,7 +15,7 @@ import { Time as DCTime } from '@zos/sensor'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Hour_Main_74rq = [
+const img_Hour_Main_f3hv = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -28,7 +28,7 @@ const img_Hour_Main_74rq = [
   A('font_2_9.png'),
 ]
 
-const img_Minute_Main_772d = [
+const img_Minute_Main_f1t3 = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -41,7 +41,7 @@ const img_Minute_Main_772d = [
   A('font_3_9.png'),
 ]
 
-const img_Hour_Aod_s3sr = [
+const img_Hour_Aod_41z6 = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -54,7 +54,7 @@ const img_Hour_Aod_s3sr = [
   A('font_4_9.png'),
 ]
 
-const img_Minute_Aod_s3o4 = [
+const img_Minute_Aod_g4o1 = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -67,7 +67,7 @@ const img_Minute_Aod_s3o4 = [
   A('font_5_9.png'),
 ]
 
-const img_Weekday_o5ey = [
+const img_Weekday_a4t3 = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -77,7 +77,7 @@ const img_Weekday_o5ey = [
   A('week_w7.png'),
 ]
 
-const img_Day_g6ep = [
+const img_Day_44ai = [
   A('font_6_0.png'),
   A('font_6_1.png'),
   A('font_6_2.png'),
@@ -90,7 +90,7 @@ const img_Day_g6ep = [
   A('font_6_9.png'),
 ]
 
-const img_Temperature_h4f9 = [
+const img_Temperature_d754 = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -134,12 +134,15 @@ WatchFace({
     F.beer = variants_0
 
     // Cover (IMG)
-    W.cover = ui.createWidget(ui.widget.IMG, {
+    const variants_1 = [A('cover_0.png'), A('cover_1.png'), A('cover_2.png'), A('cover_3.png'), A('cover_4.png'), A('cover_5.png'), A('cover_6.png'), A('cover_7.png'), A('cover_8.png'), A('cover_9.png')]
+    const variant_1 = ui.createWidget(ui.widget.IMG, {
       x: px(0),
       y: px(-410),
-      src: A('cover.png'),
+      src: variants_1[variantIdx % variants_1.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
+    W.cover = variant_1
+    F.cover = variants_1
 
     // Hour Main (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
@@ -148,7 +151,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(-20),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Main_74rq,
+      hour_array: img_Hour_Main_f3hv,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -168,7 +171,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(-20),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_772d,
+      minute_array: img_Minute_Main_f1t3,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -180,7 +183,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Aod_s3sr,
+      hour_array: img_Hour_Aod_41z6,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -192,7 +195,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Aod_s3o4,
+      minute_array: img_Minute_Aod_g4o1,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -201,9 +204,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(122),
       y: px(32),
-      week_en: img_Weekday_o5ey,
-      week_sc: img_Weekday_o5ey,
-      week_tc: img_Weekday_o5ey,
+      week_en: img_Weekday_a4t3,
+      week_sc: img_Weekday_a4t3,
+      week_tc: img_Weekday_a4t3,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -215,9 +218,9 @@ WatchFace({
       day_space: px(-24),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_g6ep,
-      day_sc_array: img_Day_g6ep,
-      day_tc_array: img_Day_g6ep,
+      day_en_array: img_Day_44ai,
+      day_sc_array: img_Day_44ai,
+      day_tc_array: img_Day_44ai,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -226,7 +229,7 @@ WatchFace({
       x: px(143),
       y: px(366),
       type: ui.data_type.WEATHER_CURRENT,
-      font_array: img_Temperature_h4f9,
+      font_array: img_Temperature_d754,
       h_space: px(-23),
       align_h: ui.align.LEFT,
       unit_en: A('degree.png'),
@@ -246,12 +249,15 @@ WatchFace({
 
     // a Tap zone set to "Cycle variants" calls this
     const cycleVariants = () => {
-      variantIdx = (variantIdx + 1) % Math.max(variants_0.length)
+      variantIdx = (variantIdx + 1) % Math.max(variants_0.length, variants_1.length)
       try { if (typeof hmFS !== 'undefined') hmFS.SysProSetInt('dialcraft_variant', variantIdx) } catch (e) {}
       variant_0.setProperty(ui.prop.SRC, variants_0[variantIdx % variants_0.length])
+      variant_1.setProperty(ui.prop.SRC, variants_1[variantIdx % variants_1.length])
     }
 
     // ---- user code (project.userCode) ----
+    // px() only takes a literal number (the build replaces it, there is no px at run time); pxv() scales a computed one
+    const pxv = (n) => Math.round(n * px(1000) / 1000)
     {
       const MS = 100, TOP_EMPTY = 450, TOP_FULL = 40
       const NB = F.beer.length
@@ -272,8 +278,10 @@ WatchFace({
       const tick = () => {
         n++
         const ny = Math.round(TOP_EMPTY - (TOP_EMPTY - TOP_FULL) * fraction()) - TOP_EMPTY
-        if (ny !== y) { y = ny; W.cover.setProperty(ui.prop.MORE, { x: 0, y: px(y) }) }
-        W.beer.setProperty(ui.prop.SRC, F.beer[n % NB])
+        y = ny
+        // MORE takes x, y and src together on a plain IMG (checked on a Bip 6); SRC alone did not swap the pictures
+        W.cover.setProperty(ui.prop.MORE, { x: 0, y: pxv(y), src: F.cover[n % NB] })
+        W.beer.setProperty(ui.prop.MORE, { x: 0, y: 0, src: F.beer[n % NB] })
       }
       const stop = () => {
         if (id === null) return

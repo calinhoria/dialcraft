@@ -196,7 +196,7 @@
     } else place()
   }
   const dissolveRows = (rows) => {
-    for (const r of rows) for (let c = 0; c < COLS; c++) { const cell = board[r][c]; if (cell) cell.w.setProperty(ui.prop.SRC, A('tiles/' + cell.mat + '_d' + (anim - 1) + '.png')) }
+    for (const r of rows) for (let c = 0; c < COLS; c++) { const cell = board[r][c]; if (cell) cell.w.setProperty(ui.prop.MORE, { x: pxv(WX + c * CS), y: pxv(WY + r * CS), src: A('tiles/' + cell.mat + '_d' + (anim - 1) + '.png') }) }
   }
   const tick = () => {
     if (state === 'play') {

@@ -119,18 +119,25 @@ const coverJS = pre + `
 const FOAM = 62, TOP = H, CH = H + FOAM + 8;
 seed = 11;
 const dots = Array.from({ length: 220 }, () => ({ x: rnd() * W, y: rnd() * (FOAM - 6), r: 1 + rnd() * 3.2 }));
-const c = mk(W, CH), g = c.getContext('2d');
-g.fillStyle = '#000'; g.fillRect(0, 0, W, TOP + 8);
-g.beginPath(); g.moveTo(0, TOP + FOAM);
-for (let x = 0; x <= W; x += 4) g.lineTo(x, TOP - 1 + 0.9 * Math.sin(x / 9));
-g.lineTo(W, TOP + FOAM); g.closePath();
-const fg = g.createLinearGradient(0, TOP - 4, 0, TOP + FOAM);
-fg.addColorStop(0, '#ffffff'); fg.addColorStop(0.55, '#fffefb'); fg.addColorStop(0.85, '#fdf3dc'); fg.addColorStop(1, 'rgba(255,205,140,0.85)');
-g.fillStyle = fg; g.fill();
-g.save(); g.clip();
-for (const d of dots) { g.beginPath(); g.arc(d.x, TOP + 4 + d.y, d.r, 0, 7); g.strokeStyle = 'rgba(214,190,150,0.30)'; g.lineWidth = 0.8; g.stroke(); g.fillStyle = 'rgba(255,255,255,0.45)'; g.fill(); }
-g.restore();
-names.push(addProjectImage('cover.png', c, {}).name);
+const NF = 10;
+for (let k = 0; k < NF; k++) {
+  const ph = 2 * Math.PI * k / NF;
+  const c = mk(W, CH), g = c.getContext('2d');
+  g.fillStyle = '#000'; g.fillRect(0, 0, W, TOP + 8);
+  g.beginPath(); g.moveTo(0, TOP + FOAM);
+  for (let x = 0; x <= W; x += 4) g.lineTo(x, TOP - 1 + 2.2 * Math.sin(x / 23 + ph) + 1.4 * Math.sin(x / 9 - 2 * ph));
+  g.lineTo(W, TOP + FOAM); g.closePath();
+  const fg = g.createLinearGradient(0, TOP - 4, 0, TOP + FOAM);
+  fg.addColorStop(0, '#ffffff'); fg.addColorStop(0.55, '#fffefb'); fg.addColorStop(0.85, '#fdf3dc'); fg.addColorStop(1, 'rgba(255,205,140,0.85)');
+  g.fillStyle = fg; g.fill();
+  g.save(); g.clip();
+  for (const d of dots) {
+    const y = TOP + 4 + d.y + 2.5 * Math.sin(ph + d.x), r = d.r * (0.85 + 0.25 * Math.sin(ph * 2 + d.x * 0.3));
+    g.beginPath(); g.arc(d.x + 1.5 * Math.sin(ph + d.y), y, r, 0, 7); g.strokeStyle = 'rgba(214,190,150,0.30)'; g.lineWidth = 0.8; g.stroke(); g.fillStyle = 'rgba(255,255,255,0.45)'; g.fill();
+  }
+  g.restore();
+  names.push(addProjectImage('cover_' + k + '.png', c, {}).name);
+}
 `;
 const wrap = (body, tail) => ({ script: `${body}\nawait loadAllImages();\n${tail}` });
 const F = 'Bebas Neue';
@@ -143,7 +150,7 @@ const steps = [{ preset: 'bg' },
   // the 10 bubble frames: an Image layer with several pictures, swapped by the code below (handle: beer)
   wrap(beerJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Beer'; e.src = names[0]; e.images = names.slice(); e.handle = 'beer'; e.x = 0; e.y = 0; e.show = 'normal'; return names.length;`),
   // starts at the full-glass position (surface y = 40), which is also what the preview pictures show
-  wrap(coverJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Cover'; e.src = names[0]; e.handle = 'cover'; e.x = 0; e.y = 40 - dev().h; e.show = 'normal'; return 1`),
+  wrap(coverJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Cover'; e.src = names[0]; e.images = names.slice(); e.handle = 'cover'; e.x = 0; e.y = 40 - dev().h; e.show = 'normal'; return 1`),
   { preset: 'clock' }, tag('Main'), { preset: 'clock' }, tag('Aod'), { preset: 'weekday' }, { preset: 'day' }, { preset: 'temp' },
   wrap(glassJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Glass'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1`),
   { remove: 'Colon Aod' },
@@ -182,8 +189,10 @@ const userCode = `{
   const tick = () => {
     n++
     const ny = Math.round(TOP_EMPTY - (TOP_EMPTY - TOP_FULL) * fraction()) - TOP_EMPTY
-    if (ny !== y) { y = ny; W.cover.setProperty(ui.prop.MORE, { x: 0, y: px(y) }) }
-    W.beer.setProperty(ui.prop.SRC, F.beer[n % NB])
+    y = ny
+    // MORE takes x, y and src together on a plain IMG (checked on a Bip 6); SRC alone did not swap the pictures
+    W.cover.setProperty(ui.prop.MORE, { x: 0, y: pxv(y), src: F.cover[n % NB] })
+    W.beer.setProperty(ui.prop.MORE, { x: 0, y: 0, src: F.beer[n % NB] })
   }
   const stop = () => {
     if (id === null) return
