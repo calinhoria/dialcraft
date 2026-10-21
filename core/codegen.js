@@ -624,7 +624,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   const themed = !!(th && Array.isArray(th.list) && th.list.length && Array.isArray(th.recolored) && th.recolored.length);
   ctx.themed = themed;
   ctx.api = parseFloat(device && device.api) || 0;
-  const els = (project.elements || []).filter((e) => e.visible !== false);
+  const els = (project.elements || []).filter((e) => e.visible !== false && !e.previewOnly);
   // ---- declare the image arrays the widgets reference ----
   const decls = [];
   const fills = [];                   // themed faces: the arrays are filled again after a switch
@@ -673,6 +673,8 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   if (ctx.sensors.size) {
     out.push(`import { ${[...ctx.sensors].sort().join(', ')} } from '@zos/sensor'`);
   }
+  // code of your own (a game, a custom sensor): project.userImports sits with the imports, project.userCode runs at the end of initView
+  if (typeof project.userImports === 'string' && project.userImports.trim()) out.push(project.userImports.trim());
   // the import line comes before the widgets, so the system apps the tap zones use are collected here
   for (const e of els) {
     if (e.kind === 'TAP' && e.action === 'sysapp' && e.show !== 'aod' && ctx.api >= 3 && /^SYSTEM_APP_\w+$/.test(e.sysApp || '')) (ctx.routerApps = ctx.routerApps || new Set()).add(e.sysApp);
@@ -856,6 +858,11 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push("      if (typeof setTimeout === 'function') setTimeout(rebuild, 0); else rebuild()");
     out.push('    }');
     out.push('    buildFace()');
+  }
+  if (typeof project.userCode === 'string' && project.userCode.trim()) {
+    out.push('');
+    out.push('    // ---- user code (project.userCode) ----');
+    out.push(project.userCode.trim().split('\n').map((l) => (l ? '    ' + l : l)).join('\n'));
   }
   out.push('  },');
   out.push('');

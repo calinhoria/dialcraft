@@ -738,6 +738,21 @@ and lists what came across, what could not, and any notes. What does not survive
   variants and switches them at runtime imports as both layers, so the project
   checker will report the overlap it cannot know about.
 
+## Code of your own (games, custom logic)
+
+A project can carry JavaScript that is written into the exported watchface next to the generated widgets. This is
+for things the designer cannot express, such as a game that plays itself. It is set in the project file (or in a
+face-cli recipe), there is no editor for it yet:
+
+- `userImports` — lines placed with the other `import`s at the top of `watchface/<target>/index.js`.
+- `userCode` — a block run at the end of `initView()`, after all the generated widgets. `ui`, `px(…)` and `A('file.png')`
+  (the image path helper) are in scope. Wrap it in `{ … }` to keep its names out of the generated code's way.
+- `previewOnly` on a layer — the layer is drawn in the editor and in the preview pictures but is left out of the
+  export. Use it to show what the code will draw (a still of the game).
+
+Pictures the code needs only have to be in the project (they are all exported); the editor lists them as unused.
+The code runs on the watch only: the editor preview does not execute it. A sample is `sample-watchfaces/tetris-live`.
+
 ## Updates
 
 The installed app checks `github.com/calinhoria/dialcraft` releases (electron-updater, `core/updater.js`) a few seconds after
