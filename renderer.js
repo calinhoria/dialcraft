@@ -1221,9 +1221,20 @@ function placeEl(e, x, y) {
 function variantList(e) {
   return e && e.kind === 'IMG' && Array.isArray(e.images) && e.images.filter(Boolean).length >= 2 ? e.images.filter(Boolean) : null;
 }
+// a variants layer with start hours follows the time of day (the preview clock), else the Variant selector
+function variantIndexOf(e, n) {
+  const hs = e && e.variantHours;
+  if (Array.isArray(hs) && hs.length === n && hs.every((x) => Number.isFinite(+x))) {
+    const h = (+clock.h || 0) + (+clock.m || 0) / 60;
+    let b = -1, mx = 0;
+    for (let i = 0; i < n; i++) { if (+hs[i] > +hs[mx]) mx = i; if (+hs[i] <= h && (b < 0 || +hs[i] > +hs[b])) b = i; }
+    return b < 0 ? mx : b;
+  }
+  return variantIdx % n;
+}
 function pictureOf(e) {
   const v = variantList(e);
-  return v ? v[variantIdx % v.length] : e.src;
+  return v ? v[variantIndexOf(e, v.length)] : e.src;
 }
 function variantName(e, i) {
   const v = variantList(e);
@@ -3386,6 +3397,11 @@ const WEEK_FILE_RE = /^week\d*_w\d+\.png$/;
 const MONTH_FILE_RE = /^month\d*_m\d+\.png$/;
 const LABEL_FILE_RE = { week: /^(week\d*)_w\d+\.png$/, month: /^(month\d*)_m\d+\.png$/ };
 const DIGIT_METRICS = ['0123456789'];
+// weekday and month pictures reserve room for the tallest accent and the deepest tail any language needs, so the
+// layer keeps one height when the language changes (SÂM, ŞTE … would otherwise make the box taller)
+function labelMetrics(e) {
+  return labelCaseOf(e) === 'upper' ? ['ÂÉÖÜ', 'ÇȘȚ'] : ['âéöÜ', 'çșțgjpqy'];
+}
 const WEEK_CHARS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const SEPARATOR_CHARS = { colon: ':', dot: '.', percent: '%', negative: '-', degree: '°', slash: '/', am: 'A', pm: 'P' };
 const SEPARATOR_FILE_RE = /^(colon|dot|percent|negative|degree|slash|am|pm)(_\w+)?\.png$/i;
@@ -3440,15 +3456,19 @@ function labelCaseOf(e) {
 }
 // 2024-01-01 is a Monday and the 15th sits mid-month: walking from those two
 // gives the seven weekdays and the twelve months in the order the widget wants.
+// short names come with a full stop in many languages (ro "lun.", fr "janv."): a label on a watch looks better without it
+const noStop = (t) => String(t).replace(/\.$/, '');
 function localeNames(kind, tag, form) {
   const loc = localeKnown(tag) ? tag : 'en-US';
   try {
     if (kind === 'week') {
       const fmt = new Intl.DateTimeFormat(loc, { weekday: form || 'short', timeZone: 'UTC' });
-      return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(Date.UTC(2024, 0, 1 + i, 12))));
+      const days = Array.from({ length: 7 }, (_, i) => fmt.format(new Date(Date.UTC(2024, 0, 1 + i, 12))));
+      return (form || 'short') === 'short' ? days.map(noStop) : days;
     }
     const fmt = new Intl.DateTimeFormat(loc, { month: form || 'short', timeZone: 'UTC' });
-    return Array.from({ length: 12 }, (_, i) => fmt.format(new Date(Date.UTC(2024, i, 15, 12))));
+    const months = Array.from({ length: 12 }, (_, i) => fmt.format(new Date(Date.UTC(2024, i, 15, 12))));
+    return (form || 'short') === 'short' ? months.map(noStop) : months;
   } catch (err) { /* fall back below */ }
   return kind === 'week' ? WEEK_CHARS.slice() : [];
 }
@@ -3985,7 +4005,7 @@ async function regenerateGlyphs(e, { targets = [e] } = {}) {
     spec.map((g) => ({ tag: g.tag, char: g.char, name: (fork || !g.name) ? `${pre}_${g.tag}.png` : g.name })),
     { prefix: pre, mono: spec.length > 1, replace: true, size: st.size,
       family: st.font, weight: st.weight, variations: st.variations, style: st,
-      metricsRef: digitLike && !labelKind(e) ? DIGIT_METRICS : null,
+      metricsRef: labelKind(e) ? labelMetrics(e) : digitLike ? DIGIT_METRICS : null,
       align: e.labelAlign || 'center' },
   );
   if (e.kind === 'IMG') e.src = names[0];
@@ -4621,6 +4641,11 @@ function propsKind(e) {
         names.value = (e.variantNames || []).join(', ');
         names.onchange = () => { pushHistory(); e.variantNames = names.value.split(',').map((t) => t.trim()).filter(Boolean); scheduleCode(); syncVariantSel(); };
         add('Names', names, 'The name shown as a toast on the watch for each variant, comma separated');
+        const hrs = document.createElement('input');
+        hrs.type = 'text'; hrs.placeholder = 'e.g. 22, 4.5, 7, 16.5, 18.5, 20';
+        hrs.value = (e.variantHours || []).join(', ');
+        hrs.onchange = () => { pushHistory(); const a = hrs.value.split(',').map((t) => t.trim()).filter(Boolean).map(Number); if (a.length && a.every((x) => Number.isFinite(x))) e.variantHours = a; else delete e.variantHours; scheduleCode(); render(); };
+        add('Start hours', hrs, 'Optional: the hour (0–24, fractions allowed) each picture starts at, in picture order. The layer then follows the time of day on the watch and with the preview clock, instead of the Variant selector.');
         frag.appendChild(propNote(variantList(e)
           ? 'This layer has variants: a Tap zone set to “Cycle background variants” steps through them on the watch. Pick the one to preview with the Variant selector under the face.'
           : 'Add two or more pictures to make this a variants layer (e.g. one background per colour).'));
@@ -5350,7 +5375,7 @@ async function genLabelSet(e, kind) {
   const st = glyphStyle(el);
   return genGlyphImages(labels.map((l, i) => ({ tag: `${t}${i + 1}`, char: l, name: `${pre}_${t}${i + 1}.png` })), {
     prefix: pre, mono: true, replace: true, size: st.size, family: st.font, weight: st.weight,
-    variations: st.variations, style: st, align: el.labelAlign || 'center',
+    variations: st.variations, style: st, align: el.labelAlign || 'center', metricsRef: labelMetrics(el),
   });
 }
 // A separator (colon.png, degree.png …) drawn with the digits' style and in

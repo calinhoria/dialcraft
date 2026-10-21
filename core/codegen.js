@@ -93,6 +93,12 @@ function kv(lines, key, value, when = true) {
 function variantsOf(el) {
   return el && el.kind === 'IMG' && Array.isArray(el.images) && el.images.filter(Boolean).length >= 2 ? el.images.filter(Boolean) : null;
 }
+// a variants layer can follow the time of day: variantHours holds the hour (0-24, fractions allowed) each picture starts at
+function hoursOf(el) {
+  const v = variantsOf(el);
+  const h = el && el.variantHours;
+  return v && Array.isArray(h) && h.length === v.length && h.every((x) => Number.isFinite(+x)) ? h.map(Number) : null;
+}
 function emitElement(el, ctx, out) {
   const { arrays } = ctx;
   const variants = variantsOf(el);
@@ -236,14 +242,19 @@ function emitElement(el, ctx, out) {
         const k = ctx.variants.length;
         const list = `variants_${k}`;
         out.push(`  const ${list} = [${variants.map((n) => A(n)).join(', ')}]`);
+        const hours = hoursOf(el);
+        if (hours) {
+          out.push(`  const hours_${k} = ${JSON.stringify(hours)}`);
+          out.push(`  const tod_${k} = () => { const t = new Time(); const h = t.getHours() + t.getMinutes() / 60; let b = -1, mx = 0; for (let i = 0; i < hours_${k}.length; i++) { if (hours_${k}[i] > hours_${k}[mx]) mx = i; if (hours_${k}[i] <= h && (b < 0 || hours_${k}[i] > hours_${k}[b])) b = i } return b < 0 ? mx : b }`);
+        }
         out.push(`  const variant_${k} = ui.createWidget(ui.widget.IMG, {`);
         kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
         if (el.w) kv(L, 'w', p(el.w));
         if (el.h) kv(L, 'h', p(el.h));
-        L.push(`    src: ${list}[variantIdx % ${list}.length],`);
+        L.push(`    src: ${hours ? `${list}[tod_${k}()]` : `${list}[variantIdx % ${list}.length]`},`);
         kv(L, 'show_level', showLevel(el.show));
         out.push(L.join('\n').replace(/,(\s*)$/, '$1') + '\n  })');
-        ctx.variants.push({ list, widget: `variant_${k}`, names: Array.isArray(el.variantNames) ? el.variantNames : [] });
+        ctx.variants.push({ list, widget: `variant_${k}`, tod: hours ? `tod_${k}` : null, names: Array.isArray(el.variantNames) ? el.variantNames : [] });
         break;
       }
       // A picture for the customise screen is a mask widget: a plain IMG with ONLY_EDIT
@@ -655,7 +666,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   out.push('// Design-spec reminders: preview time 10:09:36, 2px safe edge, AOD keeps');
   out.push('// the pixel budget under 10% with a black background and no second hand.');
   out.push('// ---------------------------------------------------------------------------');
-  if (els.some((e) => e.showWhen && !missingPicture(e))) ctx.sensors.add('Time');
+  if (els.some((e) => e.showWhen && !missingPicture(e)) || els.some((e) => hoursOf(e) && e.show !== 'aod')) ctx.sensors.add('Time');
   const hasVariants = els.some((e) => variantsOf(e) && e.show !== 'aod');
   out.push("import ui from '@zos/ui'");
 
@@ -788,8 +799,18 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push(`      variantIdx = (variantIdx + 1) % Math.max(${total})`);
     out.push("      try { if (typeof hmFS !== 'undefined') hmFS.SysProSetInt('dialcraft_variant', variantIdx) } catch (e) {}");
     if (names.length) out.push("      try { if (variantNames[variantIdx] && typeof hmUI !== 'undefined') hmUI.showToast({ text: variantNames[variantIdx] }) } catch (e) {}");
-    for (const v of ctx.variants) out.push(`      ${v.widget}.setProperty(ui.prop.SRC, ${v.list}[variantIdx % ${v.list}.length])`);
+    for (const v of ctx.variants) if (!v.tod) out.push(`      ${v.widget}.setProperty(ui.prop.SRC, ${v.list}[variantIdx % ${v.list}.length])`);
     out.push('    }');
+    const todV = ctx.variants.filter((v) => v.tod);
+    if (todV.length) {
+      out.push('    // time-of-day variants follow the clock');
+      out.push('    const updateTod = () => {');
+      for (const v of todV) out.push(`      ${v.widget}.setProperty(ui.prop.SRC, ${v.list}[${v.tod}()])`);
+      out.push('    }');
+      out.push('    const todClock = new Time()');
+      out.push('    todClock.onPerMinute(updateTod)');
+      out.push('    ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: updateTod })');
+    }
   } else if (ctx.usesTap && els.some((e) => e.kind === 'TAP' && e.action === 'variant')) {
     out.push('    const cycleVariants = () => {}');
   }
