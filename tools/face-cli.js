@@ -51,6 +51,7 @@ app.whenReady().then(async () => {
     await createProject(R.name || 'My watchface', R.device, 'blank');
     if (R.font) { project.font = R.font; glyphFont = R.font; }
     if (R.language) project.language = R.language;
+    if (R.optimizePng === true || R.optimizePng === 'lossless') project.optimizePng = R.optimizePng;
     if (R.description) project.description = R.description;
     for (const [i, s] of (R.steps || []).entries()) {
       try {

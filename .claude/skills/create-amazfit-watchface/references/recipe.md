@@ -9,6 +9,7 @@ A recipe is one JSON file (no comments in the real file — the `//` notes below
   "device": "bip-6",               // a target key from devices.md
   "font": "Orbitron",              // glyph font for digits / weekday / readings (a bundled family)
   "language": "en-US",             // optional; weekday / month names follow it (ro-RO, de-DE …)
+  "optimizePng": false,            // optional; "lossless" re-encodes every PNG without changing a pixel; true also re-saves big (>20 KB) ones as 256-colour PNGs when clearly smaller
   "description": "…",              // optional store description
   "steps": [ … ],                  // applied in order — see below
   "preview": "preview.png",        // normal-state PNG at device size (10:09:36)

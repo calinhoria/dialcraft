@@ -440,23 +440,27 @@ ipcMain.handle('generate-code', async (_e, payload) => {
 });
 
 // ------------------------------------------------------- Zeus project export --
-// A big full-colour picture (an animation frame with a gradient, say) is re-saved as a 256-colour PNG with alpha;
-// it is kept only when that is clearly smaller. Small glyphs and flat art are left alone.
-// Opt in with `optimizePng: true` on the project.
-function optimizePngBuffer(buf) {
+// Pictures are saved as the canvas wrote them, which is not the smallest PNG. `optimizePng` on the project is opt-in:
+//   "lossless"  re-encodes every picture without changing a pixel (kept only when smaller)
+//   true        the same, and a big full-colour picture (an animation frame with a gradient, say) is first tried as a
+//               256-colour PNG with alpha, kept only when that is clearly smaller
+function optimizePngBuffer(buf, mode) {
   try {
-    if (buf.length < 20 * 1024) return buf;
     const png = PNG.sync.read(buf);
     const raw = png.data.buffer.slice(png.data.byteOffset, png.data.byteOffset + png.data.length);
-    const out = Buffer.from(UPNG.encode([raw], png.width, png.height, 256));
-    return out.length < buf.length * 0.85 ? out : buf;
+    if (mode === true && buf.length >= 20 * 1024) {
+      const q = Buffer.from(UPNG.encode([raw], png.width, png.height, 256));
+      if (q.length < buf.length * 0.85) return q;
+    }
+    const l = Buffer.from(UPNG.encode([raw], png.width, png.height, 0));
+    return l.length < buf.length ? l : buf;
   } catch (e) { return buf; }
 }
 
 function writeZeusProject(outDir, payload) {
   const device = deviceByKey(payload.project.device) || DEVICES[0];
   const { project } = payload;
-  const shrink = (im) => { const raw = Buffer.from(im.dataBase64, 'base64'); return project.optimizePng === true ? optimizePngBuffer(raw) : raw; };
+  const shrink = (im) => { const raw = Buffer.from(im.dataBase64, 'base64'); return project.optimizePng === true || project.optimizePng === 'lossless' ? optimizePngBuffer(raw, project.optimizePng) : raw; };
   // the designer's kept originals (…__src.png) are never part of the face
   const images = (payload.images || []).filter((i) => !/__src\.png$/i.test(i.name));
   const assetDir = path.join(outDir, 'assets', device.assetDir);
