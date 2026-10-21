@@ -195,6 +195,7 @@ function restoreHistory(json) {
   project.groups = p.groups || {};
   project.name = p.name; project.description = p.description;
   project.appId = p.appId; project.font = p.font;
+  project.userImports = p.userImports; project.userCode = p.userCode;
   project.language = p.language || project.language;
   project.images = p.images || project.images;
   loadAllImages();
@@ -1234,6 +1235,7 @@ function variantIndexOf(e, n) {
 }
 function pictureOf(e) {
   const v = variantList(e);
+  if (v && typeof codeRunPick === 'function') { const p = codeRunPick(e); if (p !== undefined) return p; }
   return v ? v[variantIndexOf(e, v.length)] : e.src;
 }
 function variantName(e, i) {
@@ -1810,7 +1812,7 @@ function drawElement(c, e) {
     case 'IMG_ANIM': {
       const frames = e.frames || [];
       if (!frames.length) { const b = elBox(e); drawMissing(c, b.x, b.y, b.w, b.h); break; }
-      const i = exportRender ? 0 : Math.floor(animTick * (Math.max(1, +e.fps || 30) / 30)) % frames.length;
+      const i = exportRender ? Math.min(frames.length - 1, Math.max(0, +e.defaultFrame || 0)) : Math.floor(animTick * (Math.max(1, +e.fps || 30) / 30)) % frames.length;
       const b = elBox(e);
       put(c, frames[i], b.x, b.y, b.w, b.h);
       break;
@@ -2695,6 +2697,7 @@ const PROP_HELP = {
   'Visible when': 'Tie the layer to the time of day: AM only before noon, PM only from noon on. Use it for a lit AM / PM label drawn over a dim one — the preview follows the clock, and the exported code switches it on the watch by the hour.',
   'Show in': 'Which face variant draws this layer: Normal (screen on), AOD (always-on display, screen off), Both, or Edit (only while the wearer customises the face). Applies to every selected layer. Shortcuts: Shift+N / Shift+A / Shift+B.',
   'Alpha': 'Opacity from 0 (invisible) to 255 (solid).',
+  'Code handle': 'Names this layer for your own code (Project ▸ Code): its widget is W.<handle>, and a variants layer’s picture list is F.<handle>. Letters, digits and _ only.',
   'Position': 'Top-left corner of the layer, in screen pixels from the top-left of the display. Drag the X / Y letters to scrub; the wheel steps a focused field (Shift ×10).',
   'Box': 'Width and height of the layer box, in pixels.',
   'IMG:Box': 'Size of the widget area. The watch draws the picture at its own pixel size — this does not stretch it. “Use image size” matches the two.',
@@ -3329,6 +3332,10 @@ function renderPropsBody(host) {
   }
   host.appendChild(ctlRow('Alpha', ctlAlpha(targets),
     many ? `Applies to all ${sel.length} selected layers` : ''));
+  if (!many) {
+    host.appendChild(ctlRow('Code handle', ctlText(e, 'handle', 'e.g. beer'), 'Names this layer for your own code (Project ▸ Code): its widget is W.<handle>, and a variants layer’s picture list is F.<handle>. Letters, digits and _ only.'));
+    host.appendChild(ctlRow('Preview only', ctlCheck(e, 'previewOnly', 'Drawn in the editor and the preview pictures, left out of the exported watchface — a still of what your code draws'), 'Drawn here, left out of the export'));
+  }
 
   section(host, 'Position & size');
   if (CENTER_KINDS.has(e.kind)) {
@@ -4662,7 +4669,7 @@ function propsKind(e) {
       add('Repeat', ctlNum(e, 'repeat', { min: 0 }), '0 = forever');
       add('Step', ctlNum(e, 'step', { min: 1 }));
       add('Restart', ctlCheck(e, 'displayOnRestart'), 'display_on_restart: play again when the watchface comes back to the screen');
-      add('Still frame', ctlNum(e, 'defaultFrame', { min: 0 }), 'default_frame_index: the frame shown in power-saving mode');
+      add('Still frame', ctlNum(e, 'defaultFrame', { min: 0 }), 'default_frame_index: the frame shown in power-saving mode, and in the preview pictures');
       // a run of PNGs, or an animated GIF/WebP that is split for you
       set('Frames', 'Frames', { buttons: [ctlButton('Import…',
         'Pick several PNGs to use as frames — or pick an animated GIF / WebP and it is split into one PNG per frame, with the frame rate taken from the file', () => pickAnimFrames(e))] });
@@ -5009,8 +5016,9 @@ function refreshPanels() {
   renderImagesPanel();
   syncLayersToolbar();
   syncVariantSel();
+  if (typeof syncRunButton === 'function') syncRunButton();
   const has = !!project;
-  ['btnComponents', 'btnPresets', 'btnGlyphs', 'btnUpload', 'btnSave', 'btnExportZeus', 'btnBuild', 'btnInstall', 'btnFonts'].forEach((id) => { if ($(id)) $(id).disabled = !has; });
+  ['btnCode', 'btnComponents', 'btnPresets', 'btnGlyphs', 'btnUpload', 'btnSave', 'btnExportZeus', 'btnBuild', 'btnInstall', 'btnFonts'].forEach((id) => { if ($(id)) $(id).disabled = !has; });
 }
 function renderProjectPanel() {
   if (!project) return;
@@ -6617,6 +6625,179 @@ $('themeCustomAdd').onclick = () => {
 $('themeAccentPick').oninput = (ev) => { $('themeAccent').value = ev.target.value; };
 $('themeAccentAuto').onclick = () => { $('themeAccent').value = ''; };
 $('btnThemes').onclick = openThemes;
+// Code of your own: project.userImports (top of the file) and project.userCode (end of initView)
+$('btnCode').onclick = () => {
+  if (!project) return;
+  $('codeImports').value = project.userImports || '';
+  $('codeBody').value = project.userCode || '';
+  $('codeModal').hidden = false;
+  $('codeBody').focus();
+};
+$('codeClose').onclick = () => { $('codeModal').hidden = true; };
+$('codeSave').onclick = () => {
+  if (!project) return;
+  const imp = $('codeImports').value, body = $('codeBody').value;
+  if (imp !== (project.userImports || '') || body !== (project.userCode || '')) {
+    pushHistory();
+    project.userImports = imp; project.userCode = body;
+    setDirty(true); scheduleCode();
+  }
+  $('codeModal').hidden = true;
+  stopCodeRun(); syncRunButton();
+  status(body.trim() ? 'Code saved — it runs on the watch after the layers are built. Use ▶ Run code above the preview to try it here.' : 'Code cleared.');
+};
+// Tab inserts two spaces in the code boxes
+for (const id of ['codeImports', 'codeBody']) $(id).addEventListener('keydown', (ev) => {
+  if (ev.key !== 'Tab' || ev.shiftKey) return;
+  ev.preventDefault();
+  const t = ev.target, a = t.selectionStart;
+  t.value = t.value.slice(0, a) + '  ' + t.value.slice(t.selectionEnd);
+  t.selectionStart = t.selectionEnd = a + 2;
+});
+
+// ------------------------------------------------------- run the code in the preview --
+// "Run code" executes project.userImports / userCode against a stand-in for the watch API: W.<handle> is the layer itself, so
+// setProperty(Y / X / W / H / SRC / VISIBLE / ALPHA / TEXT / MORE) moves or swaps it on the canvas, and the timers are real.
+// It is the user's own code running in the editor, so it only starts on a click; Stop puts every layer back as it was, and
+// nothing that runs here is ever saved or exported.
+let codeRun = null;          // { touched: Map(element → {key: original}), picks: Map(id → picture), timers: Set, raf }
+const CODE_PROPS = { X: 'x', Y: 'y', W: 'w', H: 'h', ALPHA: 'alpha' };
+function codeRunPick(e) { return codeRun && codeRun.picks.has(e.id) ? codeRun.picks.get(e.id) : undefined; }
+function codeRunTouch(e, key) {
+  let t = codeRun.touched.get(e);
+  if (!t) { t = {}; codeRun.touched.set(e, t); }
+  if (!(key in t)) t[key] = Object.prototype.hasOwnProperty.call(e, key) ? e[key] : undefined;
+}
+function codeRunSet(e, key, value) { codeRunTouch(e, key); if (value === undefined) delete e[key]; else e[key] = value; codeRunRender(); }
+function codeRunRender() {
+  if (!codeRun || codeRun.raf) return;
+  codeRun.raf = requestAnimationFrame(() => { if (codeRun) { codeRun.raf = 0; render(); } });
+}
+function codeRunPicture(e, v) {
+  const name = String(v).replace(/^images\//, '');
+  if (variantList(e)) { codeRun.picks.set(e.id, name); codeRunRender(); return; }
+  codeRunSet(e, 'src', name);
+}
+// a watch widget as the code sees it, backed by a layer (or by nothing, for widgets the code makes itself)
+function codeRunStub(e) {
+  const store = {};
+  const apply = (k, v) => {
+    if (k === 'MORE' && v && typeof v === 'object') { for (const key of Object.keys(v)) apply(key, v[key]); return; }
+    const key = String(k);
+    if (!e) { store[key] = v; return; }
+    const up = key.toUpperCase();
+    if (CODE_PROPS[up]) codeRunSet(e, CODE_PROPS[up], +v);
+    else if (up === 'SRC') codeRunPicture(e, v);
+    else if (up === 'VISIBLE') codeRunSet(e, 'visible', !!v);
+    else if (up === 'TEXT') codeRunSet(e, 'text', String(v));
+    else store[key] = v;
+  };
+  const read = (k) => {
+    const up = String(k).toUpperCase();
+    if (e && CODE_PROPS[up]) return e[CODE_PROPS[up]] == null ? 0 : e[CODE_PROPS[up]];
+    if (e && up === 'VISIBLE') return e.visible !== false;
+    if (e && up === 'SRC') return e.src;
+    return store[String(k)];
+  };
+  return {
+    setProperty: apply,
+    getProperty: read,
+    addEventListener() {},
+    removeEventListener() {},
+    createWidget(type, opts) { return codeRunStub(null); },
+    __layer: e,
+  };
+}
+// what a few watch modules give the code in the editor
+function codeRunModule(name) {
+  const quiet = new Proxy(function () {}, { get: () => quiet, apply: () => 0, construct: () => quiet });
+  if (name === '@zos/sensor') {
+    class Time {
+      getSeconds() { return new Date().getSeconds(); } getMinutes() { return new Date().getMinutes(); } getHours() { return new Date().getHours(); }
+      getDate() { return new Date().getDate(); } getDay() { return new Date().getDay(); } getMonth() { return new Date().getMonth() + 1; } getFullYear() { return new Date().getFullYear(); }
+      onPerMinute() {} onPerSecond() {} onPerDay() {}
+    }
+    return new Proxy({ Time }, { get: (t, k) => (k in t ? t[k] : quiet) });
+  }
+  return new Proxy({}, { get: () => quiet });
+}
+function codeRunImports(src) {
+  // import { A as B, C } from 'mod'  →  const { A: B, C } = __mod('mod');   import X from 'mod'  →  const X = __mod('mod')
+  return String(src || '').split('\n').map((line) => {
+    let m = /^\s*import\s*\{([^}]*)\}\s*from\s*['"]([^'"]+)['"]\s*;?\s*$/.exec(line);
+    if (m) return `const { ${m[1].split(',').map((s) => s.trim()).filter(Boolean).map((s) => s.replace(/\s+as\s+/, ': ')).join(', ')} } = __mod(${JSON.stringify(m[2])});`;
+    m = /^\s*import\s+([\w$]+)\s+from\s*['"]([^'"]+)['"]\s*;?\s*$/.exec(line);
+    if (m) return `const ${m[1]} = __mod(${JSON.stringify(m[2])});`;
+    return line;
+  }).join('\n');
+}
+function startCodeRun() {
+  if (!project || codeRun) return;
+  const code = project.userCode || '';
+  if (!code.trim()) { status('There is no code to run: add some under Watchface ▸ Code of your own…', true); return; }
+  codeRun = { touched: new Map(), picks: new Map(), timers: new Set(), raf: 0 };
+  const run = codeRun;
+  const report = (where, e) => { status(`Code (${where}): ${e && e.message ? e.message : e}`, true); try { console.error('[code]', where, e); } catch (x) { /* no console */ } };
+  const guard = (f, where) => (...a) => { if (codeRun !== run) return; try { return f(...a); } catch (e) { report(where, e); } };
+  const names = (obj) => new Proxy(obj, { get: (t, k) => (k in t ? t[k] : String(k)) });
+  const W = {}, F = {};
+  for (const e of elements()) {
+    if (!/^[A-Za-z_$][\w$]*$/.test(e.handle || '') || ['W', 'F'].includes(e.handle)) continue;
+    W[e.handle] = codeRunStub(e);
+    const v = variantList(e);
+    if (v) F[e.handle] = v.map((n) => `images/${n}`);
+  }
+  const ui = {
+    prop: names({ MORE: 'MORE' }), widget: names({}), align: names({}), show_level: names({}), anim_status: names({}),
+    event: names({}), data_type: names({}), text_style: names({}), system_status: names({}), edit_type: names({}),
+    createWidget(type, opts) {
+      const w = codeRunStub(null);
+      if (type === 'WIDGET_DELEGATE' && opts) { setTimeout(guard(() => opts.resume_call && opts.resume_call(), 'resume_call'), 0); }
+      return w;
+    },
+    deleteWidget() {},
+  };
+  const timers = {
+    setInterval: (f, ms) => { const id = setInterval(guard(f, 'setInterval'), ms); run.timers.add(id); return id; },
+    setTimeout: (f, ms) => { const id = setTimeout(guard(f, 'setTimeout'), ms); run.timers.add(id); return id; },
+    clearInterval: (id) => { clearInterval(id); run.timers.delete(id); },
+    clearTimeout: (id) => { clearTimeout(id); run.timers.delete(id); },
+  };
+  const px = (n) => n, pxv = (n) => Math.round(n), A = (p) => `images/${p}`;
+  const say = (level) => (...a) => {
+    const text = a.map((x) => (typeof x === 'string' ? x : (() => { try { return JSON.stringify(x); } catch (e) { return String(x); } })())).join(' ');
+    try { console[level]('[code]', text); } catch (e) { /* no console */ }
+    if (codeRun === run) status(`Code: ${text}`, level === 'error');
+  };
+  const codeConsole = { log: say('log'), info: say('log'), warn: say('warn'), error: say('error') };
+  try {
+    const body = codeRunImports(project.userImports) + '\n' + code;
+    const fn = new Function('ui', 'px', 'pxv', 'A', 'W', 'F', 'setInterval', 'setTimeout', 'clearInterval', 'clearTimeout', '__mod', 'timer', 'hmUI', 'console', body);
+    fn(ui, px, pxv, A, W, F, timers.setInterval, timers.setTimeout, timers.clearInterval, timers.clearTimeout, codeRunModule, undefined, undefined, codeConsole);
+  } catch (e) { report('start', e); }
+  syncRunButton();
+  status('Code is running in the preview. Stop it to get your layers back as they were.');
+}
+function stopCodeRun() {
+  if (!codeRun) return;
+  const run = codeRun;
+  codeRun = null;
+  for (const id of run.timers) { clearInterval(id); clearTimeout(id); }
+  if (run.raf) cancelAnimationFrame(run.raf);
+  for (const [e, t] of run.touched) for (const [k, v] of Object.entries(t)) { if (v === undefined) delete e[k]; else e[k] = v; }
+  syncRunButton();
+  if (project) render();
+}
+function syncRunButton() {
+  const b = $('btnRunCode');
+  if (!b) return;
+  const has = !!(project && (project.userCode || '').trim());
+  b.disabled = !has && !codeRun;
+  b.classList.toggle('on', !!codeRun);
+  b.textContent = codeRun ? '■ Stop code' : '▶ Run code';
+}
+$('btnRunCode').onclick = () => { if (codeRun) { stopCodeRun(); status('Code stopped; layers restored.'); } else startCodeRun(); };
+
 $('themeClose').onclick = () => { $('themeModal').hidden = true; };
 $('btnThemeRemove').onclick = () => {
   pushHistory();
@@ -6770,6 +6951,7 @@ function convertProject(target, name) {
 }
 $('btnCloseProject').onclick = async () => {
   if (!await guardUnsaved()) return;
+  stopCodeRun();
   project = null; selectedId = null; multiSel = new Set();
   imgCache.clear();
   past = []; future = []; updateHistoryButtons();
@@ -6825,6 +7007,7 @@ function setEmptyState() {
   if (empty) renderRecents();
 }
 async function loadProject(res) {
+  stopCodeRun();
   project = res.project;
   project.groups = project.groups || {};
   project.elements = project.elements || [];
@@ -6883,6 +7066,7 @@ if ($('btnImport')) $('btnImport').onclick = importFaceDialog;
 if ($('btnEmptyImport')) $('btnEmptyImport').onclick = importFaceDialog;
 async function doSave() {
   if (!project) return false;
+  stopCodeRun();
   const payload = {
     // bakedImage/bakedKey are derived at export time and must not be persisted
     project: { ...project, fonts: projectFontsPayload(), elements: elements().map(stripBakeKeys) },
@@ -7053,6 +7237,7 @@ $('logClose').onclick = () => { $('logModal').hidden = true; };
 $('logFolder').onclick = () => { if (lastLogPath) API.showInFolder(lastLogPath); };
 $('btnExportZeus').onclick = async () => {
   if (!project) return;
+  stopCodeRun();
   const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
   const res = await API.exportZeus(payload);
   if (!res) return;
@@ -7067,6 +7252,7 @@ $('btnExportZeus').onclick = async () => {
 };
 $('btnBuild').onclick = async () => {
   if (!project) return;
+  stopCodeRun();
   openLogModal('Zeus build', '', 'running the Zeus CLI…');
   appendLog('Exporting the project first…');
   const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
@@ -7119,6 +7305,8 @@ function lintProject() {
   for (const e of project.elements) {
     const b = elBox(e);
     const label = e.name || e.kind;
+    if (e.handle && !/^[A-Za-z_$][\w$]*$/.test(e.handle)) add('warn', `“${label}”: the code handle “${e.handle}” is not a plain name (letters, digits, _) — it is ignored.`);
+    if (e.handle && ['W', 'F'].includes(e.handle)) add('warn', `“${label}”: the code handle cannot be W or F.`);
     if (taken.has(label)) add('warn', `Duplicate layer name “${label}” — rename one of them.`);
     taken.add(label);
     const fullscreen = b.w >= d.w - 1 && b.h >= d.h - 1;
@@ -7691,6 +7879,7 @@ function fmtBytes(n) {
   return v + ' B';
 }
 async function installPayload() {
+  stopCodeRun();
   return {
     project: { ...project, fonts: projectFontsPayload() },
     images: await exportImagesPayload(),

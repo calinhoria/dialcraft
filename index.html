@@ -82,6 +82,7 @@
         <div class="row"><span class="lbl">Language</span><input id="projLang" type="text" list="langSuggest" placeholder="en-US" /></div>
         <datalist id="langSuggest"></datalist>
         <div class="row"><span class="lbl">Colours</span><button id="btnThemes" class="row-btn" title="Make the face switch between colours: the accent colour is recoloured to a palette">Colour themes…</button></div>
+        <div class="row"><span class="lbl">Code</span><button id="btnCode" class="row-btn" title="JavaScript written into the exported watchface: timers, games, animation of your layers">Code of your own…</button></div>
         <div class="row"><span class="lbl">Fonts</span><button id="btnFonts" class="row-btn" title="Import your own fonts, preview them and rasterize glyph sets">Font library &amp; glyphs…</button></div>
         <div class="row small" id="screenInfo"></div>
         <div class="row small" id="targetInfo"></div>
@@ -150,6 +151,7 @@
       <button id="btnPreviewNormal" class="on" title="Preview the normal (always-on for the user) state">Normal</button>
       <button id="btnPreviewAod" title="Preview the AOD (always-on display) state">AOD</button>
       <button id="btnPreviewEdit" title="Preview the screen the wearer sees when long-pressing the face to customise it (edit masks and complication slots)">Edit</button>
+      <button id="btnRunCode" disabled title="Run your code (Watchface ▸ Code of your own…) in the preview: layers with a code handle move and swap pictures as they would on the watch. Stop puts everything back; nothing is saved or exported while it runs.">▶ Run code</button>
       <button id="btnPreviewLive" title="Run the preview clock from the real time">Live clock</button>
       <select id="themeSel" hidden title="Which colour theme the preview shows"></select>
       <select id="variantSel" hidden title="Which variant of the background layer the preview shows"></select>
@@ -270,6 +272,20 @@
       <button id="btnThemeRemove" hidden>Remove themes</button>
       <button id="themeClose">Close</button>
       <button id="themeGo">Generate</button>
+    </div>
+  </div>
+</div>
+
+<!-- code of your own -->
+<div id="codeModal" class="modal-backdrop" hidden>
+  <div class="modal wide">
+    <h3>Code of your own</h3>
+    <p class="muted">Written into the exported watchface. <strong>▶ Run code</strong> (above the preview) runs it in the editor against a stand-in for the watch: layers with a code handle move and swap pictures, timers run, and Stop puts everything back. The code goes at the end of <code>initView()</code>, after every layer exists, with <code>ui</code>, <code>px(300)</code> (literal numbers only: the build replaces it), <code>pxv(n)</code> (scales a number your code computes) and <code>A('file.png')</code> in scope. Give a layer a <em>Code handle</em> (Layer panel) and reach its widget as <code>W.handle</code>; a layer with several pictures also gives <code>F.handle</code>, its list of picture paths. Move or swap it with <code>W.beer.setProperty(ui.prop.MORE, { y: pxv(y), src: F.foam[2] })</code>. Tick a layer <em>Preview only</em> to show a still of what the code draws without exporting it.</p>
+    <div class="row stack"><span class="lbl">Imports</span><textarea id="codeImports" class="code-box" rows="3" spellcheck="false" placeholder="import { something } from '@zos/…'"></textarea></div>
+    <div class="row stack"><span class="lbl">Code</span><textarea id="codeBody" class="code-box" rows="18" spellcheck="false" placeholder="{&#10;  W.beer.setProperty(ui.prop.MORE, { y: px(200) })&#10;}"></textarea></div>
+    <div class="modal-btns">
+      <button id="codeClose">Cancel</button>
+      <button id="codeSave">Save</button>
     </div>
   </div>
 </div>

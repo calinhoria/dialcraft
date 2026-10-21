@@ -652,3 +652,5 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 .update-bar button.primary { background: var(--color-acc); border-color: var(--color-acc); color: #fff; font-weight: 600; }
 .es-version { margin-top: 18px; font-size: 11px; }
 .es-version a { color: #8fb0ff; }
+
+.code-box { width: 100%; box-sizing: border-box; resize: vertical; font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #0a0c10; color: var(--color-ink); border: 1px solid var(--color-line); border-radius: 8px; padding: 8px 10px; tab-size: 2; white-space: pre; overflow: auto; }

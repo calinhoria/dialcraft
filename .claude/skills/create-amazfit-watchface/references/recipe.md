@@ -9,9 +9,10 @@ A recipe is one JSON file (no comments in the real file — the `//` notes below
   "device": "bip-6",               // a target key from devices.md
   "font": "Orbitron",              // glyph font for digits / weekday / readings (a bundled family)
   "language": "en-US",             // optional; weekday / month names follow it (ro-RO, de-DE …)
-  "optimizePng": false,            // optional; "lossless" re-encodes every PNG without changing a pixel; true also re-saves big (>20 KB) ones as 256-colour PNGs when clearly smaller
+  "optimizePng": false,            // optional; "lossless" re-encodes every PNG without changing a pixel; true also re-saves big (>20 KB) ones as 256-colour PNGs when clearly smaller; a number 2–256 reduces every animation frame to that many colours (lossy) and re-encodes the rest losslessly
   "description": "…",              // optional store description
   "userImports": "…", "userCode": "…", // optional JavaScript written into the watchface (see docs/GUIDE.md → Code of your own)
+  "open": "path/to/project",       // optional; start from a saved Dialcraft project instead of a blank one (read only; see custom-code.md)
   "steps": [ … ],                  // applied in order — see below
   "preview": "preview.png",        // normal-state PNG at device size (10:09:36)
   "previewAod": "preview-aod.png", // AOD-state PNG
@@ -40,6 +41,7 @@ Each step is an object with exactly one action.
 - **`glyph`** — style of a digit / weekday / reading layer (its pictures are re-drawn): `font`, `size` (px height of
   the digits), `weight`, `fill` (`solid` | `gradient` | `css` | `outline`), `color`, `from`, `to`, `angle`, `css`
   (e.g. `"linear-gradient(180deg,#ffd400,#ff2d55)"`), `outlineColor`, `outlineWidth`, `bold`, `italic`.
+- **`set` also takes** `handle` (names the layer for your code as `W.<handle>`) and `previewOnly` — see [custom-code.md](custom-code.md).
 - **`tint`** — for level sets and icons: `{ "fill": "solid", "color": "#39ff14" }` paints the pictures over.
 
 ### Order matters

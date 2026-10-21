@@ -7,8 +7,8 @@ const { app, BrowserWindow, ipcMain, dialog, nativeImage, shell } = require('ele
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
+const { pathToFileURL } = require('url');
 const { PNG } = require('pngjs');
-const UPNG = require('upng-js');
 const QRCode = require('qrcode');
 const { DEVICES, deviceByKey, deviceLabel } = require('./core/devices');
 const { DATA_TYPES, WEATHER_ICONS, SYSTEM_STATUS, TAP_APPS, SYSTEM_APPS, DT_MAX, EDIT_TYPES } = require('./core/datatypes');
@@ -444,23 +444,81 @@ ipcMain.handle('generate-code', async (_e, payload) => {
 //   "lossless"  re-encodes every picture without changing a pixel (kept only when smaller)
 //   true        the same, and a big full-colour picture (an animation frame with a gradient, say) is first tried as a
 //               256-colour PNG with alpha, kept only when that is clearly smaller
-function optimizePngBuffer(buf, mode) {
+//   2 … 256     a number: every animation frame (and every picture of an Image layer with several) is reduced to that many colours (lossy, libimagequant) so a long
+//               animation stays small; every other picture is only re-encoded losslessly
+// Picture optimisation runs on two WebAssembly modules, so it is the same on every platform and nothing native has to be shipped:
+//   libimagequant-wasm  the quantizer behind pngquant (palette of N colours, alpha kept)
+//   @jsquash/oxipng     oxipng, a lossless PNG recompressor
+// There is no fallback on purpose: a weaker encoder would quietly write a package several times bigger, so a module that
+// cannot load stops the export with a message instead.
+let wasmReady;
+function unpackedPath(p) {
+  const u = p.replace(`app.asar${path.sep}`, `app.asar.unpacked${path.sep}`);
+  return u !== p && fs.existsSync(u) ? u : p;
+}
+function loadOptimizers() {
+  if (!wasmReady) {
+    wasmReady = (async () => {
+      try {
+        const lqDir = unpackedPath(path.join(path.dirname(require.resolve('libimagequant-wasm')), 'wasm'));
+        const lq = await import(pathToFileURL(path.join(lqDir, 'libimagequant_wasm.js')).href);
+        lq.initSync({ module: fs.readFileSync(path.join(lqDir, 'libimagequant_wasm_bg.wasm')) });
+        // the package's own wrapper needs a browser Web Worker; its generated module is used directly
+        const oxDir = unpackedPath(path.dirname(require.resolve('@jsquash/oxipng/package.json')));
+        const ox = await import(pathToFileURL(path.join(oxDir, 'optimise.js')).href);
+        await ox.init(await WebAssembly.compile(fs.readFileSync(path.join(oxDir, 'codec', 'pkg', 'squoosh_oxipng_bg.wasm'))));
+        return { lq, oxipng: ox.default };
+      } catch (e) {
+        throw new Error(`The picture optimiser could not be loaded (${String((e && e.message) || e).split('\n')[0]}). Run "npm install" in the Dialcraft folder, or set optimizePng to false.`);
+      }
+    })();
+    wasmReady.catch(() => { wasmReady = null; });
+  }
+  return wasmReady;
+}
+const toArrayBuffer = (b) => b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
+// oxipng turns a picture whose pixels are all gray into a grayscale PNG (colour type 0 or 4), which the Zeus build cannot convert
+// for the watch ("PNG with grayscale color type is not supported"), so such a result is dropped and the input is kept
+const isGrayPng = (b) => b.length > 26 && (b[25] === 0 || b[25] === 4);
+async function oxipngBuffer(png) {
+  const { oxipng } = await loadOptimizers();
+  const input = Buffer.from(png);
+  const out = Buffer.from(await oxipng(toArrayBuffer(input), { level: 2, interlace: false, optimiseAlpha: true }));
+  return isGrayPng(out) ? input : out;
+}
+// reduce to `colors` colours (2-256), then recompress
+async function quantizePngBuffer(buf, colors) {
+  const { lq } = await loadOptimizers();
+  const [rgba, w, h] = lq.decode_png_to_rgba(new Uint8Array(buf));
+  const qz = new lq.ImageQuantizer();
   try {
-    const png = PNG.sync.read(buf);
-    const raw = png.data.buffer.slice(png.data.byteOffset, png.data.byteOffset + png.data.length);
-    if (mode === true && buf.length >= 20 * 1024) {
-      const q = Buffer.from(UPNG.encode([raw], png.width, png.height, 256));
-      if (q.length < buf.length * 0.85) return q;
-    }
-    const l = Buffer.from(UPNG.encode([raw], png.width, png.height, 0));
-    return l.length < buf.length ? l : buf;
-  } catch (e) { return buf; }
+    qz.setMaxColors(colors);
+    qz.setSpeed(1);
+    const res = qz.quantizeImage(rgba, w, h);
+    try {
+      res.setDithering(0.5);
+      return await oxipngBuffer(lq.encode_palette_to_png(res.getPaletteIndices(rgba, w, h), res.getPalette(), w, h));
+    } finally { res.free(); }
+  } finally { qz.free(); }
+}
+async function optimizePngBuffer(buf, mode) {
+  if (mode === true && buf.length >= 20 * 1024) {
+    const q = await quantizePngBuffer(buf, 256);
+    if (q.length < buf.length * 0.85) return q;
+  }
+  const l = await oxipngBuffer(buf);
+  return l.length < buf.length ? l : buf;
 }
 
-function writeZeusProject(outDir, payload) {
+async function writeZeusProject(outDir, payload) {
   const device = deviceByKey(payload.project.device) || DEVICES[0];
   const { project } = payload;
-  const shrink = (im) => { const raw = Buffer.from(im.dataBase64, 'base64'); return project.optimizePng === true || project.optimizePng === 'lossless' ? optimizePngBuffer(raw, project.optimizePng) : raw; };
+  const colors = Number.isInteger(project.optimizePng) && project.optimizePng >= 2 && project.optimizePng <= 256 ? project.optimizePng : 0;
+  const shrink = async (im, anim) => {
+    const raw = Buffer.from(im.dataBase64, 'base64');
+    if (colors) return anim ? await quantizePngBuffer(raw, colors) : await optimizePngBuffer(raw, 'lossless');
+    return project.optimizePng === true || project.optimizePng === 'lossless' ? await optimizePngBuffer(raw, project.optimizePng) : raw;
+  };
   // the designer's kept originals (…__src.png) are never part of the face
   const images = (payload.images || []).filter((i) => !/__src\.png$/i.test(i.name));
   const assetDir = path.join(outDir, 'assets', device.assetDir);
@@ -489,6 +547,11 @@ function writeZeusProject(outDir, payload) {
       frames.set(`anim/${prefix}_${i}.png`, im);
       frameNames.add(name);
     });
+  }
+  // pictures that are frames of something: an animation's, or the several pictures of an Image layer that code or a tap swaps
+  const framePics = new Set(frameNames);
+  for (const el of project.elements || []) {
+    if (el && el.kind === 'IMG' && Array.isArray(el.images) && el.images.filter(Boolean).length >= 2) for (const n of el.images) framePics.add(n);
   }
   // names a layer references directly (everything an animation does not own)
   const usedNames = new Set();
@@ -523,12 +586,12 @@ function writeZeusProject(outDir, payload) {
     if (frameNames.has(im.name) && !usedNames.has(im.name)) continue; // exported under images/anim/
     const target = path.join(imgDir, im.name);
     fs.mkdirSync(path.dirname(target), { recursive: true });
-    fs.writeFileSync(target, shrink(im));
+    fs.writeFileSync(target, await shrink(im, framePics.has(im.name)));
   }
   for (const [rel, im] of frames) {
     const target = path.join(imgDir, rel);
     fs.mkdirSync(path.dirname(target), { recursive: true });
-    fs.writeFileSync(target, shrink(im));
+    fs.writeFileSync(target, await shrink(im, true));
   }
   try { // frames from an earlier export that no animation uses any more
     const animDir = path.join(imgDir, 'anim');
@@ -593,7 +656,7 @@ ipcMain.handle('export-zeus', async (_e, payload) => {
     outDir = path.join(r.filePaths[0], (payload.project.name || 'watchface').replace(/[^\w\-. ]+/g, '_'));
   }
   try {
-    const res = writeZeusProject(outDir, payload);
+    const res = await writeZeusProject(outDir, payload);
     return { ok: true, ...res };
   } catch (err) {
     return { ok: false, error: String(err.message || err) };
@@ -689,7 +752,7 @@ function buildLog(line) {
 // Export the project and let the Zeus CLI package it into dist/*.zab
 async function runZeusBuild(outDir, payload, { apiLevel } = {}) {
   let res;
-  try { res = writeZeusProject(outDir, payload); } catch (err) { return { ok: false, error: String(err.message || err), outDir }; }
+  try { res = await writeZeusProject(outDir, payload); } catch (err) { return { ok: false, error: String(err.message || err), outDir }; }
   // an earlier build's packages must not survive: the install page serves what is in dist/,
   // so a stale (bigger, older) .zab used to win over the one that was just built
   try { fs.rmSync(path.join(outDir, 'dist'), { recursive: true, force: true }); } catch (e) { /* nothing to clear */ }
@@ -708,7 +771,19 @@ async function runZeusBuild(outDir, payload, { apiLevel } = {}) {
       error: 'Could not run the Zeus CLI: ' + String(err.message || err)
         + (err && err.code === 'ENOENT' ? ` — "${cmd}" was not found. Install Node.js (https://nodejs.org) so that npx is available, then try again.` : ''),
     }));
-    child.on('close', (code) => {
+    child.on('close', async (code) => {
+      // Zeus puts a hidden ".ip-package" (the intermediate product the Zepp store uses to retarget a face to other watches)
+      // into every .zab, often bigger than the package itself. Installing on your own watch does not need it, so it is pruned.
+      // A failed prune only leaves the bigger file, it never fails the build.
+      if (code === 0) {
+        out += await new Promise((done) => {
+          let log = '';
+          const pr = spawn(cmd, [...prefix, 'prune', '--ip'], { cwd: outDir, shell: process.platform === 'win32', env: toolEnv() });
+          pr.stdout.on('data', (b) => { log += b; }); pr.stderr.on('data', (b) => { log += b; });
+          pr.on('error', () => done(''));
+          pr.on('close', (c) => { buildLog(c === 0 ? 'Pruned the intermediate product (.ip-package) from the .zab: smaller package.' : 'Could not prune the intermediate product; the .zab keeps it.'); done(c === 0 ? '' : log); });
+        });
+      }
       const dist = path.join(outDir, 'dist');
       let artifacts = [];
       try { artifacts = fs.readdirSync(dist).map((f) => path.join(dist, f)); } catch (e) { artifacts = []; }

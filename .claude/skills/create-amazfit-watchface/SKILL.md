@@ -54,6 +54,9 @@ recipe, previews and output in a scratch folder (not in the repo).
   Other fonts are not available headlessly.
 - **Data bindings are native:** `TEXT_IMG`, `IMG_LEVEL`, `IMG_POINTER` take a `dataType`; the watch updates them.
   `ARC_PROGRESS` / `BAR` get a small reader only for the data types listed in `docs/ZEPP_COVERAGE.md`.
+- **Custom code** (animation that follows the clock, games, timers): [references/custom-code.md](references/custom-code.md) has the
+  recipe keys, the device facts that cost hours to find (`px(variable)` throws, `IMG_ANIM` moves with `Y` not `MORE`, no global
+  `timer`) and how to test on a real watch with logs over the developer bridge. Read it before writing `userCode`.
 - **Don't invent widgets.** Only the kinds in [references/kinds.md](references/kinds.md) exist; for anything
   else, say it is not supported rather than faking it. Coverage and known gaps: `docs/ZEPP_COVERAGE.md`.
 - **Don't overwrite** a user's existing project: write to a new `out` / `save` folder.

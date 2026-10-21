@@ -1,6 +1,6 @@
 {
   "name": "dialcraft",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "Dialcraft — a watchface designer for Zepp OS / Amazfit watches: visual editor, Zeus CLI export, .zab build and Wi-Fi install",
   "main": "main.js",
   "scripts": {
@@ -25,10 +25,11 @@
     "tailwindcss": "^4.3.3"
   },
   "dependencies": {
+    "@jsquash/oxipng": "^2.3.0",
     "electron-updater": "^6.8.9",
+    "libimagequant-wasm": "^0.3.0",
     "pngjs": "^7.0.0",
-    "qrcode": "^1.5.4",
-    "upng-js": "^2.1.0"
+    "qrcode": "^1.5.4"
   },
   "build": {
     "appId": "com.dialcraft.app",
@@ -82,6 +83,11 @@
         "repo": "dialcraft",
         "releaseType": "prerelease"
       }
+    ],
+    "asarUnpack": [
+      "node_modules/libimagequant-wasm/**/*",
+      "node_modules/@jsquash/oxipng/**/*",
+      "node_modules/wasm-feature-detect/**/*"
     ]
   }
 }

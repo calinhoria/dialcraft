@@ -45,6 +45,7 @@ function asset(el, key) {
   const name = el[key];
   return name ? A(name) : null;
 }
+function validHandle(h) { return typeof h === 'string' && /^[A-Za-z_$][\w$]*$/.test(h) && !['W', 'F'].includes(h); }
 function arrName(el) { return `img_${ident(el.name)}_${el.id.slice(-4)}`; }
 
 // A widget that has lost its picture would be built with a reference to an
@@ -191,12 +192,14 @@ function emitElement(el, ctx, out) {
         const total = `px(${len})`;
         const fill = `Math.round(${total} * Math.max(0, Math.min(1, ${frac})))`;
         const place = [];
+        // On the watch a MORE with only some of the four geometry values is accepted and ignored (the bar never moved),
+        // so every update sends x, y, w and h together.
         if (el.vertical) {
           const off = el.mirror ? `Math.round((${total} - fill) / 2)` : el.inversion ? `${total} - fill` : '0';
-          place.push(`y: px(${y0}) + ${off}`, 'h: fill');
+          place.push(`x: px(${x0})`, `y: px(${y0}) + ${off}`, `w: px(${lw})`, 'h: fill');
         } else {
           const off = el.mirror ? `Math.round((${total} - fill) / 2)` : el.inversion ? `${total} - fill` : '0';
-          place.push(`x: px(${x0}) + ${off}`, 'w: fill');
+          place.push(`x: px(${x0}) + ${off}`, `y: px(${y0})`, 'w: fill', `h: px(${lw})`);
         }
         lines.push(`  const ${upd} = () => {`, `    const fill = ${fill}`, `    ${v}.setProperty(ui.prop.MORE, { ${place.join(', ')} })`, '  }', `  ${sv}.onChange(${upd})`, `  ${upd}()`);
       } else ctx.warnings.push(`${el.name}: ${el.dataType || 'no reading'} has no automatic reader — the bar stays empty on the watch`);
@@ -648,6 +651,11 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
       fills.push(`  ${id} = [\n${names.map((n) => `    ${A(n)}`).join(',\n')},\n  ]`);
     } else decls.push(`const ${id} = [\n${names.map((n) => `  ${A(n)}`).join(',\n')},\n]`);
   }
+  // the import line is written before the layers, so every sensor a layer will construct has to be known now
+  for (const el of els) {
+    if (el.kind === 'BAR') { const dt = dataType(el.dataType); if (dt && dt.reader) ctx.sensors.add(dt.reader.cls); }
+    else if (el.kind === 'SLEEP_CHART') ctx.sensors.add('Sleep');
+  }
   for (const el of els) {
     if (el.kind !== 'ARC_PROGRESS') continue;
     const r = readerFor(el, ctx);
@@ -715,6 +723,11 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push("    try { if (typeof hmFS !== 'undefined') themeIdx = (Number(hmFS.SysProGetInt('dialcraft_theme')) || 0) % THEME_NAMES.length } catch (e) {}");
     out.push('');
   }
+  if (els.some((e) => validHandle(e.handle) && !missingPicture(e))) {
+    out.push('    // layers with a code handle: W.<handle> is the widget, F.<handle> the picture list of a variants layer');
+    out.push('    const W = {}');
+    out.push('    const F = {}');
+  }
   const bodyStart = out.length;
   const slotEls = els.filter((e) => e.kind === 'EDIT_SLOT');
   const slotOf = (e) => (e.editSlot != null && e.editSlot !== '' ? slotEls.find((sl) => String(sl.editId) === String(e.editSlot)) : null);
@@ -740,6 +753,15 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
         const v = `when_${whenVars.length}`;
         chunk[chunk.length - 1] = chunk[chunk.length - 1].replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2const ${v} = ui.createWidget(`);
         whenVars.push({ v, pm: el.showWhen === 'pm' });
+      }
+      // a layer with a code handle is reachable from user code as W.<handle> (and F.<handle> for its picture list)
+      if (state === states[0] && validHandle(el.handle) && chunk.length) {
+        const last = chunk[chunk.length - 1], named = [...chunk.join('\n').matchAll(/const (\w+) = ui\.createWidget\(/g)].pop();
+        const list = /const (variants_\d+) = /.exec(chunk.join('\n'));
+        if (named) chunk.push(`  W.${el.handle} = ${named[1]}`);
+        else if (/(^|\n)\s*ui\.createWidget\(/.test(last)) chunk[chunk.length - 1] = last.replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2W.${el.handle} = ui.createWidget(`);
+        else ctx.warnings.push(`${el.name}: code handle "${el.handle}" skipped — this layer's widget cannot be named`);
+        if (list) chunk.push(`  F.${el.handle} = ${list[1]}`);
       }
       // the emitters are written at a 2-space base indent; shift them inside initView
       for (const line of chunk.join('\n').split('\n')) out.push(line ? pad + '  ' + line : line);
@@ -862,6 +884,8 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   if (typeof project.userCode === 'string' && project.userCode.trim()) {
     out.push('');
     out.push('    // ---- user code (project.userCode) ----');
+    out.push('    // px() only takes a literal number (the build replaces it, there is no px at run time); pxv() scales a computed one');
+    out.push('    const pxv = (n) => Math.round(n * px(1000) / 1000)');
     out.push(project.userCode.trim().split('\n').map((l) => (l ? '    ' + l : l)).join('\n'));
   }
   out.push('  },');

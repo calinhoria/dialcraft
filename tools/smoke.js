@@ -810,7 +810,7 @@ app.whenReady().then(async () => {
       const hour = project.elements.find((e) => e.kind === 'IMG_TIME');
       const lvl = project.elements.find((e) => e.kind === 'IMG_LEVEL');
       const both = project.elements.filter((e) => e.show === 'both').length;
-      const dot = project.images.find((i) => i.name === 'dot.png');
+      const dot = project.images.find((i) => /(^|\\/)dot\\.png$/.test(i.name));
       return {
         report, byKind, layers: project.elements.length, both, unresolved,
         name: project.name, device: project.device, appId: project.appId,
@@ -852,7 +852,7 @@ app.whenReady().then(async () => {
     check('a compressed Maker image imports as a real PNG (palette + byte order)',
       !v2.error && v2.dot && v2.dot.width === 4 && /^data:image\/png;base64,iVBOR/.test(v2.dot.url),
       v2.dot ? `${v2.dot.width}px, ${v2.dot.url}` : 'dot.png missing');
-    const dotRec = await run(`const i = project.images.find((x) => x.name === 'dot.png'); return i ? i.url : '';`);
+    const dotRec = await run(`const i = project.images.find((x) => /(^|\\/)dot\\.png$/.test(x.name)); return i ? i.url : '';`);
     let dotPx = null;
     try {
       const png = require('pngjs').PNG.sync.read(Buffer.from(String(dotRec).split(',')[1], 'base64'));

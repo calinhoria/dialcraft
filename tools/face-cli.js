@@ -28,6 +28,7 @@ app.whenReady().then(async () => {
   try { recipe = JSON.parse(fs.readFileSync(path.resolve(recipePath), 'utf8')); } catch (e) { return fail('cannot read the recipe: ' + e.message); }
   const base = path.dirname(path.resolve(recipePath));
   const abs = (p) => (p ? path.resolve(base, p) : null);
+  if (recipe.open) recipe.open = abs(recipe.open);
 
   const win = new BrowserWindow({
     width: 1300, height: 900, show: false, backgroundColor: '#0e1015',
@@ -46,14 +47,22 @@ app.whenReady().then(async () => {
       return project.elements.find((e) => e.id === key) || project.elements.find((e) => (e.name || '').toLowerCase() === k)
         || project.elements.find((e) => (e.name || '').toLowerCase().includes(k));
     };
-    if (!DEVICES.some((d) => d.target === R.device)) return { ok: false, error: 'unknown device ' + R.device + '. Known: ' + DEVICES.map((d) => d.target).join(', ') };
-    if (R.font) glyphFont = R.font;
-    await createProject(R.name || 'My watchface', R.device, 'blank');
-    if (R.font) { project.font = R.font; glyphFont = R.font; }
+    if (R.open) {
+      // start from a saved Dialcraft project (a folder or its .wfproj.json) instead of a blank one; it is never written back
+      const o = await API.openProjectPath(R.open);
+      if (!o || o.error) return { ok: false, error: 'cannot open ' + R.open + ': ' + (o && o.error) };
+      await loadProject(o);
+      project.savePath = null;
+    } else {
+      if (!DEVICES.some((d) => d.target === R.device)) return { ok: false, error: 'unknown device ' + R.device + '. Known: ' + DEVICES.map((d) => d.target).join(', ') };
+      if (R.font) glyphFont = R.font;
+      await createProject(R.name || 'My watchface', R.device, 'blank');
+      if (R.font) { project.font = R.font; glyphFont = R.font; }
+    }
     if (R.language) project.language = R.language;
     if (R.userImports) project.userImports = R.userImports;
     if (R.userCode) project.userCode = R.userCode;
-    if (R.optimizePng === true || R.optimizePng === 'lossless') project.optimizePng = R.optimizePng;
+    if (R.optimizePng === true || R.optimizePng === 'lossless' || (Number.isInteger(R.optimizePng) && R.optimizePng >= 2 && R.optimizePng <= 256)) project.optimizePng = R.optimizePng;
     if (R.description) project.description = R.description;
     for (const [i, s] of (R.steps || []).entries()) {
       try {

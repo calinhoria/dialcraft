@@ -740,18 +740,31 @@ and lists what came across, what could not, and any notes. What does not survive
 
 ## Code of your own (games, custom logic)
 
-A project can carry JavaScript that is written into the exported watchface next to the generated widgets. This is
-for things the designer cannot express, such as a game that plays itself. It is set in the project file (or in a
-face-cli recipe), there is no editor for it yet:
+A project can carry JavaScript that is written into the exported watchface next to the generated widgets, for what the
+designer cannot express: a game that plays itself, a fill animation, a custom timer. Open it from **Watchface ▸ Code ▸
+Code of your own…** (or set `userImports` / `userCode` in a face-cli recipe):
 
-- `userImports` — lines placed with the other `import`s at the top of `watchface/<target>/index.js`.
-- `userCode` — a block run at the end of `initView()`, after all the generated widgets. `ui`, `px(…)` and `A('file.png')`
-  (the image path helper) are in scope. Wrap it in `{ … }` to keep its names out of the generated code's way.
-- `previewOnly` on a layer — the layer is drawn in the editor and in the preview pictures but is left out of the
-  export. Use it to show what the code will draw (a still of the game).
+- **Imports** (`userImports`) — lines placed with the other `import`s at the top of `watchface/<target>/index.js`.
+- **Code** (`userCode`) — a block run at the end of `initView()`, after all the generated widgets. `ui`, `px(…)` and
+  `A('file.png')` (the image path helper) are in scope. `px()` is replaced at build time, so it only works with a literal
+  number (`px(300)`); for a value your code computes use `pxv(n)`, which scales it the same way. Wrap it in `{ … }` to keep its names out of the generated code's way.
+- **Code handle** (Layer panel, `handle` in a recipe) — names a layer for your code: its widget is `W.<handle>`, and a
+  layer with several pictures (a variants layer) also gives `F.<handle>`, the list of its picture paths. So you design the
+  layers here and drive them from code, e.g. `W.beer.setProperty(ui.prop.MORE, { y: pxv(y), src: F.foam[2] })`
+  (`MORE` takes `x`, `y`, `src` … on an IMG. On an animation (`IMG_ANIM`) `MORE` is accepted but does not move it; use
+  `W.anim.setProperty(ui.prop.Y, pxv(y))`. Both checked on a Bip 6.). `W` and `F` are reserved names.
+- **Preview only** (Layer panel, `previewOnly`) — the layer is drawn in the editor and in the preview pictures but is left
+  out of the export. Use it to show what the code will draw (a still of the game).
 
 Pictures the code needs only have to be in the project (they are all exported); the editor lists them as unused.
-The code runs on the watch only: the editor preview does not execute it. A sample is `sample-watchfaces/tetris-live`.
+**▶ Run code** (the button above the preview) runs your code in the editor against a stand-in for the watch API, so you can see it work
+without installing: `W.<handle>` is the layer itself, `setProperty` with `X`, `Y`, `W`, `H`, `ALPHA`, `SRC`, `VISIBLE`, `TEXT` or `MORE`
+moves or swaps it on the canvas (a layer with several pictures follows `SRC`), `setInterval` / `setTimeout` are real, and the `Time`
+sensor reads the computer's clock. Widgets the code creates itself (a text, a group) are accepted but not drawn, and other watch modules
+are quiet stand-ins that return 0. **Stop** puts every layer back as it was, and nothing that ran is saved or exported (saving, exporting
+or installing stops the run first). It is your own code running in the editor, so it only starts on a click; a project from someone
+else deserves a read before you press it. The final word is still the watch: the stand-in cannot tell you which calls the firmware
+accepts (for instance `MORE` does not move an animation there, `Y` does). Samples: `sample-watchfaces/tetris-live`.
 
 ## Updates
 
