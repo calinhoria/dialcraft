@@ -1,0 +1,425 @@
+{
+ "name": "LCARS Stardate theme 4",
+ "device": "bip-6",
+ "font": "Bebas Neue",
+ "optimizePng": 32,
+ "preview": "preview-theme4.png",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst names = [];\n// ---- drawing helpers for the LCARS Stardate face ----\nconst TAU = Math.PI * 2;\nconst mkc = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst FONT = '\"Bebas Neue\", sans-serif';\n// the five colour roles of the face (the themes swap these)\nconst ROLE = { orange: '#ff9f33', peach: '#fda97d', pink: '#dd83b9', purple: '#9a7bd9', tan: '#bf8b75' };\nconst shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return 'rgb(' + Math.round(r * k) + ',' + Math.round(g * k) + ',' + Math.round(b * k) + ')'; };\n\n// ---------- the static LCARS frame ----------\nconst frame = async () => {\n  try { await ensureFont('Bebas Neue', 700); await document.fonts.load('700 20px \"Bebas Neue\"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'); } catch (e) {}\n  const c = mkc(W, H), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);\n  const txt = (s, x, y, col, size, align = 'left') => { g.fillStyle = col; g.font = '700 ' + size + 'px ' + FONT; g.textAlign = align; g.textBaseline = 'middle'; g.fillText(s, x, y); };\n  // title with a tan bracket\n  g.fillStyle = ROLE.tan; g.fillRect(50, 28, 7, 32); g.fillRect(50, 54, 196, 6);\n  txt('ATMOSPHERIC PROCESS', 66, 42, ROLE.orange, 25);\n  // weather labels\n  txt('CURRENT', 32, 76, ROLE.pink, 20); txt('HIGH TEMP', 32, 101, ROLE.peach, 20); txt('LOW TEMP', 32, 125, ROLE.purple, 20);\n  txt('SUNR', 169, 79, ROLE.peach, 18); txt('SUNS', 169, 103, ROLE.peach, 18); txt('HUMD', 169, 123, ROLE.peach, 18);\n  // the tall bar and the LCARS tab (a tap on the tab changes the colour theme)\n  g.fillStyle = ROLE.peach; g.fillRect(254, 21, 35, 114);\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(293, 21, 65, 31, [0, 17, 0, 0]); g.fill();\n  txt('LCARS', 303, 38, '#000', 19);\n  // the pink band and its elbow with the emblem\n  g.fillStyle = ROLE.pink; g.beginPath();\n  g.moveTo(20, 136); g.lineTo(367, 136); g.lineTo(367, 172); g.arc(344, 172, 23, 0, Math.PI / 2); g.lineTo(289, 195);\n  g.lineTo(289, 173); g.arc(275, 173, 14, 0, -Math.PI / 2, true); g.lineTo(20, 159); g.closePath(); g.fill();\n  // emblem: a circle with an arrowhead (drawn here, not copied)\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.arc(328, 167, 22, 0, TAU); g.stroke();\n  g.fillStyle = '#000'; g.beginPath(); g.moveTo(328, 148); g.bezierCurveTo(334, 160, 340, 172, 345, 184); g.lineTo(328, 175); g.lineTo(311, 184); g.bezierCurveTo(316, 172, 322, 160, 328, 148); g.closePath(); g.fill();\n  g.fillStyle = ROLE.pink; g.beginPath(); g.moveTo(328, 158); g.bezierCurveTo(331, 166, 334, 172, 336, 177); g.lineTo(328, 173); g.lineTo(320, 177); g.bezierCurveTo(322, 172, 325, 166, 328, 158); g.closePath(); g.fill();\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.moveTo(333, 178); g.bezierCurveTo(342, 170, 346, 158, 344, 150); g.stroke();\n  // STARDATE label\n  txt('STARDATE', 55, 178, ROLE.orange, 26);\n  // activity bar labels\n  txt('M', 39, 388, ROLE.pink, 16, 'center'); txt('E', 64, 388, ROLE.purple, 16, 'center'); txt('S', 91, 388, ROLE.orange, 16, 'center');\n  // reading label boxes\n  const box = (y, col, t) => { g.fillStyle = col; g.fillRect(169, y, 95, 30); txt(t, 178, y + 16, '#000', 21); };\n  box(296, ROLE.pink, 'STEPS'); box(330, ROLE.tan, 'HEART'); box(364, ROLE.purple, 'BATTERY');\n  // date box\n  g.fillStyle = ROLE.orange; g.fillRect(287, 295, 81, 97);\n  // bottom bar (rounded at the screen corner) and the small pill\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(32, 398, 230, 32, [0, 0, 0, 22]); g.fill();\n  txt('U.S.S. DIALCRAFT', 147, 415, '#000', 22, 'center');\n  g.fillStyle = ROLE.pink; g.beginPath(); g.roundRect(287, 398, 71, 32, [0, 0, 22, 0]); g.fill();\n  txt('NX-38', 322, 415, '#000', 21, 'center');\n  return c;\n};\n\n// ---------- weather icons (29 of them, in the order of the watch's table): thin orange line drawings ----------\nconst wIcon = (i) => {\n  const c = mkc(38, 34), g = c.getContext('2d');\n  g.strokeStyle = ROLE.orange; g.fillStyle = ROLE.orange; g.lineWidth = 2.4; g.lineCap = 'round'; g.lineJoin = 'round';\n  const sun = (x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, TAU); g.stroke(); for (let k = 0; k < 8; k++) { const a = k * TAU / 8; g.beginPath(); g.moveTo(x + Math.cos(a) * (r + 3), y + Math.sin(a) * (r + 3)); g.lineTo(x + Math.cos(a) * (r + 7), y + Math.sin(a) * (r + 7)); g.stroke(); } };\n  const cloud = (x, y) => { g.beginPath(); g.arc(x + 8, y + 12, 7, Math.PI * 0.5, Math.PI * 1.5); g.arc(x + 15, y + 6, 8, Math.PI, Math.PI * 1.9); g.arc(x + 25, y + 12, 6, Math.PI * 1.5, Math.PI * 0.5); g.closePath(); g.stroke(); };\n  const rain = (n, long) => { for (let k = 0; k < n; k++) { const x = 11 + k * (16 / Math.max(1, n - 1 || 1)) * (n > 1 ? 1 : 0.0) + (n === 1 ? 10 : 0); g.beginPath(); g.moveTo(x, 24); g.lineTo(x - 3, 24 + (long ? 8 : 5)); g.stroke(); } };\n  const snow = (n) => { for (let k = 0; k < n; k++) { const x = 10 + k * (n > 1 ? 18 / (n - 1) : 0) + (n === 1 ? 8 : 0); g.beginPath(); g.arc(x, 28, 1.4, 0, TAU); g.fill(); } };\n  const bolt = () => { g.beginPath(); g.moveTo(19, 21); g.lineTo(14, 29); g.lineTo(19, 29); g.lineTo(15, 34); g.stroke(); };\n  const fog = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 10 + k * 8); g.lineTo(33, 10 + k * 8); g.stroke(); } };\n  const wind = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 9 + k * 8); g.bezierCurveTo(20, 9 + k * 8, 24, 3 + k * 8, 30, 8 + k * 8); g.stroke(); } };\n  const moon = (x, y) => { g.beginPath(); g.arc(x, y, 9, 0.9, TAU - 0.9); g.arc(x + 5, y - 2, 8, TAU - 1.1, 1.1, true); g.closePath(); g.stroke(); };\n  const name = ['cloud', 'rainS', 'snowS', 'sun', 'cloud', 'rainL', 'snowL', 'rainM', 'snowM', 'snowH', 'rainH', 'wind', 'sleet', 'fog', 'fog', 'thunder', 'snowH', 'wind', 'rainH', 'hail', 'thunder', 'rainH', 'wind', 'wind', 'rainH', 'cloud', 'moonCloud', 'moonRain', 'moon'][i];\n  switch (name) {\n    case 'sun': sun(19, 17, 8); break;\n    case 'cloud': cloud(3, 5); break;\n    case 'rainS': cloud(3, 2); rain(2, false); break;\n    case 'rainL': cloud(3, 2); rain(1, false); break;\n    case 'rainM': cloud(3, 2); rain(3, false); break;\n    case 'rainH': cloud(3, 2); rain(4, true); break;\n    case 'snowS': case 'snowL': cloud(3, 2); snow(2); break;\n    case 'snowM': cloud(3, 2); snow(3); break;\n    case 'snowH': cloud(3, 2); snow(4); break;\n    case 'sleet': cloud(3, 2); rain(2, false); snow(1); break;\n    case 'thunder': cloud(3, 0); bolt(); break;\n    case 'hail': cloud(3, 2); rain(2, false); snow(2); break;\n    case 'fog': fog(); break;\n    case 'wind': wind(); break;\n    case 'moon': moon(19, 17); break;\n    case 'moonCloud': moon(13, 11); cloud(8, 12); break;\n    case 'moonRain': moon(13, 9); cloud(8, 9); rain(2, false); break;\n  }\n  return c;\n};\n\n// ---------- the M / E / S bars: a rounded pill, dim on top, bright from the bottom up (11 fill levels) ----------\nconst barImg = (col, level) => {\n  const w = 17, h = 82, c = mkc(w, h), g = c.getContext('2d');\n  g.save(); g.beginPath(); g.roundRect(0, 0, w, h, w / 2); g.clip();\n  g.fillStyle = shade(col, 0.38); g.fillRect(0, 0, w, h);\n  const fh = Math.round(h * level / 10); g.fillStyle = col; g.fillRect(0, h - fh, w, fh);\n  g.restore();\n  return c;\n};\n\n// ---------- colour themes: every role colour is swapped for the theme's, keeping shading and edges ----------\nconst THEMES = [\n  { name: 'Blue Alert', accent: '#5aa9ff', roles: { orange: '#5aa9ff', peach: '#a9d4ff', pink: '#7a8cff', purple: '#5b7cf0', tan: '#6f86a8' } },\n  { name: 'Red Alert', accent: '#ff3b30', roles: { orange: '#ff3b30', peach: '#ff8a7a', pink: '#ff5c7a', purple: '#d83a55', tan: '#a85a55' } },\n  { name: 'Sickbay Green', accent: '#3ddc84', roles: { orange: '#3ddc84', peach: '#b6f0c8', pink: '#7ad7b0', purple: '#35b387', tan: '#6fa085' } },\n  { name: 'Command Gold', accent: '#ffcc33', roles: { orange: '#ffcc33', peach: '#ffe08a', pink: '#f5a742', purple: '#d9971f', tan: '#b88a4a' } },\n  { name: 'Violet', accent: '#c9a0ff', roles: { orange: '#c9a0ff', peach: '#e6d3ff', pink: '#ff86d0', purple: '#9d6df0', tan: '#8f7aa8' } },\n];\nconst hexRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };\nconst recolorImage = (cv, roles) => {\n  const g = cv.getContext('2d', { willReadFrequently: true }), im = g.getImageData(0, 0, cv.width, cv.height), d = im.data;\n  const base = Object.keys(ROLE).map((k) => ({ k, c: hexRgb(ROLE[k]), t: hexRgb(roles[k]) }));\n  let hits = 0;\n  for (let i = 0; i < d.length; i += 4) {\n    if (d[i + 3] === 0) continue;\n    const r = d[i], gg = d[i + 1], b = d[i + 2], len = Math.hypot(r, gg, b);\n    if (len < 25) continue;\n    const sat = (Math.max(r, gg, b) - Math.min(r, gg, b)) / Math.max(1, Math.max(r, gg, b));\n    if (sat < 0.12) continue;\n    let best = null;\n    for (const p of base) {\n      const bb = p.c[0] * p.c[0] + p.c[1] * p.c[1] + p.c[2] * p.c[2], k = (r * p.c[0] + gg * p.c[1] + b * p.c[2]) / bb;\n      if (k < 0.05 || k > 1.2) continue;\n      const res = Math.hypot(r - k * p.c[0], gg - k * p.c[1], b - k * p.c[2]);\n      if (!best || res < best.res) best = { res, k, p };\n    }\n    if (!best || best.res > len * 0.22) continue;\n    d[i] = Math.min(255, best.k * best.p.t[0]); d[i + 1] = Math.min(255, best.k * best.p.t[1]); d[i + 2] = Math.min(255, best.k * best.p.t[2]);\n    hits++;\n  }\n  g.putImageData(im, 0, 0);\n  return hits;\n};\n\nnames.push(addProjectImage('lcars_frame.png', await frame(), {}).name);\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'LCARS frame'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst names = [];\n// ---- drawing helpers for the LCARS Stardate face ----\nconst TAU = Math.PI * 2;\nconst mkc = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst FONT = '\"Bebas Neue\", sans-serif';\n// the five colour roles of the face (the themes swap these)\nconst ROLE = { orange: '#ff9f33', peach: '#fda97d', pink: '#dd83b9', purple: '#9a7bd9', tan: '#bf8b75' };\nconst shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return 'rgb(' + Math.round(r * k) + ',' + Math.round(g * k) + ',' + Math.round(b * k) + ')'; };\n\n// ---------- the static LCARS frame ----------\nconst frame = async () => {\n  try { await ensureFont('Bebas Neue', 700); await document.fonts.load('700 20px \"Bebas Neue\"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'); } catch (e) {}\n  const c = mkc(W, H), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);\n  const txt = (s, x, y, col, size, align = 'left') => { g.fillStyle = col; g.font = '700 ' + size + 'px ' + FONT; g.textAlign = align; g.textBaseline = 'middle'; g.fillText(s, x, y); };\n  // title with a tan bracket\n  g.fillStyle = ROLE.tan; g.fillRect(50, 28, 7, 32); g.fillRect(50, 54, 196, 6);\n  txt('ATMOSPHERIC PROCESS', 66, 42, ROLE.orange, 25);\n  // weather labels\n  txt('CURRENT', 32, 76, ROLE.pink, 20); txt('HIGH TEMP', 32, 101, ROLE.peach, 20); txt('LOW TEMP', 32, 125, ROLE.purple, 20);\n  txt('SUNR', 169, 79, ROLE.peach, 18); txt('SUNS', 169, 103, ROLE.peach, 18); txt('HUMD', 169, 123, ROLE.peach, 18);\n  // the tall bar and the LCARS tab (a tap on the tab changes the colour theme)\n  g.fillStyle = ROLE.peach; g.fillRect(254, 21, 35, 114);\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(293, 21, 65, 31, [0, 17, 0, 0]); g.fill();\n  txt('LCARS', 303, 38, '#000', 19);\n  // the pink band and its elbow with the emblem\n  g.fillStyle = ROLE.pink; g.beginPath();\n  g.moveTo(20, 136); g.lineTo(367, 136); g.lineTo(367, 172); g.arc(344, 172, 23, 0, Math.PI / 2); g.lineTo(289, 195);\n  g.lineTo(289, 173); g.arc(275, 173, 14, 0, -Math.PI / 2, true); g.lineTo(20, 159); g.closePath(); g.fill();\n  // emblem: a circle with an arrowhead (drawn here, not copied)\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.arc(328, 167, 22, 0, TAU); g.stroke();\n  g.fillStyle = '#000'; g.beginPath(); g.moveTo(328, 148); g.bezierCurveTo(334, 160, 340, 172, 345, 184); g.lineTo(328, 175); g.lineTo(311, 184); g.bezierCurveTo(316, 172, 322, 160, 328, 148); g.closePath(); g.fill();\n  g.fillStyle = ROLE.pink; g.beginPath(); g.moveTo(328, 158); g.bezierCurveTo(331, 166, 334, 172, 336, 177); g.lineTo(328, 173); g.lineTo(320, 177); g.bezierCurveTo(322, 172, 325, 166, 328, 158); g.closePath(); g.fill();\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.moveTo(333, 178); g.bezierCurveTo(342, 170, 346, 158, 344, 150); g.stroke();\n  // STARDATE label\n  txt('STARDATE', 55, 178, ROLE.orange, 26);\n  // activity bar labels\n  txt('M', 39, 388, ROLE.pink, 16, 'center'); txt('E', 64, 388, ROLE.purple, 16, 'center'); txt('S', 91, 388, ROLE.orange, 16, 'center');\n  // reading label boxes\n  const box = (y, col, t) => { g.fillStyle = col; g.fillRect(169, y, 95, 30); txt(t, 178, y + 16, '#000', 21); };\n  box(296, ROLE.pink, 'STEPS'); box(330, ROLE.tan, 'HEART'); box(364, ROLE.purple, 'BATTERY');\n  // date box\n  g.fillStyle = ROLE.orange; g.fillRect(287, 295, 81, 97);\n  // bottom bar (rounded at the screen corner) and the small pill\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(32, 398, 230, 32, [0, 0, 0, 22]); g.fill();\n  txt('U.S.S. DIALCRAFT', 147, 415, '#000', 22, 'center');\n  g.fillStyle = ROLE.pink; g.beginPath(); g.roundRect(287, 398, 71, 32, [0, 0, 22, 0]); g.fill();\n  txt('NX-38', 322, 415, '#000', 21, 'center');\n  return c;\n};\n\n// ---------- weather icons (29 of them, in the order of the watch's table): thin orange line drawings ----------\nconst wIcon = (i) => {\n  const c = mkc(38, 34), g = c.getContext('2d');\n  g.strokeStyle = ROLE.orange; g.fillStyle = ROLE.orange; g.lineWidth = 2.4; g.lineCap = 'round'; g.lineJoin = 'round';\n  const sun = (x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, TAU); g.stroke(); for (let k = 0; k < 8; k++) { const a = k * TAU / 8; g.beginPath(); g.moveTo(x + Math.cos(a) * (r + 3), y + Math.sin(a) * (r + 3)); g.lineTo(x + Math.cos(a) * (r + 7), y + Math.sin(a) * (r + 7)); g.stroke(); } };\n  const cloud = (x, y) => { g.beginPath(); g.arc(x + 8, y + 12, 7, Math.PI * 0.5, Math.PI * 1.5); g.arc(x + 15, y + 6, 8, Math.PI, Math.PI * 1.9); g.arc(x + 25, y + 12, 6, Math.PI * 1.5, Math.PI * 0.5); g.closePath(); g.stroke(); };\n  const rain = (n, long) => { for (let k = 0; k < n; k++) { const x = 11 + k * (16 / Math.max(1, n - 1 || 1)) * (n > 1 ? 1 : 0.0) + (n === 1 ? 10 : 0); g.beginPath(); g.moveTo(x, 24); g.lineTo(x - 3, 24 + (long ? 8 : 5)); g.stroke(); } };\n  const snow = (n) => { for (let k = 0; k < n; k++) { const x = 10 + k * (n > 1 ? 18 / (n - 1) : 0) + (n === 1 ? 8 : 0); g.beginPath(); g.arc(x, 28, 1.4, 0, TAU); g.fill(); } };\n  const bolt = () => { g.beginPath(); g.moveTo(19, 21); g.lineTo(14, 29); g.lineTo(19, 29); g.lineTo(15, 34); g.stroke(); };\n  const fog = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 10 + k * 8); g.lineTo(33, 10 + k * 8); g.stroke(); } };\n  const wind = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 9 + k * 8); g.bezierCurveTo(20, 9 + k * 8, 24, 3 + k * 8, 30, 8 + k * 8); g.stroke(); } };\n  const moon = (x, y) => { g.beginPath(); g.arc(x, y, 9, 0.9, TAU - 0.9); g.arc(x + 5, y - 2, 8, TAU - 1.1, 1.1, true); g.closePath(); g.stroke(); };\n  const name = ['cloud', 'rainS', 'snowS', 'sun', 'cloud', 'rainL', 'snowL', 'rainM', 'snowM', 'snowH', 'rainH', 'wind', 'sleet', 'fog', 'fog', 'thunder', 'snowH', 'wind', 'rainH', 'hail', 'thunder', 'rainH', 'wind', 'wind', 'rainH', 'cloud', 'moonCloud', 'moonRain', 'moon'][i];\n  switch (name) {\n    case 'sun': sun(19, 17, 8); break;\n    case 'cloud': cloud(3, 5); break;\n    case 'rainS': cloud(3, 2); rain(2, false); break;\n    case 'rainL': cloud(3, 2); rain(1, false); break;\n    case 'rainM': cloud(3, 2); rain(3, false); break;\n    case 'rainH': cloud(3, 2); rain(4, true); break;\n    case 'snowS': case 'snowL': cloud(3, 2); snow(2); break;\n    case 'snowM': cloud(3, 2); snow(3); break;\n    case 'snowH': cloud(3, 2); snow(4); break;\n    case 'sleet': cloud(3, 2); rain(2, false); snow(1); break;\n    case 'thunder': cloud(3, 0); bolt(); break;\n    case 'hail': cloud(3, 2); rain(2, false); snow(2); break;\n    case 'fog': fog(); break;\n    case 'wind': wind(); break;\n    case 'moon': moon(19, 17); break;\n    case 'moonCloud': moon(13, 11); cloud(8, 12); break;\n    case 'moonRain': moon(13, 9); cloud(8, 9); rain(2, false); break;\n  }\n  return c;\n};\n\n// ---------- the M / E / S bars: a rounded pill, dim on top, bright from the bottom up (11 fill levels) ----------\nconst barImg = (col, level) => {\n  const w = 17, h = 82, c = mkc(w, h), g = c.getContext('2d');\n  g.save(); g.beginPath(); g.roundRect(0, 0, w, h, w / 2); g.clip();\n  g.fillStyle = shade(col, 0.38); g.fillRect(0, 0, w, h);\n  const fh = Math.round(h * level / 10); g.fillStyle = col; g.fillRect(0, h - fh, w, fh);\n  g.restore();\n  return c;\n};\n\n// ---------- colour themes: every role colour is swapped for the theme's, keeping shading and edges ----------\nconst THEMES = [\n  { name: 'Blue Alert', accent: '#5aa9ff', roles: { orange: '#5aa9ff', peach: '#a9d4ff', pink: '#7a8cff', purple: '#5b7cf0', tan: '#6f86a8' } },\n  { name: 'Red Alert', accent: '#ff3b30', roles: { orange: '#ff3b30', peach: '#ff8a7a', pink: '#ff5c7a', purple: '#d83a55', tan: '#a85a55' } },\n  { name: 'Sickbay Green', accent: '#3ddc84', roles: { orange: '#3ddc84', peach: '#b6f0c8', pink: '#7ad7b0', purple: '#35b387', tan: '#6fa085' } },\n  { name: 'Command Gold', accent: '#ffcc33', roles: { orange: '#ffcc33', peach: '#ffe08a', pink: '#f5a742', purple: '#d9971f', tan: '#b88a4a' } },\n  { name: 'Violet', accent: '#c9a0ff', roles: { orange: '#c9a0ff', peach: '#e6d3ff', pink: '#ff86d0', purple: '#9d6df0', tan: '#8f7aa8' } },\n];\nconst hexRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };\nconst recolorImage = (cv, roles) => {\n  const g = cv.getContext('2d', { willReadFrequently: true }), im = g.getImageData(0, 0, cv.width, cv.height), d = im.data;\n  const base = Object.keys(ROLE).map((k) => ({ k, c: hexRgb(ROLE[k]), t: hexRgb(roles[k]) }));\n  let hits = 0;\n  for (let i = 0; i < d.length; i += 4) {\n    if (d[i + 3] === 0) continue;\n    const r = d[i], gg = d[i + 1], b = d[i + 2], len = Math.hypot(r, gg, b);\n    if (len < 25) continue;\n    const sat = (Math.max(r, gg, b) - Math.min(r, gg, b)) / Math.max(1, Math.max(r, gg, b));\n    if (sat < 0.12) continue;\n    let best = null;\n    for (const p of base) {\n      const bb = p.c[0] * p.c[0] + p.c[1] * p.c[1] + p.c[2] * p.c[2], k = (r * p.c[0] + gg * p.c[1] + b * p.c[2]) / bb;\n      if (k < 0.05 || k > 1.2) continue;\n      const res = Math.hypot(r - k * p.c[0], gg - k * p.c[1], b - k * p.c[2]);\n      if (!best || res < best.res) best = { res, k, p };\n    }\n    if (!best || best.res > len * 0.22) continue;\n    d[i] = Math.min(255, best.k * best.p.t[0]); d[i + 1] = Math.min(255, best.k * best.p.t[1]); d[i + 2] = Math.min(255, best.k * best.p.t[2]);\n    hits++;\n  }\n  g.putImageData(im, 0, 0);\n  return hits;\n};\n\nfor (let i = 0; i < 29; i++) names.push(addProjectImage('weather/w_' + i + '.png', wIcon(i), {}).name);\nawait loadAllImages();\nconst e = await addElement('IMG_LEVEL', { dataType: 'WEATHER', images: names, w: 0, h: 0 }); e.name = 'Weather icon'; e.images = names; e.dataType = 'WEATHER'; e.x = 312; e.y = 79; e.show = 'normal'; return 29"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst names = [];\n// ---- drawing helpers for the LCARS Stardate face ----\nconst TAU = Math.PI * 2;\nconst mkc = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst FONT = '\"Bebas Neue\", sans-serif';\n// the five colour roles of the face (the themes swap these)\nconst ROLE = { orange: '#ff9f33', peach: '#fda97d', pink: '#dd83b9', purple: '#9a7bd9', tan: '#bf8b75' };\nconst shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return 'rgb(' + Math.round(r * k) + ',' + Math.round(g * k) + ',' + Math.round(b * k) + ')'; };\n\n// ---------- the static LCARS frame ----------\nconst frame = async () => {\n  try { await ensureFont('Bebas Neue', 700); await document.fonts.load('700 20px \"Bebas Neue\"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'); } catch (e) {}\n  const c = mkc(W, H), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);\n  const txt = (s, x, y, col, size, align = 'left') => { g.fillStyle = col; g.font = '700 ' + size + 'px ' + FONT; g.textAlign = align; g.textBaseline = 'middle'; g.fillText(s, x, y); };\n  // title with a tan bracket\n  g.fillStyle = ROLE.tan; g.fillRect(50, 28, 7, 32); g.fillRect(50, 54, 196, 6);\n  txt('ATMOSPHERIC PROCESS', 66, 42, ROLE.orange, 25);\n  // weather labels\n  txt('CURRENT', 32, 76, ROLE.pink, 20); txt('HIGH TEMP', 32, 101, ROLE.peach, 20); txt('LOW TEMP', 32, 125, ROLE.purple, 20);\n  txt('SUNR', 169, 79, ROLE.peach, 18); txt('SUNS', 169, 103, ROLE.peach, 18); txt('HUMD', 169, 123, ROLE.peach, 18);\n  // the tall bar and the LCARS tab (a tap on the tab changes the colour theme)\n  g.fillStyle = ROLE.peach; g.fillRect(254, 21, 35, 114);\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(293, 21, 65, 31, [0, 17, 0, 0]); g.fill();\n  txt('LCARS', 303, 38, '#000', 19);\n  // the pink band and its elbow with the emblem\n  g.fillStyle = ROLE.pink; g.beginPath();\n  g.moveTo(20, 136); g.lineTo(367, 136); g.lineTo(367, 172); g.arc(344, 172, 23, 0, Math.PI / 2); g.lineTo(289, 195);\n  g.lineTo(289, 173); g.arc(275, 173, 14, 0, -Math.PI / 2, true); g.lineTo(20, 159); g.closePath(); g.fill();\n  // emblem: a circle with an arrowhead (drawn here, not copied)\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.arc(328, 167, 22, 0, TAU); g.stroke();\n  g.fillStyle = '#000'; g.beginPath(); g.moveTo(328, 148); g.bezierCurveTo(334, 160, 340, 172, 345, 184); g.lineTo(328, 175); g.lineTo(311, 184); g.bezierCurveTo(316, 172, 322, 160, 328, 148); g.closePath(); g.fill();\n  g.fillStyle = ROLE.pink; g.beginPath(); g.moveTo(328, 158); g.bezierCurveTo(331, 166, 334, 172, 336, 177); g.lineTo(328, 173); g.lineTo(320, 177); g.bezierCurveTo(322, 172, 325, 166, 328, 158); g.closePath(); g.fill();\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.moveTo(333, 178); g.bezierCurveTo(342, 170, 346, 158, 344, 150); g.stroke();\n  // STARDATE label\n  txt('STARDATE', 55, 178, ROLE.orange, 26);\n  // activity bar labels\n  txt('M', 39, 388, ROLE.pink, 16, 'center'); txt('E', 64, 388, ROLE.purple, 16, 'center'); txt('S', 91, 388, ROLE.orange, 16, 'center');\n  // reading label boxes\n  const box = (y, col, t) => { g.fillStyle = col; g.fillRect(169, y, 95, 30); txt(t, 178, y + 16, '#000', 21); };\n  box(296, ROLE.pink, 'STEPS'); box(330, ROLE.tan, 'HEART'); box(364, ROLE.purple, 'BATTERY');\n  // date box\n  g.fillStyle = ROLE.orange; g.fillRect(287, 295, 81, 97);\n  // bottom bar (rounded at the screen corner) and the small pill\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(32, 398, 230, 32, [0, 0, 0, 22]); g.fill();\n  txt('U.S.S. DIALCRAFT', 147, 415, '#000', 22, 'center');\n  g.fillStyle = ROLE.pink; g.beginPath(); g.roundRect(287, 398, 71, 32, [0, 0, 22, 0]); g.fill();\n  txt('NX-38', 322, 415, '#000', 21, 'center');\n  return c;\n};\n\n// ---------- weather icons (29 of them, in the order of the watch's table): thin orange line drawings ----------\nconst wIcon = (i) => {\n  const c = mkc(38, 34), g = c.getContext('2d');\n  g.strokeStyle = ROLE.orange; g.fillStyle = ROLE.orange; g.lineWidth = 2.4; g.lineCap = 'round'; g.lineJoin = 'round';\n  const sun = (x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, TAU); g.stroke(); for (let k = 0; k < 8; k++) { const a = k * TAU / 8; g.beginPath(); g.moveTo(x + Math.cos(a) * (r + 3), y + Math.sin(a) * (r + 3)); g.lineTo(x + Math.cos(a) * (r + 7), y + Math.sin(a) * (r + 7)); g.stroke(); } };\n  const cloud = (x, y) => { g.beginPath(); g.arc(x + 8, y + 12, 7, Math.PI * 0.5, Math.PI * 1.5); g.arc(x + 15, y + 6, 8, Math.PI, Math.PI * 1.9); g.arc(x + 25, y + 12, 6, Math.PI * 1.5, Math.PI * 0.5); g.closePath(); g.stroke(); };\n  const rain = (n, long) => { for (let k = 0; k < n; k++) { const x = 11 + k * (16 / Math.max(1, n - 1 || 1)) * (n > 1 ? 1 : 0.0) + (n === 1 ? 10 : 0); g.beginPath(); g.moveTo(x, 24); g.lineTo(x - 3, 24 + (long ? 8 : 5)); g.stroke(); } };\n  const snow = (n) => { for (let k = 0; k < n; k++) { const x = 10 + k * (n > 1 ? 18 / (n - 1) : 0) + (n === 1 ? 8 : 0); g.beginPath(); g.arc(x, 28, 1.4, 0, TAU); g.fill(); } };\n  const bolt = () => { g.beginPath(); g.moveTo(19, 21); g.lineTo(14, 29); g.lineTo(19, 29); g.lineTo(15, 34); g.stroke(); };\n  const fog = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 10 + k * 8); g.lineTo(33, 10 + k * 8); g.stroke(); } };\n  const wind = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 9 + k * 8); g.bezierCurveTo(20, 9 + k * 8, 24, 3 + k * 8, 30, 8 + k * 8); g.stroke(); } };\n  const moon = (x, y) => { g.beginPath(); g.arc(x, y, 9, 0.9, TAU - 0.9); g.arc(x + 5, y - 2, 8, TAU - 1.1, 1.1, true); g.closePath(); g.stroke(); };\n  const name = ['cloud', 'rainS', 'snowS', 'sun', 'cloud', 'rainL', 'snowL', 'rainM', 'snowM', 'snowH', 'rainH', 'wind', 'sleet', 'fog', 'fog', 'thunder', 'snowH', 'wind', 'rainH', 'hail', 'thunder', 'rainH', 'wind', 'wind', 'rainH', 'cloud', 'moonCloud', 'moonRain', 'moon'][i];\n  switch (name) {\n    case 'sun': sun(19, 17, 8); break;\n    case 'cloud': cloud(3, 5); break;\n    case 'rainS': cloud(3, 2); rain(2, false); break;\n    case 'rainL': cloud(3, 2); rain(1, false); break;\n    case 'rainM': cloud(3, 2); rain(3, false); break;\n    case 'rainH': cloud(3, 2); rain(4, true); break;\n    case 'snowS': case 'snowL': cloud(3, 2); snow(2); break;\n    case 'snowM': cloud(3, 2); snow(3); break;\n    case 'snowH': cloud(3, 2); snow(4); break;\n    case 'sleet': cloud(3, 2); rain(2, false); snow(1); break;\n    case 'thunder': cloud(3, 0); bolt(); break;\n    case 'hail': cloud(3, 2); rain(2, false); snow(2); break;\n    case 'fog': fog(); break;\n    case 'wind': wind(); break;\n    case 'moon': moon(19, 17); break;\n    case 'moonCloud': moon(13, 11); cloud(8, 12); break;\n    case 'moonRain': moon(13, 9); cloud(8, 9); rain(2, false); break;\n  }\n  return c;\n};\n\n// ---------- the M / E / S bars: a rounded pill, dim on top, bright from the bottom up (11 fill levels) ----------\nconst barImg = (col, level) => {\n  const w = 17, h = 82, c = mkc(w, h), g = c.getContext('2d');\n  g.save(); g.beginPath(); g.roundRect(0, 0, w, h, w / 2); g.clip();\n  g.fillStyle = shade(col, 0.38); g.fillRect(0, 0, w, h);\n  const fh = Math.round(h * level / 10); g.fillStyle = col; g.fillRect(0, h - fh, w, fh);\n  g.restore();\n  return c;\n};\n\n// ---------- colour themes: every role colour is swapped for the theme's, keeping shading and edges ----------\nconst THEMES = [\n  { name: 'Blue Alert', accent: '#5aa9ff', roles: { orange: '#5aa9ff', peach: '#a9d4ff', pink: '#7a8cff', purple: '#5b7cf0', tan: '#6f86a8' } },\n  { name: 'Red Alert', accent: '#ff3b30', roles: { orange: '#ff3b30', peach: '#ff8a7a', pink: '#ff5c7a', purple: '#d83a55', tan: '#a85a55' } },\n  { name: 'Sickbay Green', accent: '#3ddc84', roles: { orange: '#3ddc84', peach: '#b6f0c8', pink: '#7ad7b0', purple: '#35b387', tan: '#6fa085' } },\n  { name: 'Command Gold', accent: '#ffcc33', roles: { orange: '#ffcc33', peach: '#ffe08a', pink: '#f5a742', purple: '#d9971f', tan: '#b88a4a' } },\n  { name: 'Violet', accent: '#c9a0ff', roles: { orange: '#c9a0ff', peach: '#e6d3ff', pink: '#ff86d0', purple: '#9d6df0', tan: '#8f7aa8' } },\n];\nconst hexRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };\nconst recolorImage = (cv, roles) => {\n  const g = cv.getContext('2d', { willReadFrequently: true }), im = g.getImageData(0, 0, cv.width, cv.height), d = im.data;\n  const base = Object.keys(ROLE).map((k) => ({ k, c: hexRgb(ROLE[k]), t: hexRgb(roles[k]) }));\n  let hits = 0;\n  for (let i = 0; i < d.length; i += 4) {\n    if (d[i + 3] === 0) continue;\n    const r = d[i], gg = d[i + 1], b = d[i + 2], len = Math.hypot(r, gg, b);\n    if (len < 25) continue;\n    const sat = (Math.max(r, gg, b) - Math.min(r, gg, b)) / Math.max(1, Math.max(r, gg, b));\n    if (sat < 0.12) continue;\n    let best = null;\n    for (const p of base) {\n      const bb = p.c[0] * p.c[0] + p.c[1] * p.c[1] + p.c[2] * p.c[2], k = (r * p.c[0] + gg * p.c[1] + b * p.c[2]) / bb;\n      if (k < 0.05 || k > 1.2) continue;\n      const res = Math.hypot(r - k * p.c[0], gg - k * p.c[1], b - k * p.c[2]);\n      if (!best || res < best.res) best = { res, k, p };\n    }\n    if (!best || best.res > len * 0.22) continue;\n    d[i] = Math.min(255, best.k * best.p.t[0]); d[i + 1] = Math.min(255, best.k * best.p.t[1]); d[i + 2] = Math.min(255, best.k * best.p.t[2]);\n    hits++;\n  }\n  g.putImageData(im, 0, 0);\n  return hits;\n};\n\nfor (let l = 0; l <= 10; l++) names.push(addProjectImage('bars/pink_' + l + '.png', barImg(ROLE.pink, l), {}).name);\nawait loadAllImages();\nconst e = await addElement('IMG_LEVEL', { dataType: 'CAL', images: names, w: 0, h: 0 }); e.name = 'Move bar'; e.images = names; e.dataType = 'CAL'; e.x = 30; e.y = 296; e.show = 'normal'; return 11"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst names = [];\n// ---- drawing helpers for the LCARS Stardate face ----\nconst TAU = Math.PI * 2;\nconst mkc = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst FONT = '\"Bebas Neue\", sans-serif';\n// the five colour roles of the face (the themes swap these)\nconst ROLE = { orange: '#ff9f33', peach: '#fda97d', pink: '#dd83b9', purple: '#9a7bd9', tan: '#bf8b75' };\nconst shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return 'rgb(' + Math.round(r * k) + ',' + Math.round(g * k) + ',' + Math.round(b * k) + ')'; };\n\n// ---------- the static LCARS frame ----------\nconst frame = async () => {\n  try { await ensureFont('Bebas Neue', 700); await document.fonts.load('700 20px \"Bebas Neue\"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'); } catch (e) {}\n  const c = mkc(W, H), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);\n  const txt = (s, x, y, col, size, align = 'left') => { g.fillStyle = col; g.font = '700 ' + size + 'px ' + FONT; g.textAlign = align; g.textBaseline = 'middle'; g.fillText(s, x, y); };\n  // title with a tan bracket\n  g.fillStyle = ROLE.tan; g.fillRect(50, 28, 7, 32); g.fillRect(50, 54, 196, 6);\n  txt('ATMOSPHERIC PROCESS', 66, 42, ROLE.orange, 25);\n  // weather labels\n  txt('CURRENT', 32, 76, ROLE.pink, 20); txt('HIGH TEMP', 32, 101, ROLE.peach, 20); txt('LOW TEMP', 32, 125, ROLE.purple, 20);\n  txt('SUNR', 169, 79, ROLE.peach, 18); txt('SUNS', 169, 103, ROLE.peach, 18); txt('HUMD', 169, 123, ROLE.peach, 18);\n  // the tall bar and the LCARS tab (a tap on the tab changes the colour theme)\n  g.fillStyle = ROLE.peach; g.fillRect(254, 21, 35, 114);\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(293, 21, 65, 31, [0, 17, 0, 0]); g.fill();\n  txt('LCARS', 303, 38, '#000', 19);\n  // the pink band and its elbow with the emblem\n  g.fillStyle = ROLE.pink; g.beginPath();\n  g.moveTo(20, 136); g.lineTo(367, 136); g.lineTo(367, 172); g.arc(344, 172, 23, 0, Math.PI / 2); g.lineTo(289, 195);\n  g.lineTo(289, 173); g.arc(275, 173, 14, 0, -Math.PI / 2, true); g.lineTo(20, 159); g.closePath(); g.fill();\n  // emblem: a circle with an arrowhead (drawn here, not copied)\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.arc(328, 167, 22, 0, TAU); g.stroke();\n  g.fillStyle = '#000'; g.beginPath(); g.moveTo(328, 148); g.bezierCurveTo(334, 160, 340, 172, 345, 184); g.lineTo(328, 175); g.lineTo(311, 184); g.bezierCurveTo(316, 172, 322, 160, 328, 148); g.closePath(); g.fill();\n  g.fillStyle = ROLE.pink; g.beginPath(); g.moveTo(328, 158); g.bezierCurveTo(331, 166, 334, 172, 336, 177); g.lineTo(328, 173); g.lineTo(320, 177); g.bezierCurveTo(322, 172, 325, 166, 328, 158); g.closePath(); g.fill();\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.moveTo(333, 178); g.bezierCurveTo(342, 170, 346, 158, 344, 150); g.stroke();\n  // STARDATE label\n  txt('STARDATE', 55, 178, ROLE.orange, 26);\n  // activity bar labels\n  txt('M', 39, 388, ROLE.pink, 16, 'center'); txt('E', 64, 388, ROLE.purple, 16, 'center'); txt('S', 91, 388, ROLE.orange, 16, 'center');\n  // reading label boxes\n  const box = (y, col, t) => { g.fillStyle = col; g.fillRect(169, y, 95, 30); txt(t, 178, y + 16, '#000', 21); };\n  box(296, ROLE.pink, 'STEPS'); box(330, ROLE.tan, 'HEART'); box(364, ROLE.purple, 'BATTERY');\n  // date box\n  g.fillStyle = ROLE.orange; g.fillRect(287, 295, 81, 97);\n  // bottom bar (rounded at the screen corner) and the small pill\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(32, 398, 230, 32, [0, 0, 0, 22]); g.fill();\n  txt('U.S.S. DIALCRAFT', 147, 415, '#000', 22, 'center');\n  g.fillStyle = ROLE.pink; g.beginPath(); g.roundRect(287, 398, 71, 32, [0, 0, 22, 0]); g.fill();\n  txt('NX-38', 322, 415, '#000', 21, 'center');\n  return c;\n};\n\n// ---------- weather icons (29 of them, in the order of the watch's table): thin orange line drawings ----------\nconst wIcon = (i) => {\n  const c = mkc(38, 34), g = c.getContext('2d');\n  g.strokeStyle = ROLE.orange; g.fillStyle = ROLE.orange; g.lineWidth = 2.4; g.lineCap = 'round'; g.lineJoin = 'round';\n  const sun = (x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, TAU); g.stroke(); for (let k = 0; k < 8; k++) { const a = k * TAU / 8; g.beginPath(); g.moveTo(x + Math.cos(a) * (r + 3), y + Math.sin(a) * (r + 3)); g.lineTo(x + Math.cos(a) * (r + 7), y + Math.sin(a) * (r + 7)); g.stroke(); } };\n  const cloud = (x, y) => { g.beginPath(); g.arc(x + 8, y + 12, 7, Math.PI * 0.5, Math.PI * 1.5); g.arc(x + 15, y + 6, 8, Math.PI, Math.PI * 1.9); g.arc(x + 25, y + 12, 6, Math.PI * 1.5, Math.PI * 0.5); g.closePath(); g.stroke(); };\n  const rain = (n, long) => { for (let k = 0; k < n; k++) { const x = 11 + k * (16 / Math.max(1, n - 1 || 1)) * (n > 1 ? 1 : 0.0) + (n === 1 ? 10 : 0); g.beginPath(); g.moveTo(x, 24); g.lineTo(x - 3, 24 + (long ? 8 : 5)); g.stroke(); } };\n  const snow = (n) => { for (let k = 0; k < n; k++) { const x = 10 + k * (n > 1 ? 18 / (n - 1) : 0) + (n === 1 ? 8 : 0); g.beginPath(); g.arc(x, 28, 1.4, 0, TAU); g.fill(); } };\n  const bolt = () => { g.beginPath(); g.moveTo(19, 21); g.lineTo(14, 29); g.lineTo(19, 29); g.lineTo(15, 34); g.stroke(); };\n  const fog = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 10 + k * 8); g.lineTo(33, 10 + k * 8); g.stroke(); } };\n  const wind = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 9 + k * 8); g.bezierCurveTo(20, 9 + k * 8, 24, 3 + k * 8, 30, 8 + k * 8); g.stroke(); } };\n  const moon = (x, y) => { g.beginPath(); g.arc(x, y, 9, 0.9, TAU - 0.9); g.arc(x + 5, y - 2, 8, TAU - 1.1, 1.1, true); g.closePath(); g.stroke(); };\n  const name = ['cloud', 'rainS', 'snowS', 'sun', 'cloud', 'rainL', 'snowL', 'rainM', 'snowM', 'snowH', 'rainH', 'wind', 'sleet', 'fog', 'fog', 'thunder', 'snowH', 'wind', 'rainH', 'hail', 'thunder', 'rainH', 'wind', 'wind', 'rainH', 'cloud', 'moonCloud', 'moonRain', 'moon'][i];\n  switch (name) {\n    case 'sun': sun(19, 17, 8); break;\n    case 'cloud': cloud(3, 5); break;\n    case 'rainS': cloud(3, 2); rain(2, false); break;\n    case 'rainL': cloud(3, 2); rain(1, false); break;\n    case 'rainM': cloud(3, 2); rain(3, false); break;\n    case 'rainH': cloud(3, 2); rain(4, true); break;\n    case 'snowS': case 'snowL': cloud(3, 2); snow(2); break;\n    case 'snowM': cloud(3, 2); snow(3); break;\n    case 'snowH': cloud(3, 2); snow(4); break;\n    case 'sleet': cloud(3, 2); rain(2, false); snow(1); break;\n    case 'thunder': cloud(3, 0); bolt(); break;\n    case 'hail': cloud(3, 2); rain(2, false); snow(2); break;\n    case 'fog': fog(); break;\n    case 'wind': wind(); break;\n    case 'moon': moon(19, 17); break;\n    case 'moonCloud': moon(13, 11); cloud(8, 12); break;\n    case 'moonRain': moon(13, 9); cloud(8, 9); rain(2, false); break;\n  }\n  return c;\n};\n\n// ---------- the M / E / S bars: a rounded pill, dim on top, bright from the bottom up (11 fill levels) ----------\nconst barImg = (col, level) => {\n  const w = 17, h = 82, c = mkc(w, h), g = c.getContext('2d');\n  g.save(); g.beginPath(); g.roundRect(0, 0, w, h, w / 2); g.clip();\n  g.fillStyle = shade(col, 0.38); g.fillRect(0, 0, w, h);\n  const fh = Math.round(h * level / 10); g.fillStyle = col; g.fillRect(0, h - fh, w, fh);\n  g.restore();\n  return c;\n};\n\n// ---------- colour themes: every role colour is swapped for the theme's, keeping shading and edges ----------\nconst THEMES = [\n  { name: 'Blue Alert', accent: '#5aa9ff', roles: { orange: '#5aa9ff', peach: '#a9d4ff', pink: '#7a8cff', purple: '#5b7cf0', tan: '#6f86a8' } },\n  { name: 'Red Alert', accent: '#ff3b30', roles: { orange: '#ff3b30', peach: '#ff8a7a', pink: '#ff5c7a', purple: '#d83a55', tan: '#a85a55' } },\n  { name: 'Sickbay Green', accent: '#3ddc84', roles: { orange: '#3ddc84', peach: '#b6f0c8', pink: '#7ad7b0', purple: '#35b387', tan: '#6fa085' } },\n  { name: 'Command Gold', accent: '#ffcc33', roles: { orange: '#ffcc33', peach: '#ffe08a', pink: '#f5a742', purple: '#d9971f', tan: '#b88a4a' } },\n  { name: 'Violet', accent: '#c9a0ff', roles: { orange: '#c9a0ff', peach: '#e6d3ff', pink: '#ff86d0', purple: '#9d6df0', tan: '#8f7aa8' } },\n];\nconst hexRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };\nconst recolorImage = (cv, roles) => {\n  const g = cv.getContext('2d', { willReadFrequently: true }), im = g.getImageData(0, 0, cv.width, cv.height), d = im.data;\n  const base = Object.keys(ROLE).map((k) => ({ k, c: hexRgb(ROLE[k]), t: hexRgb(roles[k]) }));\n  let hits = 0;\n  for (let i = 0; i < d.length; i += 4) {\n    if (d[i + 3] === 0) continue;\n    const r = d[i], gg = d[i + 1], b = d[i + 2], len = Math.hypot(r, gg, b);\n    if (len < 25) continue;\n    const sat = (Math.max(r, gg, b) - Math.min(r, gg, b)) / Math.max(1, Math.max(r, gg, b));\n    if (sat < 0.12) continue;\n    let best = null;\n    for (const p of base) {\n      const bb = p.c[0] * p.c[0] + p.c[1] * p.c[1] + p.c[2] * p.c[2], k = (r * p.c[0] + gg * p.c[1] + b * p.c[2]) / bb;\n      if (k < 0.05 || k > 1.2) continue;\n      const res = Math.hypot(r - k * p.c[0], gg - k * p.c[1], b - k * p.c[2]);\n      if (!best || res < best.res) best = { res, k, p };\n    }\n    if (!best || best.res > len * 0.22) continue;\n    d[i] = Math.min(255, best.k * best.p.t[0]); d[i + 1] = Math.min(255, best.k * best.p.t[1]); d[i + 2] = Math.min(255, best.k * best.p.t[2]);\n    hits++;\n  }\n  g.putImageData(im, 0, 0);\n  return hits;\n};\n\nfor (let l = 0; l <= 10; l++) names.push(addProjectImage('bars/purple_' + l + '.png', barImg(ROLE.purple, l), {}).name);\nawait loadAllImages();\nconst e = await addElement('IMG_LEVEL', { dataType: 'FAT_BURNING', images: names, w: 0, h: 0 }); e.name = 'Exercise bar'; e.images = names; e.dataType = 'FAT_BURNING'; e.x = 56; e.y = 296; e.show = 'normal'; return 11"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst names = [];\n// ---- drawing helpers for the LCARS Stardate face ----\nconst TAU = Math.PI * 2;\nconst mkc = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst FONT = '\"Bebas Neue\", sans-serif';\n// the five colour roles of the face (the themes swap these)\nconst ROLE = { orange: '#ff9f33', peach: '#fda97d', pink: '#dd83b9', purple: '#9a7bd9', tan: '#bf8b75' };\nconst shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return 'rgb(' + Math.round(r * k) + ',' + Math.round(g * k) + ',' + Math.round(b * k) + ')'; };\n\n// ---------- the static LCARS frame ----------\nconst frame = async () => {\n  try { await ensureFont('Bebas Neue', 700); await document.fonts.load('700 20px \"Bebas Neue\"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'); } catch (e) {}\n  const c = mkc(W, H), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);\n  const txt = (s, x, y, col, size, align = 'left') => { g.fillStyle = col; g.font = '700 ' + size + 'px ' + FONT; g.textAlign = align; g.textBaseline = 'middle'; g.fillText(s, x, y); };\n  // title with a tan bracket\n  g.fillStyle = ROLE.tan; g.fillRect(50, 28, 7, 32); g.fillRect(50, 54, 196, 6);\n  txt('ATMOSPHERIC PROCESS', 66, 42, ROLE.orange, 25);\n  // weather labels\n  txt('CURRENT', 32, 76, ROLE.pink, 20); txt('HIGH TEMP', 32, 101, ROLE.peach, 20); txt('LOW TEMP', 32, 125, ROLE.purple, 20);\n  txt('SUNR', 169, 79, ROLE.peach, 18); txt('SUNS', 169, 103, ROLE.peach, 18); txt('HUMD', 169, 123, ROLE.peach, 18);\n  // the tall bar and the LCARS tab (a tap on the tab changes the colour theme)\n  g.fillStyle = ROLE.peach; g.fillRect(254, 21, 35, 114);\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(293, 21, 65, 31, [0, 17, 0, 0]); g.fill();\n  txt('LCARS', 303, 38, '#000', 19);\n  // the pink band and its elbow with the emblem\n  g.fillStyle = ROLE.pink; g.beginPath();\n  g.moveTo(20, 136); g.lineTo(367, 136); g.lineTo(367, 172); g.arc(344, 172, 23, 0, Math.PI / 2); g.lineTo(289, 195);\n  g.lineTo(289, 173); g.arc(275, 173, 14, 0, -Math.PI / 2, true); g.lineTo(20, 159); g.closePath(); g.fill();\n  // emblem: a circle with an arrowhead (drawn here, not copied)\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.arc(328, 167, 22, 0, TAU); g.stroke();\n  g.fillStyle = '#000'; g.beginPath(); g.moveTo(328, 148); g.bezierCurveTo(334, 160, 340, 172, 345, 184); g.lineTo(328, 175); g.lineTo(311, 184); g.bezierCurveTo(316, 172, 322, 160, 328, 148); g.closePath(); g.fill();\n  g.fillStyle = ROLE.pink; g.beginPath(); g.moveTo(328, 158); g.bezierCurveTo(331, 166, 334, 172, 336, 177); g.lineTo(328, 173); g.lineTo(320, 177); g.bezierCurveTo(322, 172, 325, 166, 328, 158); g.closePath(); g.fill();\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.moveTo(333, 178); g.bezierCurveTo(342, 170, 346, 158, 344, 150); g.stroke();\n  // STARDATE label\n  txt('STARDATE', 55, 178, ROLE.orange, 26);\n  // activity bar labels\n  txt('M', 39, 388, ROLE.pink, 16, 'center'); txt('E', 64, 388, ROLE.purple, 16, 'center'); txt('S', 91, 388, ROLE.orange, 16, 'center');\n  // reading label boxes\n  const box = (y, col, t) => { g.fillStyle = col; g.fillRect(169, y, 95, 30); txt(t, 178, y + 16, '#000', 21); };\n  box(296, ROLE.pink, 'STEPS'); box(330, ROLE.tan, 'HEART'); box(364, ROLE.purple, 'BATTERY');\n  // date box\n  g.fillStyle = ROLE.orange; g.fillRect(287, 295, 81, 97);\n  // bottom bar (rounded at the screen corner) and the small pill\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(32, 398, 230, 32, [0, 0, 0, 22]); g.fill();\n  txt('U.S.S. DIALCRAFT', 147, 415, '#000', 22, 'center');\n  g.fillStyle = ROLE.pink; g.beginPath(); g.roundRect(287, 398, 71, 32, [0, 0, 22, 0]); g.fill();\n  txt('NX-38', 322, 415, '#000', 21, 'center');\n  return c;\n};\n\n// ---------- weather icons (29 of them, in the order of the watch's table): thin orange line drawings ----------\nconst wIcon = (i) => {\n  const c = mkc(38, 34), g = c.getContext('2d');\n  g.strokeStyle = ROLE.orange; g.fillStyle = ROLE.orange; g.lineWidth = 2.4; g.lineCap = 'round'; g.lineJoin = 'round';\n  const sun = (x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, TAU); g.stroke(); for (let k = 0; k < 8; k++) { const a = k * TAU / 8; g.beginPath(); g.moveTo(x + Math.cos(a) * (r + 3), y + Math.sin(a) * (r + 3)); g.lineTo(x + Math.cos(a) * (r + 7), y + Math.sin(a) * (r + 7)); g.stroke(); } };\n  const cloud = (x, y) => { g.beginPath(); g.arc(x + 8, y + 12, 7, Math.PI * 0.5, Math.PI * 1.5); g.arc(x + 15, y + 6, 8, Math.PI, Math.PI * 1.9); g.arc(x + 25, y + 12, 6, Math.PI * 1.5, Math.PI * 0.5); g.closePath(); g.stroke(); };\n  const rain = (n, long) => { for (let k = 0; k < n; k++) { const x = 11 + k * (16 / Math.max(1, n - 1 || 1)) * (n > 1 ? 1 : 0.0) + (n === 1 ? 10 : 0); g.beginPath(); g.moveTo(x, 24); g.lineTo(x - 3, 24 + (long ? 8 : 5)); g.stroke(); } };\n  const snow = (n) => { for (let k = 0; k < n; k++) { const x = 10 + k * (n > 1 ? 18 / (n - 1) : 0) + (n === 1 ? 8 : 0); g.beginPath(); g.arc(x, 28, 1.4, 0, TAU); g.fill(); } };\n  const bolt = () => { g.beginPath(); g.moveTo(19, 21); g.lineTo(14, 29); g.lineTo(19, 29); g.lineTo(15, 34); g.stroke(); };\n  const fog = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 10 + k * 8); g.lineTo(33, 10 + k * 8); g.stroke(); } };\n  const wind = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 9 + k * 8); g.bezierCurveTo(20, 9 + k * 8, 24, 3 + k * 8, 30, 8 + k * 8); g.stroke(); } };\n  const moon = (x, y) => { g.beginPath(); g.arc(x, y, 9, 0.9, TAU - 0.9); g.arc(x + 5, y - 2, 8, TAU - 1.1, 1.1, true); g.closePath(); g.stroke(); };\n  const name = ['cloud', 'rainS', 'snowS', 'sun', 'cloud', 'rainL', 'snowL', 'rainM', 'snowM', 'snowH', 'rainH', 'wind', 'sleet', 'fog', 'fog', 'thunder', 'snowH', 'wind', 'rainH', 'hail', 'thunder', 'rainH', 'wind', 'wind', 'rainH', 'cloud', 'moonCloud', 'moonRain', 'moon'][i];\n  switch (name) {\n    case 'sun': sun(19, 17, 8); break;\n    case 'cloud': cloud(3, 5); break;\n    case 'rainS': cloud(3, 2); rain(2, false); break;\n    case 'rainL': cloud(3, 2); rain(1, false); break;\n    case 'rainM': cloud(3, 2); rain(3, false); break;\n    case 'rainH': cloud(3, 2); rain(4, true); break;\n    case 'snowS': case 'snowL': cloud(3, 2); snow(2); break;\n    case 'snowM': cloud(3, 2); snow(3); break;\n    case 'snowH': cloud(3, 2); snow(4); break;\n    case 'sleet': cloud(3, 2); rain(2, false); snow(1); break;\n    case 'thunder': cloud(3, 0); bolt(); break;\n    case 'hail': cloud(3, 2); rain(2, false); snow(2); break;\n    case 'fog': fog(); break;\n    case 'wind': wind(); break;\n    case 'moon': moon(19, 17); break;\n    case 'moonCloud': moon(13, 11); cloud(8, 12); break;\n    case 'moonRain': moon(13, 9); cloud(8, 9); rain(2, false); break;\n  }\n  return c;\n};\n\n// ---------- the M / E / S bars: a rounded pill, dim on top, bright from the bottom up (11 fill levels) ----------\nconst barImg = (col, level) => {\n  const w = 17, h = 82, c = mkc(w, h), g = c.getContext('2d');\n  g.save(); g.beginPath(); g.roundRect(0, 0, w, h, w / 2); g.clip();\n  g.fillStyle = shade(col, 0.38); g.fillRect(0, 0, w, h);\n  const fh = Math.round(h * level / 10); g.fillStyle = col; g.fillRect(0, h - fh, w, fh);\n  g.restore();\n  return c;\n};\n\n// ---------- colour themes: every role colour is swapped for the theme's, keeping shading and edges ----------\nconst THEMES = [\n  { name: 'Blue Alert', accent: '#5aa9ff', roles: { orange: '#5aa9ff', peach: '#a9d4ff', pink: '#7a8cff', purple: '#5b7cf0', tan: '#6f86a8' } },\n  { name: 'Red Alert', accent: '#ff3b30', roles: { orange: '#ff3b30', peach: '#ff8a7a', pink: '#ff5c7a', purple: '#d83a55', tan: '#a85a55' } },\n  { name: 'Sickbay Green', accent: '#3ddc84', roles: { orange: '#3ddc84', peach: '#b6f0c8', pink: '#7ad7b0', purple: '#35b387', tan: '#6fa085' } },\n  { name: 'Command Gold', accent: '#ffcc33', roles: { orange: '#ffcc33', peach: '#ffe08a', pink: '#f5a742', purple: '#d9971f', tan: '#b88a4a' } },\n  { name: 'Violet', accent: '#c9a0ff', roles: { orange: '#c9a0ff', peach: '#e6d3ff', pink: '#ff86d0', purple: '#9d6df0', tan: '#8f7aa8' } },\n];\nconst hexRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };\nconst recolorImage = (cv, roles) => {\n  const g = cv.getContext('2d', { willReadFrequently: true }), im = g.getImageData(0, 0, cv.width, cv.height), d = im.data;\n  const base = Object.keys(ROLE).map((k) => ({ k, c: hexRgb(ROLE[k]), t: hexRgb(roles[k]) }));\n  let hits = 0;\n  for (let i = 0; i < d.length; i += 4) {\n    if (d[i + 3] === 0) continue;\n    const r = d[i], gg = d[i + 1], b = d[i + 2], len = Math.hypot(r, gg, b);\n    if (len < 25) continue;\n    const sat = (Math.max(r, gg, b) - Math.min(r, gg, b)) / Math.max(1, Math.max(r, gg, b));\n    if (sat < 0.12) continue;\n    let best = null;\n    for (const p of base) {\n      const bb = p.c[0] * p.c[0] + p.c[1] * p.c[1] + p.c[2] * p.c[2], k = (r * p.c[0] + gg * p.c[1] + b * p.c[2]) / bb;\n      if (k < 0.05 || k > 1.2) continue;\n      const res = Math.hypot(r - k * p.c[0], gg - k * p.c[1], b - k * p.c[2]);\n      if (!best || res < best.res) best = { res, k, p };\n    }\n    if (!best || best.res > len * 0.22) continue;\n    d[i] = Math.min(255, best.k * best.p.t[0]); d[i + 1] = Math.min(255, best.k * best.p.t[1]); d[i + 2] = Math.min(255, best.k * best.p.t[2]);\n    hits++;\n  }\n  g.putImageData(im, 0, 0);\n  return hits;\n};\n\nfor (let l = 0; l <= 10; l++) names.push(addProjectImage('bars/orange_' + l + '.png', barImg(ROLE.orange, l), {}).name);\nawait loadAllImages();\nconst e = await addElement('IMG_LEVEL', { dataType: 'STAND', images: names, w: 0, h: 0 }); e.name = 'Stand bar'; e.images = names; e.dataType = 'STAND'; e.x = 83; e.y = 296; e.show = 'normal'; return 11"
+  },
+  {
+   "preset": "clocksec"
+  },
+  {
+   "script": "const n = project.elements.length; for (let i = n - 5; i < n; i++) project.elements[i].name += ' Main'; return 5"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (let i = n - 3; i < n; i++) project.elements[i].name += ' Aod'; return 3"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "day"
+  },
+  {
+   "preset": "month"
+  },
+  {
+   "preset": "temp"
+  },
+  {
+   "script": "const e = project.elements[project.elements.length - 1]; e.name = 'Current'; e.dataType = 'WEATHER_CURRENT'; return e.name"
+  },
+  {
+   "preset": "temp"
+  },
+  {
+   "script": "const e = project.elements[project.elements.length - 1]; e.name = 'High temp'; e.dataType = 'WEATHER_HIGH'; return e.name"
+  },
+  {
+   "preset": "temp"
+  },
+  {
+   "script": "const e = project.elements[project.elements.length - 1]; e.name = 'Low temp'; e.dataType = 'WEATHER_LOW'; return e.name"
+  },
+  {
+   "preset": "datatext"
+  },
+  {
+   "script": "const e = project.elements[project.elements.length - 1]; e.name = 'Sunrise'; e.dataType = 'SUN_RISE'; return e.name"
+  },
+  {
+   "preset": "datatext"
+  },
+  {
+   "script": "const e = project.elements[project.elements.length - 1]; e.name = 'Sunset'; e.dataType = 'SUN_SET'; return e.name"
+  },
+  {
+   "preset": "datatext"
+  },
+  {
+   "script": "const e = project.elements[project.elements.length - 1]; e.name = 'Humidity'; e.dataType = 'HUMIDITY'; return e.name"
+  },
+  {
+   "preset": "steps"
+  },
+  {
+   "preset": "hr"
+  },
+  {
+   "preset": "battery"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "remove": "Colon 2 Main"
+  },
+  {
+   "edit": "Hour Main",
+   "set": {
+    "x": 25,
+    "y": 195,
+    "show": "normal",
+    "zero": 1,
+    "space": -12
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#fda97d",
+    "size": 122
+   }
+  },
+  {
+   "edit": "Colon Main",
+   "set": {
+    "x": 131,
+    "y": 209,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#fda97d",
+    "size": 122
+   }
+  },
+  {
+   "edit": "Minute Main",
+   "set": {
+    "x": 163,
+    "y": 195,
+    "show": "normal",
+    "zero": 1,
+    "space": -12
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#fda97d",
+    "size": 122
+   }
+  },
+  {
+   "edit": "Second Main",
+   "set": {
+    "x": 299,
+    "y": 217,
+    "show": "normal",
+    "zero": 1,
+    "space": 2
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#9a7bd9",
+    "size": 66
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 129,
+    "y": 92,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#7a4f3a",
+    "size": 150
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 129,
+    "y": 242,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#7a4f3a",
+    "size": 150
+   }
+  },
+  {
+   "edit": "Current",
+   "set": {
+    "x": 121,
+    "y": 64,
+    "show": "normal",
+    "alignH": "LEFT",
+    "hSpace": -6
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#dd83b9",
+    "size": 24
+   }
+  },
+  {
+   "edit": "High temp",
+   "set": {
+    "x": 121,
+    "y": 89,
+    "show": "normal",
+    "alignH": "LEFT",
+    "hSpace": -6
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#fda97d",
+    "size": 24
+   }
+  },
+  {
+   "edit": "Low temp",
+   "set": {
+    "x": 121,
+    "y": 113,
+    "show": "normal",
+    "alignH": "LEFT",
+    "hSpace": -6
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#9a7bd9",
+    "size": 24
+   }
+  },
+  {
+   "edit": "Sunrise",
+   "set": {
+    "x": 196,
+    "y": 67,
+    "show": "normal",
+    "alignH": "RIGHT",
+    "hSpace": -6
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#fda97d",
+    "size": 22
+   }
+  },
+  {
+   "edit": "Sunset",
+   "set": {
+    "x": 196,
+    "y": 91,
+    "show": "normal",
+    "alignH": "RIGHT",
+    "hSpace": -6
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#fda97d",
+    "size": 22
+   }
+  },
+  {
+   "edit": "Humidity",
+   "set": {
+    "x": 196,
+    "y": 111,
+    "show": "normal",
+    "alignH": "RIGHT",
+    "hSpace": -6
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#fda97d",
+    "size": 22
+   }
+  },
+  {
+   "edit": "Steps",
+   "set": {
+    "x": 112,
+    "y": 298,
+    "show": "normal",
+    "alignH": "RIGHT",
+    "hSpace": -7
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#dd83b9",
+    "size": 26
+   }
+  },
+  {
+   "edit": "Heart rate",
+   "set": {
+    "x": 130,
+    "y": 332,
+    "show": "normal",
+    "alignH": "RIGHT",
+    "hSpace": -7,
+    "unit": ""
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#bf8b75",
+    "size": 26
+   }
+  },
+  {
+   "edit": "Battery",
+   "set": {
+    "x": 130,
+    "y": 366,
+    "show": "normal",
+    "alignH": "RIGHT",
+    "hSpace": -7,
+    "unit": ""
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#9a7bd9",
+    "size": 26
+   }
+  },
+  {
+   "edit": "Day",
+   "set": {
+    "x": 291,
+    "y": 311,
+    "show": "normal",
+    "zero": 0,
+    "space": -7
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#000000",
+    "size": 30
+   }
+  },
+  {
+   "edit": "Month",
+   "set": {
+    "x": 319,
+    "y": 311,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#000000",
+    "size": 30
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 306,
+    "y": 342,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "fill": "solid",
+    "color": "#000000",
+    "size": 30
+   }
+  },
+  {
+   "script": "const e = project.elements.find((x) => x.name === 'Month'); e.isCharacter = true; e.part = 'month'; e.images = await genLabelSet(e, 'month'); return e.images.length"
+  },
+  {
+   "script": "let n = 0; for (const nm of ['Sunrise', 'Sunset']) { const e = project.elements.find((x) => x.name === nm); e.dot = await genUnit('scolon', ':', { style: digitStyleOf(e.images) }); n++ } return n"
+  },
+  {
+   "add": "TAP",
+   "name": "Tap: next colour theme",
+   "patch": {
+    "action": "theme"
+   },
+   "set": {
+    "show": "normal",
+    "x": 293,
+    "y": 21,
+    "w": 65,
+    "h": 31
+   }
+  },
+  {
+   "script": "document.getElementById('btnPruneImages').click(); return project.images.length + ' images after pruning'"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nconst names = [];\n// ---- drawing helpers for the LCARS Stardate face ----\nconst TAU = Math.PI * 2;\nconst mkc = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst FONT = '\"Bebas Neue\", sans-serif';\n// the five colour roles of the face (the themes swap these)\nconst ROLE = { orange: '#ff9f33', peach: '#fda97d', pink: '#dd83b9', purple: '#9a7bd9', tan: '#bf8b75' };\nconst shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return 'rgb(' + Math.round(r * k) + ',' + Math.round(g * k) + ',' + Math.round(b * k) + ')'; };\n\n// ---------- the static LCARS frame ----------\nconst frame = async () => {\n  try { await ensureFont('Bebas Neue', 700); await document.fonts.load('700 20px \"Bebas Neue\"', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'); } catch (e) {}\n  const c = mkc(W, H), g = c.getContext('2d');\n  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);\n  const txt = (s, x, y, col, size, align = 'left') => { g.fillStyle = col; g.font = '700 ' + size + 'px ' + FONT; g.textAlign = align; g.textBaseline = 'middle'; g.fillText(s, x, y); };\n  // title with a tan bracket\n  g.fillStyle = ROLE.tan; g.fillRect(50, 28, 7, 32); g.fillRect(50, 54, 196, 6);\n  txt('ATMOSPHERIC PROCESS', 66, 42, ROLE.orange, 25);\n  // weather labels\n  txt('CURRENT', 32, 76, ROLE.pink, 20); txt('HIGH TEMP', 32, 101, ROLE.peach, 20); txt('LOW TEMP', 32, 125, ROLE.purple, 20);\n  txt('SUNR', 169, 79, ROLE.peach, 18); txt('SUNS', 169, 103, ROLE.peach, 18); txt('HUMD', 169, 123, ROLE.peach, 18);\n  // the tall bar and the LCARS tab (a tap on the tab changes the colour theme)\n  g.fillStyle = ROLE.peach; g.fillRect(254, 21, 35, 114);\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(293, 21, 65, 31, [0, 17, 0, 0]); g.fill();\n  txt('LCARS', 303, 38, '#000', 19);\n  // the pink band and its elbow with the emblem\n  g.fillStyle = ROLE.pink; g.beginPath();\n  g.moveTo(20, 136); g.lineTo(367, 136); g.lineTo(367, 172); g.arc(344, 172, 23, 0, Math.PI / 2); g.lineTo(289, 195);\n  g.lineTo(289, 173); g.arc(275, 173, 14, 0, -Math.PI / 2, true); g.lineTo(20, 159); g.closePath(); g.fill();\n  // emblem: a circle with an arrowhead (drawn here, not copied)\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.arc(328, 167, 22, 0, TAU); g.stroke();\n  g.fillStyle = '#000'; g.beginPath(); g.moveTo(328, 148); g.bezierCurveTo(334, 160, 340, 172, 345, 184); g.lineTo(328, 175); g.lineTo(311, 184); g.bezierCurveTo(316, 172, 322, 160, 328, 148); g.closePath(); g.fill();\n  g.fillStyle = ROLE.pink; g.beginPath(); g.moveTo(328, 158); g.bezierCurveTo(331, 166, 334, 172, 336, 177); g.lineTo(328, 173); g.lineTo(320, 177); g.bezierCurveTo(322, 172, 325, 166, 328, 158); g.closePath(); g.fill();\n  g.strokeStyle = '#000'; g.lineWidth = 2; g.beginPath(); g.moveTo(333, 178); g.bezierCurveTo(342, 170, 346, 158, 344, 150); g.stroke();\n  // STARDATE label\n  txt('STARDATE', 55, 178, ROLE.orange, 26);\n  // activity bar labels\n  txt('M', 39, 388, ROLE.pink, 16, 'center'); txt('E', 64, 388, ROLE.purple, 16, 'center'); txt('S', 91, 388, ROLE.orange, 16, 'center');\n  // reading label boxes\n  const box = (y, col, t) => { g.fillStyle = col; g.fillRect(169, y, 95, 30); txt(t, 178, y + 16, '#000', 21); };\n  box(296, ROLE.pink, 'STEPS'); box(330, ROLE.tan, 'HEART'); box(364, ROLE.purple, 'BATTERY');\n  // date box\n  g.fillStyle = ROLE.orange; g.fillRect(287, 295, 81, 97);\n  // bottom bar (rounded at the screen corner) and the small pill\n  g.fillStyle = ROLE.purple; g.beginPath(); g.roundRect(32, 398, 230, 32, [0, 0, 0, 22]); g.fill();\n  txt('U.S.S. DIALCRAFT', 147, 415, '#000', 22, 'center');\n  g.fillStyle = ROLE.pink; g.beginPath(); g.roundRect(287, 398, 71, 32, [0, 0, 22, 0]); g.fill();\n  txt('NX-38', 322, 415, '#000', 21, 'center');\n  return c;\n};\n\n// ---------- weather icons (29 of them, in the order of the watch's table): thin orange line drawings ----------\nconst wIcon = (i) => {\n  const c = mkc(38, 34), g = c.getContext('2d');\n  g.strokeStyle = ROLE.orange; g.fillStyle = ROLE.orange; g.lineWidth = 2.4; g.lineCap = 'round'; g.lineJoin = 'round';\n  const sun = (x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, TAU); g.stroke(); for (let k = 0; k < 8; k++) { const a = k * TAU / 8; g.beginPath(); g.moveTo(x + Math.cos(a) * (r + 3), y + Math.sin(a) * (r + 3)); g.lineTo(x + Math.cos(a) * (r + 7), y + Math.sin(a) * (r + 7)); g.stroke(); } };\n  const cloud = (x, y) => { g.beginPath(); g.arc(x + 8, y + 12, 7, Math.PI * 0.5, Math.PI * 1.5); g.arc(x + 15, y + 6, 8, Math.PI, Math.PI * 1.9); g.arc(x + 25, y + 12, 6, Math.PI * 1.5, Math.PI * 0.5); g.closePath(); g.stroke(); };\n  const rain = (n, long) => { for (let k = 0; k < n; k++) { const x = 11 + k * (16 / Math.max(1, n - 1 || 1)) * (n > 1 ? 1 : 0.0) + (n === 1 ? 10 : 0); g.beginPath(); g.moveTo(x, 24); g.lineTo(x - 3, 24 + (long ? 8 : 5)); g.stroke(); } };\n  const snow = (n) => { for (let k = 0; k < n; k++) { const x = 10 + k * (n > 1 ? 18 / (n - 1) : 0) + (n === 1 ? 8 : 0); g.beginPath(); g.arc(x, 28, 1.4, 0, TAU); g.fill(); } };\n  const bolt = () => { g.beginPath(); g.moveTo(19, 21); g.lineTo(14, 29); g.lineTo(19, 29); g.lineTo(15, 34); g.stroke(); };\n  const fog = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 10 + k * 8); g.lineTo(33, 10 + k * 8); g.stroke(); } };\n  const wind = () => { for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(5, 9 + k * 8); g.bezierCurveTo(20, 9 + k * 8, 24, 3 + k * 8, 30, 8 + k * 8); g.stroke(); } };\n  const moon = (x, y) => { g.beginPath(); g.arc(x, y, 9, 0.9, TAU - 0.9); g.arc(x + 5, y - 2, 8, TAU - 1.1, 1.1, true); g.closePath(); g.stroke(); };\n  const name = ['cloud', 'rainS', 'snowS', 'sun', 'cloud', 'rainL', 'snowL', 'rainM', 'snowM', 'snowH', 'rainH', 'wind', 'sleet', 'fog', 'fog', 'thunder', 'snowH', 'wind', 'rainH', 'hail', 'thunder', 'rainH', 'wind', 'wind', 'rainH', 'cloud', 'moonCloud', 'moonRain', 'moon'][i];\n  switch (name) {\n    case 'sun': sun(19, 17, 8); break;\n    case 'cloud': cloud(3, 5); break;\n    case 'rainS': cloud(3, 2); rain(2, false); break;\n    case 'rainL': cloud(3, 2); rain(1, false); break;\n    case 'rainM': cloud(3, 2); rain(3, false); break;\n    case 'rainH': cloud(3, 2); rain(4, true); break;\n    case 'snowS': case 'snowL': cloud(3, 2); snow(2); break;\n    case 'snowM': cloud(3, 2); snow(3); break;\n    case 'snowH': cloud(3, 2); snow(4); break;\n    case 'sleet': cloud(3, 2); rain(2, false); snow(1); break;\n    case 'thunder': cloud(3, 0); bolt(); break;\n    case 'hail': cloud(3, 2); rain(2, false); snow(2); break;\n    case 'fog': fog(); break;\n    case 'wind': wind(); break;\n    case 'moon': moon(19, 17); break;\n    case 'moonCloud': moon(13, 11); cloud(8, 12); break;\n    case 'moonRain': moon(13, 9); cloud(8, 9); rain(2, false); break;\n  }\n  return c;\n};\n\n// ---------- the M / E / S bars: a rounded pill, dim on top, bright from the bottom up (11 fill levels) ----------\nconst barImg = (col, level) => {\n  const w = 17, h = 82, c = mkc(w, h), g = c.getContext('2d');\n  g.save(); g.beginPath(); g.roundRect(0, 0, w, h, w / 2); g.clip();\n  g.fillStyle = shade(col, 0.38); g.fillRect(0, 0, w, h);\n  const fh = Math.round(h * level / 10); g.fillStyle = col; g.fillRect(0, h - fh, w, fh);\n  g.restore();\n  return c;\n};\n\n// ---------- colour themes: every role colour is swapped for the theme's, keeping shading and edges ----------\nconst THEMES = [\n  { name: 'Blue Alert', accent: '#5aa9ff', roles: { orange: '#5aa9ff', peach: '#a9d4ff', pink: '#7a8cff', purple: '#5b7cf0', tan: '#6f86a8' } },\n  { name: 'Red Alert', accent: '#ff3b30', roles: { orange: '#ff3b30', peach: '#ff8a7a', pink: '#ff5c7a', purple: '#d83a55', tan: '#a85a55' } },\n  { name: 'Sickbay Green', accent: '#3ddc84', roles: { orange: '#3ddc84', peach: '#b6f0c8', pink: '#7ad7b0', purple: '#35b387', tan: '#6fa085' } },\n  { name: 'Command Gold', accent: '#ffcc33', roles: { orange: '#ffcc33', peach: '#ffe08a', pink: '#f5a742', purple: '#d9971f', tan: '#b88a4a' } },\n  { name: 'Violet', accent: '#c9a0ff', roles: { orange: '#c9a0ff', peach: '#e6d3ff', pink: '#ff86d0', purple: '#9d6df0', tan: '#8f7aa8' } },\n];\nconst hexRgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };\nconst recolorImage = (cv, roles) => {\n  const g = cv.getContext('2d', { willReadFrequently: true }), im = g.getImageData(0, 0, cv.width, cv.height), d = im.data;\n  const base = Object.keys(ROLE).map((k) => ({ k, c: hexRgb(ROLE[k]), t: hexRgb(roles[k]) }));\n  let hits = 0;\n  for (let i = 0; i < d.length; i += 4) {\n    if (d[i + 3] === 0) continue;\n    const r = d[i], gg = d[i + 1], b = d[i + 2], len = Math.hypot(r, gg, b);\n    if (len < 25) continue;\n    const sat = (Math.max(r, gg, b) - Math.min(r, gg, b)) / Math.max(1, Math.max(r, gg, b));\n    if (sat < 0.12) continue;\n    let best = null;\n    for (const p of base) {\n      const bb = p.c[0] * p.c[0] + p.c[1] * p.c[1] + p.c[2] * p.c[2], k = (r * p.c[0] + gg * p.c[1] + b * p.c[2]) / bb;\n      if (k < 0.05 || k > 1.2) continue;\n      const res = Math.hypot(r - k * p.c[0], gg - k * p.c[1], b - k * p.c[2]);\n      if (!best || res < best.res) best = { res, k, p };\n    }\n    if (!best || best.res > len * 0.22) continue;\n    d[i] = Math.min(255, best.k * best.p.t[0]); d[i + 1] = Math.min(255, best.k * best.p.t[1]); d[i + 2] = Math.min(255, best.k * best.p.t[2]);\n    hits++;\n  }\n  g.putImageData(im, 0, 0);\n  return hits;\n};\n\n\nconst orig = project.images.map((i) => i.name).filter((n) => !/__t\\d+\\.png$/.test(n));\nconst done = new Set();\nfor (let k = 0; k < THEMES.length; k++) for (const n of orig) {\n  const src = imageToCanvas(n); if (!src) continue;\n  const cp = mkc(src.cv.width, src.cv.height); cp.getContext('2d').drawImage(src.cv, 0, 0);\n  if (!recolorImage(cp, THEMES[k].roles)) continue;\n  addProjectImage(themedName(n, k + 1), cp, {}); done.add(n);\n}\nproject.themes = { accent: ROLE.orange, list: THEMES.map((t) => ({ name: t.name, color: t.accent })), recolored: [...done] };\nawait loadAllImages();\nreturn project.images.length + ' images, ' + project.themes.recolored.length + ' themed'"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gDate = 'Date'; let n = 0; for (const nm of [\"Day\",\"Month\",\"Weekday\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gDate'; n++ } } return n"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gWeather = 'Weather'; let n = 0; for (const nm of [\"Current\",\"High temp\",\"Low temp\",\"Sunrise\",\"Sunset\",\"Humidity\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gWeather'; n++ } } return n"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gActivity = 'Activity bars'; let n = 0; for (const nm of [\"Move bar\",\"Exercise bar\",\"Stand bar\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gActivity'; n++ } } return n"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gReadings = 'Readings'; let n = 0; for (const nm of [\"Steps\",\"Heart rate\",\"Battery\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gReadings'; n++ } } return n"
+  },
+  {
+   "script": "project.groups = project.groups || {}; for (const e of project.elements) { if (/ Aod$/.test(e.name) && e.group) project.groups[e.group] = 'Clock AOD' } return 1"
+  },
+  {
+   "script": "themeIdx = 4; render(); return themeIdx"
+  }
+ ]
+}
