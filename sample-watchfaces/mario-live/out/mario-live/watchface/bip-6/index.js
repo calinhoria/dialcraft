@@ -15,7 +15,7 @@ import { Time as DCTime } from '@zos/sensor'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_Main_p4kl = [
+const img_Minute_Main_g52n = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -28,7 +28,7 @@ const img_Minute_Main_p4kl = [
   A('font_3_9.png'),
 ]
 
-const img_Hour_Main_p6i6 = [
+const img_Hour_Main_g5f5 = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -41,7 +41,7 @@ const img_Hour_Main_p6i6 = [
   A('font_2_9.png'),
 ]
 
-const img_Minute_Aod_95yn = [
+const img_Minute_Aod_05jf = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -54,7 +54,7 @@ const img_Minute_Aod_95yn = [
   A('font_5_9.png'),
 ]
 
-const img_Hour_Aod_92ty = [
+const img_Hour_Aod_06j0 = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -67,7 +67,7 @@ const img_Hour_Aod_92ty = [
   A('font_4_9.png'),
 ]
 
-const img_Battery_r5kb = [
+const img_Battery_k2od = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -106,11 +106,11 @@ WatchFace({
     // Minute Main (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
       minute_startX: px(212),
-      minute_startY: px(54),
+      minute_startY: px(50),
       minute_zero: 1,
       minute_space: px(-4),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_p4kl,
+      minute_array: img_Minute_Main_g52n,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -118,7 +118,7 @@ WatchFace({
     // Colon Main (IMG)
     ui.createWidget(ui.widget.IMG, {
       x: px(179),
-      y: px(54),
+      y: px(58),
       src: A('symbol_u003a.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -126,11 +126,11 @@ WatchFace({
     // Hour Main (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
       hour_startX: px(38),
-      hour_startY: px(54),
+      hour_startY: px(50),
       hour_zero: 1,
       hour_space: px(-4),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Main_p6i6,
+      hour_array: img_Hour_Main_g5f5,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -138,11 +138,11 @@ WatchFace({
     // Minute Aod (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
       minute_startX: px(214),
-      minute_startY: px(190),
+      minute_startY: px(193),
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Aod_95yn,
+      minute_array: img_Minute_Aod_05jf,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -150,7 +150,7 @@ WatchFace({
     // Colon Aod (IMG)
     ui.createWidget(ui.widget.IMG, {
       x: px(181),
-      y: px(190),
+      y: px(201),
       src: A('symbol_u003a_2.png'),
       show_level: ui.show_level.ONLY_AOD
     })
@@ -158,11 +158,11 @@ WatchFace({
     // Hour Aod (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
       hour_startX: px(40),
-      hour_startY: px(190),
+      hour_startY: px(193),
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Aod_92ty,
+      hour_array: img_Hour_Aod_06j0,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -172,7 +172,7 @@ WatchFace({
       x: px(168),
       y: px(10),
       type: ui.data_type.BATTERY,
-      font_array: img_Battery_r5kb,
+      font_array: img_Battery_k2od,
       h_space: px(-1),
       align_h: ui.align.LEFT,
       unit_en: A('percent.png'),

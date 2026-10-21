@@ -24,6 +24,8 @@ the app's *Check* (the `lint` list of a run).
 
 ## House rules recap (also in SKILL.md)
 
+**The last step before hand-over is the measured check (SKILL.md step 7): mandatory, and repeated after any later edit.**
+
 Group and name related layers · digital time order hour, colon, minute · subtle borders / shadows unless the theme or the
-user wants more · verify text alignment in the preview · ask a multiple choice about elements first · stats readable
+user wants more · verify text alignment in the preview · colon centred on the digits (measured) · spacing symmetric: equal gaps, equal margins, values centred in their blocks (measured) · ask a multiple choice about elements first · stats readable
 (≥ ~28 px) · ask the user when space is short.

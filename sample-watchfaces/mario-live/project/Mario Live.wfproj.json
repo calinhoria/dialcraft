@@ -2,20 +2,20 @@
   "version": 1,
   "name": "Mario Live",
   "device": "bip-6",
-  "appId": 2499613,
+  "appId": 2888886,
   "vender": "dialcraft",
   "description": "An AI plays Super-Mario-style platformer screens live on the watch: Mario runs, jumps pits and pipes, stomps Goombas and bumps ? blocks, then walks into a fresh screen. Overworld in daylight, underground from 19:00 to 07:00. Big time on top, battery as a mushroom.",
   "font": "Press Start 2P",
   "language": "en-US",
   "fonts": [],
   "groups": {
-    "gmvike5cqmq": "Clock",
-    "gmvike5d95a": "Clock AOD",
+    "gmviltxag6": "Clock",
+    "gmviltxb0pb": "Clock AOD",
     "gClock": "Clock"
   },
   "elements": [
     {
-      "id": "elmvike57u2jl",
+      "id": "elmviltx4u5cu",
       "kind": "FILL_RECT",
       "name": "Background",
       "x": 0,
@@ -32,7 +32,7 @@
       "angle": 0
     },
     {
-      "id": "elmvike58t367",
+      "id": "elmviltx65238",
       "kind": "IMG",
       "name": "Level scene",
       "x": 0,
@@ -51,7 +51,7 @@
       "handle": "scene"
     },
     {
-      "id": "elmvike5a47p4",
+      "id": "elmviltx7s6ad",
       "kind": "IMG",
       "name": "Demo still",
       "x": 0,
@@ -70,11 +70,11 @@
       "previewOnly": true
     },
     {
-      "id": "elmvike5cp4kl",
+      "id": "elmviltxag52n",
       "kind": "IMG_TIME",
       "name": "Minute Main",
       "x": 212,
-      "y": 54,
+      "y": 50,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -128,11 +128,11 @@
       "aidPad": 2
     },
     {
-      "id": "elmvike5cp5fe",
+      "id": "elmviltxag3gz",
       "kind": "IMG",
       "name": "Colon Main",
       "x": 179,
-      "y": 54,
+      "y": 58,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -173,11 +173,11 @@
       "aidPad": 2
     },
     {
-      "id": "elmvike5cp6i6",
+      "id": "elmviltxag5f5",
       "kind": "IMG_TIME",
       "name": "Hour Main",
       "x": 38,
-      "y": 54,
+      "y": 50,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -231,15 +231,15 @@
       "aidPad": 2
     },
     {
-      "id": "elmvike5d95yn",
+      "id": "elmviltxb05jf",
       "kind": "IMG_TIME",
       "name": "Minute Aod",
       "x": 214,
-      "y": 190,
+      "y": 193,
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmvike5d95a",
+      "group": "gmviltxb0pb",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -288,15 +288,15 @@
       }
     },
     {
-      "id": "elmvike5d91t3",
+      "id": "elmviltxb07bn",
       "kind": "IMG",
       "name": "Colon Aod",
       "x": 181,
-      "y": 190,
+      "y": 201,
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmvike5d95a",
+      "group": "gmviltxb0pb",
       "alpha": 255,
       "w": 0,
       "h": 0,
@@ -332,15 +332,15 @@
       }
     },
     {
-      "id": "elmvike5d92ty",
+      "id": "elmviltxb06j0",
       "kind": "IMG_TIME",
       "name": "Hour Aod",
       "x": 40,
-      "y": 190,
+      "y": 193,
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmvike5d95a",
+      "group": "gmviltxb0pb",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -389,7 +389,7 @@
       }
     },
     {
-      "id": "elmvike5dr5kb",
+      "id": "elmviltxbk2od",
       "kind": "TEXT_IMG",
       "name": "Battery",
       "x": 168,

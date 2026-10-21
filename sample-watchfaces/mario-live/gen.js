@@ -36,12 +36,12 @@ const build = (night) => {
   ];
   steps.push(
     { script: `project.groups = project.groups || {}; for (const e of project.elements) { if (/ Aod$/.test(e.name) && e.group) project.groups[e.group] = 'Clock AOD' } return 1` },
-    { edit: 'Hour Main', set: { x: 40, y: 56, show: 'normal', zero: 1 }, glyph: hud(68, 4) },
-    { edit: 'Colon Main', set: { x: 181, y: 56, show: 'normal' }, glyph: hud(68, 4) },
-    { edit: 'Minute Main', set: { x: 214, y: 56, show: 'normal', zero: 1 }, glyph: hud(68, 4) },
-    { edit: 'Hour Aod', set: { x: 40, y: 190, show: 'aod', zero: 1 }, glyph: { ...dim, size: 68 } },
-    { edit: 'Colon Aod', set: { x: 181, y: 190, show: 'aod' }, glyph: { ...dim, size: 68 } },
-    { edit: 'Minute Aod', set: { x: 214, y: 190, show: 'aod', zero: 1 }, glyph: { ...dim, size: 68 } },
+    { edit: 'Hour Main', set: { x: 40, y: 52, show: 'normal', zero: 1 }, glyph: hud(68, 4) },
+    { edit: 'Colon Main', set: { x: 181, y: 60, show: 'normal' }, glyph: hud(68, 4) },
+    { edit: 'Minute Main', set: { x: 214, y: 52, show: 'normal', zero: 1 }, glyph: hud(68, 4) },
+    { edit: 'Hour Aod', set: { x: 40, y: 193, show: 'aod', zero: 1 }, glyph: { ...dim, size: 68 } },
+    { edit: 'Colon Aod', set: { x: 181, y: 201, show: 'aod' }, glyph: { ...dim, size: 68 } },
+    { edit: 'Minute Aod', set: { x: 214, y: 193, show: 'aod', zero: 1 }, glyph: { ...dim, size: 68 } },
     { edit: 'Battery', set: { x: 170, y: 12, show: 'normal', alignH: 'LEFT' }, glyph: hud(28, 4) },
     group('gClock', 'Clock', ['Minute Main', 'Colon Main', 'Hour Main']),
   );

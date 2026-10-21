@@ -45,7 +45,7 @@
    "edit": "Hour Main",
    "set": {
     "x": 40,
-    "y": 56,
+    "y": 52,
     "show": "normal",
     "zero": 1
    },
@@ -62,7 +62,7 @@
    "edit": "Colon Main",
    "set": {
     "x": 181,
-    "y": 56,
+    "y": 60,
     "show": "normal"
    },
    "glyph": {
@@ -78,7 +78,7 @@
    "edit": "Minute Main",
    "set": {
     "x": 214,
-    "y": 56,
+    "y": 52,
     "show": "normal",
     "zero": 1
    },
@@ -95,7 +95,7 @@
    "edit": "Hour Aod",
    "set": {
     "x": 40,
-    "y": 190,
+    "y": 193,
     "show": "aod",
     "zero": 1
    },
@@ -110,7 +110,7 @@
    "edit": "Colon Aod",
    "set": {
     "x": 181,
-    "y": 190,
+    "y": 201,
     "show": "aod"
    },
    "glyph": {
@@ -124,7 +124,7 @@
    "edit": "Minute Aod",
    "set": {
     "x": 214,
-    "y": 190,
+    "y": 193,
     "show": "aod",
     "zero": 1
    },

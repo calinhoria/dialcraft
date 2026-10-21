@@ -42,7 +42,18 @@ recipe, previews and output in a scratch folder (not in the repo).
    Set `"build": true` as well to run the Zeus CLI and get the installable `.zab` in `dist/` (needs Node + `npx`
    and, the first time, a network connection). Add `"save"` to also write the editable Dialcraft project
    (`*.wfproj.json` + `images/`), which the app opens for further hand-tuning.
-7. **Hand it over honestly.** Say where the files are, show the preview, list the lint warnings you left and why,
+7. **Final measured check — mandatory, never skip it, and run it again after every later edit.** A small late change (a size, a
+   position, a new row) can quietly unbalance a face that was already good, so this is the last thing done before hand-over and it is
+   done on the final export, not on an earlier run. Read the final `preview.png` and `preview-aod.png` with PIL and measure; do not
+   judge by eye:
+   - the colon is centred on the digits, vertically and between the hour and the minute (normal and AOD clock);
+   - the gaps between stacked rows and blocks are equal, the top and bottom margins match, left matches right;
+   - every value is centred in its block or chip, and the space above a value under a chip equals the space below it;
+   - text left edges and baselines line up in each row and column, and nothing touches the 2 px safe edge or the rounded corners
+     (for example 86 px radius on the Bip 6);
+   - the lint has no `error:`, and every `warn:` left has a reason (a box overlap with no ink overlap is fine).
+   If anything is off, fix it and run the whole check again. Say in the hand-over that this check was done and what it measured.
+8. **Hand it over honestly.** Say where the files are, show the preview, list the lint warnings you left and why,
    and say plainly that the face has been built and syntax-checked but **not run on a watch** — the user installs
    it with the Dialcraft app (Install → QR code in the Zepp App's developer mode) or `zeus preview`, and tests it.
 
@@ -69,6 +80,17 @@ recipe, previews and output in a scratch folder (not in the repo).
   where they should be. If it is unclear by eye, crop and zoom the preview or measure the ink bounds of each
   element (e.g. with PIL) and fix with `set` x / y and `glyph` size / weight. Different layer kinds (weekday
   images vs digits) have different ink heights at the same size, so compare ink, not the numbers you set.
+- **Centre the colon on the digits, measured.** A colon image is a separate layer whose cell does not line up with the digit cells, so
+  at the same `y` it usually sits too high or too low, and it is rarely centred between the hour and the minute. After every run
+  measure the ink of the hour, colon and minute (PIL: bounding box per column run) and fix with `set` x / y on the colon until its
+  vertical centre equals the digits' centre (within 1 px) and its horizontal centre equals the midpoint between the hour's right
+  edge and the minute's left edge. Do it for the normal clock and for the AOD clock, whatever the font or glyph size.
+- **Check spacing symmetry, measured.** Stacked rows get one equal gap (e.g. every block 8–9 px apart), the top and bottom margins
+  of the face match (and left matches right), and each value sits centred in its block or chip (same space above and below the
+  ink; a reading under its label chip has the same space above the chip as below the value). Measure it after every run, do not
+  judge by eye: read the PNG with PIL, take the non-black runs down a column (e.g. through the sidebar and through the content),
+  and compare the gaps, the margins and each item's top / bottom space inside its block. Different layer kinds have different ink
+  offsets at the same `y`, so move by the measured difference and re-measure until the gaps are equal within 1 px.
 - **Stats must be visible and not small.** Readings need to be readable at a glance on the real screen; as a
   floor use ~28 px glyph height on ~400 px screens (~24 px on the smallest) and enough contrast with their
   background. Do not shrink a stat to make it fit.
