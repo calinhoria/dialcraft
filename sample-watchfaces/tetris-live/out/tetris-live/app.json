@@ -1,7 +1,7 @@
 {
   "configVersion": "v3",
   "app": {
-    "appId": 2638870,
+    "appId": 2096036,
     "appName": "Tetris Live",
     "appType": "watchface",
     "version": {
@@ -10,7 +10,7 @@
     },
     "icon": "images/preview.png",
     "vender": "dialcraft",
-    "description": "Real Tetris, played live by an AI on the watch: seven materials of block fall, rotate and lock, rows dissolve, the stack"
+    "description": "Real Tetris, played live by an AI on the watch, in the classic seven colours: pieces fall, rotate and lock, full rows di"
   },
   "permissions": [],
   "runtime": {

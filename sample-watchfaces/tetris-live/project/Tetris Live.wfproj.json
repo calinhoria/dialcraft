@@ -2,16 +2,16 @@
   "version": 1,
   "name": "Tetris Live",
   "device": "bip-6",
-  "appId": 2638870,
+  "appId": 2096036,
   "vender": "dialcraft",
-  "description": "Real Tetris, played live by an AI on the watch: seven materials of block fall, rotate and lock, rows dissolve, the stack drops, and a new game starts when it tops out. The time is spelled in oak and steel blocks on concrete.",
-  "font": "Barlow Condensed",
+  "description": "Real Tetris, played live by an AI on the watch, in the classic seven colours: pieces fall, rotate and lock, full rows dissolve and the stack drops. The time is spelled in coloured blocks.",
+  "font": "Press Start 2P",
   "language": "en-US",
   "fonts": [],
   "groups": {},
   "elements": [
     {
-      "id": "elmvi2jqgr4w6",
+      "id": "elmvi2s2j256v",
       "kind": "FILL_RECT",
       "name": "Background",
       "x": 0,
@@ -28,7 +28,7 @@
       "angle": 0
     },
     {
-      "id": "elmvi2jqkm6bp",
+      "id": "elmvi2s2kw51v",
       "kind": "IMG",
       "name": "Scene",
       "x": 0,
@@ -46,11 +46,11 @@
       "src": "scene.png"
     },
     {
-      "id": "elmvi2jqmi2bp",
+      "id": "elmvi2s2n65tm",
       "kind": "IMG_TIME",
       "name": "Hour",
       "x": 22,
-      "y": 22,
+      "y": 12,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -82,11 +82,11 @@
       "glyph": null
     },
     {
-      "id": "elmvi2jqmi7ix",
+      "id": "elmvi2s2n67iw",
       "kind": "IMG_TIME",
       "name": "Minute",
       "x": 222,
-      "y": 22,
+      "y": 12,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -118,11 +118,11 @@
       "glyph": null
     },
     {
-      "id": "elmvi2jqmv1c",
+      "id": "elmvi2s2nm3ty",
       "kind": "TEXT_IMG",
       "name": "Steps",
-      "x": 34,
-      "y": 126,
+      "x": 32,
+      "y": 130,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -141,18 +141,18 @@
         "font_2_8.png",
         "font_2_9.png"
       ],
-      "hSpace": 2,
+      "hSpace": 0,
       "alignH": "LEFT",
       "unit": "",
       "dot": "",
       "negative": "",
       "glyph": {
-        "font": "Barlow Condensed",
-        "size": 26,
-        "weight": 700,
+        "font": "Press Start 2P",
+        "size": 14,
+        "weight": 400,
         "variations": "",
         "fill": "solid",
-        "color": "#1b1d21",
+        "color": "#ffffff",
         "from": "#ffd400",
         "to": "#ff2d55",
         "angle": 180,
@@ -163,18 +163,18 @@
         "italic": false,
         "borderColor": "#000000",
         "borderWidth": 0,
-        "shadowColor": "#e8ecf2",
-        "shadowX": 0,
+        "shadowColor": "#000000",
+        "shadowX": 1,
         "shadowY": 1,
         "shadowBlur": 0
       }
     },
     {
-      "id": "elmvi2jqn47ka",
+      "id": "elmvi2s2ny22g",
       "kind": "IMG_DATE",
       "name": "Day",
-      "x": 184,
-      "y": 126,
+      "x": 186,
+      "y": 130,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -199,12 +199,12 @@
       "unit": "",
       "isCharacter": false,
       "glyph": {
-        "font": "Barlow Condensed",
-        "size": 26,
-        "weight": 700,
+        "font": "Press Start 2P",
+        "size": 14,
+        "weight": 400,
         "variations": "",
         "fill": "solid",
-        "color": "#1b1d21",
+        "color": "#ffffff",
         "from": "#ffd400",
         "to": "#ff2d55",
         "angle": 180,
@@ -215,18 +215,18 @@
         "italic": false,
         "borderColor": "#000000",
         "borderWidth": 0,
-        "shadowColor": "#e8ecf2",
-        "shadowX": 0,
+        "shadowColor": "#000000",
+        "shadowX": 1,
         "shadowY": 1,
         "shadowBlur": 0
       }
     },
     {
-      "id": "elmvi2jqnc5yc",
+      "id": "elmvi2s2o52oe",
       "kind": "IMG_DATE",
       "name": "Month",
-      "x": 228,
-      "y": 126,
+      "x": 240,
+      "y": 130,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -251,12 +251,12 @@
       "unit": "",
       "isCharacter": false,
       "glyph": {
-        "font": "Barlow Condensed",
-        "size": 26,
-        "weight": 700,
+        "font": "Press Start 2P",
+        "size": 14,
+        "weight": 400,
         "variations": "",
         "fill": "solid",
-        "color": "#1b1d21",
+        "color": "#ffffff",
         "from": "#ffd400",
         "to": "#ff2d55",
         "angle": 180,
@@ -267,18 +267,18 @@
         "italic": false,
         "borderColor": "#000000",
         "borderWidth": 0,
-        "shadowColor": "#e8ecf2",
-        "shadowX": 0,
+        "shadowColor": "#000000",
+        "shadowX": 1,
         "shadowY": 1,
         "shadowBlur": 0
       }
     },
     {
-      "id": "elmvi2jqo5582",
+      "id": "elmvi2s2or7nk",
       "kind": "TEXT_IMG",
       "name": "Temperature",
       "x": 304,
-      "y": 126,
+      "y": 130,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -297,18 +297,18 @@
         "font_5_8.png",
         "font_5_9.png"
       ],
-      "hSpace": 2,
+      "hSpace": 3,
       "alignH": "LEFT",
       "unit": "degree.png",
       "dot": "",
       "negative": "negative.png",
       "glyph": {
-        "font": "Barlow Condensed",
-        "size": 26,
-        "weight": 700,
+        "font": "Press Start 2P",
+        "size": 14,
+        "weight": 400,
         "variations": "",
         "fill": "solid",
-        "color": "#1b1d21",
+        "color": "#ffffff",
         "from": "#ffd400",
         "to": "#ff2d55",
         "angle": 180,
@@ -319,18 +319,18 @@
         "italic": false,
         "borderColor": "#000000",
         "borderWidth": 0,
-        "shadowColor": "#e8ecf2",
-        "shadowX": 0,
+        "shadowColor": "#000000",
+        "shadowX": 1,
         "shadowY": 1,
         "shadowBlur": 0
       }
     },
     {
-      "id": "elmvi2jqof1xu",
+      "id": "elmvi2s2p1377",
       "kind": "IMG_WEEK",
       "name": "Weekday",
-      "x": 324,
-      "y": 186,
+      "x": 322,
+      "y": 188,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -346,12 +346,12 @@
         "week_w7.png"
       ],
       "glyph": {
-        "font": "Barlow Condensed",
-        "size": 22,
-        "weight": 700,
+        "font": "Press Start 2P",
+        "size": 12,
+        "weight": 400,
         "variations": "",
         "fill": "solid",
-        "color": "#1b1d21",
+        "color": "#ffffff",
         "from": "#ffd400",
         "to": "#ff2d55",
         "angle": 180,
@@ -362,14 +362,14 @@
         "italic": false,
         "borderColor": "#000000",
         "borderWidth": 0,
-        "shadowColor": "#e8ecf2",
-        "shadowX": 0,
+        "shadowColor": "#000000",
+        "shadowX": 1,
         "shadowY": 1,
         "shadowBlur": 0
       }
     },
     {
-      "id": "elmvi2jqpd499",
+      "id": "elmvi2s2pv2x1",
       "kind": "IMG_TIME",
       "name": "Hour Aod",
       "x": 70,
@@ -403,12 +403,12 @@
       "pmX": 0,
       "pmY": 0,
       "glyph": {
-        "font": "Barlow Condensed",
-        "size": 150,
-        "weight": 700,
+        "font": "Press Start 2P",
+        "size": 90,
+        "weight": 400,
         "variations": "",
         "fill": "solid",
-        "color": "#80858c",
+        "color": "#6a6f8a",
         "from": "#ffd400",
         "to": "#ff2d55",
         "angle": 180,
@@ -426,7 +426,7 @@
       }
     },
     {
-      "id": "elmvi2jqpd2x",
+      "id": "elmvi2s2pv3nn",
       "kind": "IMG_TIME",
       "name": "Minute Aod",
       "x": 70,
@@ -460,12 +460,12 @@
       "pmX": 0,
       "pmY": 0,
       "glyph": {
-        "font": "Barlow Condensed",
-        "size": 150,
-        "weight": 700,
+        "font": "Press Start 2P",
+        "size": 90,
+        "weight": 400,
         "variations": "",
         "fill": "solid",
-        "color": "#80858c",
+        "color": "#6a6f8a",
         "from": "#ffd400",
         "to": "#ff2d55",
         "angle": 180,
@@ -483,11 +483,11 @@
       }
     },
     {
-      "id": "elmvi2jqve364",
+      "id": "elmvi2s2u62ny",
       "kind": "IMG",
       "name": "Colon",
       "x": 172,
-      "y": 22,
+      "y": 12,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -501,28 +501,28 @@
       "src": "blk/colon.png"
     },
     {
-      "id": "elmvi2jqvo2cn",
+      "id": "elmvi2s2ui43",
       "kind": "BAR",
       "name": "Battery gauge",
       "x": 48,
-      "y": 262,
+      "y": 272,
       "show": "normal",
       "visible": true,
       "locked": false,
       "group": null,
       "alpha": 255,
-      "length": 156,
+      "length": 152,
       "lineWidth": 14,
       "rounded": false,
       "vertical": true,
       "inversion": true,
       "mirror": false,
-      "color": "#ffb02e",
+      "color": "#34d034",
       "dataType": "BATTERY",
       "level": 0
     },
     {
-      "id": "elmvi2jqzx2hc",
+      "id": "elmvi2s2yh3h2",
       "kind": "IMG",
       "name": "Demo preview",
       "x": 0,
@@ -549,108 +549,108 @@
     },
     {
       "name": "font_1_0.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_1.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_2.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_3.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_4.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_5.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_6.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_7.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_8.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_1_9.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "colon.png",
-      "width": 13,
-      "height": 42
+      "width": 18,
+      "height": 54
     },
     {
       "name": "degree.png",
-      "width": 15,
-      "height": 29
+      "width": 12,
+      "height": 20
     },
     {
       "name": "negative.png",
-      "width": 14,
-      "height": 26
+      "width": 17,
+      "height": 20
     },
     {
       "name": "week_w1.png",
-      "width": 40,
-      "height": 32
+      "width": 41,
+      "height": 18
     },
     {
       "name": "week_w2.png",
-      "width": 40,
-      "height": 32
+      "width": 41,
+      "height": 18
     },
     {
       "name": "week_w3.png",
-      "width": 40,
-      "height": 32
+      "width": 41,
+      "height": 18
     },
     {
       "name": "week_w4.png",
-      "width": 40,
-      "height": 32
+      "width": 41,
+      "height": 18
     },
     {
       "name": "week_w5.png",
-      "width": 40,
-      "height": 32
+      "width": 41,
+      "height": 18
     },
     {
       "name": "week_w6.png",
-      "width": 40,
-      "height": 32
+      "width": 41,
+      "height": 18
     },
     {
       "name": "week_w7.png",
-      "width": 40,
-      "height": 32
+      "width": 41,
+      "height": 18
     },
     {
       "name": "colon_2.png",
-      "width": 13,
-      "height": 42
+      "width": 18,
+      "height": 54
     },
     {
       "name": "blk/hour_0.png",
@@ -758,387 +758,317 @@
       "height": 98
     },
     {
-      "name": "tiles/steel_0.png",
+      "name": "tiles/cyan.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/steel_1.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/steel_2.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/mini_steel.png",
+      "name": "tiles/mini_cyan.png",
       "width": 12,
       "height": 12
     },
     {
-      "name": "tiles/steel_d0.png",
+      "name": "tiles/cyan_d0.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/steel_d1.png",
+      "name": "tiles/cyan_d1.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/steel_d2.png",
+      "name": "tiles/cyan_d2.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/steel_d3.png",
+      "name": "tiles/cyan_d3.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/steel_d4.png",
+      "name": "tiles/cyan_d4.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/steel_d5.png",
+      "name": "tiles/cyan_d5.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/steel_d6.png",
+      "name": "tiles/cyan_d6.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/oak_0.png",
+      "name": "tiles/yellow.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/oak_1.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/oak_2.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/mini_oak.png",
+      "name": "tiles/mini_yellow.png",
       "width": 12,
       "height": 12
     },
     {
-      "name": "tiles/oak_d0.png",
+      "name": "tiles/yellow_d0.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/oak_d1.png",
+      "name": "tiles/yellow_d1.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/oak_d2.png",
+      "name": "tiles/yellow_d2.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/oak_d3.png",
+      "name": "tiles/yellow_d3.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/oak_d4.png",
+      "name": "tiles/yellow_d4.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/oak_d5.png",
+      "name": "tiles/yellow_d5.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/oak_d6.png",
+      "name": "tiles/yellow_d6.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/concrete_0.png",
+      "name": "tiles/purple.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/concrete_1.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/concrete_2.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/mini_concrete.png",
+      "name": "tiles/mini_purple.png",
       "width": 12,
       "height": 12
     },
     {
-      "name": "tiles/concrete_d0.png",
+      "name": "tiles/purple_d0.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/concrete_d1.png",
+      "name": "tiles/purple_d1.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/concrete_d2.png",
+      "name": "tiles/purple_d2.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/concrete_d3.png",
+      "name": "tiles/purple_d3.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/concrete_d4.png",
+      "name": "tiles/purple_d4.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/concrete_d5.png",
+      "name": "tiles/purple_d5.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/concrete_d6.png",
+      "name": "tiles/purple_d6.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/copper_0.png",
+      "name": "tiles/green.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/copper_1.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/copper_2.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/mini_copper.png",
+      "name": "tiles/mini_green.png",
       "width": 12,
       "height": 12
     },
     {
-      "name": "tiles/copper_d0.png",
+      "name": "tiles/green_d0.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/copper_d1.png",
+      "name": "tiles/green_d1.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/copper_d2.png",
+      "name": "tiles/green_d2.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/copper_d3.png",
+      "name": "tiles/green_d3.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/copper_d4.png",
+      "name": "tiles/green_d4.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/copper_d5.png",
+      "name": "tiles/green_d5.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/copper_d6.png",
+      "name": "tiles/green_d6.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/rust_0.png",
+      "name": "tiles/red.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/rust_1.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/rust_2.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/mini_rust.png",
+      "name": "tiles/mini_red.png",
       "width": 12,
       "height": 12
     },
     {
-      "name": "tiles/rust_d0.png",
+      "name": "tiles/red_d0.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/rust_d1.png",
+      "name": "tiles/red_d1.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/rust_d2.png",
+      "name": "tiles/red_d2.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/rust_d3.png",
+      "name": "tiles/red_d3.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/rust_d4.png",
+      "name": "tiles/red_d4.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/rust_d5.png",
+      "name": "tiles/red_d5.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/rust_d6.png",
+      "name": "tiles/red_d6.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/walnut_0.png",
+      "name": "tiles/blue.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/walnut_1.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/walnut_2.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/mini_walnut.png",
+      "name": "tiles/mini_blue.png",
       "width": 12,
       "height": 12
     },
     {
-      "name": "tiles/walnut_d0.png",
+      "name": "tiles/blue_d0.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/walnut_d1.png",
+      "name": "tiles/blue_d1.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/walnut_d2.png",
+      "name": "tiles/blue_d2.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/walnut_d3.png",
+      "name": "tiles/blue_d3.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/walnut_d4.png",
+      "name": "tiles/blue_d4.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/walnut_d5.png",
+      "name": "tiles/blue_d5.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/walnut_d6.png",
+      "name": "tiles/blue_d6.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/lime_0.png",
+      "name": "tiles/orange.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/lime_1.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/lime_2.png",
-      "width": 22,
-      "height": 22
-    },
-    {
-      "name": "tiles/mini_lime.png",
+      "name": "tiles/mini_orange.png",
       "width": 12,
       "height": 12
     },
     {
-      "name": "tiles/lime_d0.png",
+      "name": "tiles/orange_d0.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/lime_d1.png",
+      "name": "tiles/orange_d1.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/lime_d2.png",
+      "name": "tiles/orange_d2.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/lime_d3.png",
+      "name": "tiles/orange_d3.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/lime_d4.png",
+      "name": "tiles/orange_d4.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/lime_d5.png",
+      "name": "tiles/orange_d5.png",
       "width": 22,
       "height": 22
     },
     {
-      "name": "tiles/lime_d6.png",
+      "name": "tiles/orange_d6.png",
       "width": 22,
       "height": 22
     },
@@ -1149,256 +1079,256 @@
     },
     {
       "name": "font_2_0.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_1.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_2.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_3.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_4.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_5.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_6.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_7.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_8.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_2_9.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_0.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_1.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_2.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_3.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_4.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_5.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_6.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_7.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_8.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_3_9.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_0.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_1.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_2.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_3.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_4.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_5.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_6.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_7.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_8.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_4_9.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_0.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_1.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_2.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_3.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_4.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_5.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_6.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_7.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_8.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_5_9.png",
-      "width": 18,
-      "height": 26
+      "width": 19,
+      "height": 20
     },
     {
       "name": "font_6_0.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_1.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_2.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_3.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_4.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_5.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_6.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_7.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_8.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     },
     {
       "name": "font_6_9.png",
-      "width": 74,
-      "height": 119
+      "width": 85,
+      "height": 96
     }
   ],
   "savePath": null,
-  "userCode": "// ---- live Tetris: an AI plays real games on the well while the screen is on ----\n{\n  const COLS = 10, ROWS = 12, CS = 22, WX = 85, WY = 164\n  const TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L']\n  const MAT = { I: 'steel', O: 'oak', T: 'concrete', S: 'copper', Z: 'rust', J: 'walnut', L: 'lime' }\n  const BASE = {\n    I: [[0, 0], [1, 0], [2, 0], [3, 0]], O: [[0, 0], [1, 0], [0, 1], [1, 1]], T: [[1, 0], [0, 1], [1, 1], [2, 1]],\n    S: [[1, 0], [2, 0], [0, 1], [1, 1]], Z: [[0, 0], [1, 0], [1, 1], [2, 1]], J: [[0, 0], [0, 1], [1, 1], [2, 1]], L: [[2, 0], [0, 1], [1, 1], [2, 1]],\n  }\n  const turn = (cells) => {\n    const r = cells.map(([x, y]) => [-y, x])\n    const mx = Math.min(...r.map((c) => c[0])), my = Math.min(...r.map((c) => c[1]))\n    return r.map(([x, y]) => [x - mx, y - my])\n  }\n  const sig = (cells) => cells.map((c) => c.join()).sort().join(';')\n  const ROTS = {}\n  for (const k of TYPES) {\n    const list = [BASE[k]]\n    let c = BASE[k]\n    for (let i = 0; i < 3; i++) { c = turn(c); if (!list.some((l) => sig(l) === sig(c))) list.push(c) }\n    ROTS[k] = list\n  }\n  const board = []\n  for (let r = 0; r < ROWS; r++) board.push(new Array(COLS).fill(null))\n\n  const norm = ui.show_level.ONLY_NORMAL\n  const tile = (mat, v, c, r, dy) => ui.createWidget(ui.widget.IMG, { x: px(WX + c * CS), y: px(WY + r * CS + (dy || 0)), src: A('tiles/' + mat + '_' + v + '.png'), show_level: norm })\n  const kill = (w) => { try { ui.deleteWidget(w) } catch (e) {} }\n  const linesText = ui.createWidget(ui.widget.TEXT, { x: px(318), y: px(238), w: px(56), h: px(22), text: '0', text_size: px(20), color: 0x1b1d21, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V, show_level: norm })\n\n  let bag = [], next = null, cur = null, state = 'play', anim = 0, clearRows = [], lines = 0, nextW = [], pending = null\n  const draw7 = () => {\n    if (!bag.length) {\n      bag = TYPES.slice()\n      for (let i = bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = bag[i]; bag[i] = bag[j]; bag[j] = t }\n    }\n    return bag.pop()\n  }\n  const occ = () => board.map((r) => r.map((c) => !!c))\n  const fits = (o, cells, x, y) => {\n    for (const [dx, dy] of cells) {\n      const c = x + dx, r = y + dy\n      if (c < 0 || c >= COLS || r >= ROWS) return false\n      if (r >= 0 && o[r][c]) return false\n    }\n    return true\n  }\n  // the classic \"El-Tetris\" heuristic: low stack, no holes, a flat surface, lines when they come\n  const plan = (type) => {\n    const o = occ()\n    let best = null\n    ROTS[type].forEach((cells, ri) => {\n      const w = Math.max(...cells.map((c) => c[0])) + 1\n      for (let x = 0; x <= COLS - w; x++) {\n        let y = 0\n        if (!fits(o, cells, x, y)) continue\n        while (fits(o, cells, x, y + 1)) y++\n        const g = o.map((r) => r.slice())\n        for (const [dx, dy] of cells) g[y + dy][x + dx] = true\n        let ln = 0\n        const rows = g.filter((r) => { const f = r.every(Boolean); if (f) ln++; return !f })\n        while (rows.length < ROWS) rows.unshift(new Array(COLS).fill(false))\n        const hs = []\n        let holes = 0\n        for (let c = 0; c < COLS; c++) {\n          let r = 0\n          while (r < ROWS && !rows[r][c]) r++\n          hs.push(ROWS - r)\n          for (let k = r + 1; k < ROWS; k++) if (!rows[k][c]) holes++\n        }\n        let agg = 0, bump = 0\n        hs.forEach((h, i) => { agg += h; if (i) bump += Math.abs(h - hs[i - 1]) })\n        const sc = -0.510066 * agg + 0.760666 * ln - 0.35663 * holes - 0.184483 * bump\n        if (!best || sc > best.sc) best = { sc, rot: ri, x }\n      }\n    })\n    return best\n  }\n  const showNext = () => {\n    nextW.forEach(kill)\n    nextW = []\n    const cells = ROTS[next][0]\n    const pw = Math.max(...cells.map((c) => c[0])) + 1, ph = Math.max(...cells.map((c) => c[1])) + 1\n    const ox = 24 + (48 - pw * 12) / 2, oy = 186 + (40 - ph * 12) / 2\n    for (const [dx, dy] of cells) nextW.push(ui.createWidget(ui.widget.IMG, { x: px(ox + dx * 12), y: px(oy + dy * 12), src: A('tiles/mini_' + MAT[next] + '.png'), show_level: norm }))\n  }\n  const place = () => {\n    const cells = ROTS[cur.type][cur.rot]\n    cells.forEach(([dx, dy], i) => cur.w[i].setProperty(ui.prop.MORE, { x: px(WX + (cur.x + dx) * CS), y: px(WY + (cur.y + dy) * CS) }))\n  }\n  const spawn = () => {\n    const type = next || draw7()\n    next = draw7()\n    showNext()\n    const cells = ROTS[type][0]\n    const w = Math.max(...cells.map((c) => c[0])) + 1\n    const x = Math.floor((COLS - w) / 2)\n    if (!fits(occ(), cells, x, 0)) { state = 'reset'; anim = 0; next = type; return }\n    const pl = plan(type) || { rot: 0, x }\n    const v = [0, 1, 2, 3].map(() => Math.floor(Math.random() * 3))\n    cur = { type, rot: 0, x, y: 0, tr: pl.rot, tx: pl.x, v, w: cells.map(([dx, dy], i) => tile(MAT[type], v[i], x + dx, dy)) }\n  }\n  const lockPiece = () => {\n    const cells = ROTS[cur.type][cur.rot]\n    cells.forEach(([dx, dy], i) => { board[cur.y + dy][cur.x + dx] = { w: cur.w[i], mat: MAT[cur.type], v: cur.v[i] } })\n    cur = null\n    const full = []\n    for (let r = 0; r < ROWS; r++) if (board[r].every(Boolean)) full.push(r)\n    if (full.length) { state = 'clear'; clearRows = full; anim = 0 } else spawn()\n  }\n  const step = () => {\n    const o = occ()\n    let cells = ROTS[cur.type][cur.rot]\n    let busy = false\n    // turn and slide first, at the top of the well; then the piece drops onto the planned spot\n    if (cur.rot !== cur.tr) {\n      const nr = (cur.rot + 1) % ROTS[cur.type].length\n      const nc = ROTS[cur.type][nr]\n      if (fits(o, nc, cur.x, cur.y)) { cur.rot = nr; cells = nc; busy = true } else cur.tr = cur.rot\n    }\n    if (cur.x !== cur.tx) {\n      const nx = cur.x + (cur.tx > cur.x ? 1 : -1)\n      if (fits(o, cells, nx, cur.y)) { cur.x = nx; busy = true } else cur.tx = cur.x\n    }\n    if (!busy) {\n      let landed = false\n      for (let i = 0; i < 2; i++) {\n        if (fits(o, cells, cur.x, cur.y + 1)) cur.y++; else { landed = true; break }\n      }\n      place()\n      if (landed) lockPiece()\n    } else place()\n  }\n  const dissolveRows = (rows) => {\n    for (const r of rows) for (let c = 0; c < COLS; c++) { const cell = board[r][c]; if (cell) cell.w.setProperty(ui.prop.SRC, A('tiles/' + cell.mat + '_d' + (anim - 1) + '.png')) }\n  }\n  const tick = () => {\n    if (state === 'play') {\n      if (!cur) spawn()\n      if (cur) step()\n    } else if (state === 'clear') {\n      anim++\n      dissolveRows(clearRows)\n      if (anim >= 7) {\n        for (const r of clearRows) for (let c = 0; c < COLS; c++) { if (board[r][c]) kill(board[r][c].w); board[r][c] = null }\n        const keep = board.filter((row, i) => !clearRows.includes(i))\n        while (keep.length < ROWS) keep.unshift(new Array(COLS).fill(null))\n        pending = keep\n        keep.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { y: px(WY + r * CS - CS / 2) }) }))\n        state = 'drop'\n      }\n    } else if (state === 'drop') {\n      pending.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { y: px(WY + r * CS) }) }))\n      for (let r = 0; r < ROWS; r++) board[r] = pending[r]\n      lines += clearRows.length\n      linesText.setProperty(ui.prop.TEXT, String(lines))\n      state = 'play'\n      spawn()\n    } else if (state === 'reset') {\n      // topped out: the whole board dissolves and a fresh game starts\n      anim++\n      dissolveRows(Array.from({ length: ROWS }, (_, r) => r))\n      if (anim >= 7) {\n        for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { if (board[r][c]) kill(board[r][c].w); board[r][c] = null }\n        lines = 0\n        linesText.setProperty(ui.prop.TEXT, '0')\n        state = 'play'\n      }\n    }\n  }\n  let timerId = null\n  const start = () => {\n    if (timerId !== null) return\n    if (typeof setInterval === 'function') timerId = setInterval(tick, 110)\n    else if (typeof timer !== 'undefined' && timer.createTimer) timerId = timer.createTimer(0, 110, tick)\n  }\n  const stop = () => {\n    if (timerId === null) return\n    try { if (typeof clearInterval === 'function' && typeof setInterval === 'function') clearInterval(timerId); else timer.stopTimer(timerId) } catch (e) {}\n    timerId = null\n  }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  start()\n}\n",
+  "userCode": "// ---- live Tetris: an AI plays real games on the well while the screen is on ----\n{\n  const COLS = 10, ROWS = 12, CS = 22, WX = 85, WY = 164\n  const TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L']\n  const MAT = { I: 'cyan', O: 'yellow', T: 'purple', S: 'green', Z: 'red', J: 'blue', L: 'orange' }\n  const BASE = {\n    I: [[0, 0], [1, 0], [2, 0], [3, 0]], O: [[0, 0], [1, 0], [0, 1], [1, 1]], T: [[1, 0], [0, 1], [1, 1], [2, 1]],\n    S: [[1, 0], [2, 0], [0, 1], [1, 1]], Z: [[0, 0], [1, 0], [1, 1], [2, 1]], J: [[0, 0], [0, 1], [1, 1], [2, 1]], L: [[2, 0], [0, 1], [1, 1], [2, 1]],\n  }\n  const turn = (cells) => {\n    const r = cells.map(([x, y]) => [-y, x])\n    const mx = Math.min(...r.map((c) => c[0])), my = Math.min(...r.map((c) => c[1]))\n    return r.map(([x, y]) => [x - mx, y - my])\n  }\n  const sig = (cells) => cells.map((c) => c.join()).sort().join(';')\n  const ROTS = {}\n  for (const k of TYPES) {\n    const list = [BASE[k]]\n    let c = BASE[k]\n    for (let i = 0; i < 3; i++) { c = turn(c); if (!list.some((l) => sig(l) === sig(c))) list.push(c) }\n    ROTS[k] = list\n  }\n  const board = []\n  for (let r = 0; r < ROWS; r++) board.push(new Array(COLS).fill(null))\n\n  const norm = ui.show_level.ONLY_NORMAL\n  const tile = (mat, c, r) => ui.createWidget(ui.widget.IMG, { x: px(WX + c * CS), y: px(WY + r * CS), src: A('tiles/' + mat + '.png'), show_level: norm })\n  const kill = (w) => { try { ui.deleteWidget(w) } catch (e) {} }\n  const linesText = ui.createWidget(ui.widget.TEXT, { x: px(318), y: px(238), w: px(56), h: px(22), text: '0', text_size: px(18), color: 0xffffff, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V, show_level: norm })\n\n  let bag = [], next = null, cur = null, state = 'play', anim = 0, clearRows = [], lines = 0, nextW = [], pending = null\n  const draw7 = () => {\n    if (!bag.length) {\n      bag = TYPES.slice()\n      for (let i = bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = bag[i]; bag[i] = bag[j]; bag[j] = t }\n    }\n    return bag.pop()\n  }\n  const occ = () => board.map((r) => r.map((c) => !!c))\n  const fits = (o, cells, x, y) => {\n    for (const [dx, dy] of cells) {\n      const c = x + dx, r = y + dy\n      if (c < 0 || c >= COLS || r >= ROWS) return false\n      if (r >= 0 && o[r][c]) return false\n    }\n    return true\n  }\n  // the classic \"El-Tetris\" heuristic: low stack, no holes, a flat surface, lines when they come\n  const plan = (type) => {\n    const o = occ()\n    let best = null\n    ROTS[type].forEach((cells, ri) => {\n      const w = Math.max(...cells.map((c) => c[0])) + 1\n      for (let x = 0; x <= COLS - w; x++) {\n        let y = 0\n        if (!fits(o, cells, x, y)) continue\n        while (fits(o, cells, x, y + 1)) y++\n        const g = o.map((r) => r.slice())\n        for (const [dx, dy] of cells) g[y + dy][x + dx] = true\n        let ln = 0\n        const rows = g.filter((r) => { const f = r.every(Boolean); if (f) ln++; return !f })\n        while (rows.length < ROWS) rows.unshift(new Array(COLS).fill(false))\n        const hs = []\n        let holes = 0\n        for (let c = 0; c < COLS; c++) {\n          let r = 0\n          while (r < ROWS && !rows[r][c]) r++\n          hs.push(ROWS - r)\n          for (let k = r + 1; k < ROWS; k++) if (!rows[k][c]) holes++\n        }\n        let agg = 0, bump = 0\n        hs.forEach((h, i) => { agg += h; if (i) bump += Math.abs(h - hs[i - 1]) })\n        const sc = -0.510066 * agg + 0.760666 * ln - 0.35663 * holes - 0.184483 * bump\n        if (!best || sc > best.sc) best = { sc, rot: ri, x }\n      }\n    })\n    return best\n  }\n  const showNext = () => {\n    nextW.forEach(kill)\n    nextW = []\n    const cells = ROTS[next][0]\n    const pw = Math.max(...cells.map((c) => c[0])) + 1, ph = Math.max(...cells.map((c) => c[1])) + 1\n    const ox = 24 + (48 - pw * 12) / 2, oy = 186 + (40 - ph * 12) / 2\n    for (const [dx, dy] of cells) nextW.push(ui.createWidget(ui.widget.IMG, { x: px(ox + dx * 12), y: px(oy + dy * 12), src: A('tiles/mini_' + MAT[next] + '.png'), show_level: norm }))\n  }\n  const place = () => {\n    const cells = ROTS[cur.type][cur.rot]\n    cells.forEach(([dx, dy], i) => cur.w[i].setProperty(ui.prop.MORE, { x: px(WX + (cur.x + dx) * CS), y: px(WY + (cur.y + dy) * CS) }))\n  }\n  const spawn = () => {\n    const type = next || draw7()\n    next = draw7()\n    showNext()\n    const cells = ROTS[type][0]\n    const w = Math.max(...cells.map((c) => c[0])) + 1\n    const x = Math.floor((COLS - w) / 2)\n    if (!fits(occ(), cells, x, 0)) { state = 'reset'; anim = 0; next = type; return }\n    const pl = plan(type) || { rot: 0, x }\n    cur = { type, rot: 0, x, y: 0, tr: pl.rot, tx: pl.x, w: cells.map(([dx, dy]) => tile(MAT[type], x + dx, dy)) }\n  }\n  const lockPiece = () => {\n    const cells = ROTS[cur.type][cur.rot]\n    cells.forEach(([dx, dy], i) => { board[cur.y + dy][cur.x + dx] = { w: cur.w[i], mat: MAT[cur.type] } })\n    cur = null\n    const full = []\n    for (let r = 0; r < ROWS; r++) if (board[r].every(Boolean)) full.push(r)\n    if (full.length) { state = 'clear'; clearRows = full; anim = 0 } else spawn()\n  }\n  const step = () => {\n    const o = occ()\n    let cells = ROTS[cur.type][cur.rot]\n    let busy = false\n    // turn and slide first, at the top of the well; then the piece drops onto the planned spot\n    if (cur.rot !== cur.tr) {\n      const nr = (cur.rot + 1) % ROTS[cur.type].length\n      const nc = ROTS[cur.type][nr]\n      if (fits(o, nc, cur.x, cur.y)) { cur.rot = nr; cells = nc; busy = true } else cur.tr = cur.rot\n    }\n    if (cur.x !== cur.tx) {\n      const nx = cur.x + (cur.tx > cur.x ? 1 : -1)\n      if (fits(o, cells, nx, cur.y)) { cur.x = nx; busy = true } else cur.tx = cur.x\n    }\n    if (!busy) {\n      let landed = false\n      for (let i = 0; i < 2; i++) {\n        if (fits(o, cells, cur.x, cur.y + 1)) cur.y++; else { landed = true; break }\n      }\n      place()\n      if (landed) lockPiece()\n    } else place()\n  }\n  const dissolveRows = (rows) => {\n    for (const r of rows) for (let c = 0; c < COLS; c++) { const cell = board[r][c]; if (cell) cell.w.setProperty(ui.prop.SRC, A('tiles/' + cell.mat + '_d' + (anim - 1) + '.png')) }\n  }\n  const tick = () => {\n    if (state === 'play') {\n      if (!cur) spawn()\n      if (cur) step()\n    } else if (state === 'clear') {\n      anim++\n      dissolveRows(clearRows)\n      if (anim >= 7) {\n        for (const r of clearRows) for (let c = 0; c < COLS; c++) { if (board[r][c]) kill(board[r][c].w); board[r][c] = null }\n        const keep = board.filter((row, i) => !clearRows.includes(i))\n        while (keep.length < ROWS) keep.unshift(new Array(COLS).fill(null))\n        pending = keep\n        keep.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { x: px(WX + c * CS), y: px(WY + r * CS - CS / 2) }) }))\n        state = 'drop'\n      }\n    } else if (state === 'drop') {\n      pending.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { x: px(WX + c * CS), y: px(WY + r * CS) }) }))\n      for (let r = 0; r < ROWS; r++) board[r] = pending[r]\n      lines += clearRows.length\n      linesText.setProperty(ui.prop.TEXT, String(lines))\n      state = 'play'\n      spawn()\n    } else if (state === 'reset') {\n      // topped out: the whole board dissolves and a fresh game starts\n      anim++\n      dissolveRows(Array.from({ length: ROWS }, (_, r) => r))\n      if (anim >= 7) {\n        for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { if (board[r][c]) kill(board[r][c].w); board[r][c] = null }\n        lines = 0\n        linesText.setProperty(ui.prop.TEXT, '0')\n        state = 'play'\n      }\n    }\n  }\n  // a small red note at the bottom says what went wrong, if anything does\n  const note = ui.createWidget(ui.widget.TEXT, { x: px(60), y: px(432), w: px(270), h: px(16), text: '', text_size: px(11), color: 0xff4040, align_h: ui.align.CENTER_H, show_level: norm })\n  const say = (t) => { try { note.setProperty(ui.prop.TEXT, String(t).slice(0, 44)) } catch (e) {} }\n  let timerId = null, via = ''\n  const safeTick = () => { try { tick() } catch (e) { say('game: ' + (e && e.message ? e.message : e)); stop() } }\n  const start = () => {\n    if (timerId !== null) return\n    try {\n      if (typeof timer !== 'undefined' && timer && timer.createTimer) { timerId = timer.createTimer(0, 110, safeTick); via = 't' }\n      else if (typeof setInterval === 'function') { timerId = setInterval(safeTick, 110); via = 'i' }\n      else say('no timer available')\n    } catch (e) { say('timer: ' + (e && e.message ? e.message : e)) }\n  }\n  function stop() {\n    if (timerId === null) return\n    try { if (via === 't') timer.stopTimer(timerId); else clearInterval(timerId) } catch (e) {}\n    timerId = null\n  }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  start()\n}\n",
   "optimizePng": true
 }

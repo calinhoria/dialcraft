@@ -2,7 +2,7 @@
 {
   const COLS = 10, ROWS = 12, CS = 22, WX = 85, WY = 164
   const TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L']
-  const MAT = { I: 'steel', O: 'oak', T: 'concrete', S: 'copper', Z: 'rust', J: 'walnut', L: 'lime' }
+  const MAT = { I: 'cyan', O: 'yellow', T: 'purple', S: 'green', Z: 'red', J: 'blue', L: 'orange' }
   const BASE = {
     I: [[0, 0], [1, 0], [2, 0], [3, 0]], O: [[0, 0], [1, 0], [0, 1], [1, 1]], T: [[1, 0], [0, 1], [1, 1], [2, 1]],
     S: [[1, 0], [2, 0], [0, 1], [1, 1]], Z: [[0, 0], [1, 0], [1, 1], [2, 1]], J: [[0, 0], [0, 1], [1, 1], [2, 1]], L: [[2, 0], [0, 1], [1, 1], [2, 1]],
@@ -24,9 +24,9 @@
   for (let r = 0; r < ROWS; r++) board.push(new Array(COLS).fill(null))
 
   const norm = ui.show_level.ONLY_NORMAL
-  const tile = (mat, v, c, r, dy) => ui.createWidget(ui.widget.IMG, { x: px(WX + c * CS), y: px(WY + r * CS + (dy || 0)), src: A('tiles/' + mat + '_' + v + '.png'), show_level: norm })
+  const tile = (mat, c, r) => ui.createWidget(ui.widget.IMG, { x: px(WX + c * CS), y: px(WY + r * CS), src: A('tiles/' + mat + '.png'), show_level: norm })
   const kill = (w) => { try { ui.deleteWidget(w) } catch (e) {} }
-  const linesText = ui.createWidget(ui.widget.TEXT, { x: px(318), y: px(238), w: px(56), h: px(22), text: '0', text_size: px(20), color: 0x1b1d21, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V, show_level: norm })
+  const linesText = ui.createWidget(ui.widget.TEXT, { x: px(318), y: px(238), w: px(56), h: px(22), text: '0', text_size: px(18), color: 0xffffff, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V, show_level: norm })
 
   let bag = [], next = null, cur = null, state = 'play', anim = 0, clearRows = [], lines = 0, nextW = [], pending = null
   const draw7 = () => {
@@ -97,12 +97,11 @@
     const x = Math.floor((COLS - w) / 2)
     if (!fits(occ(), cells, x, 0)) { state = 'reset'; anim = 0; next = type; return }
     const pl = plan(type) || { rot: 0, x }
-    const v = [0, 1, 2, 3].map(() => Math.floor(Math.random() * 3))
-    cur = { type, rot: 0, x, y: 0, tr: pl.rot, tx: pl.x, v, w: cells.map(([dx, dy], i) => tile(MAT[type], v[i], x + dx, dy)) }
+    cur = { type, rot: 0, x, y: 0, tr: pl.rot, tx: pl.x, w: cells.map(([dx, dy]) => tile(MAT[type], x + dx, dy)) }
   }
   const lockPiece = () => {
     const cells = ROTS[cur.type][cur.rot]
-    cells.forEach(([dx, dy], i) => { board[cur.y + dy][cur.x + dx] = { w: cur.w[i], mat: MAT[cur.type], v: cur.v[i] } })
+    cells.forEach(([dx, dy], i) => { board[cur.y + dy][cur.x + dx] = { w: cur.w[i], mat: MAT[cur.type] } })
     cur = null
     const full = []
     for (let r = 0; r < ROWS; r++) if (board[r].every(Boolean)) full.push(r)
@@ -146,11 +145,11 @@
         const keep = board.filter((row, i) => !clearRows.includes(i))
         while (keep.length < ROWS) keep.unshift(new Array(COLS).fill(null))
         pending = keep
-        keep.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { y: px(WY + r * CS - CS / 2) }) }))
+        keep.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { x: px(WX + c * CS), y: px(WY + r * CS - CS / 2) }) }))
         state = 'drop'
       }
     } else if (state === 'drop') {
-      pending.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { y: px(WY + r * CS) }) }))
+      pending.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { x: px(WX + c * CS), y: px(WY + r * CS) }) }))
       for (let r = 0; r < ROWS; r++) board[r] = pending[r]
       lines += clearRows.length
       linesText.setProperty(ui.prop.TEXT, String(lines))
@@ -168,15 +167,22 @@
       }
     }
   }
-  let timerId = null
+  // a small red note at the bottom says what went wrong, if anything does
+  const note = ui.createWidget(ui.widget.TEXT, { x: px(60), y: px(432), w: px(270), h: px(16), text: '', text_size: px(11), color: 0xff4040, align_h: ui.align.CENTER_H, show_level: norm })
+  const say = (t) => { try { note.setProperty(ui.prop.TEXT, String(t).slice(0, 44)) } catch (e) {} }
+  let timerId = null, via = ''
+  const safeTick = () => { try { tick() } catch (e) { say('game: ' + (e && e.message ? e.message : e)); stop() } }
   const start = () => {
     if (timerId !== null) return
-    if (typeof setInterval === 'function') timerId = setInterval(tick, 110)
-    else if (typeof timer !== 'undefined' && timer.createTimer) timerId = timer.createTimer(0, 110, tick)
+    try {
+      if (typeof timer !== 'undefined' && timer && timer.createTimer) { timerId = timer.createTimer(0, 110, safeTick); via = 't' }
+      else if (typeof setInterval === 'function') { timerId = setInterval(safeTick, 110); via = 'i' }
+      else say('no timer available')
+    } catch (e) { say('timer: ' + (e && e.message ? e.message : e)) }
   }
-  const stop = () => {
+  function stop() {
     if (timerId === null) return
-    try { if (typeof clearInterval === 'function' && typeof setInterval === 'function') clearInterval(timerId); else timer.stopTimer(timerId) } catch (e) {}
+    try { if (via === 't') timer.stopTimer(timerId); else clearInterval(timerId) } catch (e) {}
     timerId = null
   }
   ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })

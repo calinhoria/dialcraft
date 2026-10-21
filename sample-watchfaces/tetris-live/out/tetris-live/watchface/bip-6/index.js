@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Hour_i2bp = [
+const img_Hour_65tm = [
   A('blk/hour_0.png'),
   A('blk/hour_1.png'),
   A('blk/hour_2.png'),
@@ -27,7 +27,7 @@ const img_Hour_i2bp = [
   A('blk/hour_9.png'),
 ]
 
-const img_Minute_i7ix = [
+const img_Minute_67iw = [
   A('blk/minute_0.png'),
   A('blk/minute_1.png'),
   A('blk/minute_2.png'),
@@ -40,7 +40,7 @@ const img_Minute_i7ix = [
   A('blk/minute_9.png'),
 ]
 
-const img_Steps_mv1c = [
+const img_Steps_m3ty = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -53,7 +53,7 @@ const img_Steps_mv1c = [
   A('font_2_9.png'),
 ]
 
-const img_Day_47ka = [
+const img_Day_y22g = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -66,7 +66,7 @@ const img_Day_47ka = [
   A('font_3_9.png'),
 ]
 
-const img_Month_c5yc = [
+const img_Month_52oe = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -79,7 +79,7 @@ const img_Month_c5yc = [
   A('font_4_9.png'),
 ]
 
-const img_Temperature_5582 = [
+const img_Temperature_r7nk = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -92,7 +92,7 @@ const img_Temperature_5582 = [
   A('font_5_9.png'),
 ]
 
-const img_Weekday_f1xu = [
+const img_Weekday_1377 = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -102,7 +102,7 @@ const img_Weekday_f1xu = [
   A('week_w7.png'),
 ]
 
-const img_Hour_Aod_d499 = [
+const img_Hour_Aod_v2x1 = [
   A('font_6_0.png'),
   A('font_6_1.png'),
   A('font_6_2.png'),
@@ -115,7 +115,7 @@ const img_Hour_Aod_d499 = [
   A('font_6_9.png'),
 ]
 
-const img_Minute_Aod_pd2x = [
+const img_Minute_Aod_v3nn = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -151,11 +151,11 @@ WatchFace({
     // Hour (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
       hour_startX: px(22),
-      hour_startY: px(22),
+      hour_startY: px(12),
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_i2bp,
+      hour_array: img_Hour_65tm,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -163,61 +163,60 @@ WatchFace({
     // Minute (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
       minute_startX: px(222),
-      minute_startY: px(22),
+      minute_startY: px(12),
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_i7ix,
+      minute_array: img_Minute_67iw,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Steps (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(34),
-      y: px(126),
+      x: px(32),
+      y: px(130),
       type: ui.data_type.STEP,
-      font_array: img_Steps_mv1c,
-      h_space: px(2),
+      font_array: img_Steps_m3ty,
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Day (IMG_DATE)
     ui.createWidget(ui.widget.IMG_DATE, {
-      day_startX: px(184),
-      day_startY: px(126),
+      day_startX: px(186),
+      day_startY: px(130),
       day_zero: 1,
       day_space: px(-2),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_47ka,
-      day_sc_array: img_Day_47ka,
-      day_tc_array: img_Day_47ka,
+      day_en_array: img_Day_y22g,
+      day_sc_array: img_Day_y22g,
+      day_tc_array: img_Day_y22g,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Month (IMG_DATE)
     ui.createWidget(ui.widget.IMG_DATE, {
-      month_startX: px(228),
-      month_startY: px(126),
+      month_startX: px(240),
+      month_startY: px(130),
       month_zero: 1,
       month_space: px(-2),
       month_align: ui.align.LEFT,
       month_follow: 0,
-      month_en_array: img_Month_c5yc,
-      month_sc_array: img_Month_c5yc,
-      month_tc_array: img_Month_c5yc,
+      month_en_array: img_Month_52oe,
+      month_sc_array: img_Month_52oe,
+      month_tc_array: img_Month_52oe,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Temperature (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
       x: px(304),
-      y: px(126),
+      y: px(130),
       type: ui.data_type.WEATHER_CURRENT,
-      font_array: img_Temperature_5582,
-      h_space: px(2),
+      font_array: img_Temperature_r7nk,
+      h_space: px(3),
       align_h: ui.align.LEFT,
       unit_en: A('degree.png'),
       unit_sc: A('degree.png'),
@@ -228,11 +227,11 @@ WatchFace({
 
     // Weekday (IMG_WEEK)
     ui.createWidget(ui.widget.IMG_WEEK, {
-      x: px(324),
-      y: px(186),
-      week_en: img_Weekday_f1xu,
-      week_sc: img_Weekday_f1xu,
-      week_tc: img_Weekday_f1xu,
+      x: px(322),
+      y: px(188),
+      week_en: img_Weekday_1377,
+      week_sc: img_Weekday_1377,
+      week_tc: img_Weekday_1377,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -243,7 +242,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Aod_d499,
+      hour_array: img_Hour_Aod_v2x1,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -255,7 +254,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Aod_pd2x,
+      minute_array: img_Minute_Aod_v3nn,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -263,7 +262,7 @@ WatchFace({
     // Colon (IMG)
     ui.createWidget(ui.widget.IMG, {
       x: px(172),
-      y: px(22),
+      y: px(12),
       src: A('blk/colon.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -271,16 +270,16 @@ WatchFace({
     // Battery gauge (BAR)
     const bar_1 = ui.createWidget(ui.widget.FILL_RECT, {
       x: px(48),
-      y: px(262),
+      y: px(272),
       w: px(14),
       h: px(0),
-      color: 0xffb02e,
+      color: 0x34d034,
       show_level: ui.show_level.ONLY_NORMAL,
     })
     const s_battery = new Battery()
     const upd_bar_1 = () => {
-      const fill = Math.round(px(156) * Math.max(0, Math.min(1, s_battery.getCurrent() / 100)))
-      bar_1.setProperty(ui.prop.MORE, { y: px(262) + px(156) - fill, h: fill })
+      const fill = Math.round(px(152) * Math.max(0, Math.min(1, s_battery.getCurrent() / 100)))
+      bar_1.setProperty(ui.prop.MORE, { y: px(272) + px(152) - fill, h: fill })
     }
     s_battery.onChange(upd_bar_1)
     upd_bar_1()
@@ -291,7 +290,7 @@ WatchFace({
     {
       const COLS = 10, ROWS = 12, CS = 22, WX = 85, WY = 164
       const TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L']
-      const MAT = { I: 'steel', O: 'oak', T: 'concrete', S: 'copper', Z: 'rust', J: 'walnut', L: 'lime' }
+      const MAT = { I: 'cyan', O: 'yellow', T: 'purple', S: 'green', Z: 'red', J: 'blue', L: 'orange' }
       const BASE = {
         I: [[0, 0], [1, 0], [2, 0], [3, 0]], O: [[0, 0], [1, 0], [0, 1], [1, 1]], T: [[1, 0], [0, 1], [1, 1], [2, 1]],
         S: [[1, 0], [2, 0], [0, 1], [1, 1]], Z: [[0, 0], [1, 0], [1, 1], [2, 1]], J: [[0, 0], [0, 1], [1, 1], [2, 1]], L: [[2, 0], [0, 1], [1, 1], [2, 1]],
@@ -313,9 +312,9 @@ WatchFace({
       for (let r = 0; r < ROWS; r++) board.push(new Array(COLS).fill(null))
 
       const norm = ui.show_level.ONLY_NORMAL
-      const tile = (mat, v, c, r, dy) => ui.createWidget(ui.widget.IMG, { x: px(WX + c * CS), y: px(WY + r * CS + (dy || 0)), src: A('tiles/' + mat + '_' + v + '.png'), show_level: norm })
+      const tile = (mat, c, r) => ui.createWidget(ui.widget.IMG, { x: px(WX + c * CS), y: px(WY + r * CS), src: A('tiles/' + mat + '.png'), show_level: norm })
       const kill = (w) => { try { ui.deleteWidget(w) } catch (e) {} }
-      const linesText = ui.createWidget(ui.widget.TEXT, { x: px(318), y: px(238), w: px(56), h: px(22), text: '0', text_size: px(20), color: 0x1b1d21, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V, show_level: norm })
+      const linesText = ui.createWidget(ui.widget.TEXT, { x: px(318), y: px(238), w: px(56), h: px(22), text: '0', text_size: px(18), color: 0xffffff, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V, show_level: norm })
 
       let bag = [], next = null, cur = null, state = 'play', anim = 0, clearRows = [], lines = 0, nextW = [], pending = null
       const draw7 = () => {
@@ -386,12 +385,11 @@ WatchFace({
         const x = Math.floor((COLS - w) / 2)
         if (!fits(occ(), cells, x, 0)) { state = 'reset'; anim = 0; next = type; return }
         const pl = plan(type) || { rot: 0, x }
-        const v = [0, 1, 2, 3].map(() => Math.floor(Math.random() * 3))
-        cur = { type, rot: 0, x, y: 0, tr: pl.rot, tx: pl.x, v, w: cells.map(([dx, dy], i) => tile(MAT[type], v[i], x + dx, dy)) }
+        cur = { type, rot: 0, x, y: 0, tr: pl.rot, tx: pl.x, w: cells.map(([dx, dy]) => tile(MAT[type], x + dx, dy)) }
       }
       const lockPiece = () => {
         const cells = ROTS[cur.type][cur.rot]
-        cells.forEach(([dx, dy], i) => { board[cur.y + dy][cur.x + dx] = { w: cur.w[i], mat: MAT[cur.type], v: cur.v[i] } })
+        cells.forEach(([dx, dy], i) => { board[cur.y + dy][cur.x + dx] = { w: cur.w[i], mat: MAT[cur.type] } })
         cur = null
         const full = []
         for (let r = 0; r < ROWS; r++) if (board[r].every(Boolean)) full.push(r)
@@ -435,11 +433,11 @@ WatchFace({
             const keep = board.filter((row, i) => !clearRows.includes(i))
             while (keep.length < ROWS) keep.unshift(new Array(COLS).fill(null))
             pending = keep
-            keep.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { y: px(WY + r * CS - CS / 2) }) }))
+            keep.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { x: px(WX + c * CS), y: px(WY + r * CS - CS / 2) }) }))
             state = 'drop'
           }
         } else if (state === 'drop') {
-          pending.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { y: px(WY + r * CS) }) }))
+          pending.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { x: px(WX + c * CS), y: px(WY + r * CS) }) }))
           for (let r = 0; r < ROWS; r++) board[r] = pending[r]
           lines += clearRows.length
           linesText.setProperty(ui.prop.TEXT, String(lines))
@@ -457,15 +455,22 @@ WatchFace({
           }
         }
       }
-      let timerId = null
+      // a small red note at the bottom says what went wrong, if anything does
+      const note = ui.createWidget(ui.widget.TEXT, { x: px(60), y: px(432), w: px(270), h: px(16), text: '', text_size: px(11), color: 0xff4040, align_h: ui.align.CENTER_H, show_level: norm })
+      const say = (t) => { try { note.setProperty(ui.prop.TEXT, String(t).slice(0, 44)) } catch (e) {} }
+      let timerId = null, via = ''
+      const safeTick = () => { try { tick() } catch (e) { say('game: ' + (e && e.message ? e.message : e)); stop() } }
       const start = () => {
         if (timerId !== null) return
-        if (typeof setInterval === 'function') timerId = setInterval(tick, 110)
-        else if (typeof timer !== 'undefined' && timer.createTimer) timerId = timer.createTimer(0, 110, tick)
+        try {
+          if (typeof timer !== 'undefined' && timer && timer.createTimer) { timerId = timer.createTimer(0, 110, safeTick); via = 't' }
+          else if (typeof setInterval === 'function') { timerId = setInterval(safeTick, 110); via = 'i' }
+          else say('no timer available')
+        } catch (e) { say('timer: ' + (e && e.message ? e.message : e)) }
       }
-      const stop = () => {
+      function stop() {
         if (timerId === null) return
-        try { if (typeof clearInterval === 'function' && typeof setInterval === 'function') clearInterval(timerId); else timer.stopTimer(timerId) } catch (e) {}
+        try { if (via === 't') timer.stopTimer(timerId); else clearInterval(timerId) } catch (e) {}
         timerId = null
       }
       ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })
