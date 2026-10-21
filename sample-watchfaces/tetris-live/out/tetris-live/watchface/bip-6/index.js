@@ -10,11 +10,12 @@
 // the pixel budget under 10% with a black background and no second hand.
 // ---------------------------------------------------------------------------
 import ui from '@zos/ui'
+import { Battery } from '@zos/sensor'
 
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Hour_65tm = [
+const img_Hour_v2ri = [
   A('blk/hour_0.png'),
   A('blk/hour_1.png'),
   A('blk/hour_2.png'),
@@ -27,7 +28,7 @@ const img_Hour_65tm = [
   A('blk/hour_9.png'),
 ]
 
-const img_Minute_67iw = [
+const img_Minute_cvkl = [
   A('blk/minute_0.png'),
   A('blk/minute_1.png'),
   A('blk/minute_2.png'),
@@ -40,7 +41,7 @@ const img_Minute_67iw = [
   A('blk/minute_9.png'),
 ]
 
-const img_Steps_m3ty = [
+const img_Steps_87et = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -53,7 +54,7 @@ const img_Steps_m3ty = [
   A('font_2_9.png'),
 ]
 
-const img_Day_y22g = [
+const img_Day_g3da = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -66,7 +67,7 @@ const img_Day_y22g = [
   A('font_3_9.png'),
 ]
 
-const img_Month_52oe = [
+const img_Month_o517 = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -79,7 +80,7 @@ const img_Month_52oe = [
   A('font_4_9.png'),
 ]
 
-const img_Temperature_r7nk = [
+const img_Temperature_e5gb = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -92,7 +93,7 @@ const img_Temperature_r7nk = [
   A('font_5_9.png'),
 ]
 
-const img_Weekday_1377 = [
+const img_Weekday_e7e0 = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -102,7 +103,7 @@ const img_Weekday_1377 = [
   A('week_w7.png'),
 ]
 
-const img_Hour_Aod_v2x1 = [
+const img_Hour_Aod_b1st = [
   A('font_6_0.png'),
   A('font_6_1.png'),
   A('font_6_2.png'),
@@ -115,7 +116,7 @@ const img_Hour_Aod_v2x1 = [
   A('font_6_9.png'),
 ]
 
-const img_Minute_Aod_v3nn = [
+const img_Minute_Aod_ifb2 = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -130,6 +131,9 @@ const img_Minute_Aod_v3nn = [
 
 WatchFace({
   initView() {
+    // layers with a code handle: W.<handle> is the widget, F.<handle> the picture list of a variants layer
+    const W = {}
+    const F = {}
     // Background (FILL_RECT)
     ui.createWidget(ui.widget.FILL_RECT, {
       x: px(0),
@@ -150,24 +154,24 @@ WatchFace({
 
     // Hour (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
-      hour_startX: px(22),
-      hour_startY: px(12),
+      hour_startX: px(50),
+      hour_startY: px(18),
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_65tm,
+      hour_array: img_Hour_v2ri,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Minute (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
-      minute_startX: px(222),
-      minute_startY: px(12),
+      minute_startX: px(212),
+      minute_startY: px(18),
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_67iw,
+      minute_array: img_Minute_cvkl,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -177,7 +181,7 @@ WatchFace({
       x: px(32),
       y: px(130),
       type: ui.data_type.STEP,
-      font_array: img_Steps_m3ty,
+      font_array: img_Steps_87et,
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -190,9 +194,9 @@ WatchFace({
       day_space: px(-2),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_y22g,
-      day_sc_array: img_Day_y22g,
-      day_tc_array: img_Day_y22g,
+      day_en_array: img_Day_g3da,
+      day_sc_array: img_Day_g3da,
+      day_tc_array: img_Day_g3da,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -204,9 +208,9 @@ WatchFace({
       month_space: px(-2),
       month_align: ui.align.LEFT,
       month_follow: 0,
-      month_en_array: img_Month_52oe,
-      month_sc_array: img_Month_52oe,
-      month_tc_array: img_Month_52oe,
+      month_en_array: img_Month_o517,
+      month_sc_array: img_Month_o517,
+      month_tc_array: img_Month_o517,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -215,7 +219,7 @@ WatchFace({
       x: px(304),
       y: px(130),
       type: ui.data_type.WEATHER_CURRENT,
-      font_array: img_Temperature_r7nk,
+      font_array: img_Temperature_e5gb,
       h_space: px(3),
       align_h: ui.align.LEFT,
       unit_en: A('degree.png'),
@@ -229,9 +233,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(322),
       y: px(188),
-      week_en: img_Weekday_1377,
-      week_sc: img_Weekday_1377,
-      week_tc: img_Weekday_1377,
+      week_en: img_Weekday_e7e0,
+      week_sc: img_Weekday_e7e0,
+      week_tc: img_Weekday_e7e0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -242,7 +246,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Aod_v2x1,
+      hour_array: img_Hour_Aod_b1st,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -254,22 +258,22 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Aod_v3nn,
+      minute_array: img_Minute_Aod_ifb2,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
 
     // Colon (IMG)
     ui.createWidget(ui.widget.IMG, {
-      x: px(172),
-      y: px(12),
+      x: px(178),
+      y: px(18),
       src: A('blk/colon.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
 
     // Battery gauge (BAR)
     const bar_1 = ui.createWidget(ui.widget.FILL_RECT, {
-      x: px(48),
+      x: px(41),
       y: px(272),
       w: px(14),
       h: px(0),
@@ -278,16 +282,23 @@ WatchFace({
     })
     const s_battery = new Battery()
     const upd_bar_1 = () => {
-      const fill = Math.round(px(152) * Math.max(0, Math.min(1, s_battery.getCurrent() / 100)))
-      bar_1.setProperty(ui.prop.MORE, { y: px(272) + px(152) - fill, h: fill })
+      const fill = Math.round(px(124) * Math.max(0, Math.min(1, s_battery.getCurrent() / 100)))
+      bar_1.setProperty(ui.prop.MORE, { x: px(41), y: px(272) + px(124) - fill, w: px(14), h: fill })
     }
     s_battery.onChange(upd_bar_1)
     upd_bar_1()
+    W.bat = bar_1
 
 
     // ---- user code (project.userCode) ----
+    // px() only takes a literal number (the build replaces it, there is no px at run time); pxv() scales a computed one
+    const pxv = (n) => Math.round(n * px(1000) / 1000)
     // ---- live Tetris: an AI plays real games on the well while the screen is on ----
     {
+      const DEBUG = false
+      // DEBUG = true prints what the game does to the watch's console (visible over the developer bridge)
+      const log = (m) => { if (DEBUG) { try { console.log('[tetris] ' + m) } catch (e) {} } }
+      try {
       const COLS = 10, ROWS = 12, CS = 22, WX = 85, WY = 164
       const TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L']
       const MAT = { I: 'cyan', O: 'yellow', T: 'purple', S: 'green', Z: 'red', J: 'blue', L: 'orange' }
@@ -312,11 +323,12 @@ WatchFace({
       for (let r = 0; r < ROWS; r++) board.push(new Array(COLS).fill(null))
 
       const norm = ui.show_level.ONLY_NORMAL
-      const tile = (mat, c, r) => ui.createWidget(ui.widget.IMG, { x: px(WX + c * CS), y: px(WY + r * CS), src: A('tiles/' + mat + '.png'), show_level: norm })
+      const tile = (mat, c, r) => ui.createWidget(ui.widget.IMG, { x: pxv(WX + c * CS), y: pxv(WY + r * CS), src: A('tiles/' + mat + '.png'), show_level: norm })
       const kill = (w) => { try { ui.deleteWidget(w) } catch (e) {} }
-      const linesText = ui.createWidget(ui.widget.TEXT, { x: px(318), y: px(238), w: px(56), h: px(22), text: '0', text_size: px(18), color: 0xffffff, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V, show_level: norm })
+      const linesText = ui.createWidget(ui.widget.TEXT, { x: pxv(318), y: pxv(238), w: pxv(56), h: pxv(22), text: '0', text_size: pxv(18), color: 0xffffff, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V, show_level: norm })
 
-      let bag = [], next = null, cur = null, state = 'play', anim = 0, clearRows = [], lines = 0, nextW = [], pending = null
+      let phase = ''
+      let bag = [], next = null, cur = null, state = 'play', anim = 0, clearRows = [], lines = 0, nextW = [], pending = null, drops = []
       const draw7 = () => {
         if (!bag.length) {
           bag = TYPES.slice()
@@ -333,67 +345,127 @@ WatchFace({
         }
         return true
       }
-      // the classic "El-Tetris" heuristic: low stack, no holes, a flat surface, lines when they come
-      const plan = (type) => {
-        const o = occ()
-        let best = null
+      // the classic "El-Tetris" heuristic: low stack, no holes, a flat surface, lines when they come.
+      // The watch is slow, so this is written without allocations (one flat grid, placed and lifted again per candidate) and it
+      // can run a few candidates per tick (a "planner"): the next piece is planned while the current one is still falling.
+      const flat = (o) => { const g = new Uint8Array(ROWS * COLS); for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (o[r][c]) g[r * COLS + c] = 1; return g }
+      const fitsFlat = (g, cells, x, y) => {
+        for (const [dx, dy] of cells) {
+          const c = x + dx, r = y + dy
+          if (c < 0 || c >= COLS || r >= ROWS) return false
+          if (r >= 0 && g[r * COLS + c]) return false
+        }
+        return true
+      }
+      const fullRows = new Uint8Array(ROWS)
+      const scoreCand = (g, cells, x) => {
+        if (!fitsFlat(g, cells, x, 0)) return null
+        let y = 0
+        while (fitsFlat(g, cells, x, y + 1)) y++
+        for (const [dx, dy] of cells) g[(y + dy) * COLS + x + dx] = 1
+        let ln = 0
+        for (let r = 0; r < ROWS; r++) {
+          let f = 1
+          for (let c = 0; c < COLS; c++) if (!g[r * COLS + c]) { f = 0; break }
+          fullRows[r] = f
+          ln += f
+        }
+        let agg = 0, bump = 0, holes = 0, prev = 0
+        for (let c = 0; c < COLS; c++) {
+          let n = 0, h = 0, filled = 0
+          for (let r = ROWS - 1; r >= 0; r--) {
+            if (fullRows[r]) continue
+            n++
+            if (g[r * COLS + c]) { h = n; filled++ }
+          }
+          agg += h
+          holes += h - filled
+          if (c) bump += Math.abs(h - prev)
+          prev = h
+        }
+        for (const [dx, dy] of cells) g[(y + dy) * COLS + x + dx] = 0
+        return -0.510066 * agg + 0.760666 * ln - 0.35663 * holes - 0.184483 * bump
+      }
+      let planner = null
+      const startPlanner = (type, o) => {
+        const g = flat(o), cands = []
         ROTS[type].forEach((cells, ri) => {
           const w = Math.max(...cells.map((c) => c[0])) + 1
-          for (let x = 0; x <= COLS - w; x++) {
-            let y = 0
-            if (!fits(o, cells, x, y)) continue
-            while (fits(o, cells, x, y + 1)) y++
-            const g = o.map((r) => r.slice())
-            for (const [dx, dy] of cells) g[y + dy][x + dx] = true
-            let ln = 0
-            const rows = g.filter((r) => { const f = r.every(Boolean); if (f) ln++; return !f })
-            while (rows.length < ROWS) rows.unshift(new Array(COLS).fill(false))
-            const hs = []
-            let holes = 0
-            for (let c = 0; c < COLS; c++) {
-              let r = 0
-              while (r < ROWS && !rows[r][c]) r++
-              hs.push(ROWS - r)
-              for (let k = r + 1; k < ROWS; k++) if (!rows[k][c]) holes++
-            }
-            let agg = 0, bump = 0
-            hs.forEach((h, i) => { agg += h; if (i) bump += Math.abs(h - hs[i - 1]) })
-            const sc = -0.510066 * agg + 0.760666 * ln - 0.35663 * holes - 0.184483 * bump
-            if (!best || sc > best.sc) best = { sc, rot: ri, x }
-          }
+          for (let x = 0; x <= COLS - w; x++) cands.push({ cells, rot: ri, x })
         })
+        planner = { type, g, key: g.join(''), cands, i: 0, best: null }
+      }
+      // score candidates until the time budget is spent; true when the plan is complete
+      const workPlanner = (budget) => {
+        const p = planner
+        if (!p) return true
+        const t0 = Date.now()
+        while (p.i < p.cands.length && Date.now() - t0 < budget) {
+          const cd = p.cands[p.i++]
+          const sc = scoreCand(p.g, cd.cells, cd.x)
+          if (sc !== null && (!p.best || sc > p.best.sc)) p.best = { sc, rot: cd.rot, x: cd.x }
+        }
+        return p.i >= p.cands.length
+      }
+      const plan = (type, o) => {
+        phase += '+plan'
+        const key = flat(o).join('')
+        const reuse = !!(planner && planner.type === type && planner.key === key)
+        if (!reuse) startPlanner(type, o)   // not the one prepared in advance
+        if (DEBUG && !reuse) log('plan ' + type + ': cold (the one prepared in advance did not match)')
+        workPlanner(1e9)
+        const best = planner.best
+        planner = null
         return best
       }
+      // once the current piece has its target, the board it will leave behind is known: start planning the next piece on it
+      const planAhead = () => {
+        if (!cur || !next) return
+        const cells = ROTS[cur.type][cur.tr], o = occ()
+        let y = 0
+        if (!fits(o, cells, cur.tx, 0)) return
+        while (fits(o, cells, cur.tx, y + 1)) y++
+        for (const [dx, dy] of cells) o[y + dy][cur.tx + dx] = true
+        const rows = o.filter((r) => !r.every(Boolean))
+        while (rows.length < ROWS) rows.unshift(new Array(COLS).fill(false))
+        startPlanner(next, rows)
+      }
       const showNext = () => {
+        phase += '+next'
         nextW.forEach(kill)
         nextW = []
         const cells = ROTS[next][0]
         const pw = Math.max(...cells.map((c) => c[0])) + 1, ph = Math.max(...cells.map((c) => c[1])) + 1
         const ox = 24 + (48 - pw * 12) / 2, oy = 186 + (40 - ph * 12) / 2
-        for (const [dx, dy] of cells) nextW.push(ui.createWidget(ui.widget.IMG, { x: px(ox + dx * 12), y: px(oy + dy * 12), src: A('tiles/mini_' + MAT[next] + '.png'), show_level: norm }))
+        for (const [dx, dy] of cells) nextW.push(ui.createWidget(ui.widget.IMG, { x: pxv(ox + dx * 12), y: pxv(oy + dy * 12), src: A('tiles/mini_' + MAT[next] + '.png'), show_level: norm }))
       }
       const place = () => {
         const cells = ROTS[cur.type][cur.rot]
-        cells.forEach(([dx, dy], i) => cur.w[i].setProperty(ui.prop.MORE, { x: px(WX + (cur.x + dx) * CS), y: px(WY + (cur.y + dy) * CS) }))
+        cells.forEach(([dx, dy], i) => cur.w[i].setProperty(ui.prop.MORE, { x: pxv(WX + (cur.x + dx) * CS), y: pxv(WY + (cur.y + dy) * CS) }))
       }
+      // small jobs the next ticks do while the new piece is already falling, so no single tick gets long
+      let todo = []
       const spawn = () => {
+        phase += '+spawn'
         const type = next || draw7()
         next = draw7()
-        showNext()
         const cells = ROTS[type][0]
         const w = Math.max(...cells.map((c) => c[0])) + 1
         const x = Math.floor((COLS - w) / 2)
-        if (!fits(occ(), cells, x, 0)) { state = 'reset'; anim = 0; next = type; return }
-        const pl = plan(type) || { rot: 0, x }
+        const o = occ()
+        if (!fits(o, cells, x, 0)) { log('topped out after ' + lines + ' lines'); state = 'reset'; anim = 0; next = type; todo = []; return }
+        const pl = plan(type, o) || { rot: 0, x }
         cur = { type, rot: 0, x, y: 0, tr: pl.rot, tx: pl.x, w: cells.map(([dx, dy]) => tile(MAT[type], x + dx, dy)) }
+        todo = [showNext, planAhead]
       }
       const lockPiece = () => {
+        phase += '+lock'
         const cells = ROTS[cur.type][cur.rot]
         cells.forEach(([dx, dy], i) => { board[cur.y + dy][cur.x + dx] = { w: cur.w[i], mat: MAT[cur.type] } })
         cur = null
         const full = []
         for (let r = 0; r < ROWS; r++) if (board[r].every(Boolean)) full.push(r)
-        if (full.length) { state = 'clear'; clearRows = full; anim = 0 } else spawn()
+        if (full.length) { log('clearing rows ' + full.join(',')); state = 'clear'; clearRows = full; anim = 0 } else spawn()
       }
       const step = () => {
         const o = occ()
@@ -424,25 +496,37 @@ WatchFace({
       const tick = () => {
         if (state === 'play') {
           if (!cur) spawn()
-          if (cur) step()
+          if (cur) { const job = todo.shift(); if (job) { phase += '+job'; job() } workPlanner(job ? 20 : 30); step() }
         } else if (state === 'clear') {
           anim++
           dissolveRows(clearRows)
           if (anim >= 7) {
             for (const r of clearRows) for (let c = 0; c < COLS; c++) { if (board[r][c]) kill(board[r][c].w); board[r][c] = null }
-            const keep = board.filter((row, i) => !clearRows.includes(i))
+            // the rows above a cleared one fall by the number of cleared rows below them; the cells under it stay where they are
+            const keep = []
+            drops = []
+            for (let i = 0; i < ROWS; i++) {
+              if (clearRows.includes(i)) continue
+              const to = i + clearRows.filter((g) => g > i).length
+              board[i].forEach((cell, c) => { if (cell && to !== i) drops.push({ cell, c, from: i, to }) })
+              keep.push(board[i])
+            }
             while (keep.length < ROWS) keep.unshift(new Array(COLS).fill(null))
             pending = keep
-            keep.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { x: px(WX + c * CS), y: px(WY + r * CS - CS / 2) }) }))
+            anim = 0
             state = 'drop'
           }
         } else if (state === 'drop') {
-          pending.forEach((row, r) => row.forEach((cell, c) => { if (cell) cell.w.setProperty(ui.prop.MORE, { x: px(WX + c * CS), y: px(WY + r * CS) }) }))
-          for (let r = 0; r < ROWS; r++) board[r] = pending[r]
-          lines += clearRows.length
-          linesText.setProperty(ui.prop.TEXT, String(lines))
-          state = 'play'
-          spawn()
+          anim++
+          const t = Math.min(1, anim / 3)
+          for (const m of drops) m.cell.w.setProperty(ui.prop.MORE, { x: pxv(WX + m.c * CS), y: pxv(WY + (m.from + (m.to - m.from) * t) * CS) })
+          if (anim >= 3 || !drops.length) {
+            for (let r = 0; r < ROWS; r++) board[r] = pending[r]
+            lines += clearRows.length
+            linesText.setProperty(ui.prop.TEXT, String(lines))
+            state = 'play'
+            spawn()
+          }
         } else if (state === 'reset') {
           // topped out: the whole board dissolves and a fresh game starts
           anim++
@@ -450,16 +534,37 @@ WatchFace({
           if (anim >= 7) {
             for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { if (board[r][c]) kill(board[r][c].w); board[r][c] = null }
             lines = 0
+            planner = null
+            todo = []
             linesText.setProperty(ui.prop.TEXT, '0')
             state = 'play'
           }
         }
       }
       // a small red note at the bottom says what went wrong, if anything does
-      const note = ui.createWidget(ui.widget.TEXT, { x: px(60), y: px(432), w: px(270), h: px(16), text: '', text_size: px(11), color: 0xff4040, align_h: ui.align.CENTER_H, show_level: norm })
-      const say = (t) => { try { note.setProperty(ui.prop.TEXT, String(t).slice(0, 44)) } catch (e) {} }
-      let timerId = null, via = ''
-      const safeTick = () => { try { tick() } catch (e) { say('game: ' + (e && e.message ? e.message : e)); stop() } }
+      const note = ui.createWidget(ui.widget.TEXT, { x: pxv(60), y: pxv(432), w: pxv(270), h: pxv(16), text: '', text_size: pxv(11), color: 0xff4040, align_h: ui.align.CENTER_H, show_level: norm })
+      const say = (t) => { log(t); try { note.setProperty(ui.prop.TEXT, String(t).slice(0, 44)) } catch (e) {} }
+      let timerId = null, via = '', ticks = 0
+      let lastStart = 0
+      const st = { n: 0, sum: 0, max: 0, over: 0, gapMax: 0, gapOver: 0, worst: '' }
+      const safeTick = () => {
+        try {
+          const t0 = Date.now(), gap = lastStart ? t0 - lastStart : 0
+          lastStart = t0
+          phase = state
+          ticks++
+          tick()
+          if (DEBUG) {
+            const dt = Date.now() - t0
+            st.n++; st.sum += dt
+            if (dt > st.max) { st.max = dt; st.worst = phase }
+            if (dt > 70) st.over++
+            if (gap > st.gapMax && gap < 1500) st.gapMax = gap
+            if (gap > 180 && gap < 1500) st.gapOver++
+            if (st.n >= 100) { log('last 100 ticks: avg=' + Math.round(st.sum / st.n) + 'ms max=' + st.max + 'ms (' + st.worst + ') over70=' + st.over + ' maxGap=' + st.gapMax + 'ms gapsOver180=' + st.gapOver); st.n = st.sum = st.max = st.over = st.gapMax = st.gapOver = 0 }
+          }
+        } catch (e) { say('game: ' + (e && e.message ? e.message : e)); stop() }
+      }
       const start = () => {
         if (timerId !== null) return
         try {
@@ -473,8 +578,10 @@ WatchFace({
         try { if (via === 't') timer.stopTimer(timerId); else clearInterval(timerId) } catch (e) {}
         timerId = null
       }
-      ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })
+      ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: () => { log('resume'); start() }, pause_call: () => { log('pause'); stop() } })
+      log('start: setInterval=' + typeof setInterval + ' timer=' + typeof timer + ' deleteWidget=' + typeof ui.deleteWidget + ' pxv(110)=' + pxv(110))
       start()
+      } catch (e) { log('FATAL ' + (e && e.message ? e.message : e) + ' | ' + String(e && e.stack ? e.stack : '').replace(/\s+/g, ' ').slice(0, 300)) }
     }
   },
 

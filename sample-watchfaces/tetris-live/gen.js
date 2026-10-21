@@ -51,9 +51,9 @@ for (let i = 0; i < 70; i++) { g.fillStyle = 'rgba(255,255,255,' + (0.15 + rnd()
 panel(g, 22, 114, 148, 44, '#00d4f0', 'STEPS'); panel(g, 176, 114, 114, 44, '#f8d800', 'DATE'); panel(g, 296, 114, 72, 44, '#f03232', 'TEMP'); g.fillStyle = '#fff'; g.fillRect(226, 146, 4, 4);
 panel(g, 16, 166, 64, 74, '#b040e0', 'NEXT'); rr(g, 24, 186, 48, 46, 3); g.fillStyle = '#04050f'; g.fill();
 panel(g, 316, 166, 60, 50, '#2c4cf0', 'DAY'); panel(g, 316, 222, 60, 44, '#34d034', 'LINES');
-panel(g, 22, 248, 52, 186, '#f88a00', null); g.font = LABEL; g.fillStyle = '#f88a00'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('BAT', 48, 260);
-rr(g, 38, 272, 20, 152, 4); g.fillStyle = '#04050f'; g.fill(); g.strokeStyle = 'rgba(255,255,255,0.18)'; g.lineWidth = 1; g.stroke();
-for (let i = 1; i < 10; i++) { g.fillStyle = 'rgba(8,11,34,0.95)'; g.fillRect(38, 272 + i * 15.2 - 1, 20, 2); }
+panel(g, 22, 248, 52, 156, '#f88a00', null);   // ends at y 404: the Bip 6's corner radius is 86 px, a taller card was cut off g.font = LABEL; g.fillStyle = '#f88a00'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('BAT', 48, 260);
+rr(g, 38, 272, 20, 124, 4); g.fillStyle = '#04050f'; g.fill(); g.strokeStyle = 'rgba(255,255,255,0.18)'; g.lineWidth = 1; g.stroke();
+for (let i = 1; i < 10; i++) { g.fillStyle = 'rgba(8,11,34,0.95)'; g.fillRect(38, 272 + i * 12.4 - 1, 20, 2); }
 // the well: chrome frame, deep black inside, faint cell grid
 g.save(); g.shadowColor = 'rgba(80,120,255,0.5)'; g.shadowBlur = 14; rr(g, WX - 9, WY - 8, COLS * CS + 18, ROWS * CS + 16, 6); g.fillStyle = '#444'; g.fill(); g.restore();
 rr(g, WX - 9, WY - 8, COLS * CS + 18, ROWS * CS + 16, 6); gr = g.createLinearGradient(WX - 9, 0, WX + COLS * CS + 9, 0); gr.addColorStop(0, '#6f7690'); gr.addColorStop(0.15, '#f2f5ff'); gr.addColorStop(0.5, '#9aa3c2'); gr.addColorStop(0.85, '#e9edfb'); gr.addColorStop(1, '#5d647e'); g.fillStyle = gr; g.fill();
@@ -64,7 +64,7 @@ const ish = g.createLinearGradient(0, WY, 0, WY + 20); ish.addColorStop(0, 'rgba
 names.push(addProjectImage('scene.png', c, {}).name);
 `;
 const digitsJS = pre + `
-const CSZ = 13, DW = 74, DH = 98;
+const CSZ = 11, DW = 64, DH = 84;   // 11 px blocks: the clock is 290 px wide, clear of the watch's rounded corners
 const DCOL = ['cyan', 'yellow', 'purple', 'green', 'red', 'blue', 'orange', 'cyan', 'yellow', 'purple'];
 const cache = {}; const T = (c) => cache[c] || (cache[c] = btile(c, CSZ));
 for (const part of ['hour', 'minute']) for (let n = 0; n < 10; n++) {
@@ -105,10 +105,10 @@ const steps = [{ preset: 'bg' },
   wrap(digitsJS, `
     const hr = names.slice(0, 10), mn = names.slice(10, 20), colon = names[20];
     const H1 = project.elements.find((q) => q.name === 'Hour'), M1 = project.elements.find((q) => q.name === 'Minute');
-    for (const [e, set, x] of [[H1, hr, 22], [M1, mn, 222]]) { e.glyph = null; e.images = set; e.space = 0; e.zero = 1; e.x = x; e.y = 12; e.show = 'normal'; }
+    for (const [e, set, x] of [[H1, hr, 50], [M1, mn, 212]]) { e.glyph = null; e.images = set; e.space = 0; e.zero = 1; e.x = x; e.y = 18; e.show = 'normal'; }
     project.elements = project.elements.filter((q) => q.name !== 'Colon');
-    const ce = await addElement('IMG', { src: colon }); ce.name = 'Colon'; ce.src = colon; ce.x = 172; ce.y = 12; ce.show = 'normal'; return 1`),
-  { add: 'BAR', name: 'Battery gauge', patch: { dataType: 'BATTERY' }, set: { x: 48, y: 272, length: 152, lineWidth: 14, vertical: true, inversion: true, color: '#34d034', show: 'normal' } },
+    const ce = await addElement('IMG', { src: colon }); ce.name = 'Colon'; ce.src = colon; ce.x = 178; ce.y = 18; ce.show = 'normal'; return 1`),
+  { add: 'BAR', name: 'Battery gauge', patch: { dataType: 'BATTERY' }, set: { x: 41, y: 272, length: 124, lineWidth: 14, vertical: true, inversion: true, color: '#34d034', show: 'normal', handle: 'bat' } },
   wrap(tilesJS, `return names.length`),
   wrap(demoJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Demo preview'; e.src = names[0]; e.previewOnly = true; e.x = 0; e.y = 0; e.show = 'normal'; return 1`),
 ];
