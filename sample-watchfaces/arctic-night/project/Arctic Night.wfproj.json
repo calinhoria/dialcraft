@@ -1,0 +1,1504 @@
+{
+  "version": 1,
+  "name": "Arctic Night",
+  "device": "bip-6",
+  "appId": 2405505,
+  "vender": "dialcraft",
+  "description": "A polar night under the aurora: snowfall, icebergs and a frozen sea. A polar bear and her cub spawn at random, walk across the snow together or alone, and now and then stop to sniff.",
+  "font": "Inter",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gmvigt4zi98": "Clock",
+    "gmvigt516dg": "Clock AOD",
+    "gmvigt59jik": "Sunrise / sunset",
+    "gDate": "Date",
+    "gBack": "Bears behind the bank",
+    "gFront": "Bears in front"
+  },
+  "elements": [
+    {
+      "id": "elmvigt3h46df",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvigt3ke7pk",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene.png"
+    },
+    {
+      "id": "elmvigt4kv61b",
+      "kind": "IMG_ANIM",
+      "name": "Aurora",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "frames": [
+        "anim/aurora_0.png",
+        "anim/aurora_1.png",
+        "anim/aurora_2.png",
+        "anim/aurora_3.png",
+        "anim/aurora_4.png",
+        "anim/aurora_5.png",
+        "anim/aurora_6.png",
+        "anim/aurora_7.png",
+        "anim/aurora_8.png",
+        "anim/aurora_9.png",
+        "anim/aurora_10.png",
+        "anim/aurora_11.png"
+      ],
+      "fps": 5,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "aurora"
+    },
+    {
+      "id": "elmvigt4tw5f5",
+      "kind": "IMG",
+      "name": "Bear back",
+      "x": 130,
+      "y": 250,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBack",
+      "alpha": 235,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "bear/mom_r_w0.png",
+      "handle": "m0"
+    },
+    {
+      "id": "elmvigt4ut2p2",
+      "kind": "IMG",
+      "name": "Cub back",
+      "x": -400,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBack",
+      "alpha": 235,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "bear/cub_r_w0.png",
+      "handle": "c0"
+    },
+    {
+      "id": "elmvigt4wm55p",
+      "kind": "IMG",
+      "name": "Snow bank",
+      "x": 0,
+      "y": 366,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "bank.png"
+    },
+    {
+      "id": "elmvigt4zi7dh",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 200,
+      "y": 52,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvigt4zi98",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -28,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Inter",
+        "size": 96,
+        "weight": 500,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#d4ecf6",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#07162c",
+        "borderWidth": 2,
+        "shadowColor": "#020a18",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 14
+    },
+    {
+      "id": "elmvigt4zigt",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 164,
+      "y": 56,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvigt4zi98",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Inter",
+        "size": 96,
+        "weight": 500,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#d4ecf6",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#07162c",
+        "borderWidth": 2,
+        "shadowColor": "#020a18",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 14
+    },
+    {
+      "id": "elmvigt4zi2jo",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 36,
+      "y": 52,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvigt4zi98",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -28,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Inter",
+        "size": 96,
+        "weight": 500,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#d4ecf6",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#07162c",
+        "borderWidth": 2,
+        "shadowColor": "#020a18",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 14
+    },
+    {
+      "id": "elmvigt5165el",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 60,
+      "y": 230,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvigt516dg",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Inter",
+        "size": 110,
+        "weight": 500,
+        "variations": "",
+        "fill": "solid",
+        "color": "#3b7a8c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvigt5167bk",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 60,
+      "y": 90,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvigt516dg",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Inter",
+        "size": 110,
+        "weight": 500,
+        "variations": "",
+        "fill": "solid",
+        "color": "#3b7a8c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvigt5256lt",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 117,
+      "y": 14,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Inter",
+        "size": 30,
+        "weight": 700,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#d4ecf6",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#07162c",
+        "borderWidth": 2,
+        "shadowColor": "#020a18",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 14
+    },
+    {
+      "id": "elmvigt53zjs",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 199,
+      "y": 20,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -28,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Inter",
+        "size": 30,
+        "weight": 700,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#d4ecf6",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#07162c",
+        "borderWidth": 2,
+        "shadowColor": "#020a18",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 14
+    },
+    {
+      "id": "elmvigt56a13w",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 24,
+      "y": 178,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "hSpace": -26,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Inter",
+        "size": 30,
+        "weight": 700,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#d4ecf6",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#07162c",
+        "borderWidth": 2,
+        "shadowColor": "#020a18",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 14
+    },
+    {
+      "id": "elmvigt57b71h",
+      "kind": "TEXT_IMG",
+      "name": "Sun time",
+      "x": 224,
+      "y": 178,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvigt59jik",
+      "alpha": 255,
+      "dataType": "SUN_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -26,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "colon_3.png",
+      "negative": "",
+      "glyph": {
+        "font": "Inter",
+        "size": 30,
+        "weight": 700,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#d4ecf6",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#07162c",
+        "borderWidth": 2,
+        "shadowColor": "#020a18",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 14
+    },
+    {
+      "id": "elmvigt59j7g4",
+      "kind": "IMG",
+      "name": "Sun icon",
+      "x": 188,
+      "y": 194,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvigt59jik",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sun_icon.png"
+    },
+    {
+      "id": "elmvigt5aj2a6",
+      "kind": "IMG",
+      "name": "Bear front",
+      "x": 150,
+      "y": 322,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFront",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "bear/mom_l_w0.png",
+      "handle": "m1"
+    },
+    {
+      "id": "elmvigt5bhj8",
+      "kind": "IMG",
+      "name": "Cub front",
+      "x": 40,
+      "y": 360,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFront",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "bear/cub_l_w0.png",
+      "handle": "c1"
+    },
+    {
+      "id": "elmvigt5e96es",
+      "kind": "IMG_ANIM",
+      "name": "Snowfall",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "frames": [
+        "anim/snow_0.png",
+        "anim/snow_1.png",
+        "anim/snow_2.png",
+        "anim/snow_3.png",
+        "anim/snow_4.png",
+        "anim/snow_5.png",
+        "anim/snow_6.png",
+        "anim/snow_7.png",
+        "anim/snow_8.png",
+        "anim/snow_9.png",
+        "anim/snow_10.png",
+        "anim/snow_11.png"
+      ],
+      "fps": 8,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "snow"
+    },
+    {
+      "id": "elmvigt5ge8a",
+      "kind": "IMG",
+      "name": "Vignette",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "vignette.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/aurora_0.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_1.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_2.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_3.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_4.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_5.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_6.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_7.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_8.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_9.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_10.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "anim/aurora_11.png",
+      "width": 390,
+      "height": 300
+    },
+    {
+      "name": "bear/mom_r_w0.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_w1.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_w2.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_w3.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_w4.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_w5.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_w6.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_w7.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_st.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_sn0.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_r_sn1.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_w0.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_w1.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_w2.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_w3.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_w4.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_w5.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_w6.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_w7.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_st.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_sn0.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/mom_l_sn1.png",
+      "width": 200,
+      "height": 124
+    },
+    {
+      "name": "bear/cub_r_w0.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_w1.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_w2.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_w3.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_w4.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_w5.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_w6.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_w7.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_st.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_sn0.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_r_sn1.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_w0.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_w1.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_w2.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_w3.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_w4.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_w5.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_w6.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_w7.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_st.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_sn0.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bear/cub_l_sn1.png",
+      "width": 112,
+      "height": 76
+    },
+    {
+      "name": "bank.png",
+      "width": 390,
+      "height": 90
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "colon.png",
+      "width": 15,
+      "height": 43
+    },
+    {
+      "name": "colon_2.png",
+      "width": 15,
+      "height": 43
+    },
+    {
+      "name": "week_w1.png",
+      "width": 104,
+      "height": 71
+    },
+    {
+      "name": "week_w2.png",
+      "width": 104,
+      "height": 71
+    },
+    {
+      "name": "week_w3.png",
+      "width": 104,
+      "height": 71
+    },
+    {
+      "name": "week_w4.png",
+      "width": 104,
+      "height": 71
+    },
+    {
+      "name": "week_w5.png",
+      "width": 104,
+      "height": 71
+    },
+    {
+      "name": "week_w6.png",
+      "width": 104,
+      "height": 71
+    },
+    {
+      "name": "week_w7.png",
+      "width": 104,
+      "height": 71
+    },
+    {
+      "name": "degree.png",
+      "width": 45,
+      "height": 58
+    },
+    {
+      "name": "negative.png",
+      "width": 44,
+      "height": 58
+    },
+    {
+      "name": "colon_3.png",
+      "width": 40,
+      "height": 58
+    },
+    {
+      "name": "sun_icon.png",
+      "width": 44,
+      "height": 34
+    },
+    {
+      "name": "anim/snow_0.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_1.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_2.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_3.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_4.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_5.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_6.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_7.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_8.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_9.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_10.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/snow_11.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "vignette.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 51,
+      "height": 86
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 90,
+      "height": 107
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 73,
+      "height": 92
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 52,
+      "height": 58
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 52,
+      "height": 58
+    }
+  ],
+  "savePath": null,
+  "userCode": "{\n  // Bears are plain IMG layers moved with MORE {x, y, src}. A mother and a cub spawn at random, together or alone (never more than two),\n  // and cross the snow either behind the snow bank (back lane) or in front of it (front lane). Now and then they stop to sniff.\n  const MS = 100, SW = 390, FOOT = 14\n  const DIM = { mom: { w: 200, h: 124 }, cub: { w: 112, h: 76 } }\n  const LANES = [{ base: 384, m: 'm0', c: 'c0' }, { base: 436, m: 'm1', c: 'c1' }]\n  const SLOTS = ['m0', 'c0', 'm1', 'c1']\n  let id = null, tickN = 0, grp = null, nextSpawn = 8\n  const rand = (a, b) => a + Math.random() * (b - a)\n  const park = (s) => { try { W[s].setProperty(ui.prop.MORE, { x: pxv(-400), y: pxv(0) }) } catch (e) {} }\n  const spawn = (onScreen) => {\n    const lane = LANES[Math.random() < 0.5 ? 0 : 1], dir = Math.random() < 0.5 ? 1 : -1, r = Math.random()\n    const kind = r < 0.6 ? 'pair' : r < 0.8 ? 'mom' : 'cub'\n    grp = { lane, dir, kind, cx: onScreen ? rand(120, 270) : (dir > 0 ? -110 : SW + 110), speed: rand(1.4, 2.2), age: 0, pause: 0, paused: false, pausedOnce: false, gone: { m: kind === 'cub', c: kind === 'mom' } }\n  }\n  const place = (slot, kind, cx, y, key) => {\n    const d = DIM[kind]\n    W[slot].setProperty(ui.prop.MORE, { x: pxv(Math.round(cx - d.w * 0.46)), y: pxv(Math.round(y - (d.h - FOOT))), src: A('bear/' + key + '.png') })\n  }\n  const tick = () => {\n    tickN++\n    if (!grp) { if (tickN >= nextSpawn) spawn(false); return }\n    const g = grp, L = g.lane, dn = g.dir > 0 ? 'r' : 'l'\n    if (g.paused) { g.pause--; if (g.pause <= 0) g.paused = false }\n    else {\n      g.age++\n      g.cx += g.dir * g.speed\n      if (!g.pausedOnce && g.cx > 90 && g.cx < SW - 90 && Math.random() < 0.006) { g.paused = true; g.pausedOnce = true; g.pause = Math.floor(rand(30, 50)) }\n    }\n    const wob = Math.sin(g.age * 0.05)\n    if (!g.gone.m) {\n      const out = g.dir > 0 ? g.cx > SW + 120 : g.cx < -120\n      if (out) { g.gone.m = true; park(L.m) }\n      else {\n        const key = g.paused ? 'mom_' + dn + '_sn' + (Math.floor(g.pause / 8) % 2) : 'mom_' + dn + '_w' + (Math.floor(g.age / 2) % 8)\n        place(L.m, 'mom', g.cx, L.base, key)\n      }\n    }\n    if (!g.gone.c) {\n      const ccx = g.kind === 'pair' ? g.cx - g.dir * (120 + 6 * wob) : g.cx\n      const out = g.dir > 0 ? ccx > SW + 80 : ccx < -80\n      if (out) { g.gone.c = true; park(L.c) }\n      else {\n        const key = g.paused ? 'cub_' + dn + '_st' : 'cub_' + dn + '_w' + ((Math.floor(g.age / 1.5) + 3) % 8)\n        place(L.c, 'cub', ccx, L.base + (g.paused ? 0 : 1.5 * Math.sin(g.age * 0.6)) + (g.kind === 'pair' ? 4 : 0), key)\n      }\n    }\n    if (g.gone.m && g.gone.c) { grp = null; nextSpawn = tickN + Math.floor(rand(10, 90)) }\n  }\n  const safe = () => { try { tick() } catch (e) {} }\n  const start = () => { if (id === null) { try { id = setInterval(safe, MS) } catch (e) {} } }\n  const stop = () => { if (id !== null) { try { clearInterval(id) } catch (e) {} id = null } }\n  SLOTS.forEach(park)\n  spawn(true)\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  safe()\n  start()\n}",
+  "optimizePng": 64
+}

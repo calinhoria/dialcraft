@@ -15,9 +15,12 @@ recipe, previews and output in a scratch folder (not in the repo).
 ## Workflow
 
 1. **Pin down the brief.** Ask only what you cannot choose yourself: the **watch** (a `device` key from
-   [references/devices.md](references/devices.md); square and round screens need different layouts), the
-   **look** (colours, mood, digital / analog, a reference image) and the **data** to show (steps, heart rate,
-   battery, weather, date …). Default to a black background, one accent colour, and at most 4–5 elements.
+   [references/devices.md](references/devices.md); square and round screens need different layouts) and the
+   **look** (colours, mood, digital / analog, a reference image). Default to a black background and one accent colour.
+   **Always ask a multiple-choice question before you start building** about which elements to include
+   (multi-select: date / weekday, battery, temperature / weather, steps, heart rate, calories, distance, …),
+   even when the request names a few; offer the sensible ones for the theme and let the user pick. Do not start
+   the recipe until it is answered.
 2. **Write the recipe** — format in [references/recipe.md](references/recipe.md), a working one in
    [examples/neon-pulse.json](examples/neon-pulse.json). Order matters: **add every layer first (presets),
    then style and position them** — digit sets are shared between layers until one is restyled.
@@ -42,6 +45,36 @@ recipe, previews and output in a scratch folder (not in the repo).
 7. **Hand it over honestly.** Say where the files are, show the preview, list the lint warnings you left and why,
    and say plainly that the face has been built and syntax-checked but **not run on a watch** — the user installs
    it with the Dialcraft app (Install → QR code in the Zepp App's developer mode) or `zeus preview`, and tests it.
+
+## House rules (always follow)
+
+- **Group related components and name the group.** The clock (hour, colon, minute), the date row (weekday, day,
+  month), a reading with its icon, the fish slots, a scene's decor … each become one named group
+  (`Clock`, `Date`, `Steps`, …), not loose layers. In a recipe, add a `script` step after the layers exist:
+  `project.groups = project.groups || {}; project.groups.gClock = 'Clock'; let n = 0; for (const nm of ['Hour Main','Colon Main','Minute Main']) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gClock'; n++ } } return n`
+  (use the exact layer names; do **not** use `find()` for this, it does not hand back the real layer, so the group would exist but stay
+  empty). The members should be neighbours in the layer list. After the run, check the step's result (`script → 3`) and that the saved
+  project lists each layer's `group`: a group with no members is silently dropped.
+- **Digital time layer order is always hour, colon, minute from top to bottom of the Layers panel.** The panel lists the top
+  layer first, so in the project the order is minute, colon, hour. The `clock` / `clocksec` presets already do this and put the
+  parts in a group named `Clock`; a second clock preset makes `Clock 2` (rename it, e.g. `Clock AOD`, with a `script` step on
+  `project.groups`). Never add the parts by hand in the wrong order, and check the saved project's element order.
+- **Sunrise / sunset is the `sun` preset**: the next event as a clock time (sunset until it has passed, then sunrise), with an icon,
+  a colon in the digits' style, grouped as `Sunrise / sunset`. Do not use the "time to sunrise" reading for it.
+- **Subtle borders and shadows.** Use a thin border (1–2 px) and a soft shadow only where legibility needs it.
+  Heavy outlines, thick glows and drop shadows only when the theme is that by nature (neon, cartoon, fire) or the
+  user asks. When in doubt, leave them off.
+- **Check text alignment in the preview, every time.** Read the PNG and verify the horizontal and vertical
+  alignment of every text element: shared baselines on a row, equal cap heights, even gaps, columns centred
+  where they should be. If it is unclear by eye, crop and zoom the preview or measure the ink bounds of each
+  element (e.g. with PIL) and fix with `set` x / y and `glyph` size / weight. Different layer kinds (weekday
+  images vs digits) have different ink heights at the same size, so compare ink, not the numbers you set.
+- **Stats must be visible and not small.** Readings need to be readable at a glance on the real screen; as a
+  floor use ~28 px glyph height on ~400 px screens (~24 px on the smallest) and enough contrast with their
+  background. Do not shrink a stat to make it fit.
+- **If space runs out, ask the user, do not decide alone.** When the chosen elements will not fit at readable
+  sizes, stop and ask a multiple-choice question for the resolution (drop an element, move it to AOD only or to
+  a tap / complication slot, shrink the clock, change the layout …) with your recommendation first.
 
 ## Rules that save time
 

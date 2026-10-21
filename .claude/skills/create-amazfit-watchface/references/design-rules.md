@@ -21,3 +21,9 @@ the app's *Check* (the `lint` list of a run).
   and use a font that has the letters (the app marks missing ones; Latin-extended is covered by the bundled set).
 - **Don't:** more than ~6 elements on a small screen; two accent colours fighting; text over busy images; a
   second hand in AOD; relying on a font the user does not have.
+
+## House rules recap (also in SKILL.md)
+
+Group and name related layers · digital time order hour, colon, minute · subtle borders / shadows unless the theme or the
+user wants more · verify text alignment in the preview · ask a multiple choice about elements first · stats readable
+(≥ ~28 px) · ask the user when space is short.

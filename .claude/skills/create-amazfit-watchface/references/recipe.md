@@ -59,7 +59,7 @@ glyph size at its default. (`%`, `°` and the colon follow the digits.)
 | id | adds |
 |---|---|
 | `bg` | black full-screen background (locked) |
-| `clock` / `clocksec` | digital time `hh : mm` / `hh:mm:ss` (hour, colon, minute[, second] layers) |
+| `clock` / `clocksec` | digital time `hh : mm` / `hh:mm:ss` (hour, colon, minute[, second] layers), grouped as `Clock`; the layer order is minute, colon, hour so the Layers panel reads hour, colon, minute |
 | `analog` | analog clock: hour / minute / second hands + dial cap |
 | `weekday` / `day` / `month` | weekday names / day of month / month as images |
 | `steps` `hr` `cal` `battery` `temp` `distance` `spo2` `stress` | a reading as digit images with its unit |
@@ -70,6 +70,7 @@ glyph size at its default. (`%`, `°` and the colon follow the digits.)
 | `level` | battery image level |
 | `rect` `stroke` `circle` `arc` | shapes |
 | `text` `datatext` | a text widget / any reading as images |
+| `sun` | next sunrise / sunset as a time (`SUN_CURRENT`) with a sun icon and colon, grouped (layers `Sun time`, `Sun icon`) |
 | `status` | Bluetooth status icon |
 | `click` `tap` | tap shortcut / tap zone |
 | `editslot` | complication slot (the wearer picks what it shows) |

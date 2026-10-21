@@ -977,10 +977,12 @@ function digitTextFor(e) {
       const raw = valueString(e.dataType);
       // a reading with a decimal point keeps it when the layer has a dot picture
       const dotted = !!(e.dot && d && d.dot);
-      let t = raw.replace(dotted ? /[^0-9.]/g : /[^0-9]/g, '');
+      // a clock-like reading (sunrise, sunset) keeps its colon when the layer has a separator picture
+      const coloned = !!(e.dot && d && d.colon);
+      let t = raw.replace(dotted ? /[^0-9.]/g : coloned ? /[^0-9:]/g : /[^0-9]/g, '');
       if (d && d.digits) {
         let left = d.digits, k = t.length;
-        while (k > 0 && left > 0) { k--; if (t[k] !== '.') left--; }
+        while (k > 0 && left > 0) { k--; if (t[k] !== '.' && t[k] !== ':') left--; }
         t = t.slice(k);
       }
       // a negative reading puts the layer's minus picture in front, when it has one
@@ -1063,8 +1065,8 @@ function measureSet(e) {
   const cell = setCell(e);
   const text = digitTextFor(e);
   const neg = text.startsWith('-') ? imgMeta(e.negative) : null;
-  const dm = text.includes('.') ? imgMeta(e.dot) : null;
-  const n = Math.max(1, text.replace(/[-.]/g, '').length);
+  const dm = /[.:]/.test(text) ? imgMeta(e.dot) : null;
+  const n = Math.max(1, text.replace(/[-.:]/g, '').length);
   const sp = effSpace(e);
   return { w: n * cell.w + Math.max(0, n - 1) * sp + setUnitWidth(e) + (neg ? neg.width + sp : 0) + (dm ? dm.width + sp : 0), h: cell.h, cell, n, sp };
 }
@@ -1094,7 +1096,7 @@ function digitBox(e) {
   const x = sb ? sb.x + sb.w : devNum(e.x);
   const y = sb ? sb.y : devNum(e.y);
   const cap = digitCapacity(e);
-  const dotM = e.kind === 'TEXT_IMG' && e.dot && (dtByKey(e.dataType) || {}).dot ? imgMeta(e.dot) : null;
+  const dotM = e.kind === 'TEXT_IMG' && e.dot && ((dtByKey(e.dataType) || {}).dot || (dtByKey(e.dataType) || {}).colon) ? imgMeta(e.dot) : null;
   const capW = cap ? cap * m.cell.w + Math.max(0, cap - 1) * m.sp + setUnitWidth(e) + (dotM ? dotM.width + m.sp : 0) : 0;
   const explicit = e.kind === 'TEXT_IMG' ? devNum(e.w) : 0;   // TEXT_IMG may carry a width
   return { x, y, w: Math.max(explicit, capW, m.w), h: m.h, anchor: x, run: m.w };
@@ -1349,7 +1351,7 @@ function drawDigits(c, e, x, y, text) {
       if (nm) { put(c, e.negative, cx, y + Math.max(0, (cell.h - nm.height) / 2), nm.width, nm.height); cx += nm.width + sp; }
       continue;
     }
-    if (text[i] === '.') {
+    if (text[i] === '.' || text[i] === ':') {
       const dm = imgMeta(e.dot);
       if (dm) { put(c, e.dot, cx, y + Math.max(0, (cell.h - dm.height) / 2), dm.width, dm.height); cx += dm.width + sp; }
       continue;
@@ -5545,6 +5547,7 @@ const PRESETS = [
   { group: 'Text & misc' },
   { id: 'text', label: 'Text', sub: 'TEXT widget' },
   { id: 'datatext', label: 'Any reading as images', sub: 'TEXT_IMG' },
+  { id: 'sun', label: 'Sunrise / sunset', sub: 'next one, as a time, with an icon' },
   { id: 'status', label: 'Bluetooth status', sub: 'IMG_STATUS' },
   { id: 'click', label: 'Tap shortcut', sub: 'IMG_CLICK' },
   { id: 'tap', label: 'Tap zone', sub: 'opens a screen / cycles variants' },
@@ -5635,6 +5638,7 @@ async function applyPreset(id) {
     case 'arc': await addElement('ARC', { x: cx - 100, y: cy - 100, w: 200, h: 200, radius: 90, startAngle: -90, endAngle: 90, lineWidth: 12, color: '#34e073', show: 'normal' }); break;
     case 'text': await addElement('TEXT', { text: 'MONDAY', size: 32, x: cx - 90, y: cy - 20, w: 180, h: 40, color: '#ffffff', alignH: 'CENTER_H', alignV: 'CENTER_V', show: 'normal' }); break;
     case 'datatext': return dataTextPreset('STEP', 'Reading', null);
+    case 'sun': return sunPreset();
     case 'status': {
       pushHistory();
       const e = newElement('IMG_STATUS', { status: 'DISCONNECT', show: 'normal', x: 40, y: 40, w: 0, h: 0, name: 'Bluetooth off icon' });
@@ -5692,6 +5696,40 @@ function weatherNamesIfAny() {
   }
   return out;
 }
+// Put layers in one named group (a name already taken gets a number).
+function groupElements(els, name) {
+  const gid = `g${Date.now().toString(36)}${Math.floor(Math.random() * 1000).toString(36)}`;
+  project.groups = project.groups || {};
+  const taken = new Set(Object.values(project.groups));
+  let n = name, i = 2;
+  while (taken.has(n)) n = `${name} ${i++}`;
+  project.groups[gid] = n;
+  for (const e of els) e.group = gid;
+  return gid;
+}
+// The next sunrise or sunset as a time (the watch shows whichever comes next: sunset until it has passed, then sunrise),
+// with a small sun-on-the-horizon icon and a colon picture drawn in the digits' own style.
+async function sunPreset() {
+  await dataTextPreset('SUN_CURRENT', 'Sun time', null, null, false);
+  const e = elements().find((x) => x.id === selectedId);
+  if (!e) return;
+  e.dot = await genUnit('colon', ':', { style: digitStyleOf(e.images) });
+  const c = document.createElement('canvas'); c.width = 44; c.height = 34;
+  const g = c.getContext('2d'); g.translate(22, 26);
+  let q = g.createRadialGradient(0, -2, 1, 0, -2, 22); q.addColorStop(0, 'rgba(255,210,120,0.55)'); q.addColorStop(1, 'rgba(255,210,120,0)'); g.fillStyle = q; g.fillRect(-22, -24, 44, 26);
+  g.strokeStyle = '#ffd37a'; g.lineWidth = 2; g.lineCap = 'round';
+  for (let i = 0; i < 5; i++) { const a = Math.PI + (i + 0.5) * Math.PI / 5; g.beginPath(); g.moveTo(Math.cos(a) * 12, Math.sin(a) * 12); g.lineTo(Math.cos(a) * 17, Math.sin(a) * 17); g.stroke(); }
+  q = g.createRadialGradient(-2, -6, 1, 0, 0, 10); q.addColorStop(0, '#fff3c0'); q.addColorStop(1, '#ffb347'); g.fillStyle = q; g.beginPath(); g.arc(0, 0, 10, Math.PI, 0); g.fill();
+  g.strokeStyle = '#cfe8ff'; g.lineWidth = 2; g.beginPath(); g.moveTo(-20, 2); g.lineTo(20, 2); g.stroke();
+  const icon = addProjectImage('sun_icon.png', c, { replace: true });
+  await loadAllImages();
+  const cell = imgMeta((e.images || []).find(Boolean));
+  const ic = newElement('IMG', { src: icon.name, show: 'normal', w: 0, h: 0, x: (+e.x || 0) - 54, y: (+e.y || 0) + Math.round(((cell ? cell.height : 44) - 34) / 2), name: 'Sun icon' });
+  project.elements.push(ic);
+  groupElements([ic, e], 'Sunrise / sunset');
+  selectedId = e.id; multiSel = new Set([e.id, ic.id]);
+  refreshPanels(); render(); scheduleCode();
+}
 async function clockPreset(withSeconds) {
   pushHistory();
   const d = dev();
@@ -5722,7 +5760,9 @@ async function clockPreset(withSeconds) {
     }
     x += part.w + gap;
   }
-  project.elements.push(...els);
+  // the layers panel lists the top layer first, so the parts go in last-to-first to read hour, colon, minute from top to bottom
+  project.elements.push(...els.slice().reverse());
+  groupElements(els, 'Clock');
   selectedId = els[0].id; multiSel = new Set(els.map((e) => e.id));
   status(`Added a digital clock from ${glyphFont} glyphs.`);
   refreshPanels(); render(); scheduleCode();

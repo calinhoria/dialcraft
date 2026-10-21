@@ -23,9 +23,9 @@ const DATA_TYPES = [
   { key: 'COUNT_DOWN', label: 'Countdown (min/sec)', group: 'Time', digits: 2, preview: 25, bound: true },
   { key: 'STOP_WATCH', label: 'Stopwatch (min/sec)', group: 'Time', digits: 2, preview: 12, bound: true },
   { key: 'SLEEP', label: 'Sleep time', group: 'Time', digits: 5, preview: '07:24', bound: true, unit: '' },
-  { key: 'SUN_CURRENT', label: 'Time to sunrise/sunset', group: 'Weather', digits: 5, preview: '02:15', bound: true },
-  { key: 'SUN_RISE', label: 'Sunrise', group: 'Weather', digits: 5, preview: '06:30', bound: true },
-  { key: 'SUN_SET', label: 'Sunset', group: 'Weather', digits: 5, preview: '18:30', bound: true },
+  { key: 'SUN_CURRENT', label: 'Next sunrise / sunset (time)', group: 'Weather', digits: 5, preview: '18:42', colon: true, bound: true },
+  { key: 'SUN_RISE', label: 'Sunrise', group: 'Weather', digits: 5, preview: '06:30', colon: true, bound: true },
+  { key: 'SUN_SET', label: 'Sunset', group: 'Weather', digits: 5, preview: '18:30', colon: true, bound: true },
 
   // ---- activity ------------------------------------------------------------
   { key: 'STEP', label: 'Steps', group: 'Activity', digits: 5, preview: 8670, reader: { cls: 'Step', get: 'getCurrent' } },

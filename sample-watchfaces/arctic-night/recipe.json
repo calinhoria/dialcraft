@@ -1,0 +1,292 @@
+{
+ "name": "Arctic Night",
+ "device": "bip-6",
+ "font": "Inter",
+ "optimizePng": 64,
+ "description": "A polar night under the aurora: snowfall, icebergs and a frozen sea. A polar bear and her cub spawn at random, walk across the snow together or alone, and now and then stop to sniff.",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/arctic-night",
+ "userCode": "{\n  // Bears are plain IMG layers moved with MORE {x, y, src}. A mother and a cub spawn at random, together or alone (never more than two),\n  // and cross the snow either behind the snow bank (back lane) or in front of it (front lane). Now and then they stop to sniff.\n  const MS = 100, SW = 390, FOOT = 14\n  const DIM = { mom: { w: 200, h: 124 }, cub: { w: 112, h: 76 } }\n  const LANES = [{ base: 384, m: 'm0', c: 'c0' }, { base: 436, m: 'm1', c: 'c1' }]\n  const SLOTS = ['m0', 'c0', 'm1', 'c1']\n  let id = null, tickN = 0, grp = null, nextSpawn = 8\n  const rand = (a, b) => a + Math.random() * (b - a)\n  const park = (s) => { try { W[s].setProperty(ui.prop.MORE, { x: pxv(-400), y: pxv(0) }) } catch (e) {} }\n  const spawn = (onScreen) => {\n    const lane = LANES[Math.random() < 0.5 ? 0 : 1], dir = Math.random() < 0.5 ? 1 : -1, r = Math.random()\n    const kind = r < 0.6 ? 'pair' : r < 0.8 ? 'mom' : 'cub'\n    grp = { lane, dir, kind, cx: onScreen ? rand(120, 270) : (dir > 0 ? -110 : SW + 110), speed: rand(1.4, 2.2), age: 0, pause: 0, paused: false, pausedOnce: false, gone: { m: kind === 'cub', c: kind === 'mom' } }\n  }\n  const place = (slot, kind, cx, y, key) => {\n    const d = DIM[kind]\n    W[slot].setProperty(ui.prop.MORE, { x: pxv(Math.round(cx - d.w * 0.46)), y: pxv(Math.round(y - (d.h - FOOT))), src: A('bear/' + key + '.png') })\n  }\n  const tick = () => {\n    tickN++\n    if (!grp) { if (tickN >= nextSpawn) spawn(false); return }\n    const g = grp, L = g.lane, dn = g.dir > 0 ? 'r' : 'l'\n    if (g.paused) { g.pause--; if (g.pause <= 0) g.paused = false }\n    else {\n      g.age++\n      g.cx += g.dir * g.speed\n      if (!g.pausedOnce && g.cx > 90 && g.cx < SW - 90 && Math.random() < 0.006) { g.paused = true; g.pausedOnce = true; g.pause = Math.floor(rand(30, 50)) }\n    }\n    const wob = Math.sin(g.age * 0.05)\n    if (!g.gone.m) {\n      const out = g.dir > 0 ? g.cx > SW + 120 : g.cx < -120\n      if (out) { g.gone.m = true; park(L.m) }\n      else {\n        const key = g.paused ? 'mom_' + dn + '_sn' + (Math.floor(g.pause / 8) % 2) : 'mom_' + dn + '_w' + (Math.floor(g.age / 2) % 8)\n        place(L.m, 'mom', g.cx, L.base, key)\n      }\n    }\n    if (!g.gone.c) {\n      const ccx = g.kind === 'pair' ? g.cx - g.dir * (120 + 6 * wob) : g.cx\n      const out = g.dir > 0 ? ccx > SW + 80 : ccx < -80\n      if (out) { g.gone.c = true; park(L.c) }\n      else {\n        const key = g.paused ? 'cub_' + dn + '_st' : 'cub_' + dn + '_w' + ((Math.floor(g.age / 1.5) + 3) % 8)\n        place(L.c, 'cub', ccx, L.base + (g.paused ? 0 : 1.5 * Math.sin(g.age * 0.6)) + (g.kind === 'pair' ? 4 : 0), key)\n      }\n    }\n    if (g.gone.m && g.gone.c) { grp = null; nextSpawn = tickN + Math.floor(rand(10, 90)) }\n  }\n  const safe = () => { try { tick() } catch (e) {} }\n  const start = () => { if (id === null) { try { id = setInterval(safe, MS) } catch (e) {} } }\n  const stop = () => { if (id !== null) { try { clearInterval(id) } catch (e) {} id = null } }\n  SLOTS.forEach(park)\n  spawn(true)\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  safe()\n  start()\n}",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst TAU = Math.PI * 2;\nconst HZ = 300; // horizon\n\nconst c = mk(W, H), g = c.getContext('2d');\nlet gr = g.createLinearGradient(0, 0, 0, HZ);\ngr.addColorStop(0, '#030a1c'); gr.addColorStop(0.45, '#0a2040'); gr.addColorStop(0.8, '#14456a'); gr.addColorStop(1, '#2b7a8c');\ng.fillStyle = gr; g.fillRect(0, 0, W, H);\n// stars\nfor (let i = 0; i < 170; i++) { const x = rnd() * W, y = Math.pow(rnd(), 1.5) * 250, r = 0.3 + rnd() * rnd() * 1.4, a = 0.35 + rnd() * 0.65; g.fillStyle = 'rgba(' + (rnd() > 0.7 ? '190,220,255' : '255,255,245') + ',' + a * (1 - y / 330) + ')'; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }\n// moon with halo\n{ const mx = 44, my = 44; let q = g.createRadialGradient(mx, my, 6, mx, my, 70); q.addColorStop(0, 'rgba(190,225,255,0.4)'); q.addColorStop(1, 'rgba(120,180,255,0)'); g.fillStyle = q; g.fillRect(mx - 70, my - 70, 140, 140);\n  q = g.createRadialGradient(mx - 4, my - 4, 2, mx, my, 17); q.addColorStop(0, '#fbfdff'); q.addColorStop(1, '#bcd2e6'); g.fillStyle = q; g.beginPath(); g.arc(mx, my, 16, 0, 7); g.fill();\n  g.fillStyle = 'rgba(120,150,180,0.35)'; for (const [dx, dy, r] of [[-5, -3, 3.4], [5, 4, 2.6], [-2, 7, 2], [6, -6, 1.8]]) { g.beginPath(); g.arc(mx + dx, my + dy, r, 0, 7); g.fill(); } }\n// glow of the aurora near the horizon\ngr = g.createLinearGradient(0, 180, 0, HZ + 20); gr.addColorStop(0, 'rgba(60,255,160,0)'); gr.addColorStop(1, 'rgba(60,255,170,0.2)'); g.fillStyle = gr; g.fillRect(0, 180, W, 140);\n// far mountains with snow caps and cool rim light\nconst ridge = (pts, base, top, rim) => { g.beginPath(); g.moveTo(-10, HZ + 6); pts.forEach(([x, y]) => g.lineTo(x, y)); g.lineTo(W + 10, HZ + 6); g.closePath(); const q = g.createLinearGradient(0, top, 0, HZ); q.addColorStop(0, base[0]); q.addColorStop(1, base[1]); g.fillStyle = q; g.fill(); g.strokeStyle = rim; g.lineWidth = 1.2; g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke(); };\nconst jag = (x0, x1, h0, amp, n) => { const p = []; for (let i = 0; i <= n; i++) { const t = i / n, x = x0 + (x1 - x0) * t; p.push([x, HZ - h0 - amp * (Math.abs(Math.sin(t * 7 + x0)) * 0.7 + rnd() * 0.5) * Math.sin(Math.PI * Math.min(1, t * 1.05))]); } return p; };\nridge(jag(-10, 400, 30, 70, 34), ['#3d6a86', '#1d4660'], 200, 'rgba(160,255,220,0.35)');\nridge(jag(-10, 400, 14, 46, 40), ['#244b66', '#12344b'], 240, 'rgba(150,240,230,0.3)');\n// sea ice with aurora reflection\ngr = g.createLinearGradient(0, HZ, 0, HZ + 48); gr.addColorStop(0, '#2f7b8c'); gr.addColorStop(1, '#0d2f4a'); g.fillStyle = gr; g.fillRect(0, HZ, W, 50);\nfor (let i = 0; i < 40; i++) { const x = rnd() * W, y = HZ + 2 + rnd() * 44, w = 20 + rnd() * 90; g.fillStyle = 'rgba(120,255,200,' + (0.04 + rnd() * 0.07) * (1 - (y - HZ) / 60) + ')'; g.fillRect(x, y, w, 1 + rnd() * 1.5); }\ng.strokeStyle = 'rgba(10,30,50,0.5)'; g.lineWidth = 1; for (let i = 0; i < 12; i++) { let x = rnd() * W, y = HZ + 4 + rnd() * 40; g.beginPath(); g.moveTo(x, y); for (let j = 0; j < 4; j++) { x += 10 + rnd() * 25; y += (rnd() - 0.5) * 6; g.lineTo(x, y); } g.stroke(); }\n// icebergs: translucent cyan faces and a lit edge\nconst berg = (x, y, w, h, seedv) => { g.save(); g.beginPath(); const p = [[0, 0], [w * 0.18, -h * 0.55], [w * 0.34, -h * 0.4], [w * 0.5, -h], [w * 0.68, -h * 0.55], [w * 0.82, -h * 0.7], [w, 0]]; p.forEach(([a, b]) => g.lineTo(x + a, y + b)); g.closePath(); const q = g.createLinearGradient(x, y - h, x + w, y); q.addColorStop(0, '#d8f6ff'); q.addColorStop(0.45, '#7fd0e6'); q.addColorStop(1, '#2f7fa8'); g.fillStyle = q; g.fill(); g.clip(); g.fillStyle = 'rgba(10,50,90,0.35)'; g.beginPath(); g.moveTo(x + w * 0.5, y - h); g.lineTo(x + w * 0.62, y - h * 0.4); g.lineTo(x + w * 0.5, y); g.lineTo(x + w, y); g.lineTo(x + w * 0.68, y - h * 0.55); g.closePath(); g.fill(); g.restore(); g.fillStyle = 'rgba(100,220,255,0.18)'; g.beginPath(); g.ellipse(x + w * 0.5, y + 3, w * 0.7, 4, 0, 0, 7); g.fill(); };\nberg(18, HZ + 22, 78, 46, 1); berg(296, HZ + 28, 92, 52, 2); berg(214, HZ + 14, 40, 22, 3);\n// snowfield\ng.beginPath(); g.moveTo(0, HZ + 44); for (let x = 0; x <= W; x += 6) g.lineTo(x, HZ + 42 + Math.sin(x / 47) * 4 + Math.sin(x / 15) * 1.5); g.lineTo(W, H); g.lineTo(0, H); g.closePath();\ngr = g.createLinearGradient(0, HZ + 40, 0, H); gr.addColorStop(0, '#9cc4de'); gr.addColorStop(0.3, '#6f9cc4'); gr.addColorStop(1, '#2f5280'); g.fillStyle = gr; g.fill();\ng.save(); g.clip();\n// green aurora light spilling over the snow, wind-sculpted ripples, sparkle\nconst sp = g.createRadialGradient(195, HZ + 40, 10, 195, HZ + 40, 260); sp.addColorStop(0, 'rgba(100,255,190,0.25)'); sp.addColorStop(1, 'rgba(100,255,190,0)'); g.fillStyle = sp; g.fillRect(0, HZ + 30, W, 150);\nfor (let i = 0; i < 26; i++) { const y = HZ + 52 + i * 5.6, a = 0.07 + 0.08 * (1 - i / 26); g.beginPath(); for (let x = 0; x <= W; x += 6) g.lineTo(x, y + Math.sin(x / (30 + i * 2) + i * 1.7) * (2 + i * 0.16)); g.strokeStyle = 'rgba(215,240,255,' + a + ')'; g.lineWidth = 1.2; g.stroke(); g.strokeStyle = 'rgba(8,24,50,' + a * 1.4 + ')'; g.beginPath(); for (let x = 0; x <= W; x += 6) g.lineTo(x, y + 2.4 + Math.sin(x / (30 + i * 2) + i * 1.7) * (2 + i * 0.16)); g.stroke(); }\nfor (let i = 0; i < 220; i++) { const x = rnd() * W, y = HZ + 50 + rnd() * 110, r = 0.5 + rnd() * 1.1; g.fillStyle = 'rgba(235,250,255,' + (0.3 + rnd() * 0.6) + ')'; g.fillRect(x, y, r, r); }\ng.restore();\n// film grain\n{ const id = g.getImageData(0, 0, W, H), d = id.data; for (let i = 0; i < d.length; i += 4) { const n = (rnd() - 0.5) * 7; d[i] = clamp(d[i] + n, 0, 255); d[i + 1] = clamp(d[i + 1] + n, 0, 255); d[i + 2] = clamp(d[i + 2] + n, 0, 255); } g.putImageData(id, 0, 0); }\nnames.push(addProjectImage('scene.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Scene'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst TAU = Math.PI * 2;\nconst HZ = 300; // horizon\n\nconst N = 12, AH = 300;\nconst TW = Array.from({ length: 26 }, () => ({ x: rnd() * W, y: 6 + rnd() * 200, r: 0.9 + rnd() * 1.1, p: rnd() * TAU }));\nfor (let k = 0; k < N; k++) {\n  const ph = TAU * k / N, c = mk(W, AH), g = c.getContext('2d');\n  const band = (cy, amp, hMax, col, a0, p0) => {\n    g.save(); g.filter = 'blur(3px)';\n    for (let x = -6; x <= W + 6; x += 3) {\n      const t = x / W, yb = cy + amp * Math.sin(t * 5 + ph + p0) + amp * 0.45 * Math.sin(t * 11 - ph * 2 + p0 * 1.7);\n      const rays = 0.55 + 0.45 * Math.sin(x * 0.21 + ph * 3 + p0 * 3) * Math.sin(x * 0.07 - ph + p0), h = hMax * (0.45 + 0.55 * Math.sin(t * 3.4 + p0 + ph * 0.5) * Math.sin(t * 3.4 + p0 + ph * 0.5)) * (0.65 + 0.35 * rays);\n      const q = g.createLinearGradient(0, yb - h, 0, yb + 8); q.addColorStop(0, 'rgba(' + col[1] + ',0)'); q.addColorStop(0.55, 'rgba(' + col[1] + ',' + a0 * 0.45 * rays + ')'); q.addColorStop(0.92, 'rgba(' + col[0] + ',' + a0 * rays + ')'); q.addColorStop(1, 'rgba(' + col[0] + ',0)');\n      g.fillStyle = q; g.fillRect(x, yb - h, 3.2, h + 8);\n    }\n    g.restore();\n  };\n  band(210, 22, 150, ['70,255,170', '60,200,255'], 0.95, 0.4);\n  band(150, 18, 110, ['120,255,210', '150,110,255'], 0.7, 2.2);\n  band(250, 12, 70, ['60,255,150', '40,170,255'], 0.55, 4.1);\n  for (const s of TW) { const a = 0.35 + 0.65 * Math.pow(0.5 + 0.5 * Math.sin(ph + s.p), 2); const q = g.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 3); q.addColorStop(0, 'rgba(255,255,255,' + a + ')'); q.addColorStop(1, 'rgba(200,225,255,0)'); g.fillStyle = q; g.beginPath(); g.arc(s.x, s.y, s.r * 3, 0, 7); g.fill(); }\n  names.push(addProjectImage('anim/aurora_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG_ANIM', { frames: names, fps: 5, animPrefix: 'aurora', repeat: 0 }); e.name = 'Aurora'; e.frames = names; e.x = 0; e.y = 0; e.show = 'normal'; return names.length"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst TAU = Math.PI * 2;\nconst HZ = 300; // horizon\n\nconst SS = 2, KIND = { mom: { CW: 200, CH: 124, S: 1, head: 1.2 }, cub: { CW: 112, CH: 76, S: 0.58, head: 1.35 } };\nfunction bear(kind, mode, k, dir) {\n  const P = KIND[kind], big = mk(P.CW * SS, P.CH * SS), g = big.getContext('2d'), S = P.S;\n  const phase = mode === 'walk' ? TAU * k / 8 : 0, amp = mode === 'walk' ? 0.5 : 0, drop = mode === 'sniff' ? (k ? 1 : 0.8) : 0;\n  const LEG = 20, LOW = 18, GY = P.CH - 14;               // ground line in sprite\n  g.scale(SS, SS);\n  // contact shadow\n  g.save(); g.filter = 'blur(2px)'; g.fillStyle = 'rgba(6,16,40,0.45)'; g.beginPath(); g.ellipse(P.CW * 0.46, GY + 2, 74 * S, 6 * S, 0, 0, 7); g.fill(); g.restore();\n  const fur = mk(P.CW * SS, P.CH * SS), f = fur.getContext('2d'); f.scale(SS, SS);\n  f.translate(P.CW * 0.46, GY - (8 + LEG + LOW) * S); if (dir < 0) { f.scale(-1, 1); } f.scale(S, S);\n  const bob = 1.5 * Math.sin(phase * 2), light = f.createLinearGradient(0, -44, 0, 22); light.addColorStop(0, '#f6f2e4'); light.addColorStop(0.45, '#e5edf2'); light.addColorStop(1, '#a6b9cd');\n  const dark = f.createLinearGradient(0, -44, 0, 22); dark.addColorStop(0, '#c9d2d6'); dark.addColorStop(1, '#7d92a8');\n  const leg = (hx, a, col, lift) => {\n    const a1 = amp * Math.sin(a), a2 = a1 * 0.3 - 0.45 * Math.max(0, Math.cos(a)) * (amp ? 1 : 0), hy = 8 + bob;\n    const kx = hx + Math.sin(a1) * LEG, ky = hy + Math.cos(a1) * LEG, fx = kx + Math.sin(a2) * LOW, fy = ky + Math.cos(a2) * LOW;\n    f.lineCap = 'round'; f.lineJoin = 'round'; f.strokeStyle = col; f.lineWidth = 21; f.beginPath(); f.moveTo(hx, hy); f.lineTo(kx, ky); f.stroke(); f.lineWidth = 17; f.beginPath(); f.moveTo(kx, ky); f.lineTo(fx, fy); f.stroke();\n    f.fillStyle = col; f.beginPath(); f.ellipse(fx + 4, fy + 1, 12, 6.5, 0, 0, 7); f.fill(); f.fillStyle = '#2a2f38'; for (let i = 0; i < 3; i++) { f.beginPath(); f.arc(fx + 14 + i * 0.4, fy - 1 + i * 2.4, 1.2, 0, 7); f.fill(); }\n  };\n  // far legs, torso, near legs\n  leg(26, phase + Math.PI, dark, 0); leg(-40, phase, dark, 0);\n  const torso = () => { f.beginPath(); f.moveTo(-56, -14 + bob); f.bezierCurveTo(-58, -30 + bob, -36, -33 + bob, -16, -32 + bob); f.bezierCurveTo(0, -37 + bob, 18, -38 + bob, 30, -28 + bob); f.bezierCurveTo(40, -23 + bob, 46, -14 + bob, 47, -2 + bob); f.bezierCurveTo(47, 10 + bob, 38, 16 + bob, 24, 16 + bob); f.bezierCurveTo(0, 18 + bob, -30, 18 + bob, -46, 13 + bob); f.bezierCurveTo(-57, 11 + bob, -61, -2 + bob, -56, -14 + bob); f.closePath(); };\n  f.save(); f.shadowColor = 'rgba(0,10,30,0.4)'; f.shadowBlur = 6; torso(); f.fillStyle = light; f.fill(); f.restore();\n  // neck and head (pivot at the shoulder)\n  const hy0 = -20 + bob, hr = 0.05 * Math.sin(phase + 1) + drop * 0.55;\n  f.save(); f.translate(40, hy0); f.rotate(hr); f.scale(P.head, P.head);\n  f.fillStyle = light; f.beginPath(); f.ellipse(2, 4, 20, 15, -0.2, 0, 7); f.fill();\n  const hg = f.createLinearGradient(0, -16, 0, 16); hg.addColorStop(0, '#f6f2e4'); hg.addColorStop(1, '#c9d6e0');\n  f.fillStyle = hg; f.beginPath(); f.ellipse(18, -2, 17, 14, 0, 0, 7); f.fill(); f.beginPath(); f.moveTo(26, -8); f.bezierCurveTo(42, -9, 56, -4, 57, 3); f.bezierCurveTo(56, 11, 42, 12, 28, 10); f.closePath(); f.fill();\n  f.fillStyle = '#d4c2b8'; f.beginPath(); f.ellipse(5, -15, 6, 6, 0, 0, 7); f.fill(); f.fillStyle = '#f0e8e0'; f.beginPath(); f.arc(5, -14, 3.4, 0, 7); f.fill(); f.fillStyle = '#f6f2e4'; f.beginPath(); f.arc(6, -17, 4.5, 0, 7); f.fill();\n  f.fillStyle = '#14161c'; f.beginPath(); f.ellipse(56, 1, 4.3, 3.4, 0.15, 0, 7); f.fill(); f.fillStyle = 'rgba(255,255,255,0.55)'; f.beginPath(); f.arc(54.6, -0.2, 1, 0, 7); f.fill();\n  f.strokeStyle = 'rgba(40,40,50,0.65)'; f.lineWidth = 1; f.beginPath(); f.moveTo(55, 5); f.quadraticCurveTo(46, 10, 38, 8); f.stroke();\n  f.fillStyle = '#12141a'; f.beginPath(); f.ellipse(30, -6, 2.3, 2.5, 0, 0, 7); f.fill(); f.fillStyle = 'rgba(255,255,255,0.8)'; f.beginPath(); f.arc(29.4, -7, 0.8, 0, 7); f.fill();\n  f.restore();\n  leg(30, phase, light, 0); leg(-36, phase + Math.PI, light, 0);\n  // fur strokes over everything already drawn, tail tuft\n  f.save(); f.globalCompositeOperation = 'source-atop'; seed = 11;\n  for (let i = 0; i < 360; i++) { const x = -60 + rnd() * 120, y = -44 + rnd() * 70, a = 0.35 + rnd() * 0.6, l = 3 + rnd() * 7; f.strokeStyle = rnd() > 0.45 ? 'rgba(255,255,250,' + 0.18 * rnd() + ')' : 'rgba(110,135,165,' + 0.16 * rnd() + ')'; f.lineWidth = 0.8; f.beginPath(); f.moveTo(x, y); f.lineTo(x - Math.cos(a) * l, y + Math.sin(a) * l * 0.6); f.stroke(); }\n  f.restore();\n  // lighting: aurora rim from above, cool shade below\n  f.setTransform(1, 0, 0, 1, 0, 0); f.globalCompositeOperation = 'source-atop';\n  const rl = f.createLinearGradient(0, 0, 0, P.CH * SS); rl.addColorStop(0, 'rgba(120,255,200,0.34)'); rl.addColorStop(0.4, 'rgba(120,255,200,0)'); rl.addColorStop(0.75, 'rgba(15,40,95,0.18)'); rl.addColorStop(1, 'rgba(15,40,95,0.38)'); f.fillStyle = rl; f.fillRect(0, 0, P.CW * SS, P.CH * SS);\n  g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.drawImage(fur, 0, 0); g.restore();\n  const out = mk(P.CW, P.CH), og = out.getContext('2d'); og.drawImage(big, 0, 0, P.CW, P.CH); return out;\n}\nconst BEAR = {};\nfor (const kind of ['mom', 'cub']) for (const [d, dn] of [[1, 'r'], [-1, 'l']]) {\n  const put = (key, cv) => { BEAR[key] = addProjectImage('bear/' + key + '.png', cv, {}).name; names.push(BEAR[key]); };\n  for (let k = 0; k < 8; k++) put(kind + '_' + dn + '_w' + k, bear(kind, 'walk', k, d));\n  put(kind + '_' + dn + '_st', bear(kind, 'stand', 0, d)); put(kind + '_' + dn + '_sn0', bear(kind, 'sniff', 0, d)); put(kind + '_' + dn + '_sn1', bear(kind, 'sniff', 1, d));\n}\nglobalThis.__bear = BEAR;\n\nawait loadAllImages();\nreturn names.length"
+  },
+  {
+   "script": "const e = await addElement('IMG', { src: globalThis.__bear['mom_r_w0'] }); e.name = 'Bear back'; e.src = globalThis.__bear['mom_r_w0']; e.handle = 'm0'; e.x = 130; e.y = 250; e.alpha = 235; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "const e = await addElement('IMG', { src: globalThis.__bear['cub_r_w0'] }); e.name = 'Cub back'; e.src = globalThis.__bear['cub_r_w0']; e.handle = 'c0'; e.x = -400; e.y = 0; e.alpha = 235; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst TAU = Math.PI * 2;\nconst HZ = 300; // horizon\n\nconst BH = 90, c = mk(W, BH), g = c.getContext('2d');\ng.beginPath(); g.moveTo(0, BH); g.lineTo(0, 22); for (let x = 0; x <= W; x += 5) g.lineTo(x, 18 + Math.sin(x / 41 + 1) * 7 + Math.sin(x / 13) * 1.8 + Math.sin(x / 97) * 6); g.lineTo(W, BH); g.closePath();\nlet q = g.createLinearGradient(0, 8, 0, BH); q.addColorStop(0, '#a9cde6'); q.addColorStop(0.2, '#6f9cc4'); q.addColorStop(1, '#27456f'); g.fillStyle = q; g.fill();\ng.save(); g.clip();\nconst gl = g.createRadialGradient(195, 0, 10, 195, 10, 240); gl.addColorStop(0, 'rgba(110,255,190,0.28)'); gl.addColorStop(1, 'rgba(110,255,190,0)'); g.fillStyle = gl; g.fillRect(0, 0, W, 60);\nfor (let i = 0; i < 9; i++) { const y = 26 + i * 7; g.beginPath(); for (let x = 0; x <= W; x += 6) g.lineTo(x, y + Math.sin(x / (34 + i * 3) + i * 2) * 3); g.strokeStyle = 'rgba(220,242,255,' + (0.16 - i * 0.012) + ')'; g.lineWidth = 1.3; g.stroke(); }\nfor (let i = 0; i < 120; i++) { g.fillStyle = 'rgba(240,252,255,' + (0.3 + rnd() * 0.6) + ')'; g.fillRect(rnd() * W, 22 + rnd() * 60, 1 + rnd(), 1 + rnd()); }\ng.restore();\n// ice shards at the corners\nconst shard = (x, y, w, h, tilt) => { g.save(); g.translate(x, y); g.rotate(tilt); g.beginPath(); g.moveTo(0, 0); g.lineTo(w * 0.2, -h); g.lineTo(w * 0.55, -h * 0.55); g.lineTo(w * 0.8, -h * 0.85); g.lineTo(w, 0); g.closePath(); const s = g.createLinearGradient(0, -h, w, 0); s.addColorStop(0, '#e6fbff'); s.addColorStop(0.5, '#86d4ea'); s.addColorStop(1, '#2c78a2'); g.fillStyle = s; g.globalAlpha = 0.93; g.fill(); g.globalAlpha = 1; g.strokeStyle = 'rgba(255,255,255,0.6)'; g.lineWidth = 1; g.stroke(); g.restore(); };\nshard(-6, 62, 46, 38, -0.12); shard(26, 66, 30, 22, 0.1); shard(W - 44, 64, 50, 44, 0.1); shard(W - 70, 68, 30, 20, -0.12);\nnames.push(addProjectImage('bank.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Snow bank'; e.src = names[0]; e.x = 0; e.y = 366; e.show = 'normal'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Main'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Aod'; return 1"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "day"
+  },
+  {
+   "preset": "temp"
+  },
+  {
+   "preset": "sun"
+  },
+  {
+   "script": "const e = await addElement('IMG', { src: globalThis.__bear['mom_l_w0'] }); e.name = 'Bear front'; e.src = globalThis.__bear['mom_l_w0']; e.handle = 'm1'; e.x = 150; e.y = 322; e.alpha = 255; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "const e = await addElement('IMG', { src: globalThis.__bear['cub_l_w0'] }); e.name = 'Cub front'; e.src = globalThis.__bear['cub_l_w0']; e.handle = 'c1'; e.x = 40; e.y = 360; e.alpha = 255; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst TAU = Math.PI * 2;\nconst HZ = 300; // horizon\n\nconst N = 12, SH = 450;\nconst S = Array.from({ length: 80 }, () => ({ x: rnd() * W, off: rnd(), r: 0.8 + Math.pow(rnd(), 2) * 2.4, amp: 4 + rnd() * 10, p: rnd() * TAU, m: rnd() > 0.5 ? 2 : 1 }));\nfor (let k = 0; k < N; k++) {\n  const c = mk(W, SH), g = c.getContext('2d');\n  for (const s of S) {\n    const f = (((k * s.m / N) + s.off) % 1 + 1) % 1, y = f * (SH + 20) - 10, x = s.x + s.amp * Math.sin(TAU * f * s.m + s.p), a = 0.45 + 0.5 * (s.r / 3.2);\n    const q = g.createRadialGradient(x, y, 0, x, y, s.r * 1.7); q.addColorStop(0, 'rgba(255,255,255,' + a + ')'); q.addColorStop(0.5, 'rgba(235,248,255,' + a * 0.7 + ')'); q.addColorStop(1, 'rgba(220,240,255,0)'); g.fillStyle = q; g.beginPath(); g.arc(x, y, s.r * 1.7, 0, 7); g.fill();\n  }\n  names.push(addProjectImage('anim/snow_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG_ANIM', { frames: names, fps: 8, animPrefix: 'snow', repeat: 0 }); e.name = 'Snowfall'; e.frames = names; e.x = 0; e.y = 0; e.show = 'normal'; return names.length"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst TAU = Math.PI * 2;\nconst HZ = 300; // horizon\n\nconst c = mk(W, H), g = c.getContext('2d');\nconst q = g.createRadialGradient(W / 2, H * 0.42, H * 0.34, W / 2, H * 0.42, H * 0.8); q.addColorStop(0, 'rgba(2,8,20,0)'); q.addColorStop(1, 'rgba(2,8,20,0.5)'); g.fillStyle = q; g.fillRect(0, 0, W, H);\nnames.push(addProjectImage('vignette.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Vignette'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "edit": "Hour Main",
+   "set": {
+    "x": 50,
+    "y": 66,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 96,
+    "weight": 500,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#d4ecf6",
+    "angle": 90,
+    "borderColor": "#07162c",
+    "borderWidth": 2,
+    "shadowColor": "#020a18",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Colon Main",
+   "set": {
+    "x": 178,
+    "y": 70,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 96,
+    "weight": 500,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#d4ecf6",
+    "angle": 90,
+    "borderColor": "#07162c",
+    "borderWidth": 2,
+    "shadowColor": "#020a18",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Minute Main",
+   "set": {
+    "x": 214,
+    "y": 66,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 96,
+    "weight": 500,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#d4ecf6",
+    "angle": 90,
+    "borderColor": "#07162c",
+    "borderWidth": 2,
+    "shadowColor": "#020a18",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 60,
+    "y": 90,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 110,
+    "weight": 500,
+    "fill": "solid",
+    "color": "#3b7a8c"
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 60,
+    "y": 230,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 110,
+    "weight": 500,
+    "fill": "solid",
+    "color": "#3b7a8c"
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 131,
+    "y": 28,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 30,
+    "weight": 700,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#d4ecf6",
+    "angle": 90,
+    "borderColor": "#07162c",
+    "borderWidth": 2,
+    "shadowColor": "#020a18",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Day",
+   "set": {
+    "x": 213,
+    "y": 34,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 30,
+    "weight": 700,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#d4ecf6",
+    "angle": 90,
+    "borderColor": "#07162c",
+    "borderWidth": 2,
+    "shadowColor": "#020a18",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Temperature",
+   "set": {
+    "x": 38,
+    "y": 192,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 30,
+    "weight": 700,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#d4ecf6",
+    "angle": 90,
+    "borderColor": "#07162c",
+    "borderWidth": 2,
+    "shadowColor": "#020a18",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Sun time",
+   "set": {
+    "x": 238,
+    "y": 192,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Inter",
+    "size": 30,
+    "weight": 700,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#d4ecf6",
+    "angle": 90,
+    "borderColor": "#07162c",
+    "borderWidth": 2,
+    "shadowColor": "#020a18",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "script": "for (const k of Object.keys(project.groups)) if (project.groups[k] === 'Clock 2') project.groups[k] = 'Clock AOD'; return JSON.stringify(project.groups)"
+  },
+  {
+   "edit": "Sun icon",
+   "set": {
+    "x": 188,
+    "y": 194,
+    "show": "normal"
+   }
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gDate = 'Date'; let n = 0; for (const nm of [\"Weekday\",\"Day\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gDate'; n++; } } return 'Date: ' + n + ' layers'"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gBack = 'Bears behind the bank'; let n = 0; for (const nm of [\"Bear back\",\"Cub back\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gBack'; n++; } } return 'Bears behind the bank: ' + n + ' layers'"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gFront = 'Bears in front'; let n = 0; for (const nm of [\"Bear front\",\"Cub front\"]) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gFront'; n++; } } return 'Bears in front: ' + n + ' layers'"
+  },
+  {
+   "script": "const used = new Set(project.elements.map((e) => e.group).filter(Boolean)); for (const k of Object.keys(project.groups)) if (!used.has(k)) delete project.groups[k]; return JSON.stringify(project.groups)"
+  }
+ ]
+}
