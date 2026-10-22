@@ -2,7 +2,7 @@
   "version": 1,
   "name": "Sand Hourglass",
   "device": "bip-6",
-  "appId": 2842803,
+  "appId": 2043698,
   "vender": "dialcraft",
   "description": "A wooden hourglass that runs once a minute: the sand follows the seconds, a thin stream falls from the neck with grains that tumble off the pile.",
   "font": "Bebas Neue",
@@ -10,12 +10,13 @@
   "fonts": [],
   "groups": {
     "gHg": "Hourglass",
-    "gmviqajoi7k": "Clock",
-    "gmviqajpylw": "Clock 2"
+    "gmvit6msqnj": "Clock",
+    "gmvit6mu5ed": "Clock AOD",
+    "gDate": "Date"
   },
   "elements": [
     {
-      "id": "elmviqaiwi78n",
+      "id": "elmvit6lzocx",
       "kind": "FILL_RECT",
       "name": "Background",
       "x": 0,
@@ -32,7 +33,7 @@
       "angle": 0
     },
     {
-      "id": "elmviqaiya27a",
+      "id": "elmvit6m141nd",
       "kind": "IMG",
       "name": "Frame",
       "x": 18,
@@ -50,7 +51,7 @@
       "src": "hg/frame.png"
     },
     {
-      "id": "elmviqaj851rw",
+      "id": "elmvit6mbl6cs",
       "kind": "IMG",
       "name": "Sand",
       "x": 18,
@@ -132,7 +133,7 @@
       "handle": "sand"
     },
     {
-      "id": "elmviqajce31f",
+      "id": "elmvit6mge3df",
       "kind": "IMG",
       "name": "Sand stream",
       "x": 96,
@@ -243,7 +244,7 @@
       "handle": "stream"
     },
     {
-      "id": "elmviqajd58j",
+      "id": "elmvit6mh66ui",
       "kind": "IMG",
       "name": "Grain 1",
       "x": 97,
@@ -262,7 +263,7 @@
       "handle": "g0"
     },
     {
-      "id": "elmviqajds6ja",
+      "id": "elmvit6mhu24y",
       "kind": "IMG",
       "name": "Grain 2",
       "x": 98,
@@ -281,7 +282,7 @@
       "handle": "g1"
     },
     {
-      "id": "elmviqajeg1mh",
+      "id": "elmvit6mih18t",
       "kind": "IMG",
       "name": "Grain 3",
       "x": 96,
@@ -300,7 +301,7 @@
       "handle": "g2"
     },
     {
-      "id": "elmviqajf41rz",
+      "id": "elmvit6mj77cm",
       "kind": "IMG",
       "name": "Grain 4",
       "x": 98,
@@ -319,7 +320,7 @@
       "handle": "g3"
     },
     {
-      "id": "elmviqajfr7p2",
+      "id": "elmvit6mjv4kt",
       "kind": "IMG",
       "name": "Grain 5",
       "x": 97,
@@ -338,7 +339,7 @@
       "handle": "g4"
     },
     {
-      "id": "elmviqajgf7d",
+      "id": "elmvit6mkj7e6",
       "kind": "IMG",
       "name": "Grain 6",
       "x": 96,
@@ -357,7 +358,7 @@
       "handle": "g5"
     },
     {
-      "id": "elmviqajh26wn",
+      "id": "elmvit6ml73sk",
       "kind": "IMG",
       "name": "Grain 7",
       "x": 98,
@@ -376,7 +377,7 @@
       "handle": "g6"
     },
     {
-      "id": "elmviqajhq3u",
+      "id": "elmvit6mlxp9",
       "kind": "IMG",
       "name": "Grain 8",
       "x": 97,
@@ -395,7 +396,7 @@
       "handle": "g7"
     },
     {
-      "id": "elmviqajid6wy",
+      "id": "elmvit6mmm2mf",
       "kind": "IMG",
       "name": "Hop grain 1",
       "x": 84,
@@ -414,7 +415,7 @@
       "handle": "h0"
     },
     {
-      "id": "elmviqajj45ol",
+      "id": "elmvit6mnc7id",
       "kind": "IMG",
       "name": "Hop grain 2",
       "x": 109,
@@ -433,7 +434,7 @@
       "handle": "h1"
     },
     {
-      "id": "elmviqajjs496",
+      "id": "elmvit6mo31d7",
       "kind": "IMG",
       "name": "Hop grain 3",
       "x": 92,
@@ -452,7 +453,7 @@
       "handle": "h2"
     },
     {
-      "id": "elmviqajkg5an",
+      "id": "elmvit6mos550",
       "kind": "IMG",
       "name": "Hop grain 4",
       "x": 115,
@@ -471,7 +472,7 @@
       "handle": "h3"
     },
     {
-      "id": "elmviqajm623c",
+      "id": "elmvit6mqi39r",
       "kind": "IMG",
       "name": "Glass",
       "x": 18,
@@ -489,7 +490,7 @@
       "src": "hg/glass.png"
     },
     {
-      "id": "elmviqajoicc",
+      "id": "elmvit6msq1j7",
       "kind": "IMG_TIME",
       "name": "Minute Main",
       "x": 213,
@@ -497,7 +498,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmviqajoi7k",
+      "group": "gmvit6msqnj",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -546,7 +547,7 @@
       }
     },
     {
-      "id": "elmviqajoi5bq",
+      "id": "elmvit6msqn5",
       "kind": "IMG_TIME",
       "name": "Hour Main",
       "x": 209,
@@ -554,7 +555,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmviqajoi7k",
+      "group": "gmvit6msqnj",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -603,7 +604,7 @@
       }
     },
     {
-      "id": "elmviqajpy492",
+      "id": "elmvit6mu552a",
       "kind": "IMG_TIME",
       "name": "Minute Aod",
       "x": 142,
@@ -611,7 +612,7 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmviqajpylw",
+      "group": "gmvit6mu5ed",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -660,7 +661,7 @@
       }
     },
     {
-      "id": "elmviqajpx2io",
+      "id": "elmvit6mu53t8",
       "kind": "IMG_TIME",
       "name": "Hour Aod",
       "x": 139,
@@ -668,7 +669,7 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmviqajpylw",
+      "group": "gmvit6mu5ed",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -717,7 +718,7 @@
       }
     },
     {
-      "id": "elmviqajqq1fb",
+      "id": "elmvit6mux14r",
       "kind": "IMG_WEEK",
       "name": "Weekday",
       "x": 232,
@@ -725,7 +726,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": null,
+      "group": "gDate",
       "alpha": 255,
       "images": [
         "week_w1.png",
@@ -760,7 +761,7 @@
       }
     },
     {
-      "id": "elmviqajs915g",
+      "id": "elmvit6mwj7a7",
       "kind": "IMG_DATE",
       "name": "Day",
       "x": 294,
@@ -768,7 +769,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": null,
+      "group": "gDate",
       "alpha": 255,
       "images": [
         "font_6_0.png",
@@ -812,7 +813,7 @@
       }
     },
     {
-      "id": "elmviqajt36am",
+      "id": "elmvit6mxa2hz",
       "kind": "TEXT_IMG",
       "name": "Steps",
       "x": 206,
@@ -864,7 +865,7 @@
       }
     },
     {
-      "id": "elmviqajui3iu",
+      "id": "elmvit6myj2tc",
       "kind": "TEXT_IMG",
       "name": "Battery",
       "x": 297,

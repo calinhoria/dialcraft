@@ -2,21 +2,22 @@
   "version": 1,
   "name": "Shire Stroll",
   "device": "bip-6",
-  "appId": 2810851,
+  "appId": 2078754,
   "vender": "dialcraft",
   "description": "A sunny hillside with a round-door hobbit hole, a winding lane and a picket fence. Five kinds of little folk stroll past at random; chimney smoke curls, clouds drift and butterflies flutter.",
   "font": "Marcellus",
   "language": "en-US",
   "fonts": [],
   "groups": {
-    "gmvishzlja8": "Clock",
-    "gmvishzmbov": "Clock 2",
+    "gmvit65rmah": "Clock",
+    "gmvit65sge6": "Clock AOD",
     "gFolk": "Strollers",
-    "gSky": "Sky and smoke"
+    "gSky": "Sky and smoke",
+    "gDate": "Date"
   },
   "elements": [
     {
-      "id": "elmvishz6q1g2",
+      "id": "elmvit65ea4ze",
       "kind": "FILL_RECT",
       "name": "Background",
       "x": 0,
@@ -33,7 +34,7 @@
       "angle": 0
     },
     {
-      "id": "elmvishzbb64c",
+      "id": "elmvit65hq6h1",
       "kind": "IMG",
       "name": "Hillside",
       "x": 0,
@@ -51,7 +52,7 @@
       "src": "scene.png"
     },
     {
-      "id": "elmvishzcw32v",
+      "id": "elmvit65j01q8",
       "kind": "IMG",
       "name": "Clouds",
       "x": -90,
@@ -70,7 +71,7 @@
       "handle": "cl"
     },
     {
-      "id": "elmvishze65ei",
+      "id": "elmvit65k93ag",
       "kind": "IMG_ANIM",
       "name": "Chimney smoke",
       "x": 288,
@@ -96,7 +97,7 @@
       "animPrefix": "smoke"
     },
     {
-      "id": "elmvishzhb1cp",
+      "id": "elmvit65nf2mh",
       "kind": "IMG",
       "name": "Walker 1",
       "x": 70,
@@ -157,7 +158,7 @@
       "handle": "w0"
     },
     {
-      "id": "elmvishzhk7jv",
+      "id": "elmvit65nq371",
       "kind": "IMG",
       "name": "Walker 2",
       "x": 273,
@@ -218,7 +219,7 @@
       "handle": "w1"
     },
     {
-      "id": "elmvishzhv5h2",
+      "id": "elmvit65o15y8",
       "kind": "IMG",
       "name": "Walker 3",
       "x": 156,
@@ -279,7 +280,7 @@
       "handle": "w2"
     },
     {
-      "id": "elmvishzi42mf",
+      "id": "elmvit65oa43u",
       "kind": "IMG",
       "name": "Walker 4",
       "x": 330,
@@ -340,7 +341,7 @@
       "handle": "w3"
     },
     {
-      "id": "elmvishzie17p",
+      "id": "elmvit65ok544",
       "kind": "IMG",
       "name": "Pipe puff",
       "x": 190,
@@ -364,7 +365,7 @@
       "handle": "pf"
     },
     {
-      "id": "elmvishziz7br",
+      "id": "elmvit65p6q4",
       "kind": "IMG",
       "name": "Foreground flowers",
       "x": 0,
@@ -382,7 +383,7 @@
       "src": "foreground.png"
     },
     {
-      "id": "elmvishzjtht",
+      "id": "elmvit65py6y",
       "kind": "IMG",
       "name": "Butterfly 1",
       "x": 120,
@@ -405,7 +406,7 @@
       "handle": "bf0"
     },
     {
-      "id": "elmvishzk5751",
+      "id": "elmvit65qa8l",
       "kind": "IMG",
       "name": "Butterfly 2",
       "x": 250,
@@ -428,7 +429,7 @@
       "handle": "bf1"
     },
     {
-      "id": "elmvishzlj28z",
+      "id": "elmvit65rm4sf",
       "kind": "IMG_TIME",
       "name": "Minute",
       "x": 191,
@@ -436,7 +437,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvishzlja8",
+      "group": "gmvit65rmah",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -486,7 +487,7 @@
       "aidPad": 9
     },
     {
-      "id": "elmvishzlj3pp",
+      "id": "elmvit65rm668",
       "kind": "IMG",
       "name": "Colon",
       "x": 167,
@@ -494,7 +495,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvishzlja8",
+      "group": "gmvit65rmah",
       "alpha": 255,
       "w": 0,
       "h": 0,
@@ -531,7 +532,7 @@
       "aidPad": 9
     },
     {
-      "id": "elmvishzlj3em",
+      "id": "elmvit65rl2km",
       "kind": "IMG_TIME",
       "name": "Hour",
       "x": 64,
@@ -539,7 +540,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvishzlja8",
+      "group": "gmvit65rmah",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -589,7 +590,7 @@
       "aidPad": 9
     },
     {
-      "id": "elmvishzmb1s0",
+      "id": "elmvit65sg6w7",
       "kind": "IMG_TIME",
       "name": "Hour Aod",
       "x": 104,
@@ -597,7 +598,7 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmvishzmbov",
+      "group": "gmvit65sge6",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -646,7 +647,7 @@
       }
     },
     {
-      "id": "elmvishzmbht",
+      "id": "elmvit65sg1ra",
       "kind": "IMG_TIME",
       "name": "Minute Aod",
       "x": 82,
@@ -654,7 +655,7 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmvishzmbov",
+      "group": "gmvit65sge6",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -703,7 +704,7 @@
       }
     },
     {
-      "id": "elmvishzmrva",
+      "id": "elmvit65sv1lj",
       "kind": "IMG_WEEK",
       "name": "Weekday",
       "x": 123,
@@ -711,7 +712,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": null,
+      "group": "gDate",
       "alpha": 255,
       "images": [
         "week_w1.png",
@@ -747,7 +748,7 @@
       "aidPad": 9
     },
     {
-      "id": "elmvishzno2g8",
+      "id": "elmvit65tt5b9",
       "kind": "IMG_DATE",
       "name": "Day",
       "x": 196,
@@ -755,7 +756,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": null,
+      "group": "gDate",
       "alpha": 255,
       "images": [
         "font_4_0.png",
@@ -800,7 +801,7 @@
       "aidPad": 9
     },
     {
-      "id": "elmvishzo25xd",
+      "id": "elmvit65u8752",
       "kind": "TEXT_IMG",
       "name": "Steps",
       "x": 81,
@@ -853,7 +854,7 @@
       "aidPad": 9
     },
     {
-      "id": "elmvishzou3q5",
+      "id": "elmvit65v149g",
       "kind": "TEXT_IMG",
       "name": "Battery",
       "x": 205,

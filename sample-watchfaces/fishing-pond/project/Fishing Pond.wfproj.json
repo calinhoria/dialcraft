@@ -1,0 +1,1679 @@
+{
+  "version": 1,
+  "name": "Fishing Pond",
+  "device": "bip-6",
+  "appId": 2476935,
+  "vender": "dialcraft",
+  "description": "A fisher on a wooden dock plays a calm fishing game by itself: casts, waits, nibbles, hooks, fights, reels and lifts a catch into the bucket. The lake follows the day: day, sunset, night.",
+  "font": "Josefin Sans",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gmvit60zp70": "Clock",
+    "gmvit610lkt": "Clock AOD",
+    "gRig": "Fishing",
+    "gBucket": "Bucket",
+    "gDate": "Date"
+  },
+  "elements": [
+    {
+      "id": "elmvit60gktv",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvit60lx2wj",
+      "kind": "IMG",
+      "name": "Lake and dock",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_day.png",
+      "images": [
+        "scene_day.png",
+        "scene_sunset.png",
+        "scene_night.png"
+      ],
+      "handle": "scene"
+    },
+    {
+      "id": "elmvit60op2pe",
+      "kind": "IMG",
+      "name": "Fish shadow 1",
+      "x": 214,
+      "y": 346,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gRig",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fish/s440.png",
+      "images": [
+        "fish/s440.png",
+        "fish/s441.png",
+        "fish/s560.png",
+        "fish/s561.png"
+      ],
+      "handle": "sh0"
+    },
+    {
+      "id": "elmvit60p06wu",
+      "kind": "IMG",
+      "name": "Fish shadow 2",
+      "x": 262,
+      "y": 392,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gRig",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fish/s561.png",
+      "images": [
+        "fish/s561.png",
+        "fish/s440.png",
+        "fish/s441.png",
+        "fish/s560.png"
+      ],
+      "handle": "sh1"
+    },
+    {
+      "id": "elmvit60q111r",
+      "kind": "IMG",
+      "name": "Fisher",
+      "x": 112,
+      "y": 258,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gRig",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fisher/f1.png",
+      "images": [
+        "fisher/f1.png",
+        "fisher/f0.png"
+      ],
+      "handle": "fs"
+    },
+    {
+      "id": "elmvit60sb7ol",
+      "kind": "IMG",
+      "name": "Rod and line",
+      "x": 150,
+      "y": 205,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gRig",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rig/r27.png",
+      "images": [
+        "rig/r27.png",
+        "rig/r28.png",
+        "rig/r29.png",
+        "rig/r0.png",
+        "rig/r1.png",
+        "rig/r2.png",
+        "rig/r3.png",
+        "rig/r4.png",
+        "rig/r5.png",
+        "rig/r6.png",
+        "rig/r7.png",
+        "rig/r8.png",
+        "rig/r9.png",
+        "rig/r10.png",
+        "rig/r11.png",
+        "rig/r12.png",
+        "rig/r13.png",
+        "rig/r14.png",
+        "rig/r15.png",
+        "rig/r16.png",
+        "rig/r17.png",
+        "rig/r18.png",
+        "rig/r19.png",
+        "rig/r20.png",
+        "rig/r21.png",
+        "rig/r22.png",
+        "rig/r23.png",
+        "rig/r24.png",
+        "rig/r25.png",
+        "rig/r26.png"
+      ],
+      "handle": "rig"
+    },
+    {
+      "id": "elmvit60ua2nd",
+      "kind": "IMG",
+      "name": "Hooked fish",
+      "x": 244,
+      "y": 270,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gRig",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fish/f100.png",
+      "images": [
+        "fish/f100.png",
+        "fish/f101.png",
+        "fish/f110.png",
+        "fish/f111.png",
+        "fish/f200.png",
+        "fish/f201.png",
+        "fish/f210.png",
+        "fish/f211.png",
+        "fish/f300.png",
+        "fish/f301.png",
+        "fish/f310.png",
+        "fish/f311.png",
+        "fish/f400.png",
+        "fish/f401.png",
+        "fish/f410.png",
+        "fish/f411.png",
+        "fish/f000.png",
+        "fish/f001.png",
+        "fish/f010.png",
+        "fish/f011.png"
+      ],
+      "handle": "fish"
+    },
+    {
+      "id": "elmvit60umpu",
+      "kind": "IMG",
+      "name": "Splash",
+      "x": 250,
+      "y": 296,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gRig",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fx/spl2.png",
+      "images": [
+        "fx/spl2.png",
+        "fx/spl3.png",
+        "fx/spl0.png",
+        "fx/spl1.png"
+      ],
+      "handle": "spl"
+    },
+    {
+      "id": "elmvit60uy6us",
+      "kind": "IMG",
+      "name": "Sparkle 1",
+      "x": 296,
+      "y": 252,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gRig",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fx/spk6.png",
+      "images": [
+        "fx/spk6.png",
+        "fx/spk9.png"
+      ],
+      "handle": "sk0"
+    },
+    {
+      "id": "elmvit60v93eb",
+      "kind": "IMG",
+      "name": "Sparkle 2",
+      "x": 232,
+      "y": 252,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gRig",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fx/spk9.png",
+      "images": [
+        "fx/spk9.png",
+        "fx/spk6.png"
+      ],
+      "handle": "sk1"
+    },
+    {
+      "id": "elmvit60vl1tb",
+      "kind": "IMG",
+      "name": "Bucket fish 1",
+      "x": 64,
+      "y": 306,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBucket",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fish/i1.png",
+      "images": [
+        "fish/i1.png",
+        "fish/i2.png",
+        "fish/i3.png",
+        "fish/i4.png",
+        "fish/i0.png"
+      ],
+      "handle": "bk0"
+    },
+    {
+      "id": "elmvit60vw58q",
+      "kind": "IMG",
+      "name": "Bucket fish 2",
+      "x": 70,
+      "y": 308,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBucket",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fish/i0.png",
+      "images": [
+        "fish/i0.png",
+        "fish/i1.png",
+        "fish/i2.png",
+        "fish/i3.png",
+        "fish/i4.png"
+      ],
+      "handle": "bk1"
+    },
+    {
+      "id": "elmvit60w94x9",
+      "kind": "IMG",
+      "name": "Bucket fish 3",
+      "x": 76,
+      "y": 306,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBucket",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fish/i2.png",
+      "images": [
+        "fish/i2.png",
+        "fish/i3.png",
+        "fish/i4.png",
+        "fish/i0.png",
+        "fish/i1.png"
+      ],
+      "handle": "bk2"
+    },
+    {
+      "id": "elmvit60wl6p2",
+      "kind": "IMG",
+      "name": "Bucket fish 4",
+      "x": 82,
+      "y": 308,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBucket",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fish/i4.png",
+      "images": [
+        "fish/i4.png",
+        "fish/i0.png",
+        "fish/i1.png",
+        "fish/i2.png",
+        "fish/i3.png"
+      ],
+      "handle": "bk3"
+    },
+    {
+      "id": "elmvit60x13sq",
+      "kind": "IMG",
+      "name": "Bucket fish 5",
+      "x": 88,
+      "y": 306,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBucket",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fish/i3.png",
+      "images": [
+        "fish/i3.png",
+        "fish/i4.png",
+        "fish/i0.png",
+        "fish/i1.png",
+        "fish/i2.png"
+      ],
+      "handle": "bk4"
+    },
+    {
+      "id": "elmvit60y25pu",
+      "kind": "IMG",
+      "name": "Reeds and lily pads",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "foreground.png"
+    },
+    {
+      "id": "elmvit60zp1t4",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 197,
+      "y": 13,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvit60zp70",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -18,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 84,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(8,24,40,0.8)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvit60zp151",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 167,
+      "y": 24,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvit60zp70",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 84,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(8,24,40,0.8)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvit60zp1zb",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 58,
+      "y": 13,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvit60zp70",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -28,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 84,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(8,24,40,0.8)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvit610l2ug",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 122,
+      "y": 111,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvit610lkt",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 120,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#7a8a96",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvit610l483",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 109,
+      "y": 251,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvit610lkt",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 120,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#7a8a96",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvit61124f6",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 121,
+      "y": 85,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 30,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(8,24,40,0.8)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvit61252uf",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 201,
+      "y": 95,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -22,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 30,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(8,24,40,0.8)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvit612o29m",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 99,
+      "y": 389,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": -21,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 32,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(8,24,40,0.8)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvit613g5kp",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 208,
+      "y": 389,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": -21,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 32,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(8,24,40,0.8)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "aidPad": 9
+    }
+  ],
+  "images": [
+    {
+      "name": "scene_day.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "scene_sunset.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "scene_night.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fish/f000.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f001.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f010.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f011.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f100.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f101.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f110.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f111.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f200.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f201.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f210.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f211.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f300.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f301.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f310.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f311.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f400.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f401.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f410.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/f411.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/i0.png",
+      "width": 26,
+      "height": 22
+    },
+    {
+      "name": "fish/i1.png",
+      "width": 26,
+      "height": 22
+    },
+    {
+      "name": "fish/i2.png",
+      "width": 26,
+      "height": 22
+    },
+    {
+      "name": "fish/i3.png",
+      "width": 26,
+      "height": 22
+    },
+    {
+      "name": "fish/i4.png",
+      "width": 26,
+      "height": 22
+    },
+    {
+      "name": "fish/s440.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/s441.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/s560.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fish/s561.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "fx/spl0.png",
+      "width": 44,
+      "height": 30
+    },
+    {
+      "name": "fx/spl1.png",
+      "width": 44,
+      "height": 30
+    },
+    {
+      "name": "fx/spl2.png",
+      "width": 44,
+      "height": 30
+    },
+    {
+      "name": "fx/spl3.png",
+      "width": 44,
+      "height": 30
+    },
+    {
+      "name": "fx/spk6.png",
+      "width": 22,
+      "height": 22
+    },
+    {
+      "name": "fx/spk9.png",
+      "width": 22,
+      "height": 22
+    },
+    {
+      "name": "fisher/f0.png",
+      "width": 86,
+      "height": 140
+    },
+    {
+      "name": "fisher/f1.png",
+      "width": 86,
+      "height": 140
+    },
+    {
+      "name": "rig/r0.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r1.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r2.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r3.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r4.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r5.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r6.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r7.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r8.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r9.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r10.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r11.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r12.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r13.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r14.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r15.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r16.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r17.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r18.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r19.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r20.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r21.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r22.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r23.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r24.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r25.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r26.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r27.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r28.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "rig/r29.png",
+      "width": 200,
+      "height": 140
+    },
+    {
+      "name": "foreground.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "week_w1.png",
+      "width": 97,
+      "height": 61
+    },
+    {
+      "name": "week_w2.png",
+      "width": 97,
+      "height": 61
+    },
+    {
+      "name": "week_w3.png",
+      "width": 97,
+      "height": 61
+    },
+    {
+      "name": "week_w4.png",
+      "width": 97,
+      "height": 61
+    },
+    {
+      "name": "week_w5.png",
+      "width": 97,
+      "height": 61
+    },
+    {
+      "name": "week_w6.png",
+      "width": 97,
+      "height": 61
+    },
+    {
+      "name": "week_w7.png",
+      "width": 97,
+      "height": 61
+    },
+    {
+      "name": "percent.png",
+      "width": 47,
+      "height": 47
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 35,
+      "height": 58
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 71,
+      "height": 83
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 41,
+      "height": 46
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 42,
+      "height": 47
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 75,
+      "height": 91
+    }
+  ],
+  "savePath": null,
+  "userImports": "import { Time as DCTime } from '@zos/sensor'",
+  "userCode": "{\n  const MS = 100\n  const lerp = (a, b, t) => a + (b - a) * t\n  const BX = (e) => 320 - 15 * e, BY = (e) => 298 + 5.4 * e\n  const FROM = [[360,0],[1020,1],[1200,2]]\n  const RROT = 27, FKROT = 4\n  let seed = 3\n  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647\n  const ri = (a, b) => a + rnd() * (b - a)\n  const mv = (w, x, y, src) => { if (src === undefined) w.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)) }); else w.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src }) }\n  const away = (w) => w.setProperty(ui.prop.MORE, { x: pxv(-200), y: pxv(0) })\n  const RIG = (i) => F.rig[(i - RROT + 30) % 30]\n  const FK = (k, dir, cv) => F.fish[((k * 2 + dir) * 2 + cv - FKROT + 20) % 20]\n  const FS = [F.fs[1], F.fs[0]]\n  const BKROT = [1, 0, 2, 4, 3]\n  const bk = []; for (let i = 0; i < 5; i++) bk.push({ w: W['bk' + i], kind: -1 })\n  let clock = null; try { clock = new DCTime() } catch (e) {}\n  const minutes = () => { try { if (clock) { const h = clock.getHours(), m = clock.getMinutes(); if (typeof h === 'number' && typeof m === 'number') return h * 60 + m } } catch (e) {} try { const d = new Date(); return d.getHours() * 60 + d.getMinutes() } catch (e) {} return 600 }\n  const phase = (m) => { let p = 2; for (const f of FROM) if (m >= f[0]) p = f[1]; return p }\n  let curPh = -1, t = 0, last = 0, id = null, st = 'cast', tt = 0, dur = 1, shown = {}, rigI = -1, fsI = -1\n  let fkind = 0, fdir = 0, e = 0, lost = false, biteSoon = false, nib = 0, caught = 0, fx = 0, fy = 0\n  const set = (name, v) => { if (shown[name] === v) return false; shown[name] = v; return true }\n  const rig = (i) => { if (set('rig', i)) mv(W.rig, 150, 205, RIG(i)) }\n  const fisher = (i) => { if (set('fs', i)) mv(W.fs, 112, 258, FS[i]) }\n  const hideFish = () => { away(W.fish); shown.fish = -1 }\n  const SHK = [{ w: W.sh0, x: 100, y: 346, vx: 6, dir: 0, sz: 0, tx: 0, ty: 0 }, { w: W.sh1, x: 280, y: 392, vx: -5, dir: 1, sz: 1, tx: 0, ty: 0 }]\n  const shSrc = (q) => F[q.w === W.sh0 ? 'sh0' : 'sh1'][((q.sz * 2 + q.dir) - (q.w === W.sh0 ? 0 : 3) + 4) % 4]\n  const to = (s, d) => { st = s; tt = 0; dur = d }\n  const pickFish = () => { const r = rnd(); return r < 0.38 ? 0 : r < 0.62 ? 1 : r < 0.78 ? 2 : r < 0.9 ? 3 : 4 }\n  to('cast', 0.9)\n  const tick = () => {\n    const now = Date.now(); let dt = last ? (now - last) / 1000 : MS / 1000; dt = Math.min(0.15, dt); last = now; t += dt; tt += dt\n    const p = phase(minutes()); if (p !== curPh) { curPh = p; W.scene.setProperty(ui.prop.MORE, { x: pxv(0), y: pxv(0), src: F.scene[p] }) }\n    // underwater shadows drift; one comes to the float while we wait\n    for (const q of SHK) { let tx = q.tx, ty = q.ty\n      const near = (st === 'wait' && tt > dur - 2.2 || st === 'nibble') && q === SHK[0]\n      if (near) { q.x += (BX(0) - 16 + Math.sin(t * 2.4) * 10 - q.x) * Math.min(1, dt * 1.6); q.y += (BY(0) + 22 + Math.cos(t * 2) * 5 - q.y) * Math.min(1, dt * 1.6) }\n      else { q.x += q.vx * dt; q.y += Math.sin(t * 0.7 + q.sz) * 3 * dt }\n      if (q.x > 360) { q.vx = -Math.abs(q.vx); q.dir = 1 } if (q.x < 120) { q.vx = Math.abs(q.vx); q.dir = 0 }\n      mv(q.w, q.x - 28, q.y - 16, shSrc(q)) }\n    if (st === 'cast') {\n      fisher(0); hideFish(); away(W.spl); away(W.sk0); away(W.sk1)\n      if (tt < 0.35) rig(28); else if (tt < 0.6) rig(29); else rig(0)\n      if (tt >= dur) { to('wait', ri(4, 8.5)); mv(W.spl, BX(0) - 22, BY(0) - 14, F.spl[0]); shown.spl = 0 }\n    } else if (st === 'wait') {\n      rig(Math.floor(t * 1.3) % 2 ? 1 : 0)\n      if (shown.spl !== -1) { const k = Math.min(3, Math.floor(tt / 0.25)); if (k >= 3 && tt > 1) { away(W.spl); shown.spl = -1 } else mv(W.spl, BX(0) - 22, BY(0) - 14, F.spl[k]) }\n      if (tt >= dur) { to('nibble', ri(1.4, 2.6)); nib = 0; biteSoon = rnd() < 0.72 }\n    } else if (st === 'nibble') {\n      rig(Math.floor(tt / 0.32) % 2 ? 2 : 1)\n      if (tt >= dur) { if (biteSoon) { fkind = pickFish(); fdir = rnd() < 0.5 ? 0 : 1; to('fight', ri(3, 5)); lost = rnd() < 0.2; mv(W.spl, BX(0) - 22, BY(0) - 14, F.spl[1]); shown.spl = 1 } else to('wait', ri(2.5, 5)) }\n    } else if (st === 'fight') {\n      const b = 1 + Math.floor(tt / 0.45) % 3\n      rig(3 + 0 * 3 + (b - 1)); fisher(0)\n      const k = Math.min(3, Math.floor(tt / 0.15)); if (tt < 0.6) mv(W.spl, BX(0) - 22, BY(0) - 14, F.spl[k]); else if (shown.spl !== -1) { away(W.spl); shown.spl = -1 }\n      const jump = Math.max(0, Math.sin(tt * 6)) * 16\n      mv(W.fish, BX(0) - 28 + Math.sin(tt * 5) * 8, BY(0) - 14 - jump, FK(fkind, Math.floor(tt * 3) % 2, Math.floor(tt * 7) % 2)); shown.fish = 1\n      if (tt >= dur) { if (lost) { hideFish(); mv(W.spl, BX(0) - 22, BY(0) - 14, F.spl[2]); to('cast', 1.6) } else { to('reel', 3.4); e = 0 } }\n    } else if (st === 'reel') {\n      e = Math.min(7, Math.floor(tt / dur * 8)); const b = 2 + Math.floor(tt / 0.5) % 2 - 0; rig(3 + e * 3 + (b - 1)); fisher(0)\n      mv(W.fish, BX(e) - 28 + Math.sin(tt * 6) * 5, BY(e) - 12 - Math.max(0, Math.sin(tt * 7)) * 6, FK(fkind, fdir, Math.floor(tt * 6) % 2)); shown.fish = 1\n      if (tt >= dur) to('lift', 1.5)\n    } else if (st === 'lift') {\n      rig(27); fisher(1); const sw = Math.sin(tt * 4) * 6, rise = Math.min(1, tt / 0.5)\n      fx = 262 - 28 + sw; fy = lerp(BY(7) - 12, 268, rise); mv(W.fish, fx, fy, FK(fkind, 0, Math.floor(tt * 5) % 2)); shown.fish = 1\n      if (fkind === 4) { mv(W.sk0, fx + 40, fy - 10 + Math.sin(tt * 9) * 3, F.sk0[Math.floor(tt * 8) % 2]); mv(W.sk1, fx - 8, fy + 6 + Math.cos(tt * 9) * 3, F.sk1[Math.floor(tt * 8 + 1) % 2]) }\n      if (tt >= dur) to('bucket', 0.8)\n    } else if (st === 'bucket') {\n      rig(27); fisher(1); away(W.sk0); away(W.sk1)\n      const u = Math.min(1, tt / dur), x = lerp(fx, 70, u), y = lerp(fy, 316, u) - Math.sin(u * Math.PI) * 40\n      mv(W.fish, x, y, FK(fkind, 1, 1))\n      if (tt >= dur) { hideFish(); const slot = bk[caught % 5]; slot.kind = fkind; mv(slot.w, 64 + (caught % 5) * 6, 306 + (caught % 5 % 2) * 2, F['bk' + (caught % 5)][(fkind - BKROT[caught % 5] + 5) % 5]); caught++; if (caught % 5 === 0) to('release', 1.6); else to('rest', 1.2) }\n    } else if (st === 'release') {\n      if (tt >= dur) { for (const s of bk) { away(s.w) } mv(W.spl, 70, 330, F.spl[2]); shown.spl = 2; to('rest', 0.8) }\n    } else if (st === 'rest') {\n      fisher(0); rig(0); if (tt >= dur) { for (const s of bk.slice(0, caught % 5 === 0 ? 5 : 0)) away(s.w); to('cast', 0.9) }\n    }\n  }\n  for (const s of bk) away(s.w)\n  const safe = () => { try { tick() } catch (e) {} }\n  const stop = () => { if (id === null) return; try { clearInterval(id) } catch (e) {} id = null }\n  const start = () => { if (id !== null) return; last = 0; try { id = setInterval(safe, MS) } catch (e) {} }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: () => { curPh = -1; start() }, pause_call: stop })\n  safe()\n  start()\n}",
+  "optimizePng": 24
+}

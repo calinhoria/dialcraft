@@ -182,6 +182,7 @@ steps.push(
   { edit: 'Hour Aod', set: { x: 104, y: 96, show: 'aod', zero: 1 }, glyph: { font: F, size: 120, fill: 'solid', color: '#8a9a78' } },
   { edit: 'Minute Aod', set: { x: 82, y: 236, show: 'aod', zero: 1 }, glyph: { font: F, size: 120, fill: 'solid', color: '#8a9a78' } },
   { script: `project.groups = project.groups || {}; project.groups.gFolk = 'Strollers'; project.groups.gSky = 'Sky and smoke'; let n = 0; for (const e of project.elements) { if (/^(Walker|Pipe puff)/.test(e.name)) { e.group = 'gFolk'; n++ } if (/^(Clouds|Chimney smoke|Butterfly)/.test(e.name)) { e.group = 'gSky'; n++ } } return n` },
+  { script: `project.groups = project.groups || {}; project.groups.gDate = 'Date'; let n = 0; for (const e of project.elements) { if (e.name === 'Weekday' || e.name === 'Day' || e.name === 'Month') { e.group = 'gDate'; n++ } } for (const k of Object.keys(project.groups)) if (project.groups[k] === 'Clock 2') project.groups[k] = 'Clock AOD'; return n` },
   { script: `document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'` },
 );
 // Runs on the watch: random strollers from five kinds, butterflies, drifting clouds. All motion is placed from Date.now().

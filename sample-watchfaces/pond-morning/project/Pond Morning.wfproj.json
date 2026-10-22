@@ -2,21 +2,22 @@
   "version": 1,
   "name": "Pond Morning",
   "device": "bip-6",
-  "appId": 2720644,
+  "appId": 2224328,
   "vender": "dialcraft",
   "description": "A misty park pond at sunrise: drifting mist, a hen with three ducklings and a drake swimming across, fish rings on the water and a swaying willow.",
   "font": "Josefin Sans",
   "language": "en-US",
   "fonts": [],
   "groups": {
-    "gmvir54kbnr": "Clock",
-    "gmvir54l5g9": "Clock 2",
+    "gmvit69srit": "Clock",
+    "gmvit69tkji": "Clock AOD",
     "gDucks": "Ducks",
-    "gMist": "Mist and rings"
+    "gMist": "Mist and rings",
+    "gDate": "Date"
   },
   "elements": [
     {
-      "id": "elmvir548x6e1",
+      "id": "elmvit69hd2sm",
       "kind": "FILL_RECT",
       "name": "Background",
       "x": 0,
@@ -33,7 +34,7 @@
       "angle": 0
     },
     {
-      "id": "elmvir54an6wi",
+      "id": "elmvit69j67iu",
       "kind": "IMG",
       "name": "Pond",
       "x": 0,
@@ -51,7 +52,7 @@
       "src": "scene.png"
     },
     {
-      "id": "elmvir54c15vg",
+      "id": "elmvit69knah",
       "kind": "IMG",
       "name": "Mist far",
       "x": -60,
@@ -70,7 +71,7 @@
       "handle": "mistA"
     },
     {
-      "id": "elmvir54dcik",
+      "id": "elmvit69ls5j3",
       "kind": "IMG_ANIM",
       "name": "Fish ring 1",
       "x": 70,
@@ -102,7 +103,7 @@
       "animPrefix": "ring0"
     },
     {
-      "id": "elmvir54dl1hk",
+      "id": "elmvit69m1s4",
       "kind": "IMG_ANIM",
       "name": "Fish ring 2",
       "x": 232,
@@ -134,7 +135,7 @@
       "animPrefix": "ring7"
     },
     {
-      "id": "elmvir54f03hq",
+      "id": "elmvit69ni3zd",
       "kind": "IMG",
       "name": "Drake",
       "x": 276,
@@ -157,7 +158,7 @@
       "handle": "drake"
     },
     {
-      "id": "elmvir54f85z2",
+      "id": "elmvit69nr45y",
       "kind": "IMG",
       "name": "Duckling 3",
       "x": 57,
@@ -180,7 +181,7 @@
       "handle": "dk2"
     },
     {
-      "id": "elmvir54fgcl",
+      "id": "elmvit69o05tw",
       "kind": "IMG",
       "name": "Duckling 2",
       "x": 73,
@@ -203,7 +204,7 @@
       "handle": "dk1"
     },
     {
-      "id": "elmvir54fo3ob",
+      "id": "elmvit69o8yt",
       "kind": "IMG",
       "name": "Duckling 1",
       "x": 89,
@@ -226,7 +227,7 @@
       "handle": "dk0"
     },
     {
-      "id": "elmvir54fw2lk",
+      "id": "elmvit69og5yc",
       "kind": "IMG",
       "name": "Hen",
       "x": 100,
@@ -249,7 +250,7 @@
       "handle": "hen"
     },
     {
-      "id": "elmvir54gu5t6",
+      "id": "elmvit69pf1dn",
       "kind": "IMG",
       "name": "Reeds and bank",
       "x": 0,
@@ -267,7 +268,7 @@
       "src": "foreground.png"
     },
     {
-      "id": "elmvir54hg7om",
+      "id": "elmvit69q0151",
       "kind": "IMG",
       "name": "Mist near",
       "x": 0,
@@ -286,7 +287,7 @@
       "handle": "mistB"
     },
     {
-      "id": "elmvir54io3e7",
+      "id": "elmvit69r83km",
       "kind": "IMG_ANIM",
       "name": "Willow",
       "x": 0,
@@ -312,7 +313,7 @@
       "animPrefix": "willow"
     },
     {
-      "id": "elmvir54kb5ui",
+      "id": "elmvit69sr48m",
       "kind": "IMG_TIME",
       "name": "Minute Main",
       "x": 184,
@@ -320,7 +321,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvir54kbnr",
+      "group": "gmvit69srit",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -370,7 +371,7 @@
       "aidPad": 12
     },
     {
-      "id": "elmvir54kb3fj",
+      "id": "elmvit69srxb",
       "kind": "IMG",
       "name": "Colon Main",
       "x": 164,
@@ -378,7 +379,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvir54kbnr",
+      "group": "gmvit69srit",
       "alpha": 255,
       "w": 0,
       "h": 0,
@@ -415,7 +416,7 @@
       "aidPad": 12
     },
     {
-      "id": "elmvir54kb5mt",
+      "id": "elmvit69sr12j",
       "kind": "IMG_TIME",
       "name": "Hour Main",
       "x": 66,
@@ -423,7 +424,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvir54kbnr",
+      "group": "gmvit69srit",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -473,7 +474,7 @@
       "aidPad": 12
     },
     {
-      "id": "elmvir54l53hk",
+      "id": "elmvit69tk67b",
       "kind": "IMG_TIME",
       "name": "Minute Aod",
       "x": 122,
@@ -481,7 +482,7 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmvir54l5g9",
+      "group": "gmvit69tkji",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -530,7 +531,7 @@
       }
     },
     {
-      "id": "elmvir54l54ot",
+      "id": "elmvit69tk73f",
       "kind": "IMG_TIME",
       "name": "Hour Aod",
       "x": 110,
@@ -538,7 +539,7 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmvir54l5g9",
+      "group": "gmvit69tkji",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -587,7 +588,7 @@
       }
     },
     {
-      "id": "elmvir54llo",
+      "id": "elmvit69tz5wn",
       "kind": "IMG_WEEK",
       "name": "Weekday",
       "x": 79,
@@ -595,7 +596,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": null,
+      "group": "gDate",
       "alpha": 255,
       "images": [
         "week_w1.png",
@@ -631,7 +632,7 @@
       "aidPad": 12
     },
     {
-      "id": "elmvir54mm1la",
+      "id": "elmvit69uy3vv",
       "kind": "IMG_DATE",
       "name": "Day",
       "x": 157,
@@ -639,7 +640,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": null,
+      "group": "gDate",
       "alpha": 255,
       "images": [
         "font_6_0.png",
@@ -684,7 +685,7 @@
       "aidPad": 12
     },
     {
-      "id": "elmvir54nd50",
+      "id": "elmvit69vn7c9",
       "kind": "TEXT_IMG",
       "name": "Battery",
       "x": 211,
@@ -737,7 +738,7 @@
       "aidPad": 12
     },
     {
-      "id": "elmvir54nu7a4",
+      "id": "elmvit69w43vw",
       "kind": "TEXT_IMG",
       "name": "Steps",
       "x": 130,

@@ -2,20 +2,21 @@
   "version": 1,
   "name": "Rainy Window Hours",
   "device": "bip-6",
-  "appId": 2263377,
+  "appId": 2757302,
   "vender": "dialcraft",
   "description": "A rainy window onto a city that follows the time of day: dawn, grey daylight, golden hour, sunset, dusk and a neon night, with drops running down the glass and over the glassy clock.",
   "font": "Bebas Neue",
   "language": "en-US",
   "fonts": [],
   "groups": {
-    "gmviqujo3qf": "Clock",
-    "gmviqujs5in": "Clock 2",
-    "gRain": "Rain"
+    "gmvit6e6b7p": "Clock",
+    "gmvit6ean8d": "Clock AOD",
+    "gRain": "Rain",
+    "gDate": "Date"
   },
   "elements": [
     {
-      "id": "elmviqujdl618",
+      "id": "elmvit6dugoh",
       "kind": "FILL_RECT",
       "name": "Background",
       "x": 0,
@@ -32,7 +33,7 @@
       "angle": 0
     },
     {
-      "id": "elmviqujlw3gn",
+      "id": "elmvit6e3l362",
       "kind": "IMG",
       "name": "Scene",
       "x": 0,
@@ -59,7 +60,7 @@
       "handle": "scene"
     },
     {
-      "id": "elmviqujo34j3",
+      "id": "elmvit6e6bx9",
       "kind": "IMG_TIME",
       "name": "Minute",
       "x": 206,
@@ -67,7 +68,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmviqujo3qf",
+      "group": "gmvit6e6b7p",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -95,7 +96,7 @@
       "glyph": null
     },
     {
-      "id": "elmviqujo31eo",
+      "id": "elmvit6e6b13q",
       "kind": "IMG_TIME",
       "name": "Hour",
       "x": 56,
@@ -103,7 +104,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmviqujo3qf",
+      "group": "gmvit6e6b7p",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -131,7 +132,7 @@
       "glyph": null
     },
     {
-      "id": "elmviqujop73i",
+      "id": "elmvit6e6zaq",
       "kind": "IMG_WEEK",
       "name": "Weekday",
       "x": 105,
@@ -139,7 +140,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": null,
+      "group": "gDate",
       "alpha": 255,
       "images": [
         "week_w1.png",
@@ -175,7 +176,7 @@
       "aidPad": 7
     },
     {
-      "id": "elmviqujpt6o7",
+      "id": "elmvit6e8a40b",
       "kind": "IMG_DATE",
       "name": "Day",
       "x": 159,
@@ -183,7 +184,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": null,
+      "group": "gDate",
       "alpha": 255,
       "images": [
         "font_2_0.png",
@@ -228,7 +229,7 @@
       "aidPad": 7
     },
     {
-      "id": "elmviqujqp1js",
+      "id": "elmvit6e976qt",
       "kind": "TEXT_IMG",
       "name": "Battery",
       "x": 208,
@@ -281,7 +282,7 @@
       "aidPad": 7
     },
     {
-      "id": "elmviqujr91uz",
+      "id": "elmvit6e9r1ar",
       "kind": "TEXT_IMG",
       "name": "Steps",
       "x": 115,
@@ -335,7 +336,7 @@
       "aidPad": 11
     },
     {
-      "id": "elmviqujs5y0",
+      "id": "elmvit6ean4bg",
       "kind": "IMG_TIME",
       "name": "Hour Aod",
       "x": 129,
@@ -343,7 +344,7 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmviqujs5in",
+      "group": "gmvit6ean8d",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -392,7 +393,7 @@
       }
     },
     {
-      "id": "elmviqujs53km",
+      "id": "elmvit6ean6aj",
       "kind": "IMG_TIME",
       "name": "Minute Aod",
       "x": 125,
@@ -400,7 +401,7 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmviqujs5in",
+      "group": "gmvit6ean8d",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -449,7 +450,7 @@
       }
     },
     {
-      "id": "elmviqujy14x5",
+      "id": "elmvit6egw4wz",
       "kind": "IMG",
       "name": "Colon",
       "x": 180,
@@ -467,7 +468,7 @@
       "src": "glass/colon.png"
     },
     {
-      "id": "elmviquk3771y",
+      "id": "elmvit6em565o",
       "kind": "IMG",
       "name": "Drops on glass",
       "x": 0,
@@ -494,7 +495,7 @@
       "handle": "drops"
     },
     {
-      "id": "elmviquk7l38w",
+      "id": "elmvit6eqm1tl",
       "kind": "IMG_ANIM",
       "name": "Rain outside",
       "x": 0,
@@ -518,7 +519,7 @@
       "animPrefix": "rain"
     },
     {
-      "id": "elmviqukaln3",
+      "id": "elmvit6et45dg",
       "kind": "IMG_ANIM",
       "name": "Running drops 1",
       "x": 0,
@@ -552,7 +553,7 @@
       "animPrefix": "run0"
     },
     {
-      "id": "elmviqukcs3w2",
+      "id": "elmvit6eva3im",
       "kind": "IMG_ANIM",
       "name": "Running drops 2",
       "x": 130,
@@ -586,7 +587,7 @@
       "animPrefix": "run1"
     },
     {
-      "id": "elmviqukeywb",
+      "id": "elmvit6exh4lp",
       "kind": "IMG_ANIM",
       "name": "Running drops 3",
       "x": 260,

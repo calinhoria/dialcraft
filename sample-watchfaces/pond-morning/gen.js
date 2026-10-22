@@ -164,6 +164,7 @@ steps.push(
   { edit: 'Battery', set: { x: 223, y: 146, hSpace: -3, show: 'normal' }, glyph: soft(30, '#fff6e2', 500) },
   { edit: 'Steps', set: { x: 142, y: 392, show: 'normal' }, glyph: soft(34, '#ffe9b8', 500) },
   { script: `project.groups = project.groups || {}; project.groups.gDucks = 'Ducks'; project.groups.gMist = 'Mist and rings'; let n = 0; for (const e of project.elements) { if (['Hen','Drake'].includes(e.name) || /^Duckling/.test(e.name)) { e.group = 'gDucks'; n++ } if (/^(Mist|Fish ring)/.test(e.name)) { e.group = 'gMist'; n++ } } return n` },
+  { script: `project.groups = project.groups || {}; project.groups.gDate = 'Date'; let n = 0; for (const e of project.elements) { if (e.name === 'Weekday' || e.name === 'Day' || e.name === 'Month') { e.group = 'gDate'; n++ } } for (const k of Object.keys(project.groups)) if (project.groups[k] === 'Clock 2') project.groups[k] = 'Clock AOD'; return n` },
   { script: `document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'` },
 );
 // Runs on the watch. Everything is placed from the clock (Date.now()), so after a pause it resumes on the same path.

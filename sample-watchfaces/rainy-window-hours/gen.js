@@ -190,6 +190,7 @@ steps.push(
   { edit: 'Hour Aod', set: { x: 129, y: 96, show: 'aod', zero: 1 }, glyph: { font: F, size: 150, fill: 'solid', color: '#7a8296' } },
   { edit: 'Minute Aod', set: { x: 125, y: 236, show: 'aod', zero: 1 }, glyph: { font: F, size: 150, fill: 'solid', color: '#7a8296' } },
   { script: `project.groups = project.groups || {}; project.groups.gRain = 'Rain'; let n = 0; for (const e of project.elements) { if (['Drops on glass','Rain outside'].includes(e.name) || /^Running drops/.test(e.name)) { e.group = 'gRain'; n++ } } return n` },
+  { script: `project.groups = project.groups || {}; project.groups.gDate = 'Date'; let n = 0; for (const e of project.elements) { if (e.name === 'Weekday' || e.name === 'Day' || e.name === 'Month') { e.group = 'gDate'; n++ } } for (const k of Object.keys(project.groups)) if (project.groups[k] === 'Clock 2') project.groups[k] = 'Clock AOD'; return n` },
   { script: `document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'` },
 );
 

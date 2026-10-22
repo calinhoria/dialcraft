@@ -150,6 +150,7 @@ const steps = [{ preset: 'bg' },
   { edit: 'Day', set: { x: 294, y: 37, space: -3, show: 'normal' }, glyph: small(40) },
   { edit: 'Steps', set: { x: 206, y: 379, hSpace: -2, show: 'normal' }, glyph: small(38) },
   { edit: 'Battery', set: { x: 297, y: 379, hSpace: -2, show: 'normal' }, glyph: small(38) },
+  { script: `project.groups = project.groups || {}; project.groups.gDate = 'Date'; let n = 0; for (const e of project.elements) { if (e.name === 'Weekday' || e.name === 'Day' || e.name === 'Month') { e.group = 'gDate'; n++ } } for (const k of Object.keys(project.groups)) if (project.groups[k] === 'Clock 2') project.groups[k] = 'Clock AOD'; return n` },
   { script: `document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'` },
 ];
 

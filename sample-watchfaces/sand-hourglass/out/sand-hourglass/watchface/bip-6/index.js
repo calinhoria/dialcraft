@@ -15,7 +15,7 @@ import { Time as DCTime } from '@zos/sensor'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_Main_oicc = [
+const img_Minute_Main_q1j7 = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -28,7 +28,7 @@ const img_Minute_Main_oicc = [
   A('font_3_9.png'),
 ]
 
-const img_Hour_Main_i5bq = [
+const img_Hour_Main_sqn5 = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -41,7 +41,7 @@ const img_Hour_Main_i5bq = [
   A('font_2_9.png'),
 ]
 
-const img_Minute_Aod_y492 = [
+const img_Minute_Aod_552a = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -54,7 +54,7 @@ const img_Minute_Aod_y492 = [
   A('font_5_9.png'),
 ]
 
-const img_Hour_Aod_x2io = [
+const img_Hour_Aod_53t8 = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -67,7 +67,7 @@ const img_Hour_Aod_x2io = [
   A('font_4_9.png'),
 ]
 
-const img_Weekday_q1fb = [
+const img_Weekday_x14r = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -77,7 +77,7 @@ const img_Weekday_q1fb = [
   A('week_w7.png'),
 ]
 
-const img_Day_915g = [
+const img_Day_j7a7 = [
   A('font_6_0.png'),
   A('font_6_1.png'),
   A('font_6_2.png'),
@@ -90,7 +90,7 @@ const img_Day_915g = [
   A('font_6_9.png'),
 ]
 
-const img_Steps_36am = [
+const img_Steps_a2hz = [
   A('font_7_0.png'),
   A('font_7_1.png'),
   A('font_7_2.png'),
@@ -103,7 +103,7 @@ const img_Steps_36am = [
   A('font_7_9.png'),
 ]
 
-const img_Battery_i3iu = [
+const img_Battery_j2tc = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -276,7 +276,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_oicc,
+      minute_array: img_Minute_Main_q1j7,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -288,7 +288,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Main_i5bq,
+      hour_array: img_Hour_Main_sqn5,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -300,7 +300,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Aod_y492,
+      minute_array: img_Minute_Aod_552a,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -312,7 +312,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Aod_x2io,
+      hour_array: img_Hour_Aod_53t8,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -321,9 +321,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(232),
       y: px(30),
-      week_en: img_Weekday_q1fb,
-      week_sc: img_Weekday_q1fb,
-      week_tc: img_Weekday_q1fb,
+      week_en: img_Weekday_x14r,
+      week_sc: img_Weekday_x14r,
+      week_tc: img_Weekday_x14r,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -335,9 +335,9 @@ WatchFace({
       day_space: px(-3),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_915g,
-      day_sc_array: img_Day_915g,
-      day_tc_array: img_Day_915g,
+      day_en_array: img_Day_j7a7,
+      day_sc_array: img_Day_j7a7,
+      day_tc_array: img_Day_j7a7,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -346,7 +346,7 @@ WatchFace({
       x: px(206),
       y: px(379),
       type: ui.data_type.STEP,
-      font_array: img_Steps_36am,
+      font_array: img_Steps_a2hz,
       h_space: px(-2),
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
@@ -357,7 +357,7 @@ WatchFace({
       x: px(297),
       y: px(379),
       type: ui.data_type.BATTERY,
-      font_array: img_Battery_i3iu,
+      font_array: img_Battery_j2tc,
       h_space: px(-2),
       align_h: ui.align.LEFT,
       unit_en: A('percent.png'),

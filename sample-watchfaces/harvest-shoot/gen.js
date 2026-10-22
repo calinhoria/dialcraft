@@ -170,6 +170,7 @@ steps.push(
   { edit: 'Hour Aod', set: { x: 122, y: 107, show: 'aod', zero: 1 }, glyph: { font: F, size: 120, weight: 700, fill: 'solid', color: '#7a7466' } },
   { edit: 'Minute Aod', set: { x: 118, y: 247, show: 'aod', zero: 1 }, glyph: { font: F, size: 120, weight: 700, fill: 'solid', color: '#7a7466' } },
   { script: `project.groups = project.groups || {}; project.groups.gBirds = 'Chickens'; project.groups.gFx = 'Feathers and popups'; project.groups.gAmmo = 'Shells'; project.groups.gSign = 'Clock sign'; for (const e of project.elements) if (/^(Wooden stake sign|Hour|Colon|Minute)$/.test(e.name)) e.group = 'gSign'; let n = 0; for (const e of project.elements) { if (/^Chicken \\d/.test(e.name)) { e.group = 'gBirds'; n++ } if (/^(Feather|Popup)/.test(e.name)) { e.group = 'gFx'; n++ } if (/^Shell/.test(e.name)) { e.group = 'gAmmo'; n++ } } return n` },
+  { script: `project.groups = project.groups || {}; project.groups.gDate = 'Date'; let n = 0; for (const e of project.elements) { if (e.name === 'Weekday' || e.name === 'Day' || e.name === 'Month') { e.group = 'gDate'; n++ } } for (const k of Object.keys(project.groups)) if (project.groups[k] === 'Clock 2') project.groups[k] = 'Clock AOD'; return n` },
   { script: `document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'` },
 );
 // Runs on the watch: the demo game. Everything is placed from Date.now() deltas; layers are moved with MORE (x, y, src).
