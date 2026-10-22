@@ -1,0 +1,256 @@
+{
+ "name": "Harvest Shoot",
+ "device": "bip-6",
+ "font": "Lato",
+ "description": "An autumn field where cartoon chickens fly across and a crosshair plays the game by itself: it aims, leads, misses, hits, reloads. The time is the round timer, the steps are the score.",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/harvest-shoot",
+ "optimizePng": 32,
+ "userCode": "{\n  const MS = 90, NC = 4, NF = 8, NS = 6, NCK = 20\n  const CKROT = [13,2,16,6]\n  const SZ = [{ w: 50, h: 43, r: 16, pts: 25, sp: [38, 62], y: [66, 190] }, { w: 90, h: 76, r: 25, pts: 10, sp: [70, 105], y: [140, 290] }]\n  let seed = 9\n  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647\n  const ri = (a, b) => a + rnd() * (b - a)\n  const mv = (w, x, y, src) => { if (src === undefined) w.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)) }); else w.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src }) }\n  const away = (w) => w.setProperty(ui.prop.MORE, { x: pxv(-200), y: pxv(0) })\n  const ci = (k, canon) => F['ck' + k][(canon - CKROT[k] + NCK) % NCK]\n  const B = []\n  for (let k = 0; k < NC; k++) B.push({ w: W['ck' + k], on: false, hit: false, x: 0, y: 0, y0: 0, vx: 0, vy: 0, dir: 1, sz: 0, amp: 0, fq: 0, ph: 0, rate: 9, next: 0.4 + k * 0.9, shown: true, last: -1 })\n  const FE = []\n  for (let i = 0; i < NF; i++) FE.push({ w: W['fe' + i], on: false, x: 0, y: 0, vx: 0, vy: 0, t: 0, k: i % 2 })\n  const PO = [{ w: W.po0, on: false, x: 0, y: 0, t: 0, rot: 1 }, { w: W.po1, on: false, x: 0, y: 0, t: 0, rot: 0 }]\n  const SH = []; for (let i = 0; i < NS; i++) SH.push(W['sh' + i])\n  const shx = (i) => 262 + i * 16\n  const X = { w: W.cross, x: 232, y: 114, tgt: null, ex: 0, ey: 0, fireUntil: 0, nextShot: 0, ammo: NS, reloadAt: 0, popI: 0, feI: 0, fire: false }\n  let t = 0, last = 0, id = null\n  const spawn = (b) => {\n    b.sz = rnd() < 0.42 ? 1 : 0; const s = SZ[b.sz]\n    b.dir = rnd() < 0.5 ? 1 : -1; b.on = true; b.hit = false\n    b.x = b.dir > 0 ? -s.w : 390; b.y0 = ri(s.y[0], s.y[1]); b.y = b.y0; b.vx = b.dir * ri(s.sp[0], s.sp[1]); b.vy = 0\n    b.amp = ri(5, 16); b.fq = ri(1.2, 2.6); b.ph = rnd() * 6; b.rate = ri(8, 11); b.last = -1; b.shown = false\n  }\n  const burst = (cx, cy) => { for (let n = 0; n < 6; n++) { const f = FE[X.feI++ % NF]; f.on = true; f.x = cx; f.y = cy; f.vx = ri(-90, 90); f.vy = ri(-110, -10); f.t = 0 } }\n  const popup = (cx, cy, pts) => { const p = PO[X.popI++ % 2]; p.on = true; p.x = cx - 23; p.y = cy - 30; p.t = 0; p.idx = pts === 50 ? 2 : pts === 25 ? 1 : 0 }\n  const pick = () => {\n    let best = null, bd = 1e9\n    for (const b of B) { if (!b.on || b.hit) continue; const s = SZ[b.sz], cx = b.x + s.w / 2, cy = b.y + s.h / 2; if (cx < 14 || cx > 376 || cy < 30 || cy > 330) continue; const d = Math.hypot(cx - X.x, cy - X.y) - s.pts * 2; if (d < bd) { bd = d; best = b } }\n    return best\n  }\n  const tick = () => {\n    const now = Date.now(); let dt = last ? (now - last) / 1000 : MS / 1000; dt = Math.min(0.15, dt); last = now; t += dt\n    // birds\n    for (const b of B) {\n      const s = SZ[b.sz]\n      if (!b.on) { if (b.shown) { away(b.w); b.shown = false } if (t >= b.next) spawn(b); continue }\n      if (b.hit) { b.vy += 430 * dt; b.y += b.vy * dt; b.x += b.vx * dt; mv(b.w, b.x, b.y, ci(b.id, 16 + b.sz * 2 + (Math.floor(t * 6) % 2))); b.shown = true; if (b.y > 400) { b.on = false; b.next = t + ri(0.4, 1.6) } continue }\n      b.x += b.vx * dt; b.y = b.y0 + Math.sin(t * b.fq + b.ph) * b.amp\n      if ((b.dir > 0 && b.x > 392) || (b.dir < 0 && b.x < -s.w - 4)) { b.on = false; b.next = t + ri(0.3, 1.4); away(b.w); b.shown = false; continue }\n      const f = Math.floor(t * b.rate) % 4, key = f + b.dir * 10\n      if (key !== b.last || !b.shown) { b.last = key; b.shown = true; mv(b.w, b.x, b.y, ci(b.id, (b.sz * 2 + (b.dir > 0 ? 0 : 1)) * 4 + f)) } else mv(b.w, b.x, b.y)\n    }\n    // the player\n    const reloading = X.reloadAt > t\n    if (X.ammo === 0 && !reloading && X.reloadAt === 0) X.reloadAt = t + 1.5\n    if (X.reloadAt && t >= X.reloadAt) { X.reloadAt = 0; X.ammo = NS; for (let i = 0; i < NS; i++) mv(SH[i], shx(i), 382) }\n    if (!X.tgt || !X.tgt.on || X.tgt.hit) { X.tgt = pick(); if (X.tgt) { const r = SZ[X.tgt.sz].r; X.ex = ri(-1, 1) * r * 1.1; X.ey = ri(-1, 1) * r * 1.1 } }\n    let ax = 195 + Math.sin(t * 0.7) * 60, ay = 230 + Math.cos(t * 0.5) * 30\n    if (X.tgt) { const b = X.tgt, s = SZ[b.sz]; ax = b.x + s.w / 2 + b.vx * 0.22 + X.ex; ay = b.y + s.h / 2 + X.ey }\n    const dx = ax - X.x, dy = ay - X.y, d = Math.hypot(dx, dy), sp = Math.min(300, d * 7) * dt\n    if (d > 0.5) { X.x += dx / d * Math.min(sp, d); X.y += dy / d * Math.min(sp, d) }\n    if (X.tgt && !reloading && X.ammo > 0 && t >= X.nextShot && d < 7) {\n      X.ammo--; mv(SH[X.ammo], -200, 0); X.fireUntil = t + 0.14; X.nextShot = t + ri(0.32, 0.6)\n      const b = X.tgt, s = SZ[b.sz], cx = b.x + s.w / 2, cy = b.y + s.h / 2\n      if (Math.hypot(cx - X.x, cy - X.y) < s.r) { b.hit = true; b.vy = -60; b.vx *= 0.3; burst(cx, cy); popup(cx, cy, s.pts); X.tgt = null }\n      else { X.ex = ri(-1, 1) * s.r * 0.8; X.ey = ri(-1, 1) * s.r * 0.8 }\n    }\n    const fire = t < X.fireUntil\n    mv(X.w, X.x - 20, X.y - 20, fire !== X.fire ? F.cross[fire ? 1 : 0] : undefined); X.fire = fire\n    // feathers and popups\n    for (const f of FE) { if (!f.on) continue; f.t += dt; f.vy += 70 * dt; f.x += (f.vx + Math.sin(f.t * 9 + f.k) * 30) * dt; f.y += f.vy * dt; f.vx *= 0.985; if (f.t > 1.1) { f.on = false; away(f.w) } else mv(f.w, f.x, f.y, F['fe' + FE.indexOf(f)][(Math.floor(f.t * 8) + f.k) % 2]) }\n    for (const p of PO) { if (!p.on) continue; p.t += dt; if (p.t > 0.9) { p.on = false; away(p.w) } else mv(p.w, p.x, p.y - p.t * 26, F[p.w === W.po0 ? 'po0' : 'po1'][(p.idx - p.rot + 3) % 3]) }\n  }\n  B.forEach((b, i) => { b.id = i })\n  const safe = () => { try { tick() } catch (e) {} }\n  const stop = () => { if (id === null) return; try { clearInterval(id) } catch (e) {} id = null }\n  const start = () => { if (id !== null) return; last = 0; try { id = setInterval(safe, MS) } catch (e) {} }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  safe()\n  start()\n}",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 21; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };\n\nconst c = mk(W, H), g = c.getContext('2d');\nlet gr = g.createLinearGradient(0, 0, 0, 260);\n[[0, '#2c7cbc'], [0.45, '#5ba5d6'], [0.75, '#b4cfd6'], [1, '#f6c88e']].forEach(([p, col]) => gr.addColorStop(p, col)); g.fillStyle = gr; g.fillRect(0, 0, W, 260);\nconst cloud = (x, y, s, a) => { for (let i = 0; i < 9; i++) { const cx = x + (rnd() - 0.5) * 120 * s, cy = y + (rnd() - 0.5) * 26 * s, r = (16 + rnd() * 20) * s; const q = g.createRadialGradient(cx - r * 0.3, cy - r * 0.4, 1, cx, cy, r); q.addColorStop(0, 'rgba(255,214,170,' + a + ')'); q.addColorStop(0.7, 'rgba(240,150,104,' + a * 0.9 + ')'); q.addColorStop(1, 'rgba(220,120,90,0)'); g.fillStyle = q; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.fill(); } };\ncloud(70, 150, 1.2, 0.95); cloud(330, 120, 0.9, 0.9); cloud(220, 100, 0.6, 0.6);\nfor (const [col, base, amp] of [['#8896b4', 200, 22], ['#6f7c58', 214, 14]]) { g.beginPath(); g.moveTo(0, 260); for (let x = 0; x <= W; x += 6) g.lineTo(x, base - amp * Math.abs(Math.sin(x / 61 + base)) - amp * 0.4 * Math.sin(x / 17)); g.lineTo(W, 260); g.closePath(); g.fillStyle = col; g.fill(); }\nconst PAL = ['#c8901a', '#e2aa28', '#8e9c2c', '#d8701e', '#b87618', '#a8b032', '#e8b83a'];\nconst tree = (cx, cy, rw, rh) => { g.beginPath(); g.ellipse(cx, cy, rw, rh, 0, 0, 7); g.fillStyle = '#7a5410'; g.fill();\n  for (let i = 0; i < 520; i++) { const a = rnd() * 7, d = Math.sqrt(rnd()), x = cx + Math.cos(a) * rw * d, y = cy + Math.sin(a) * rh * d, lit = ((x - cx) / rw + (y - cy) / rh) < 0.1, r = 3 + rnd() * 6.5;\n    g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = PAL[rnd() * PAL.length | 0]; g.fill(); g.fillStyle = lit ? 'rgba(255,236,150,' + 0.1 * rnd() + ')' : 'rgba(60,30,0,' + (0.1 + 0.22 * rnd()) + ')'; g.fill(); } };\nfor (const [x, y, rw, rh] of [[30, 215, 56, 62], [112, 196, 72, 76], [208, 180, 84, 92], [302, 198, 74, 80], [366, 218, 52, 64], [160, 228, 58, 46], [262, 236, 62, 48]]) tree(x, y, rw, rh);\ngr = g.createLinearGradient(0, 220, 0, 290); gr.addColorStop(0, 'rgba(255,210,140,0)'); gr.addColorStop(1, 'rgba(255,200,120,0.3)'); g.fillStyle = gr; g.fillRect(0, 220, W, 70);\n// the field\ngr = g.createLinearGradient(0, 255, 0, H); gr.addColorStop(0, '#b08a2a'); gr.addColorStop(0.35, '#d6ae3e'); gr.addColorStop(1, '#8a6a1c'); g.fillStyle = gr; g.fillRect(0, 255, W, H - 255);\ng.save(); g.beginPath(); g.ellipse(300, 318, 78, 17, 0, 0, 7); const wg = g.createLinearGradient(0, 300, 0, 335); wg.addColorStop(0, '#46503a'); wg.addColorStop(1, '#1c261c'); g.fillStyle = wg; g.fill(); g.restore();\nconst GOLD = ['#e2bb4a', '#c99c32', '#f0d068', '#a8821f', '#d8a93a', '#efe08a'];\nfor (let i = 0; i < 9500; i++) { const t = Math.pow(rnd(), 0.8), y = 256 + t * (H - 256), len = 4 + t * 24, x = rnd() * W, lean = (rnd() - 0.5) * (4 + t * 8); g.strokeStyle = GOLD[rnd() * GOLD.length | 0]; g.globalAlpha = 0.55 + 0.4 * rnd(); g.lineWidth = 0.8 + t * 1.5; g.beginPath(); g.moveTo(x, y); g.lineTo(x + lean, y - len); g.stroke(); }\ng.globalAlpha = 1;\n// scarecrow with a pumpkin head, far in the field\n{ const x = 232, y = 300; g.strokeStyle = '#4a3418'; g.lineWidth = 3; g.beginPath(); g.moveTo(x, y - 20); g.lineTo(x, y + 12); g.moveTo(x - 20, y - 12); g.lineTo(x + 20, y - 12); g.stroke();\n  g.fillStyle = '#d9d2b8'; g.beginPath(); g.ellipse(x, y - 4, 9, 13, 0, 0, 7); g.fill(); g.beginPath(); g.arc(x, y - 28, 11, 0, 7); const pg = g.createRadialGradient(x - 3, y - 31, 1, x, y - 28, 12); pg.addColorStop(0, '#ffa23a'); pg.addColorStop(1, '#c25a10'); g.fillStyle = pg; g.fill();\n  g.fillStyle = '#2a1608'; g.beginPath(); g.moveTo(x - 6, y - 31); g.lineTo(x - 2, y - 31); g.lineTo(x - 4, y - 27); g.fill(); g.beginPath(); g.moveTo(x + 6, y - 31); g.lineTo(x + 2, y - 31); g.lineTo(x + 4, y - 27); g.fill(); g.fillRect(x - 5, y - 23, 10, 2); g.fillRect(x - 12, y - 40, 24, 3); g.fillRect(x - 7, y - 50, 14, 11); }\n// the tree on the left, with a branch across the top\nconst bark = g.createLinearGradient(0, 0, 110, 0); bark.addColorStop(0, '#4a3822'); bark.addColorStop(0.45, '#8c7050'); bark.addColorStop(0.75, '#5e4a30'); bark.addColorStop(1, '#32261a');\ng.beginPath(); g.moveTo(-10, H); g.bezierCurveTo(10, 330, 44, 230, 40, 120); g.bezierCurveTo(38, 60, 52, 20, 58, -10); g.lineTo(96, -10); g.bezierCurveTo(88, 40, 84, 90, 88, 150); g.bezierCurveTo(94, 250, 100, 340, 118, H); g.closePath(); g.fillStyle = bark; g.fill();\ng.save(); g.clip(); for (let i = 0; i < 90; i++) { const x = rnd() * 120 - 5, y = rnd() * H; g.strokeStyle = rnd() < 0.55 ? 'rgba(20,12,4,0.5)' : 'rgba(190,160,110,0.28)'; g.lineWidth = 0.8 + rnd() * 1.4; g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x + 3, y + 20, x - 4, y + 40, x + 1, y + 20 + rnd() * 50); g.stroke(); } g.restore();\nconst limb = (x0, y0, x1, y1, x2, y2, w0, w1) => { for (let k = 0; k < 14; k++) { const t = k / 13, u = 1 - t, px = u * u * x0 + 2 * u * t * x1 + t * t * x2, py = u * u * y0 + 2 * u * t * y1 + t * t * y2; g.beginPath(); g.arc(px, py, (w0 * u + w1 * t) / 2, 0, 7); g.fillStyle = k % 2 ? '#6e563a' : '#5a4630'; g.fill(); } };\nlimb(84, 60, 130, 34, 200, 22, 12, 2.5); limb(150, 30, 168, 8, 186, 4, 5, 1.5); limb(120, 44, 150, 56, 176, 70, 4, 1.5);\nnames.push(addProjectImage('scene.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Field'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 21; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };\n\n// a cartoon chicken facing right: body centre near (40s, 42s) on a 90s x 76s sheet; frame = wing position 0..3\nfunction chicken(s, f, hit) {\n  const w = Math.round(90 * s), h = Math.round(76 * s), c = mk(w, h), g = c.getContext('2d');\n  g.save(); if (hit) { g.translate(w / 2, h / 2); g.rotate(hit * 0.6); g.translate(-w / 2, -h / 2); }\n  const ang = [-1.5, -0.8, 0.1, -0.8][hit ? 2 : f];\n  const wing = (a, col, tip, back) => { g.save(); g.translate(38 * s, 36 * s); g.rotate(a); for (let i = 0; i < 6; i++) { g.save(); g.rotate(-0.1 - i * 0.2 * (back ? 0.8 : 1) + 0.5); g.beginPath(); g.ellipse(-24 * s, 0, 26 * s, 4.6 * s, 0, 0, 7); g.fillStyle = col; g.fill(); g.beginPath(); g.ellipse(-40 * s, 0, 11 * s, 3.4 * s, 0, 0, 7); g.fillStyle = tip; g.fill(); g.restore(); } g.restore(); };\n  wing(ang + 0.15, '#4a2a0e', '#6b6a20', true);\n  for (const [a, l] of [[0.3, 22], [0, 24], [-0.3, 21]]) { g.save(); g.translate(18 * s, 38 * s); g.rotate(a + 3.14); g.beginPath(); g.ellipse(l * s * 0.5, 0, l * s * 0.5, 4 * s, 0, 0, 7); g.fillStyle = a === 0 ? '#3d5a22' : '#5a3a14'; g.fill(); g.restore(); }\n  g.strokeStyle = '#d8a020'; g.lineWidth = 2 * s; g.lineCap = 'round'; g.beginPath(); g.moveTo(34 * s, 54 * s); g.lineTo(22 * s, 62 * s); g.moveTo(42 * s, 55 * s); g.lineTo(30 * s, 65 * s); g.stroke();\n  let bg = g.createRadialGradient(34 * s, 34 * s, 2, 40 * s, 42 * s, 26 * s); bg.addColorStop(0, '#d7843a'); bg.addColorStop(0.6, '#a85a1c'); bg.addColorStop(1, '#6a3410');\n  g.beginPath(); g.ellipse(40 * s, 42 * s, 23 * s, 16 * s, -0.12, 0, 7); g.fillStyle = bg; g.fill();\n  g.beginPath(); g.ellipse(46 * s, 49 * s, 15 * s, 8 * s, 0, 0, 7); g.fillStyle = 'rgba(244,214,150,0.6)'; g.fill();\n  g.beginPath(); g.moveTo(54 * s, 36 * s); g.quadraticCurveTo(62 * s, 40 * s, 62 * s, 32 * s); g.lineTo(66 * s, 22 * s); g.lineTo(54 * s, 26 * s); g.closePath(); g.fillStyle = '#b86a24'; g.fill();\n  g.beginPath(); g.arc(62 * s, 26 * s, 10.5 * s, 0, 7); const hg = g.createRadialGradient(59 * s, 22 * s, 1, 62 * s, 26 * s, 11 * s); hg.addColorStop(0, '#e2954a'); hg.addColorStop(1, '#a85a1c'); g.fillStyle = hg; g.fill();\n  g.fillStyle = '#d6242a'; for (const [x, y, r] of [[57, 16, 4], [63, 14, 4.6], [69, 17, 3.8]]) { g.beginPath(); g.arc(x * s, y * s, r * s, 0, 7); g.fill(); }\n  g.beginPath(); g.ellipse(70 * s, 38 * s, 3 * s, 4.6 * s, 0, 0, 7); g.fill();\n  g.beginPath(); g.moveTo(70 * s, 22 * s); g.lineTo(84 * s, 27 * s); g.lineTo(70 * s, 32 * s); g.closePath(); g.fillStyle = '#f2b81c'; g.fill();\n  if (hit) { g.strokeStyle = '#222'; g.lineWidth = 1.8 * s; g.beginPath(); g.moveTo(61 * s, 20 * s); g.lineTo(68 * s, 27 * s); g.moveTo(68 * s, 20 * s); g.lineTo(61 * s, 27 * s); g.stroke(); }\n  else { g.beginPath(); g.arc(66 * s, 24 * s, 4.4 * s, 0, 7); g.fillStyle = '#fff'; g.fill(); g.beginPath(); g.arc(67.2 * s, 24.4 * s, 2.1 * s, 0, 7); g.fillStyle = '#111'; g.fill(); g.strokeStyle = '#3a1c08'; g.lineWidth = 1.4 * s; g.beginPath(); g.moveTo(61 * s, 18.5 * s); g.lineTo(70 * s, 20.5 * s); g.stroke(); }\n  wing(ang, '#5a3410', '#8a8a2a', false);\n  g.restore();\n  return c;\n}\nconst flip = (c) => { const o = mk(c.width, c.height), g = o.getContext('2d'); g.translate(c.width, 0); g.scale(-1, 1); g.drawImage(c, 0, 0); return o; };\n// canonical list: size (far, near) x direction (right, left) x frame 0..3 = 16, then the tumbling pictures: far a b, near a b\nfor (const [si, s] of [[0, 0.56], [1, 1]]) for (const dir of [0, 1]) for (let f = 0; f < 4; f++) { const c = chicken(s, f, 0); names.push(addProjectImage('ck/c' + si + dir + f + '.png', dir ? flip(c) : c, {}).name); }\nfor (const [si, s] of [[0, 0.56], [1, 1]]) for (const v of [1, -1]) names.push(addProjectImage('ck/h' + si + (v > 0 ? 'a' : 'b') + '.png', chicken(s, 2, v), {}).name);\n// feathers\nfor (const v of [0, 1]) { const c = mk(12, 8), g = c.getContext('2d'); g.translate(6, 4); g.rotate(v ? 0.7 : -0.5); g.beginPath(); g.ellipse(0, 0, 5.4, 1.8, 0, 0, 7); g.fillStyle = v ? '#f6e8c8' : '#e2a45a'; g.fill(); g.strokeStyle = 'rgba(90,50,20,0.7)'; g.lineWidth = 0.7; g.beginPath(); g.moveTo(-5, 0); g.lineTo(5, 0); g.stroke(); names.push(addProjectImage('fx/feather' + v + '.png', c, {}).name); }\n// score popups\nfor (const [t, col] of [['10', '#ffffff'], ['25', '#ffffff'], ['50', '#ffe68a']]) { const c = mk(46, 30), g = c.getContext('2d'); g.font = 'italic 900 24px \"Lato\"'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 5; g.strokeStyle = '#000'; g.strokeText(t, 23, 16); g.fillStyle = col; g.fillText(t, 23, 16); names.push(addProjectImage('fx/pop' + t + '.png', c, {}).name); }\n\nawait loadAllImages();\n\n    const ck = names.slice(0, 20);\n    { const im = ck; const e = await addElement('IMG', { src: im[13] }); e.name = 'Chicken 1'; e.src = im[13]; e.images = im.slice(13).concat(im.slice(0, 13)); e.handle = 'ck0'; e.x = 250; e.y = 66; e.show = 'normal'; }\n    { const im = ck; const e = await addElement('IMG', { src: im[2] }); e.name = 'Chicken 2'; e.src = im[2]; e.images = im.slice(2).concat(im.slice(0, 2)); e.handle = 'ck1'; e.x = 60; e.y = 158; e.show = 'normal'; }\n    return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 21; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };\n\nconst c = mk(W, H), g = c.getContext('2d');\nconst PX0 = 66, PX1 = 324, PY0 = 148, PY1 = 246, CXs = 195, CYs = 197;\nconst crack = (x, y, len, dir, w) => { g.beginPath(); g.moveTo(x, y); let cx = x, cy = y; for (let i = 0; i < len; i += 5) { cx += dir[0] * 5; cy += dir[1] * 5 + (rnd() - 0.5) * 3.2; g.lineTo(cx, cy); } g.strokeStyle = 'rgba(14,7,2,0.92)'; g.lineWidth = w; g.stroke(); };\n// the stake: short, thick, cracked, leaning a little\ng.save(); g.translate(CXs, 240); g.rotate(0.03); g.translate(-CXs, -240);\ng.save(); g.shadowColor = 'rgba(10,6,0,0.6)'; g.shadowBlur = 10; g.shadowOffsetX = 5; g.shadowOffsetY = 4;\ng.beginPath(); g.moveTo(186, 226); g.lineTo(204, 226); g.lineTo(202, 296); g.lineTo(197, 328); g.lineTo(193, 330); g.lineTo(188, 296); g.closePath();\nlet gr = g.createLinearGradient(186, 0, 204, 0); gr.addColorStop(0, '#2e1c0c'); gr.addColorStop(0.4, '#5a3a1e'); gr.addColorStop(0.75, '#432810'); gr.addColorStop(1, '#22140a'); g.fillStyle = gr; g.fill(); g.restore();\ng.save(); g.beginPath(); g.moveTo(186, 226); g.lineTo(204, 226); g.lineTo(202, 296); g.lineTo(197, 328); g.lineTo(193, 330); g.lineTo(188, 296); g.closePath(); g.clip();\nfor (let i = 0; i < 40; i++) { const x = 186 + rnd() * 18; g.strokeStyle = rnd() < 0.55 ? 'rgba(12,6,2,0.5)' : 'rgba(190,160,120,0.16)'; g.lineWidth = 0.6 + rnd() * 0.9; g.beginPath(); g.moveTo(x, 226); g.bezierCurveTo(x + 3, 260, x - 3, 300, x + (rnd() - 0.5) * 6, 332); g.stroke(); }\nfor (let i = 0; i < 2; i++) crack(189 + i * 7 + rnd() * 3, 232 + rnd() * 14, 70 + rnd() * 30, [0.06, 1], 1.3); g.restore(); g.restore();\n// the plank: old, uneven edges, chipped corner\nconst outline = () => { g.beginPath(); g.moveTo(PX0 + 6, PY0 + 1); for (let x = PX0 + 6; x <= PX1 - 8; x += 12) g.lineTo(x, PY0 + (hash(x, 1) - 0.5) * 3.4); g.lineTo(PX1 - 3, PY0 + 6); for (let y = PY0 + 10; y <= PY1 - 18; y += 12) g.lineTo(PX1 + (hash(2, y) - 0.5) * 3.2, y); g.lineTo(PX1 - 18, PY1 - 3); for (let x = PX1 - 28; x >= PX0 + 4; x -= 12) g.lineTo(x, PY1 + (hash(x, 3) - 0.5) * 3.4); g.lineTo(PX0 - 2, PY1 - 8); for (let y = PY1 - 16; y >= PY0 + 8; y -= 12) g.lineTo(PX0 + (hash(4, y) - 0.5) * 3.4, y); g.closePath(); };\ng.save(); g.translate(CXs, CYs); g.rotate(-0.028); g.translate(-CXs, -CYs);\ng.save(); g.shadowColor = 'rgba(10,6,0,0.65)'; g.shadowBlur = 14; g.shadowOffsetX = 6; g.shadowOffsetY = 7; outline();\ngr = g.createLinearGradient(0, PY0, 0, PY1); gr.addColorStop(0, '#6a4524'); gr.addColorStop(0.5, '#4c2f17'); gr.addColorStop(1, '#321e0e'); g.fillStyle = gr; g.fill(); g.restore();\ng.save(); outline(); g.clip();\nfor (let i = 0; i < 150; i++) { const y = PY0 + rnd() * 100, x0 = PX0 - 10 + rnd() * 120; g.strokeStyle = rnd() < 0.55 ? 'rgba(12,6,2,' + (0.15 + rnd() * 0.3) + ')' : 'rgba(210,176,130,' + (0.06 + rnd() * 0.12) + ')'; g.lineWidth = 0.6 + rnd() * 1.5; g.beginPath(); g.moveTo(x0, y); g.bezierCurveTo(x0 + 80, y + (rnd() - 0.5) * 5, x0 + 170, y + (rnd() - 0.5) * 5, PX1 + 10, y + (rnd() - 0.5) * 4); g.stroke(); }\nfor (let i = 0; i < 28; i++) { const y = PY0 + rnd() * 100, x0 = PX0 + rnd() * 160; g.strokeStyle = 'rgba(176,166,146,' + (0.06 + rnd() * 0.1) + ')'; g.lineWidth = 2 + rnd() * 5; g.beginPath(); g.moveTo(x0, y); g.lineTo(x0 + 40 + rnd() * 90, y + (rnd() - 0.5) * 3); g.stroke(); }\ng.save(); g.filter = 'blur(7px)'; g.fillStyle = 'rgba(180,138,84,0.66)'; g.fillRect(PX0 + 22, PY0 + 16, 214, 66); g.restore();\nfor (const [kx, ky] of [[110, 172], [272, 226], [236, 160]]) for (let r = 9; r > 1; r -= 2) { g.beginPath(); g.ellipse(kx, ky, r * 1.7, r, 0, 0, 7); g.strokeStyle = 'rgba(10,5,1,' + (0.62 - r * 0.04) + ')'; g.lineWidth = 1.1; g.stroke(); }\ncrack(PX0 + 14, 170, 120, [1, 0.03], 2); crack(PX0 + 130, 210, 110, [1, -0.04], 1.7); crack(PX0 + 40, 232, 90, [1, 0.02], 1.4); crack(PX0 + 190, 186, 62, [1, 0.05], 1.5);\nfor (const [cx2, cy2, l] of [[PX0 + 60, PY0, 30], [PX1 - 70, PY1, 34], [PX0 + 4, PY0 + 40, 24]]) crack(cx2, cy2, l, [0.1, 1], 1.8);\nfor (let i = 0; i < 60; i++) { const x = PX0 + rnd() * 258, y = PY0 + rnd() * 98; g.fillStyle = rnd() < 0.5 ? 'rgba(10,5,1,0.35)' : 'rgba(220,190,140,0.14)'; g.fillRect(x, y, 1 + rnd() * 3, 1); }\nfor (const [mx, my, mr] of [[PX0 + 30, PY1 - 4, 20], [PX1 - 36, PY1 - 2, 16], [PX0 + 6, PY0 + 8, 12]]) for (let k = 0; k < 26; k++) { g.beginPath(); g.arc(mx + (rnd() - 0.5) * mr * 2, my + (rnd() - 0.5) * mr * 0.8, 1.2 + rnd() * 2.6, 0, 7); g.fillStyle = 'rgba(' + (60 + rnd() * 30 | 0) + ',' + (92 + rnd() * 30 | 0) + ',36,' + (0.4 + rnd() * 0.3) + ')'; g.fill(); }\ng.restore();\ng.save(); outline(); g.strokeStyle = 'rgba(8,4,1,0.8)'; g.lineWidth = 1.6; g.stroke(); g.restore();\nfor (const [nx, ny] of [[PX0 + 14, PY0 + 14], [PX1 - 14, PY0 + 14], [PX0 + 14, PY1 - 14], [PX1 - 18, PY1 - 16]]) { g.strokeStyle = 'rgba(120,52,18,0.4)'; g.lineWidth = 2; g.beginPath(); g.moveTo(nx, ny); g.lineTo(nx + 1, ny + 16); g.stroke(); g.beginPath(); g.arc(nx, ny, 3.4, 0, 7); const q = g.createRadialGradient(nx - 1, ny - 1, 0.4, nx, ny, 3.6); q.addColorStop(0, '#b0683a'); q.addColorStop(1, '#2a1208'); g.fillStyle = q; g.fill(); }\ng.restore();\n// dry grass round the foot of the stake\nfor (let i = 0; i < 80; i++) { const x = 196 + (rnd() - 0.5) * 60, y = 322 + rnd() * 8, l = 10 + rnd() * 20; g.strokeStyle = ['#a8821f', '#c8a032', '#d8b44a', '#8a6a1c', '#6a4e14'][rnd() * 5 | 0]; g.lineWidth = 1.2 + rnd() * 1.8; g.lineCap = 'round'; g.beginPath(); g.moveTo(x, y + 6); g.quadraticCurveTo(x + (rnd() - 0.5) * 8, y - l * 0.5, x + (rnd() - 0.5) * 18, y - l); g.stroke(); }\nnames.push(addProjectImage('sign.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Wooden stake sign'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 21; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };\n\n// a cartoon chicken facing right: body centre near (40s, 42s) on a 90s x 76s sheet; frame = wing position 0..3\nfunction chicken(s, f, hit) {\n  const w = Math.round(90 * s), h = Math.round(76 * s), c = mk(w, h), g = c.getContext('2d');\n  g.save(); if (hit) { g.translate(w / 2, h / 2); g.rotate(hit * 0.6); g.translate(-w / 2, -h / 2); }\n  const ang = [-1.5, -0.8, 0.1, -0.8][hit ? 2 : f];\n  const wing = (a, col, tip, back) => { g.save(); g.translate(38 * s, 36 * s); g.rotate(a); for (let i = 0; i < 6; i++) { g.save(); g.rotate(-0.1 - i * 0.2 * (back ? 0.8 : 1) + 0.5); g.beginPath(); g.ellipse(-24 * s, 0, 26 * s, 4.6 * s, 0, 0, 7); g.fillStyle = col; g.fill(); g.beginPath(); g.ellipse(-40 * s, 0, 11 * s, 3.4 * s, 0, 0, 7); g.fillStyle = tip; g.fill(); g.restore(); } g.restore(); };\n  wing(ang + 0.15, '#4a2a0e', '#6b6a20', true);\n  for (const [a, l] of [[0.3, 22], [0, 24], [-0.3, 21]]) { g.save(); g.translate(18 * s, 38 * s); g.rotate(a + 3.14); g.beginPath(); g.ellipse(l * s * 0.5, 0, l * s * 0.5, 4 * s, 0, 0, 7); g.fillStyle = a === 0 ? '#3d5a22' : '#5a3a14'; g.fill(); g.restore(); }\n  g.strokeStyle = '#d8a020'; g.lineWidth = 2 * s; g.lineCap = 'round'; g.beginPath(); g.moveTo(34 * s, 54 * s); g.lineTo(22 * s, 62 * s); g.moveTo(42 * s, 55 * s); g.lineTo(30 * s, 65 * s); g.stroke();\n  let bg = g.createRadialGradient(34 * s, 34 * s, 2, 40 * s, 42 * s, 26 * s); bg.addColorStop(0, '#d7843a'); bg.addColorStop(0.6, '#a85a1c'); bg.addColorStop(1, '#6a3410');\n  g.beginPath(); g.ellipse(40 * s, 42 * s, 23 * s, 16 * s, -0.12, 0, 7); g.fillStyle = bg; g.fill();\n  g.beginPath(); g.ellipse(46 * s, 49 * s, 15 * s, 8 * s, 0, 0, 7); g.fillStyle = 'rgba(244,214,150,0.6)'; g.fill();\n  g.beginPath(); g.moveTo(54 * s, 36 * s); g.quadraticCurveTo(62 * s, 40 * s, 62 * s, 32 * s); g.lineTo(66 * s, 22 * s); g.lineTo(54 * s, 26 * s); g.closePath(); g.fillStyle = '#b86a24'; g.fill();\n  g.beginPath(); g.arc(62 * s, 26 * s, 10.5 * s, 0, 7); const hg = g.createRadialGradient(59 * s, 22 * s, 1, 62 * s, 26 * s, 11 * s); hg.addColorStop(0, '#e2954a'); hg.addColorStop(1, '#a85a1c'); g.fillStyle = hg; g.fill();\n  g.fillStyle = '#d6242a'; for (const [x, y, r] of [[57, 16, 4], [63, 14, 4.6], [69, 17, 3.8]]) { g.beginPath(); g.arc(x * s, y * s, r * s, 0, 7); g.fill(); }\n  g.beginPath(); g.ellipse(70 * s, 38 * s, 3 * s, 4.6 * s, 0, 0, 7); g.fill();\n  g.beginPath(); g.moveTo(70 * s, 22 * s); g.lineTo(84 * s, 27 * s); g.lineTo(70 * s, 32 * s); g.closePath(); g.fillStyle = '#f2b81c'; g.fill();\n  if (hit) { g.strokeStyle = '#222'; g.lineWidth = 1.8 * s; g.beginPath(); g.moveTo(61 * s, 20 * s); g.lineTo(68 * s, 27 * s); g.moveTo(68 * s, 20 * s); g.lineTo(61 * s, 27 * s); g.stroke(); }\n  else { g.beginPath(); g.arc(66 * s, 24 * s, 4.4 * s, 0, 7); g.fillStyle = '#fff'; g.fill(); g.beginPath(); g.arc(67.2 * s, 24.4 * s, 2.1 * s, 0, 7); g.fillStyle = '#111'; g.fill(); g.strokeStyle = '#3a1c08'; g.lineWidth = 1.4 * s; g.beginPath(); g.moveTo(61 * s, 18.5 * s); g.lineTo(70 * s, 20.5 * s); g.stroke(); }\n  wing(ang, '#5a3410', '#8a8a2a', false);\n  g.restore();\n  return c;\n}\nconst flip = (c) => { const o = mk(c.width, c.height), g = o.getContext('2d'); g.translate(c.width, 0); g.scale(-1, 1); g.drawImage(c, 0, 0); return o; };\n// canonical list: size (far, near) x direction (right, left) x frame 0..3 = 16, then the tumbling pictures: far a b, near a b\nfor (const [si, s] of [[0, 0.56], [1, 1]]) for (const dir of [0, 1]) for (let f = 0; f < 4; f++) { const c = chicken(s, f, 0); names.push(addProjectImage('ck/c' + si + dir + f + '.png', dir ? flip(c) : c, {}).name); }\nfor (const [si, s] of [[0, 0.56], [1, 1]]) for (const v of [1, -1]) names.push(addProjectImage('ck/h' + si + (v > 0 ? 'a' : 'b') + '.png', chicken(s, 2, v), {}).name);\n// feathers\nfor (const v of [0, 1]) { const c = mk(12, 8), g = c.getContext('2d'); g.translate(6, 4); g.rotate(v ? 0.7 : -0.5); g.beginPath(); g.ellipse(0, 0, 5.4, 1.8, 0, 0, 7); g.fillStyle = v ? '#f6e8c8' : '#e2a45a'; g.fill(); g.strokeStyle = 'rgba(90,50,20,0.7)'; g.lineWidth = 0.7; g.beginPath(); g.moveTo(-5, 0); g.lineTo(5, 0); g.stroke(); names.push(addProjectImage('fx/feather' + v + '.png', c, {}).name); }\n// score popups\nfor (const [t, col] of [['10', '#ffffff'], ['25', '#ffffff'], ['50', '#ffe68a']]) { const c = mk(46, 30), g = c.getContext('2d'); g.font = 'italic 900 24px \"Lato\"'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 5; g.strokeStyle = '#000'; g.strokeText(t, 23, 16); g.fillStyle = col; g.fillText(t, 23, 16); names.push(addProjectImage('fx/pop' + t + '.png', c, {}).name); }\n\nawait loadAllImages();\n\n    const ck = names.slice(0, 20), fe = names.slice(20, 22), po = names.slice(22, 25);\n    { const im = ck; const e = await addElement('IMG', { src: im[16] }); e.name = 'Chicken 3'; e.src = im[16]; e.images = im.slice(16).concat(im.slice(0, 16)); e.handle = 'ck2'; e.x = 140; e.y = 168; e.show = 'normal'; }\n    { const im = ck; const e = await addElement('IMG', { src: im[6] }); e.name = 'Chicken 4'; e.src = im[6]; e.images = im.slice(6).concat(im.slice(0, 6)); e.handle = 'ck3'; e.x = 286; e.y = 196; e.show = 'normal'; }\n    { const im = fe; const e = await addElement('IMG', { src: im[0] }); e.name = 'Feather 1'; e.src = im[0]; e.images = im.slice(0).concat(im.slice(0, 0)); e.handle = 'fe0'; e.x = 150; e.y = 214; e.show = 'normal'; }\n    { const im = fe; const e = await addElement('IMG', { src: im[1] }); e.name = 'Feather 2'; e.src = im[1]; e.images = im.slice(1).concat(im.slice(0, 1)); e.handle = 'fe1'; e.x = 164; e.y = 204; e.show = 'normal'; }\n    { const im = fe; const e = await addElement('IMG', { src: im[0] }); e.name = 'Feather 3'; e.src = im[0]; e.images = im.slice(0).concat(im.slice(0, 0)); e.handle = 'fe2'; e.x = 138; e.y = 220; e.show = 'normal'; }\n    { const im = fe; const e = await addElement('IMG', { src: im[1] }); e.name = 'Feather 4'; e.src = im[1]; e.images = im.slice(1).concat(im.slice(0, 1)); e.handle = 'fe3'; e.x = 172; e.y = 226; e.show = 'normal'; }\n    { const im = fe; const e = await addElement('IMG', { src: im[0] }); e.name = 'Feather 5'; e.src = im[0]; e.images = im.slice(0).concat(im.slice(0, 0)); e.handle = 'fe4'; e.x = 130; e.y = 210; e.show = 'normal'; }\n    { const im = fe; const e = await addElement('IMG', { src: im[1] }); e.name = 'Feather 6'; e.src = im[1]; e.images = im.slice(1).concat(im.slice(0, 1)); e.handle = 'fe5'; e.x = 158; e.y = 236; e.show = 'normal'; }\n    { const im = fe; const e = await addElement('IMG', { src: im[0] }); e.name = 'Feather 7'; e.src = im[0]; e.images = im.slice(0).concat(im.slice(0, 0)); e.handle = 'fe6'; e.x = 144; e.y = 244; e.show = 'normal'; }\n    { const im = fe; const e = await addElement('IMG', { src: im[1] }); e.name = 'Feather 8'; e.src = im[1]; e.images = im.slice(1).concat(im.slice(0, 1)); e.handle = 'fe7'; e.x = 180; e.y = 230; e.show = 'normal'; }\n    { const im = po; const e = await addElement('IMG', { src: im[1] }); e.name = 'Popup 1'; e.src = im[1]; e.images = im.slice(1).concat(im.slice(0, 1)); e.handle = 'po0'; e.x = 150; e.y = 140; e.show = 'normal'; }\n    { const im = po; const e = await addElement('IMG', { src: im[0] }); e.name = 'Popup 2'; e.src = im[0]; e.images = im.slice(0).concat(im.slice(0, 0)); e.handle = 'po1'; e.x = 300; e.y = 120; e.show = 'normal'; }\n    return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 21; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };\n\nconst c = mk(W, H), g = c.getContext('2d');\n// a rock at the bottom, then long blades in front of everything that flies or falls\nconst rk = g.createLinearGradient(0, 418, 0, 452); rk.addColorStop(0, '#8a8a84'); rk.addColorStop(1, '#3c3c38'); g.beginPath(); g.ellipse(176, 446, 52, 22, 0, 0, 7); g.fillStyle = rk; g.fill(); g.beginPath(); g.ellipse(166, 436, 30, 8, 0, 0, 7); g.fillStyle = 'rgba(255,255,240,0.18)'; g.fill();\nconst GL = ['#7a5a1c', '#a8821f', '#c8a032', '#8a6a1c', '#d8b44a', '#5a4414'];\nfor (let i = 0; i < 470; i++) { const x = rnd() * W, base = H + 6, tip = 366 + Math.pow(rnd(), 1.4) * 80, lean = (rnd() - 0.5) * 34, w = 1.6 + rnd() * 3.2; g.strokeStyle = GL[rnd() * GL.length | 0]; g.globalAlpha = 0.8 + 0.2 * rnd(); g.lineWidth = w; g.lineCap = 'round'; g.beginPath(); g.moveTo(x, base); g.quadraticCurveTo(x + lean * 0.3, (base + tip) / 2, x + lean, tip); g.stroke(); }\ng.globalAlpha = 1;\nnames.push(addProjectImage('foreground.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Foreground grass'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 21; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };\n\n// a cartoon chicken facing right: body centre near (40s, 42s) on a 90s x 76s sheet; frame = wing position 0..3\nfunction chicken(s, f, hit) {\n  const w = Math.round(90 * s), h = Math.round(76 * s), c = mk(w, h), g = c.getContext('2d');\n  g.save(); if (hit) { g.translate(w / 2, h / 2); g.rotate(hit * 0.6); g.translate(-w / 2, -h / 2); }\n  const ang = [-1.5, -0.8, 0.1, -0.8][hit ? 2 : f];\n  const wing = (a, col, tip, back) => { g.save(); g.translate(38 * s, 36 * s); g.rotate(a); for (let i = 0; i < 6; i++) { g.save(); g.rotate(-0.1 - i * 0.2 * (back ? 0.8 : 1) + 0.5); g.beginPath(); g.ellipse(-24 * s, 0, 26 * s, 4.6 * s, 0, 0, 7); g.fillStyle = col; g.fill(); g.beginPath(); g.ellipse(-40 * s, 0, 11 * s, 3.4 * s, 0, 0, 7); g.fillStyle = tip; g.fill(); g.restore(); } g.restore(); };\n  wing(ang + 0.15, '#4a2a0e', '#6b6a20', true);\n  for (const [a, l] of [[0.3, 22], [0, 24], [-0.3, 21]]) { g.save(); g.translate(18 * s, 38 * s); g.rotate(a + 3.14); g.beginPath(); g.ellipse(l * s * 0.5, 0, l * s * 0.5, 4 * s, 0, 0, 7); g.fillStyle = a === 0 ? '#3d5a22' : '#5a3a14'; g.fill(); g.restore(); }\n  g.strokeStyle = '#d8a020'; g.lineWidth = 2 * s; g.lineCap = 'round'; g.beginPath(); g.moveTo(34 * s, 54 * s); g.lineTo(22 * s, 62 * s); g.moveTo(42 * s, 55 * s); g.lineTo(30 * s, 65 * s); g.stroke();\n  let bg = g.createRadialGradient(34 * s, 34 * s, 2, 40 * s, 42 * s, 26 * s); bg.addColorStop(0, '#d7843a'); bg.addColorStop(0.6, '#a85a1c'); bg.addColorStop(1, '#6a3410');\n  g.beginPath(); g.ellipse(40 * s, 42 * s, 23 * s, 16 * s, -0.12, 0, 7); g.fillStyle = bg; g.fill();\n  g.beginPath(); g.ellipse(46 * s, 49 * s, 15 * s, 8 * s, 0, 0, 7); g.fillStyle = 'rgba(244,214,150,0.6)'; g.fill();\n  g.beginPath(); g.moveTo(54 * s, 36 * s); g.quadraticCurveTo(62 * s, 40 * s, 62 * s, 32 * s); g.lineTo(66 * s, 22 * s); g.lineTo(54 * s, 26 * s); g.closePath(); g.fillStyle = '#b86a24'; g.fill();\n  g.beginPath(); g.arc(62 * s, 26 * s, 10.5 * s, 0, 7); const hg = g.createRadialGradient(59 * s, 22 * s, 1, 62 * s, 26 * s, 11 * s); hg.addColorStop(0, '#e2954a'); hg.addColorStop(1, '#a85a1c'); g.fillStyle = hg; g.fill();\n  g.fillStyle = '#d6242a'; for (const [x, y, r] of [[57, 16, 4], [63, 14, 4.6], [69, 17, 3.8]]) { g.beginPath(); g.arc(x * s, y * s, r * s, 0, 7); g.fill(); }\n  g.beginPath(); g.ellipse(70 * s, 38 * s, 3 * s, 4.6 * s, 0, 0, 7); g.fill();\n  g.beginPath(); g.moveTo(70 * s, 22 * s); g.lineTo(84 * s, 27 * s); g.lineTo(70 * s, 32 * s); g.closePath(); g.fillStyle = '#f2b81c'; g.fill();\n  if (hit) { g.strokeStyle = '#222'; g.lineWidth = 1.8 * s; g.beginPath(); g.moveTo(61 * s, 20 * s); g.lineTo(68 * s, 27 * s); g.moveTo(68 * s, 20 * s); g.lineTo(61 * s, 27 * s); g.stroke(); }\n  else { g.beginPath(); g.arc(66 * s, 24 * s, 4.4 * s, 0, 7); g.fillStyle = '#fff'; g.fill(); g.beginPath(); g.arc(67.2 * s, 24.4 * s, 2.1 * s, 0, 7); g.fillStyle = '#111'; g.fill(); g.strokeStyle = '#3a1c08'; g.lineWidth = 1.4 * s; g.beginPath(); g.moveTo(61 * s, 18.5 * s); g.lineTo(70 * s, 20.5 * s); g.stroke(); }\n  wing(ang, '#5a3410', '#8a8a2a', false);\n  g.restore();\n  return c;\n}\nconst flip = (c) => { const o = mk(c.width, c.height), g = o.getContext('2d'); g.translate(c.width, 0); g.scale(-1, 1); g.drawImage(c, 0, 0); return o; };\n// canonical list: size (far, near) x direction (right, left) x frame 0..3 = 16, then the tumbling pictures: far a b, near a b\n// crosshair: idle and firing\nfor (const fire of [0, 1]) { const c = mk(40, 40), g = c.getContext('2d'); g.translate(20, 20);\n  if (fire) { g.fillStyle = 'rgba(255,200,70,0.95)'; g.beginPath(); for (let i = 0; i < 16; i++) { const a = i * Math.PI / 8, r = i % 2 ? 7 : 17; g.lineTo(Math.cos(a) * r, Math.sin(a) * r); } g.closePath(); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(0, 0, 5, 0, 7); g.fill(); }\n  for (const [col, lw] of [['#000', 3.6], [fire ? '#ff4a2a' : '#ffffff', 1.6]]) { g.strokeStyle = col; g.lineWidth = lw; g.lineCap = 'round'; g.beginPath(); g.arc(0, 0, 11, 0, 7); g.stroke(); g.beginPath(); for (const [a, b] of [[-18, -6], [6, 18]]) { g.moveTo(a, 0); g.lineTo(b, 0); g.moveTo(0, a); g.lineTo(0, b); } g.stroke(); }\n  names.push(addProjectImage('fx/cross' + fire + '.png', c, {}).name); }\n// a shotgun shell\n{ const c = mk(26, 40), g = c.getContext('2d'); g.translate(13, 20); g.rotate(0.32);\n  g.beginPath(); g.roundRect(-6, -17, 12, 24, 2); const q = g.createLinearGradient(-6, 0, 6, 0); q.addColorStop(0, '#8a1c14'); q.addColorStop(0.35, '#e24a30'); q.addColorStop(1, '#6a120c'); g.fillStyle = q; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.5)'; g.lineWidth = 1; g.stroke();\n  g.beginPath(); g.roundRect(-6.6, 6, 13.2, 11, 2); const b = g.createLinearGradient(-6, 0, 6, 0); b.addColorStop(0, '#8a6a20'); b.addColorStop(0.4, '#f2d06a'); b.addColorStop(1, '#7a5a18'); g.fillStyle = b; g.fill(); g.stroke();\n  g.fillStyle = 'rgba(255,255,255,0.35)'; g.fillRect(-3.5, -15, 2, 18); names.push(addProjectImage('fx/shell.png', c, {}).name); }\n\nawait loadAllImages();\nconst sh = names[2]; for (let i = 0; i < 6; i++) { const e = await addElement('IMG', { src: sh }); e.name = 'Shell ' + (i + 1); e.src = sh; e.handle = 'sh' + i; e.x = 262 + i * 16; e.y = 382; e.show = 'normal'; }\n    const e = await addElement('IMG', { src: names[0] }); e.name = 'Crosshair'; e.src = names[0]; e.images = names.slice(0, 2); e.handle = 'cross'; e.x = 232; e.y = 94; e.show = 'normal'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; ['Hour','Colon','Minute'].forEach((nm,i)=>{ project.elements[n-3+i].name = nm + ' Aod'; }); return 1"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "day"
+  },
+  {
+   "preset": "steps"
+  },
+  {
+   "preset": "battery"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "edit": "Hour",
+   "set": {
+    "x": 102,
+    "y": 168,
+    "space": -14,
+    "alpha": 228,
+    "show": "normal",
+    "zero": 0
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 70,
+    "weight": 900,
+    "italic": false,
+    "fill": "solid",
+    "color": "#1c0f05",
+    "shadowColor": "rgba(240,206,150,0.55)",
+    "shadowX": 0,
+    "shadowY": 1.8,
+    "shadowBlur": 0
+   }
+  },
+  {
+   "edit": "Colon",
+   "set": {
+    "x": 187,
+    "y": 177,
+    "alpha": 228,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 70,
+    "weight": 900,
+    "italic": false,
+    "fill": "solid",
+    "color": "#1c0f05",
+    "shadowColor": "rgba(240,206,150,0.55)",
+    "shadowX": 0,
+    "shadowY": 1.8,
+    "shadowBlur": 0
+   }
+  },
+  {
+   "edit": "Minute",
+   "set": {
+    "x": 211,
+    "y": 168,
+    "space": -14,
+    "alpha": 228,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 70,
+    "weight": 900,
+    "italic": false,
+    "fill": "solid",
+    "color": "#1c0f05",
+    "shadowColor": "rgba(240,206,150,0.55)",
+    "shadowX": 0,
+    "shadowY": 1.8,
+    "shadowBlur": 0
+   }
+  },
+  {
+   "edit": "Steps",
+   "set": {
+    "x": 80,
+    "y": 22,
+    "hSpace": -14,
+    "show": "normal",
+    "alignH": "RIGHT"
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 48,
+    "weight": 700,
+    "italic": true,
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 4,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 3,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 10,
+    "y": 393,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 32,
+    "weight": 700,
+    "italic": true,
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 4,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 3,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Day",
+   "set": {
+    "x": 103,
+    "y": 398,
+    "space": -14,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 32,
+    "weight": 700,
+    "italic": true,
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 4,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 3,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Battery",
+   "set": {
+    "x": 165,
+    "y": 398,
+    "hSpace": -12,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 32,
+    "weight": 700,
+    "italic": true,
+    "fill": "solid",
+    "color": "#ffffff",
+    "borderColor": "#000000",
+    "borderWidth": 4,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 3,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 122,
+    "y": 107,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 120,
+    "weight": 700,
+    "fill": "solid",
+    "color": "#7a7466"
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 118,
+    "y": 247,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Lato",
+    "size": 120,
+    "weight": 700,
+    "fill": "solid",
+    "color": "#7a7466"
+   }
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gBirds = 'Chickens'; project.groups.gFx = 'Feathers and popups'; project.groups.gAmmo = 'Shells'; project.groups.gSign = 'Clock sign'; for (const e of project.elements) if (/^(Wooden stake sign|Hour|Colon|Minute)$/.test(e.name)) e.group = 'gSign'; let n = 0; for (const e of project.elements) { if (/^Chicken \\d/.test(e.name)) { e.group = 'gBirds'; n++ } if (/^(Feather|Popup)/.test(e.name)) { e.group = 'gFx'; n++ } if (/^Shell/.test(e.name)) { e.group = 'gAmmo'; n++ } } return n"
+  },
+  {
+   "script": "document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'"
+  }
+ ]
+}

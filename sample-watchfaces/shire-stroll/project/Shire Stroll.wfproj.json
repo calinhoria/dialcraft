@@ -1,0 +1,1599 @@
+{
+  "version": 1,
+  "name": "Shire Stroll",
+  "device": "bip-6",
+  "appId": 2810851,
+  "vender": "dialcraft",
+  "description": "A sunny hillside with a round-door hobbit hole, a winding lane and a picket fence. Five kinds of little folk stroll past at random; chimney smoke curls, clouds drift and butterflies flutter.",
+  "font": "Marcellus",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gmvishzlja8": "Clock",
+    "gmvishzmbov": "Clock 2",
+    "gFolk": "Strollers",
+    "gSky": "Sky and smoke"
+  },
+  "elements": [
+    {
+      "id": "elmvishz6q1g2",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvishzbb64c",
+      "kind": "IMG",
+      "name": "Hillside",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene.png"
+    },
+    {
+      "id": "elmvishzcw32v",
+      "kind": "IMG",
+      "name": "Clouds",
+      "x": -90,
+      "y": 4,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSky",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "clouds.png",
+      "handle": "cl"
+    },
+    {
+      "id": "elmvishze65ei",
+      "kind": "IMG_ANIM",
+      "name": "Chimney smoke",
+      "x": 288,
+      "y": 40,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSky",
+      "alpha": 255,
+      "frames": [
+        "anim/smoke_0.png",
+        "anim/smoke_1.png",
+        "anim/smoke_2.png",
+        "anim/smoke_3.png",
+        "anim/smoke_4.png",
+        "anim/smoke_5.png",
+        "anim/smoke_6.png",
+        "anim/smoke_7.png"
+      ],
+      "fps": 6,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "smoke"
+    },
+    {
+      "id": "elmvishzhb1cp",
+      "kind": "IMG",
+      "name": "Walker 1",
+      "x": 70,
+      "y": 274,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFolk",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "folk/h002.png",
+      "images": [
+        "folk/h002.png",
+        "folk/h003.png",
+        "folk/h010.png",
+        "folk/h011.png",
+        "folk/h012.png",
+        "folk/h013.png",
+        "folk/h100.png",
+        "folk/h101.png",
+        "folk/h102.png",
+        "folk/h103.png",
+        "folk/h110.png",
+        "folk/h111.png",
+        "folk/h112.png",
+        "folk/h113.png",
+        "folk/h200.png",
+        "folk/h201.png",
+        "folk/h202.png",
+        "folk/h203.png",
+        "folk/h210.png",
+        "folk/h211.png",
+        "folk/h212.png",
+        "folk/h213.png",
+        "folk/h300.png",
+        "folk/h301.png",
+        "folk/h302.png",
+        "folk/h303.png",
+        "folk/h310.png",
+        "folk/h311.png",
+        "folk/h312.png",
+        "folk/h313.png",
+        "folk/h400.png",
+        "folk/h401.png",
+        "folk/h402.png",
+        "folk/h403.png",
+        "folk/h410.png",
+        "folk/h411.png",
+        "folk/h412.png",
+        "folk/h413.png",
+        "folk/h000.png",
+        "folk/h001.png"
+      ],
+      "handle": "w0"
+    },
+    {
+      "id": "elmvishzhk7jv",
+      "kind": "IMG",
+      "name": "Walker 2",
+      "x": 273,
+      "y": 274,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFolk",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "folk/h110.png",
+      "images": [
+        "folk/h110.png",
+        "folk/h111.png",
+        "folk/h112.png",
+        "folk/h113.png",
+        "folk/h200.png",
+        "folk/h201.png",
+        "folk/h202.png",
+        "folk/h203.png",
+        "folk/h210.png",
+        "folk/h211.png",
+        "folk/h212.png",
+        "folk/h213.png",
+        "folk/h300.png",
+        "folk/h301.png",
+        "folk/h302.png",
+        "folk/h303.png",
+        "folk/h310.png",
+        "folk/h311.png",
+        "folk/h312.png",
+        "folk/h313.png",
+        "folk/h400.png",
+        "folk/h401.png",
+        "folk/h402.png",
+        "folk/h403.png",
+        "folk/h410.png",
+        "folk/h411.png",
+        "folk/h412.png",
+        "folk/h413.png",
+        "folk/h000.png",
+        "folk/h001.png",
+        "folk/h002.png",
+        "folk/h003.png",
+        "folk/h010.png",
+        "folk/h011.png",
+        "folk/h012.png",
+        "folk/h013.png",
+        "folk/h100.png",
+        "folk/h101.png",
+        "folk/h102.png",
+        "folk/h103.png"
+      ],
+      "handle": "w1"
+    },
+    {
+      "id": "elmvishzhv5h2",
+      "kind": "IMG",
+      "name": "Walker 3",
+      "x": 156,
+      "y": 274,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFolk",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "folk/h201.png",
+      "images": [
+        "folk/h201.png",
+        "folk/h202.png",
+        "folk/h203.png",
+        "folk/h210.png",
+        "folk/h211.png",
+        "folk/h212.png",
+        "folk/h213.png",
+        "folk/h300.png",
+        "folk/h301.png",
+        "folk/h302.png",
+        "folk/h303.png",
+        "folk/h310.png",
+        "folk/h311.png",
+        "folk/h312.png",
+        "folk/h313.png",
+        "folk/h400.png",
+        "folk/h401.png",
+        "folk/h402.png",
+        "folk/h403.png",
+        "folk/h410.png",
+        "folk/h411.png",
+        "folk/h412.png",
+        "folk/h413.png",
+        "folk/h000.png",
+        "folk/h001.png",
+        "folk/h002.png",
+        "folk/h003.png",
+        "folk/h010.png",
+        "folk/h011.png",
+        "folk/h012.png",
+        "folk/h013.png",
+        "folk/h100.png",
+        "folk/h101.png",
+        "folk/h102.png",
+        "folk/h103.png",
+        "folk/h110.png",
+        "folk/h111.png",
+        "folk/h112.png",
+        "folk/h113.png",
+        "folk/h200.png"
+      ],
+      "handle": "w2"
+    },
+    {
+      "id": "elmvishzi42mf",
+      "kind": "IMG",
+      "name": "Walker 4",
+      "x": 330,
+      "y": 274,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFolk",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "folk/h413.png",
+      "images": [
+        "folk/h413.png",
+        "folk/h000.png",
+        "folk/h001.png",
+        "folk/h002.png",
+        "folk/h003.png",
+        "folk/h010.png",
+        "folk/h011.png",
+        "folk/h012.png",
+        "folk/h013.png",
+        "folk/h100.png",
+        "folk/h101.png",
+        "folk/h102.png",
+        "folk/h103.png",
+        "folk/h110.png",
+        "folk/h111.png",
+        "folk/h112.png",
+        "folk/h113.png",
+        "folk/h200.png",
+        "folk/h201.png",
+        "folk/h202.png",
+        "folk/h203.png",
+        "folk/h210.png",
+        "folk/h211.png",
+        "folk/h212.png",
+        "folk/h213.png",
+        "folk/h300.png",
+        "folk/h301.png",
+        "folk/h302.png",
+        "folk/h303.png",
+        "folk/h310.png",
+        "folk/h311.png",
+        "folk/h312.png",
+        "folk/h313.png",
+        "folk/h400.png",
+        "folk/h401.png",
+        "folk/h402.png",
+        "folk/h403.png",
+        "folk/h410.png",
+        "folk/h411.png",
+        "folk/h412.png"
+      ],
+      "handle": "w3"
+    },
+    {
+      "id": "elmvishzie17p",
+      "kind": "IMG",
+      "name": "Pipe puff",
+      "x": 190,
+      "y": 290,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFolk",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "folk/puff2.png",
+      "images": [
+        "folk/puff2.png",
+        "folk/puff0.png",
+        "folk/puff1.png"
+      ],
+      "handle": "pf"
+    },
+    {
+      "id": "elmvishziz7br",
+      "kind": "IMG",
+      "name": "Foreground flowers",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "foreground.png"
+    },
+    {
+      "id": "elmvishzjtht",
+      "kind": "IMG",
+      "name": "Butterfly 1",
+      "x": 120,
+      "y": 204,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSky",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "folk/bf0.png",
+      "images": [
+        "folk/bf0.png",
+        "folk/bf1.png"
+      ],
+      "handle": "bf0"
+    },
+    {
+      "id": "elmvishzk5751",
+      "kind": "IMG",
+      "name": "Butterfly 2",
+      "x": 250,
+      "y": 222,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSky",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "folk/bf2.png",
+      "images": [
+        "folk/bf2.png",
+        "folk/bf3.png"
+      ],
+      "handle": "bf1"
+    },
+    {
+      "id": "elmvishzlj28z",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 191,
+      "y": 21,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvishzlja8",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -18,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Marcellus",
+        "size": 62,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#4a2e16",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#fff6dc",
+        "borderWidth": 3,
+        "shadowColor": "rgba(40,70,20,0.5)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 4
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvishzlj3pp",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 167,
+      "y": 37,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvishzlja8",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Marcellus",
+        "size": 62,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#4a2e16",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#fff6dc",
+        "borderWidth": 3,
+        "shadowColor": "rgba(40,70,20,0.5)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 4
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvishzlj3em",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 64,
+      "y": 21,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvishzlja8",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -30,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Marcellus",
+        "size": 62,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#4a2e16",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#fff6dc",
+        "borderWidth": 3,
+        "shadowColor": "rgba(40,70,20,0.5)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 4
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvishzmb1s0",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 104,
+      "y": 96,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvishzmbov",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Marcellus",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8a9a78",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvishzmbht",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 82,
+      "y": 236,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvishzmbov",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Marcellus",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8a9a78",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvishzmrva",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 123,
+      "y": 87,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Marcellus",
+        "size": 26,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#4a2e16",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#fff6dc",
+        "borderWidth": 3,
+        "shadowColor": "rgba(40,70,20,0.5)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 4
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvishzno2g8",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 196,
+      "y": 91,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -22,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Marcellus",
+        "size": 26,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#4a2e16",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#fff6dc",
+        "borderWidth": 3,
+        "shadowColor": "rgba(40,70,20,0.5)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 4
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvishzo25xd",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 81,
+      "y": 387,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": -22,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Marcellus",
+        "size": 32,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6dc",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#3a6a22",
+        "borderWidth": 3,
+        "shadowColor": "rgba(40,70,20,0.5)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 4
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmvishzou3q5",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 205,
+      "y": 387,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": -22,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Marcellus",
+        "size": 32,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6dc",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#3a6a22",
+        "borderWidth": 3,
+        "shadowColor": "rgba(40,70,20,0.5)",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 4
+      },
+      "aidPad": 9
+    }
+  ],
+  "images": [
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "clouds.png",
+      "width": 780,
+      "height": 120
+    },
+    {
+      "name": "anim/smoke_0.png",
+      "width": 70,
+      "height": 120
+    },
+    {
+      "name": "anim/smoke_1.png",
+      "width": 70,
+      "height": 120
+    },
+    {
+      "name": "anim/smoke_2.png",
+      "width": 70,
+      "height": 120
+    },
+    {
+      "name": "anim/smoke_3.png",
+      "width": 70,
+      "height": 120
+    },
+    {
+      "name": "anim/smoke_4.png",
+      "width": 70,
+      "height": 120
+    },
+    {
+      "name": "anim/smoke_5.png",
+      "width": 70,
+      "height": 120
+    },
+    {
+      "name": "anim/smoke_6.png",
+      "width": 70,
+      "height": 120
+    },
+    {
+      "name": "anim/smoke_7.png",
+      "width": 70,
+      "height": 120
+    },
+    {
+      "name": "folk/h000.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h001.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h002.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h003.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h010.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h011.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h012.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h013.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h100.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h101.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h102.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h103.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h110.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h111.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h112.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h113.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h200.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h201.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h202.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h203.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h210.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h211.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h212.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h213.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h300.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h301.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h302.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h303.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h310.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h311.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h312.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h313.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h400.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h401.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h402.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h403.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h410.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h411.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h412.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/h413.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "folk/puff0.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "folk/puff1.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "folk/puff2.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "foreground.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "folk/bf0.png",
+      "width": 20,
+      "height": 16
+    },
+    {
+      "name": "folk/bf1.png",
+      "width": 20,
+      "height": 16
+    },
+    {
+      "name": "folk/bf2.png",
+      "width": 20,
+      "height": 16
+    },
+    {
+      "name": "folk/bf3.png",
+      "width": 20,
+      "height": 16
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "week_w1.png",
+      "width": 89,
+      "height": 55
+    },
+    {
+      "name": "week_w2.png",
+      "width": 89,
+      "height": 55
+    },
+    {
+      "name": "week_w3.png",
+      "width": 89,
+      "height": 55
+    },
+    {
+      "name": "week_w4.png",
+      "width": 89,
+      "height": 55
+    },
+    {
+      "name": "week_w5.png",
+      "width": 89,
+      "height": 55
+    },
+    {
+      "name": "week_w6.png",
+      "width": 89,
+      "height": 55
+    },
+    {
+      "name": "week_w7.png",
+      "width": 89,
+      "height": 55
+    },
+    {
+      "name": "percent.png",
+      "width": 49,
+      "height": 55
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 31,
+      "height": 50
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 70,
+      "height": 85
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 43,
+      "height": 49
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 48,
+      "height": 55
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 96,
+      "height": 124
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 96,
+      "height": 124
+    }
+  ],
+  "savePath": null,
+  "userCode": "{\n  const MS = 100, NW = 4, MAXON = 3, NIMG = 40\n  const WROT = [2,12,17,39]\n  const PY = (x) => 338 + 5 * Math.sin(x / 55)\n  let seed = 5\n  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647\n  const ri = (a, b) => a + rnd() * (b - a)\n  const mv = (w, x, y, src) => { if (src === undefined) w.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)) }); else w.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src }) }\n  const away = (w) => w.setProperty(ui.prop.MORE, { x: pxv(-200), y: pxv(0) })\n  const wi = (k, canon) => F['w' + k][(canon - WROT[k] + NIMG) % NIMG]\n  const Wk = []\n  for (let k = 0; k < NW; k++) Wk.push({ k, w: W['w' + k], on: false, shown: true, type: 0, dir: 1, x: 0, lane: 0, spd: 18, dist: 0, pauseUntil: 0, key: -1, next: 0.5 + k * 1.2 })\n  const PF = { w: W.pf, on: false, x: 0, y: 0, t: 0, nextAt: 1, key: -1 }\n  const BF = [{ w: W.bf0, cx: 150, cy: 210, ax: 90, ay: 26, fx: 0.5, fy: 0.9, ph: 0, c: 0 }, { w: W.bf1, cx: 250, cy: 232, ax: 100, ay: 30, fx: 0.4, fy: 0.7, ph: 2, c: 1 }]\n  let t = 0, last = 0, id = null\n  const spawn = (b) => {\n    const used = Wk.filter((q) => q.on).map((q) => q.type)\n    let type = Math.floor(rnd() * 5), g = 0; while (used.indexOf(type) >= 0 && g++ < 12) type = Math.floor(rnd() * 5)\n    b.type = type; b.dir = rnd() < 0.5 ? 1 : -1; b.x = b.dir > 0 ? -32 : 396; b.lane = [-7, 0, 7][Math.floor(rnd() * 3)]; b.spd = ri(15, 25) * (type === 4 ? 1.15 : 1); b.dist = 0; b.pauseUntil = 0; b.key = -1; b.on = true\n  }\n  const tick = () => {\n    const now = Date.now(); let dt = last ? (now - last) / 1000 : MS / 1000; dt = Math.min(0.15, dt); last = now; t += dt\n    const active = Wk.filter((q) => q.on).length\n    let elder = null\n    for (const b of Wk) {\n      if (!b.on) { if (b.shown) { away(b.w); b.shown = false } if (t >= b.next && active < MAXON) spawn(b); continue }\n      const paused = t < b.pauseUntil\n      if (!paused) {\n        b.x += b.dir * b.spd * dt; b.dist += b.spd * dt\n        if (b.x > 40 && b.x < 340 && rnd() < dt * 0.045) b.pauseUntil = t + ri(1.6, 4.2)\n      }\n      if ((b.dir > 0 && b.x > 398) || (b.dir < 0 && b.x < -34)) { b.on = false; b.next = t + ri(1.5, 5); away(b.w); b.shown = false; continue }\n      const f = paused ? 1 : Math.floor(b.dist / 7) % 4, key = b.type * 100 + (b.dir > 0 ? 0 : 10) + f\n      const y = PY(b.x) + b.lane - 62 + (paused ? Math.sin(t * 2 + b.k) * 0.6 : 0)\n      if (key !== b.key || !b.shown) { b.key = key; b.shown = true; mv(b.w, b.x - 24, y, wi(b.k, (b.type * 2 + (b.dir > 0 ? 0 : 1)) * 4 + f)) } else mv(b.w, b.x - 24, y)\n      if (b.type === 2) elder = b\n    }\n    // the elder's pipe: a puff every now and then\n    if (elder && !PF.on && t >= PF.nextAt) { PF.on = true; PF.t = 0; PF.x = elder.x + elder.dir * 17 - 8; PF.y = PY(elder.x) + elder.lane - 62 + 17; PF.key = -1 }\n    if (PF.on) { PF.t += dt; PF.y -= 9 * dt; PF.x += 3 * dt; const i = Math.min(2, Math.floor(PF.t / 0.5)); if (PF.t > 1.6) { PF.on = false; PF.nextAt = t + ri(1.2, 3); away(PF.w) } else mv(PF.w, PF.x, PF.y, i !== PF.key ? F.pf[(i - 2 + 3) % 3] : undefined), PF.key = i }\n    else if (!PF.on) away(PF.w)\n    for (const q of BF) { const x = q.cx + q.ax * Math.sin(t * q.fx + q.ph), y = q.cy + q.ay * Math.sin(t * q.fy + q.ph * 2) + 6 * Math.sin(t * 5); mv(q.w, x, y, F['bf' + q.c][Math.floor(t * 6) % 2]) }\n    W.cl.setProperty(ui.prop.MORE, { x: pxv(-Math.round((t * 3) % 390)), y: pxv(4) })\n  }\n  const safe = () => { try { tick() } catch (e) {} }\n  const stop = () => { if (id === null) return; try { clearInterval(id) } catch (e) {} id = null }\n  const start = () => { if (id !== null) return; last = 0; try { id = setInterval(safe, MS) } catch (e) {} }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  safe()\n  start()\n}",
+  "optimizePng": 24
+}

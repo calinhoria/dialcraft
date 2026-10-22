@@ -1,0 +1,1353 @@
+{
+  "version": 1,
+  "name": "Pond Morning",
+  "device": "bip-6",
+  "appId": 2720644,
+  "vender": "dialcraft",
+  "description": "A misty park pond at sunrise: drifting mist, a hen with three ducklings and a drake swimming across, fish rings on the water and a swaying willow.",
+  "font": "Josefin Sans",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gmvir54kbnr": "Clock",
+    "gmvir54l5g9": "Clock 2",
+    "gDucks": "Ducks",
+    "gMist": "Mist and rings"
+  },
+  "elements": [
+    {
+      "id": "elmvir548x6e1",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvir54an6wi",
+      "kind": "IMG",
+      "name": "Pond",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene.png"
+    },
+    {
+      "id": "elmvir54c15vg",
+      "kind": "IMG",
+      "name": "Mist far",
+      "x": -60,
+      "y": 150,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gMist",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "mist_far.png",
+      "handle": "mistA"
+    },
+    {
+      "id": "elmvir54dcik",
+      "kind": "IMG_ANIM",
+      "name": "Fish ring 1",
+      "x": 70,
+      "y": 262,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gMist",
+      "alpha": 255,
+      "frames": [
+        "anim/ring_0.png",
+        "anim/ring_1.png",
+        "anim/ring_2.png",
+        "anim/ring_3.png",
+        "anim/ring_4.png",
+        "anim/ring_5.png",
+        "anim/ring_6.png",
+        "anim/ring_7.png",
+        "anim/ring_8.png",
+        "anim/ring_9.png",
+        "anim/ring_10.png",
+        "anim/ring_11.png",
+        "anim/ring_12.png",
+        "anim/ring_13.png"
+      ],
+      "fps": 5,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "ring0"
+    },
+    {
+      "id": "elmvir54dl1hk",
+      "kind": "IMG_ANIM",
+      "name": "Fish ring 2",
+      "x": 232,
+      "y": 300,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gMist",
+      "alpha": 255,
+      "frames": [
+        "anim/ring_7.png",
+        "anim/ring_8.png",
+        "anim/ring_9.png",
+        "anim/ring_10.png",
+        "anim/ring_11.png",
+        "anim/ring_12.png",
+        "anim/ring_13.png",
+        "anim/ring_0.png",
+        "anim/ring_1.png",
+        "anim/ring_2.png",
+        "anim/ring_3.png",
+        "anim/ring_4.png",
+        "anim/ring_5.png",
+        "anim/ring_6.png"
+      ],
+      "fps": 5,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "ring7"
+    },
+    {
+      "id": "elmvir54f03hq",
+      "kind": "IMG",
+      "name": "Drake",
+      "x": 276,
+      "y": 243,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDucks",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "duck/drake_l.png",
+      "images": [
+        "duck/drake_l.png",
+        "duck/drake_r.png"
+      ],
+      "handle": "drake"
+    },
+    {
+      "id": "elmvir54f85z2",
+      "kind": "IMG",
+      "name": "Duckling 3",
+      "x": 57,
+      "y": 309,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDucks",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "duck/dl_r.png",
+      "images": [
+        "duck/dl_r.png",
+        "duck/dl_l.png"
+      ],
+      "handle": "dk2"
+    },
+    {
+      "id": "elmvir54fgcl",
+      "kind": "IMG",
+      "name": "Duckling 2",
+      "x": 73,
+      "y": 309,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDucks",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "duck/dl_r.png",
+      "images": [
+        "duck/dl_r.png",
+        "duck/dl_l.png"
+      ],
+      "handle": "dk1"
+    },
+    {
+      "id": "elmvir54fo3ob",
+      "kind": "IMG",
+      "name": "Duckling 1",
+      "x": 89,
+      "y": 309,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDucks",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "duck/dl_r.png",
+      "images": [
+        "duck/dl_r.png",
+        "duck/dl_l.png"
+      ],
+      "handle": "dk0"
+    },
+    {
+      "id": "elmvir54fw2lk",
+      "kind": "IMG",
+      "name": "Hen",
+      "x": 100,
+      "y": 288,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDucks",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "duck/hen_r.png",
+      "images": [
+        "duck/hen_r.png",
+        "duck/hen_l.png"
+      ],
+      "handle": "hen"
+    },
+    {
+      "id": "elmvir54gu5t6",
+      "kind": "IMG",
+      "name": "Reeds and bank",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "foreground.png"
+    },
+    {
+      "id": "elmvir54hg7om",
+      "kind": "IMG",
+      "name": "Mist near",
+      "x": 0,
+      "y": 296,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gMist",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "mist_near.png",
+      "handle": "mistB"
+    },
+    {
+      "id": "elmvir54io3e7",
+      "kind": "IMG_ANIM",
+      "name": "Willow",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "frames": [
+        "anim/willow_0.png",
+        "anim/willow_1.png",
+        "anim/willow_2.png",
+        "anim/willow_3.png",
+        "anim/willow_4.png",
+        "anim/willow_5.png",
+        "anim/willow_6.png",
+        "anim/willow_7.png"
+      ],
+      "fps": 6,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "willow"
+    },
+    {
+      "id": "elmvir54kb5ui",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 184,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvir54kbnr",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -26,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 84,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e2",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0a2530",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 12
+    },
+    {
+      "id": "elmvir54kb3fj",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 164,
+      "y": 38,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvir54kbnr",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 84,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e2",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0a2530",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 12
+    },
+    {
+      "id": "elmvir54kb5mt",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 66,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvir54kbnr",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -33,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 84,
+        "weight": 600,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e2",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0a2530",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 12
+    },
+    {
+      "id": "elmvir54l53hk",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 122,
+      "y": 250,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvir54l5g9",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 120,
+        "weight": 300,
+        "variations": "",
+        "fill": "solid",
+        "color": "#6d7e7c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvir54l54ot",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 110,
+      "y": 110,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvir54l5g9",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 120,
+        "weight": 300,
+        "variations": "",
+        "fill": "solid",
+        "color": "#6d7e7c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvir54llo",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 79,
+      "y": 125,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 30,
+        "weight": 500,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e2",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0a2530",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 12
+    },
+    {
+      "id": "elmvir54mm1la",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 157,
+      "y": 134,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -27,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 30,
+        "weight": 500,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e2",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0a2530",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 12
+    },
+    {
+      "id": "elmvir54nd50",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 211,
+      "y": 134,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "hSpace": -27,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 30,
+        "weight": 500,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff6e2",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0a2530",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 12
+    },
+    {
+      "id": "elmvir54nu7a4",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 130,
+      "y": 380,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -22,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Josefin Sans",
+        "size": 34,
+        "weight": 500,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffe9b8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0a2530",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 8
+      },
+      "aidPad": 12
+    }
+  ],
+  "images": [
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "mist_far.png",
+      "width": 780,
+      "height": 110
+    },
+    {
+      "name": "mist_near.png",
+      "width": 780,
+      "height": 80
+    },
+    {
+      "name": "anim/ring_0.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_1.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_2.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_3.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_4.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_5.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_6.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_7.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_8.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_9.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_10.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_11.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_12.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "anim/ring_13.png",
+      "width": 120,
+      "height": 40
+    },
+    {
+      "name": "duck/hen_r.png",
+      "width": 100,
+      "height": 56
+    },
+    {
+      "name": "duck/hen_l.png",
+      "width": 100,
+      "height": 56
+    },
+    {
+      "name": "duck/drake_r.png",
+      "width": 80,
+      "height": 45
+    },
+    {
+      "name": "duck/drake_l.png",
+      "width": 80,
+      "height": 45
+    },
+    {
+      "name": "duck/dl_r.png",
+      "width": 50,
+      "height": 28
+    },
+    {
+      "name": "duck/dl_l.png",
+      "width": 50,
+      "height": 28
+    },
+    {
+      "name": "foreground.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "anim/willow_0.png",
+      "width": 390,
+      "height": 215
+    },
+    {
+      "name": "anim/willow_1.png",
+      "width": 390,
+      "height": 215
+    },
+    {
+      "name": "anim/willow_2.png",
+      "width": 390,
+      "height": 215
+    },
+    {
+      "name": "anim/willow_3.png",
+      "width": 390,
+      "height": 215
+    },
+    {
+      "name": "anim/willow_4.png",
+      "width": 390,
+      "height": 215
+    },
+    {
+      "name": "anim/willow_5.png",
+      "width": 390,
+      "height": 215
+    },
+    {
+      "name": "anim/willow_6.png",
+      "width": 390,
+      "height": 215
+    },
+    {
+      "name": "anim/willow_7.png",
+      "width": 390,
+      "height": 215
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 49,
+      "height": 54
+    },
+    {
+      "name": "week_w1.png",
+      "width": 103,
+      "height": 67
+    },
+    {
+      "name": "week_w2.png",
+      "width": 103,
+      "height": 67
+    },
+    {
+      "name": "week_w3.png",
+      "width": 103,
+      "height": 67
+    },
+    {
+      "name": "week_w4.png",
+      "width": 103,
+      "height": 67
+    },
+    {
+      "name": "week_w5.png",
+      "width": 103,
+      "height": 67
+    },
+    {
+      "name": "week_w6.png",
+      "width": 103,
+      "height": 67
+    },
+    {
+      "name": "week_w7.png",
+      "width": 103,
+      "height": 67
+    },
+    {
+      "name": "percent.png",
+      "width": 51,
+      "height": 52
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 41,
+      "height": 64
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 77,
+      "height": 89
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 75,
+      "height": 91
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 47,
+      "height": 52
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 47,
+      "height": 52
+    }
+  ],
+  "savePath": null,
+  "userCode": "{\n  const MS = 130\n  const t0 = Date.now()\n  // ping-pong along a range: the position and the direction (1 right, -1 left) at time t (s)\n  const pp = (t, speed, a, b, ph) => { const L = b - a, d = ((speed * t + ph) % (2 * L) + 2 * L) % (2 * L); return d < L ? [a + d, 1] : [b - (d - L), -1] }\n  const D = [\n    { w: W.hen, W2: 100, OX: 70, WL: 34, wl: 322, lag: 0, spd: 9, ph: 150, a: -70, b: 460, dir: 1 },\n    { w: W.dk0, W2: 50, OX: 35, WL: 17, wl: 326, lag: 1.6, spd: 9, ph: 150, a: -70, b: 460, dir: 1 },\n    { w: W.dk1, W2: 50, OX: 35, WL: 17, wl: 327, lag: 2.7, spd: 9, ph: 150, a: -70, b: 460, dir: 1 },\n    { w: W.dk2, W2: 50, OX: 35, WL: 17, wl: 326, lag: 3.8, spd: 9, ph: 150, a: -70, b: 460, dir: 1 },\n    { w: W.drake, W2: 80, OX: 56, WL: 27, wl: 270, lag: 0, spd: 6, ph: 350, a: -60, b: 450, dir: -1 },\n  ]\n  const SRC = [[F.hen[0], F.hen[1]], [F.dk0[0], F.dk0[1]], [F.dk1[0], F.dk1[1]], [F.dk2[0], F.dk2[1]], [F.drake[0], F.drake[1]]]\n  const tick = () => {\n    const t = (Date.now() - t0) / 1000\n    D.forEach((d, i) => {\n      const p = pp(t - d.lag, d.spd, d.a, d.b, d.ph), dir = p[1]\n      const x = Math.round(p[0] - (dir > 0 ? d.OX : d.W2 - d.OX)), y = Math.round(d.wl - d.WL + 0.9 * Math.sin(t * 1.4 + i))\n      if (dir !== d.dir) { d.dir = dir; d.w.setProperty(ui.prop.MORE, { x: pxv(x), y: pxv(y), src: dir > 0 ? SRC[i][0] : SRC[i][1] }) }\n      else d.w.setProperty(ui.prop.MORE, { x: pxv(x), y: pxv(y) })\n    })\n    W.mistA.setProperty(ui.prop.MORE, { x: pxv(-Math.round((t * 3) % 390)), y: pxv(150 + Math.round(6 * Math.sin(t * Math.PI / 30))) })\n    W.mistB.setProperty(ui.prop.MORE, { x: pxv(-390 + Math.round((t * 5) % 390)), y: pxv(296 - Math.round(4 * Math.sin(t * Math.PI / 30))) })\n  }\n  let id = null\n  const safe = () => { try { tick() } catch (e) {} }\n  const stop = () => { if (id === null) return; try { clearInterval(id) } catch (e) {} id = null }\n  const start = () => { if (id !== null) return; try { id = setInterval(safe, MS) } catch (e) {} }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: () => { start() }, pause_call: stop })\n  safe()\n  start()\n}",
+  "optimizePng": 24
+}

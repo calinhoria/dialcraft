@@ -1,0 +1,243 @@
+{
+ "name": "Pond Morning",
+ "device": "bip-6",
+ "font": "Josefin Sans",
+ "description": "A misty park pond at sunrise: drifting mist, a hen with three ducklings and a drake swimming across, fish rings on the water and a swaying willow.",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/pond-morning",
+ "optimizePng": 24,
+ "userImports": "",
+ "userCode": "{\n  const MS = 130\n  const t0 = Date.now()\n  // ping-pong along a range: the position and the direction (1 right, -1 left) at time t (s)\n  const pp = (t, speed, a, b, ph) => { const L = b - a, d = ((speed * t + ph) % (2 * L) + 2 * L) % (2 * L); return d < L ? [a + d, 1] : [b - (d - L), -1] }\n  const D = [\n    { w: W.hen, W2: 100, OX: 70, WL: 34, wl: 322, lag: 0, spd: 9, ph: 150, a: -70, b: 460, dir: 1 },\n    { w: W.dk0, W2: 50, OX: 35, WL: 17, wl: 326, lag: 1.6, spd: 9, ph: 150, a: -70, b: 460, dir: 1 },\n    { w: W.dk1, W2: 50, OX: 35, WL: 17, wl: 327, lag: 2.7, spd: 9, ph: 150, a: -70, b: 460, dir: 1 },\n    { w: W.dk2, W2: 50, OX: 35, WL: 17, wl: 326, lag: 3.8, spd: 9, ph: 150, a: -70, b: 460, dir: 1 },\n    { w: W.drake, W2: 80, OX: 56, WL: 27, wl: 270, lag: 0, spd: 6, ph: 350, a: -60, b: 450, dir: -1 },\n  ]\n  const SRC = [[F.hen[0], F.hen[1]], [F.dk0[0], F.dk0[1]], [F.dk1[0], F.dk1[1]], [F.dk2[0], F.dk2[1]], [F.drake[0], F.drake[1]]]\n  const tick = () => {\n    const t = (Date.now() - t0) / 1000\n    D.forEach((d, i) => {\n      const p = pp(t - d.lag, d.spd, d.a, d.b, d.ph), dir = p[1]\n      const x = Math.round(p[0] - (dir > 0 ? d.OX : d.W2 - d.OX)), y = Math.round(d.wl - d.WL + 0.9 * Math.sin(t * 1.4 + i))\n      if (dir !== d.dir) { d.dir = dir; d.w.setProperty(ui.prop.MORE, { x: pxv(x), y: pxv(y), src: dir > 0 ? SRC[i][0] : SRC[i][1] }) }\n      else d.w.setProperty(ui.prop.MORE, { x: pxv(x), y: pxv(y) })\n    })\n    W.mistA.setProperty(ui.prop.MORE, { x: pxv(-Math.round((t * 3) % 390)), y: pxv(150 + Math.round(6 * Math.sin(t * Math.PI / 30))) })\n    W.mistB.setProperty(ui.prop.MORE, { x: pxv(-390 + Math.round((t * 5) % 390)), y: pxv(296 - Math.round(4 * Math.sin(t * Math.PI / 30))) })\n  }\n  let id = null\n  const safe = () => { try { tick() } catch (e) {} }\n  const stop = () => { if (id === null) return; try { clearInterval(id) } catch (e) {} id = null }\n  const start = () => { if (id !== null) return; try { id = setInterval(safe, MS) } catch (e) {} }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: () => { start() }, pause_call: stop })\n  safe()\n  start()\n}",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h, HOR = 215;\nlet seed = 77; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\n\nconst sky = mk(W, HOR), s = sky.getContext('2d');\nlet gr = s.createLinearGradient(0, 0, 0, HOR);\n[[0, '#1b3748'], [0.3, '#3a7080'], [0.62, '#8fbdb6'], [0.86, '#efd3a0'], [1, '#ffe6b4']].forEach(([p, col]) => gr.addColorStop(p, col)); s.fillStyle = gr; s.fillRect(0, 0, W, HOR);\nlet rg = s.createRadialGradient(262, HOR - 6, 0, 262, HOR - 6, 230); rg.addColorStop(0, 'rgba(255,238,195,0.95)'); rg.addColorStop(0.2, 'rgba(255,212,144,0.5)'); rg.addColorStop(1, 'rgba(255,190,120,0)'); s.fillStyle = rg; s.fillRect(0, 0, W, HOR);\nfor (let i = 0; i < 9; i++) { const y = 20 + rnd() * 120, x = rnd() * W - 40, w = 80 + rnd() * 140; const q = s.createLinearGradient(x, 0, x + w, 0); q.addColorStop(0, 'rgba(255,225,190,0)'); q.addColorStop(0.5, 'rgba(255,225,190,' + (0.08 + rnd() * 0.12) + ')'); q.addColorStop(1, 'rgba(255,225,190,0)'); s.fillStyle = q; s.beginPath(); s.ellipse(x + w / 2, y, w / 2, 3 + rnd() * 5, 0, 0, 7); s.fill(); }\nconst trees = (hmin, hmax, col, step, fade) => { for (let x = -14; x < W + 14; x += step * (0.6 + rnd() * 0.8)) { const h = hmin + rnd() * (hmax - hmin) * (fade ? Math.min(1, 0.45 + x / 200) : 1), rw = 14 + rnd() * 22; s.beginPath(); s.ellipse(x, HOR - h * 0.5, rw, h * 0.55, 0, 0, 7); s.fillStyle = col; s.fill(); } };\ntrees(24, 58, '#6f9494', 22, false); trees(30, 84, '#34605f', 30, true); trees(16, 40, '#244a4a', 26, true);\ngr = s.createLinearGradient(0, HOR - 95, 0, HOR); gr.addColorStop(0, 'rgba(255,232,190,0)'); gr.addColorStop(1, 'rgba(255,232,190,0.55)'); s.fillStyle = gr; s.fillRect(0, HOR - 95, W, 95);\nconst c = mk(W, H), g = c.getContext('2d'); g.drawImage(sky, 0, 0);\n// water: the sky and the trees, mirrored, rippled and darkened\nconst rc = mk(W, H - HOR), r = rc.getContext('2d');\nfor (let dy = 0; dy < H - HOR; dy++) { const sy = clamp(HOR - 1 - dy * 0.9, 0, HOR - 1), off = (2 + dy * 0.018) * Math.sin(dy * 0.33 + 1.3); r.drawImage(sky, 0, sy, W, 1, off - 6, dy, W + 12, 1); }\ng.save(); g.filter = 'blur(1.1px)'; g.drawImage(rc, 0, HOR); g.restore();\ngr = g.createLinearGradient(0, HOR, 0, H); gr.addColorStop(0, 'rgba(24,70,80,0.18)'); gr.addColorStop(0.5, 'rgba(18,58,66,0.5)'); gr.addColorStop(1, 'rgba(8,30,36,0.78)'); g.fillStyle = gr; g.fillRect(0, HOR, W, H - HOR);\nfor (let i = 0; i < 150; i++) { const dy = rnd() * 190, y = HOR + dy, x = 262 + (rnd() + rnd() - 1) * (40 + dy * 0.5), w = 4 + rnd() * 16; g.fillStyle = 'rgba(255,236,190,' + (0.12 + rnd() * 0.4) * (1 - dy / 260) + ')'; g.fillRect(x, y, w, 1.2); }\nfor (let i = 0; i < 280; i++) { const dy = rnd() * (H - HOR), y = HOR + dy, w = 10 + rnd() * (14 + dy * 0.35), x = rnd() * W; g.fillStyle = rnd() < 0.5 ? 'rgba(255,255,255,' + (0.03 + rnd() * 0.06) + ')' : 'rgba(6,30,36,' + (0.08 + rnd() * 0.1) + ')'; g.fillRect(x, y, w, 1); }\nnames.push(addProjectImage('scene.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Pond'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h, HOR = 215;\nlet seed = 77; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\n\nfor (const [nm, y0, h, a, n] of [['far', 0, 110, 0.5, 9], ['near', 0, 80, 0.3, 7]]) {\n  const c = mk(W * 2, h), g = c.getContext('2d'); seed = nm === 'far' ? 5 : 9;\n  for (let i = 0; i < n; i++) { const x = rnd() * W, y = h * (0.35 + rnd() * 0.4), rw = 50 + rnd() * 90, rh = h * (0.14 + rnd() * 0.2), al = a * (0.5 + rnd() * 0.5);\n    for (const k of [0, 1]) { const cx = x + k * W; const q = g.createRadialGradient(cx, y, 0, cx, y, rw); q.addColorStop(0, 'rgba(255,240,215,' + al + ')'); q.addColorStop(1, 'rgba(255,240,215,0)'); g.save(); g.translate(cx, y); g.scale(1, rh / rw); g.translate(-cx, -y); g.fillStyle = q; g.beginPath(); g.arc(cx, y, rw, 0, 7); g.fill(); g.restore(); } }\n  names.push(addProjectImage('mist_' + nm + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Mist far'; e.src = names[0]; e.handle = 'mistA'; e.x = -60; e.y = 150; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h, HOR = 215;\nlet seed = 77; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\n\nconst N = 14;\nfor (let k = 0; k < N; k++) {\n  const c = mk(120, 40), g = c.getContext('2d'); const t = k / N;\n  for (let j = 0; j < 3; j++) { const u = t - j * 0.18; if (u <= 0 || u > 0.9) continue; const rx = 6 + u * 54, ry = rx * 0.22, a = 0.55 * (1 - u / 0.9); g.beginPath(); g.ellipse(60, 20, rx, ry, 0, 0, 7); g.strokeStyle = 'rgba(255,248,230,' + a + ')'; g.lineWidth = 1.4 - u * 0.5; g.stroke(); g.beginPath(); g.ellipse(60, 21.5, rx, ry, 0, 0.1, Math.PI - 0.1); g.strokeStyle = 'rgba(10,40,50,' + a * 0.5 + ')'; g.lineWidth = 1; g.stroke(); }\n  names.push(addProjectImage('anim/ring_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst mk2 = async (nm, x, y, off) => { const fr = names.map((_, k) => names[(k + off) % names.length]); const e = await addElement('IMG_ANIM', { frames: fr, fps: 5, animPrefix: 'ring' + off, repeat: 0 }); e.name = nm; e.frames = fr; e.x = x; e.y = y; e.show = 'normal'; }; await mk2('Fish ring 1', 70, 262, 0); await mk2('Fish ring 2', 232, 300, 7); return 2"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h, HOR = 215;\nlet seed = 77; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\n\n// facing right, body centre at (ox, wl), scale s; the wake streams back to the left, the reflection hangs under the waterline\nfunction duck(kind, s) {\n  const w = Math.round(100 * s), h = Math.round(56 * s), ox = 70 * s, wl = 34 * s;\n  const c = mk(w, h), g = c.getContext('2d'), d = mk(w, h), dg = d.getContext('2d');\n  const body = (q) => {\n    q.save(); q.beginPath(); q.rect(0, 0, w, wl + 2 * s); q.clip();\n    if (kind === 'dl') {\n      q.beginPath(); q.ellipse(ox, wl - 3 * s, 7 * s, 4.2 * s, 0, 0, 7); q.fillStyle = '#f2cf4a'; q.fill();\n      q.beginPath(); q.arc(ox + 6 * s, wl - 7 * s, 3.3 * s, 0, 7); q.fillStyle = '#f7da62'; q.fill();\n      q.beginPath(); q.ellipse(ox - 1 * s, wl - 5.4 * s, 5 * s, 1.3 * s, 0, 0, 7); q.fillStyle = '#9a6a2a'; q.fill();\n      q.beginPath(); q.ellipse(ox + 9.2 * s, wl - 6.6 * s, 2 * s, 0.9 * s, 0, 0, 7); q.fillStyle = '#e8841c'; q.fill();\n      q.beginPath(); q.arc(ox + 6.6 * s, wl - 8 * s, 0.7 * s, 0, 7); q.fillStyle = '#222'; q.fill();\n    } else {\n      const drake = kind === 'drake';\n      const bg = q.createLinearGradient(0, wl - 15 * s, 0, wl); bg.addColorStop(0, drake ? '#d3d3c8' : '#a07d52'); bg.addColorStop(1, drake ? '#8f918a' : '#5e4528');\n      q.beginPath(); q.moveTo(ox - 27 * s, wl - 15 * s); q.lineTo(ox - 14 * s, wl - 10 * s); q.lineTo(ox - 20 * s, wl - 1 * s); q.closePath(); q.fillStyle = drake ? '#26262a' : '#6a5030'; q.fill();\n      q.beginPath(); q.ellipse(ox - 2 * s, wl - 6 * s, 19 * s, 8.5 * s, 0, 0, 7); q.fillStyle = bg; q.fill();\n      q.beginPath(); q.ellipse(ox - 4 * s, wl - 8 * s, 11 * s, 4 * s, -0.12, 0, 7); q.strokeStyle = drake ? 'rgba(70,70,70,0.45)' : 'rgba(40,25,10,0.5)'; q.lineWidth = 1.1 * s; q.stroke();\n      if (!drake) { for (let i = 0; i < 26; i++) { q.beginPath(); q.arc(ox - 18 * s + rnd() * 34 * s, wl - 13 * s + rnd() * 11 * s, (0.5 + rnd() * 0.8) * s, 0, 7); q.fillStyle = 'rgba(40,28,14,0.55)'; q.fill(); } q.beginPath(); q.ellipse(ox - 5 * s, wl - 7.6 * s, 4 * s, 1.8 * s, -0.1, 0, 7); q.fillStyle = '#3a63b0'; q.fill(); }\n      q.beginPath(); q.ellipse(ox + 11 * s, wl - 10 * s, 9 * s, 8 * s, 0, 0, 7); q.fillStyle = drake ? '#7a3b22' : '#8d6a43'; q.fill();\n      q.beginPath(); q.moveTo(ox + 10 * s, wl - 13 * s); q.lineTo(ox + 19 * s, wl - 14 * s); q.lineTo(ox + 18 * s, wl - 22 * s); q.lineTo(ox + 11 * s, wl - 22 * s); q.closePath(); q.fillStyle = drake ? '#1f6b3a' : '#a58660'; q.fill();\n      if (drake) { q.fillStyle = '#f4f2ea'; q.fillRect(ox + 10 * s, wl - 15.6 * s, 9 * s, 1.8 * s); }\n      const hg = q.createRadialGradient(ox + 15 * s, wl - 26 * s, 1, ox + 16 * s, wl - 24 * s, 7 * s); hg.addColorStop(0, drake ? '#47b26e' : '#c0a37a'); hg.addColorStop(1, drake ? '#17603a' : '#8a6d46');\n      q.beginPath(); q.arc(ox + 16 * s, wl - 24 * s, 6.2 * s, 0, 7); q.fillStyle = hg; q.fill();\n      q.beginPath(); q.ellipse(ox + 24 * s, wl - 22.5 * s, 5.6 * s, 2.1 * s, 0.08, 0, 7); q.fillStyle = drake ? '#e8c524' : '#b3944a'; q.fill();\n      q.beginPath(); q.arc(ox + 18 * s, wl - 25.5 * s, 0.9 * s, 0, 7); q.fillStyle = '#111'; q.fill();\n      if (!drake) { q.strokeStyle = 'rgba(40,28,14,0.6)'; q.lineWidth = 1 * s; q.beginPath(); q.moveTo(ox + 11 * s, wl - 26 * s); q.lineTo(ox + 22 * s, wl - 25 * s); q.stroke(); }\n    }\n    q.restore();\n  };\n  body(dg);\n  // reflection: the part above the waterline, flipped, fading out\n  const rf = mk(w, h), rg2 = rf.getContext('2d'); rg2.save(); rg2.translate(0, 2 * wl); rg2.scale(1, -1); rg2.globalAlpha = 0.45; rg2.drawImage(d, 0, 0); rg2.restore();\n  rg2.globalCompositeOperation = 'destination-out'; const fd = rg2.createLinearGradient(0, wl, 0, h); fd.addColorStop(0, 'rgba(0,0,0,0.1)'); fd.addColorStop(1, 'rgba(0,0,0,1)'); rg2.fillStyle = fd; rg2.fillRect(0, wl, w, h - wl);\n  rg2.globalCompositeOperation = 'source-over'; rg2.fillStyle = 'rgba(0,0,0,0)';\n  g.save(); g.filter = 'blur(' + 0.7 * s + 'px)'; g.drawImage(rf, 0, 0); g.restore();\n  // wake: a flat V behind the chest, and a ring round the body\n  g.lineCap = 'round';\n  for (const sgn of [-1, 1]) { const lg = g.createLinearGradient(ox + 12 * s, 0, ox - 58 * s, 0); lg.addColorStop(0, 'rgba(255,255,255,0.5)'); lg.addColorStop(1, 'rgba(255,255,255,0)'); g.strokeStyle = lg; g.lineWidth = 1.2 * s; g.beginPath(); g.moveTo(ox + 12 * s, wl + 0.5 * s); g.lineTo(ox - 58 * s, wl + sgn * 5 * s + 1 * s); g.stroke(); }\n  g.beginPath(); g.ellipse(ox - 1 * s, wl + 0.8 * s, 23 * s, 3.2 * s, 0, 0, 7); g.strokeStyle = 'rgba(255,255,255,0.4)'; g.lineWidth = 1 * s; g.stroke();\n  g.drawImage(d, 0, 0);\n  g.beginPath(); g.ellipse(ox, wl + 1 * s, 21 * s, 2.2 * s, 0, 0, Math.PI); g.strokeStyle = 'rgba(255,255,255,0.45)'; g.lineWidth = 1 * s; g.stroke();\n  return c;\n}\nconst flip = (c) => { const o = mk(c.width, c.height), g = o.getContext('2d'); g.translate(c.width, 0); g.scale(-1, 1); g.drawImage(c, 0, 0); return o; };\nfor (const [k, s] of [['hen', 1], ['drake', 0.8], ['dl', 0.5]]) { seed = 31; const c = duck(k, s); names.push(addProjectImage('duck/' + k + '_r.png', c, {}).name); names.push(addProjectImage('duck/' + k + '_l.png', flip(c), {}).name); }\n\nawait loadAllImages();\n\n    const nm = ['hen_r', 'hen_l', 'drake_r', 'drake_l', 'dl_r', 'dl_l'];\n    const mkd = async (name, handle, i, x, y) => { const e = await addElement('IMG', { src: names[i] }); e.name = name; e.src = names[i]; e.images = [names[i], names[i ^ 1]]; e.handle = handle; e.x = x; e.y = y; e.show = 'normal'; };\n    await mkd('Drake', 'drake', 3, 276, 243);\n    for (let k = 2; k >= 0; k--) await mkd('Duckling ' + (k + 1), 'dk' + k, 4, 105 - 16 * (k + 1), 309);\n    await mkd('Hen', 'hen', 0, 100, 288);\n    return 5"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h, HOR = 215;\nlet seed = 77; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\n\nconst c = mk(W, H), g = c.getContext('2d');\n// reeds with cattails at both edges\nconst reeds = (x0, dirn) => { for (let i = 0; i < 15; i++) { const x = x0 + dirn * i * 4.2 + rnd() * 3, top = 285 + rnd() * 90 + i * 2.2, lean = dirn * (6 + rnd() * 16);\n  const q = g.createLinearGradient(0, top, 0, H); q.addColorStop(0, '#9aa44f'); q.addColorStop(0.5, '#4a5a26'); q.addColorStop(1, '#1d2a14'); g.strokeStyle = q; g.lineWidth = 2.2 - i * 0.04; g.lineCap = 'round'; g.beginPath(); g.moveTo(x, H); g.quadraticCurveTo(x + lean * 0.2, (top + H) / 2, x + lean, top); g.stroke();\n  if (i % 3 === 0) { g.save(); g.translate(x + lean, top); g.rotate(dirn * 0.12); g.beginPath(); g.ellipse(0, 12, 4.4, 14, 0, 0, 7); const cg2 = g.createLinearGradient(-4, 0, 4, 0); cg2.addColorStop(0, '#3a2414'); cg2.addColorStop(0.5, '#7a4a28'); cg2.addColorStop(1, '#2e1c10'); g.fillStyle = cg2; g.fill(); g.restore(); } } };\nreeds(2, 1); reeds(W - 2, -1);\n// lily pads and a lotus\nconst pad = (x, y, rw, rh) => { g.save(); g.translate(x, y); g.beginPath(); g.ellipse(0, 0, rw, rh, 0, 0.18, Math.PI * 2 - 0.1); g.lineTo(0, 0); g.closePath(); const q = g.createRadialGradient(-rw * 0.3, -rh * 0.3, 1, 0, 0, rw); q.addColorStop(0, '#6fa04a'); q.addColorStop(1, '#2c5a2c'); g.fillStyle = q; g.fill(); g.strokeStyle = 'rgba(10,40,20,0.5)'; g.lineWidth = 0.8; for (let a = 0; a < 6; a++) { g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(a * 1.05 + 0.6) * rw * 0.9, Math.sin(a * 1.05 + 0.6) * rh * 0.9); g.stroke(); } g.restore(); g.beginPath(); g.ellipse(x, y + rh * 0.7, rw * 0.9, rh * 0.25, 0, 0, 7); g.fillStyle = 'rgba(0,20,25,0.25)'; g.fill(); };\nfor (const [x, y, rw, rh] of [[92, 372, 28, 7], [140, 396, 24, 6], [60, 392, 20, 5], [300, 380, 26, 6.5], [250, 398, 22, 5.5], [346, 394, 18, 4.5], [190, 372, 16, 4]]) pad(x, y, rw, rh);\nconst petal = (x, y, a, len) => { g.save(); g.translate(x, y); g.rotate(a); g.beginPath(); g.ellipse(0, -len / 2, len * 0.22, len / 2, 0, 0, 7); const q = g.createLinearGradient(0, 0, 0, -len); q.addColorStop(0, '#f6e4ea'); q.addColorStop(1, '#e46f9b'); g.fillStyle = q; g.fill(); g.restore(); };\nfor (const a of [-1.0, -0.55, 0.55, 1.0, -0.25, 0.25, 0]) petal(312, 372, a, 17); g.beginPath(); g.arc(312, 365, 2.6, 0, 7); g.fillStyle = '#f2c84a'; g.fill();\n// bank\ngr = g.createLinearGradient(0, 404, 0, H); gr.addColorStop(0, '#2a3a1e'); gr.addColorStop(0.3, '#16231a'); gr.addColorStop(1, '#0a110d');\ng.beginPath(); g.moveTo(0, H); for (let x = 0; x <= W; x += 6) g.lineTo(x, 410 + 5 * Math.sin(x / 41) + 3 * Math.sin(x / 13)); g.lineTo(W, H); g.closePath(); g.fillStyle = gr; g.fill();\nfor (let i = 0; i < 160; i++) { const x = rnd() * W, y = 408 + rnd() * 16 + 5 * Math.sin(x / 41), l = 6 + rnd() * 14; g.strokeStyle = 'rgba(' + (60 + rnd() * 60 | 0) + ',' + (90 + rnd() * 60 | 0) + ',40,0.8)'; g.lineWidth = 1; g.beginPath(); g.moveTo(x, y + 8); g.quadraticCurveTo(x + (rnd() - 0.5) * 6, y, x + (rnd() - 0.5) * 12, y - l); g.stroke(); }\nnames.push(addProjectImage('foreground.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Reeds and bank'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h, HOR = 215;\nlet seed = 77; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\n\nfor (const [nm, y0, h, a, n] of [['far', 0, 110, 0.5, 9], ['near', 0, 80, 0.3, 7]]) {\n  const c = mk(W * 2, h), g = c.getContext('2d'); seed = nm === 'far' ? 5 : 9;\n  for (let i = 0; i < n; i++) { const x = rnd() * W, y = h * (0.35 + rnd() * 0.4), rw = 50 + rnd() * 90, rh = h * (0.14 + rnd() * 0.2), al = a * (0.5 + rnd() * 0.5);\n    for (const k of [0, 1]) { const cx = x + k * W; const q = g.createRadialGradient(cx, y, 0, cx, y, rw); q.addColorStop(0, 'rgba(255,240,215,' + al + ')'); q.addColorStop(1, 'rgba(255,240,215,0)'); g.save(); g.translate(cx, y); g.scale(1, rh / rw); g.translate(-cx, -y); g.fillStyle = q; g.beginPath(); g.arc(cx, y, rw, 0, 7); g.fill(); g.restore(); } }\n  if (nm === 'far') continue; names.push(addProjectImage('mist_' + nm + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Mist near'; e.src = names[0]; e.handle = 'mistB'; e.x = 0; e.y = 296; e.show = 'normal'; return 1"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h, HOR = 215;\nlet seed = 77; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\n\nconst N = 8, WH = 215;\nfor (let k = 0; k < N; k++) {\n  const c = mk(W, WH), g = c.getContext('2d'); seed = 13; const ph = 2 * Math.PI * k / N;\n  for (const side of [-1, 1]) {\n    const bx = side < 0 ? 0 : W;\n    g.strokeStyle = '#2b2a1a'; g.lineWidth = 5; g.lineCap = 'round'; g.beginPath(); g.moveTo(bx, 10); g.quadraticCurveTo(bx - side * 34, 2, bx - side * 78, 26); g.stroke();\n    for (let i = 0; i < 12; i++) {\n      const t = i / 11 + (rnd() - 0.5) * 0.06, sx = bx - side * (4 + t * 72), sy = 12 + t * 13, len = 42 + rnd() * 110 * (1 - Math.abs(t - 0.3) * 0.8);\n      const sw = 6 * Math.sin(ph + i * 0.7) * (0.5 + len / 150), steps = 16, pts = [];\n      g.beginPath(); g.moveTo(sx, sy);\n      for (let j = 1; j <= steps; j++) { const u = j / steps, px = sx + sw * u * u - side * 5 * u, py = sy + len * u; g.lineTo(px, py); pts.push([px, py, u]); }\n      g.strokeStyle = 'rgba(78,84,36,0.8)'; g.lineWidth = 0.9; g.stroke();\n      pts.forEach(([px, py, u], j) => { if (u < 0.18 || j % 2) return; const o = (j % 4 < 2) ? 1 : -1; g.save(); g.translate(px, py); g.rotate(o * 0.8 + (rnd() - 0.5) * 0.4); g.beginPath(); g.ellipse(0, 4, 1.3, 5, 0, 0, 7); g.fillStyle = 'rgba(' + (96 + u * 70 | 0) + ',' + (124 + u * 50 | 0) + ',44,' + (0.8 - u * 0.25) + ')'; g.fill(); g.restore(); });\n    }\n  }\n  names.push(addProjectImage('anim/willow_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG_ANIM', { frames: names, fps: 6, animPrefix: 'willow', repeat: 0 }); e.name = 'Willow'; e.frames = names; e.x = 0; e.y = 0; e.show = 'normal'; return names.length"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Main'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Aod'; return 1"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "day"
+  },
+  {
+   "preset": "battery"
+  },
+  {
+   "preset": "steps"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "edit": "Hour Main",
+   "set": {
+    "x": 78,
+    "y": 38,
+    "space": -9,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 84,
+    "weight": 600,
+    "fill": "solid",
+    "color": "#fff6e2",
+    "shadowColor": "#0a2530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Colon Main",
+   "set": {
+    "x": 176,
+    "y": 50,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 84,
+    "weight": 600,
+    "fill": "solid",
+    "color": "#fff6e2",
+    "shadowColor": "#0a2530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Minute Main",
+   "set": {
+    "x": 196,
+    "y": 38,
+    "space": -2,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 84,
+    "weight": 600,
+    "fill": "solid",
+    "color": "#fff6e2",
+    "shadowColor": "#0a2530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 110,
+    "y": 110,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 120,
+    "weight": 300,
+    "fill": "solid",
+    "color": "#6d7e7c"
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 122,
+    "y": 250,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 120,
+    "weight": 300,
+    "fill": "solid",
+    "color": "#6d7e7c"
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 91,
+    "y": 137,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 30,
+    "weight": 500,
+    "fill": "solid",
+    "color": "#fff6e2",
+    "shadowColor": "#0a2530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Day",
+   "set": {
+    "x": 169,
+    "y": 146,
+    "space": -3,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 30,
+    "weight": 500,
+    "fill": "solid",
+    "color": "#fff6e2",
+    "shadowColor": "#0a2530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Battery",
+   "set": {
+    "x": 223,
+    "y": 146,
+    "hSpace": -3,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 30,
+    "weight": 500,
+    "fill": "solid",
+    "color": "#fff6e2",
+    "shadowColor": "#0a2530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "edit": "Steps",
+   "set": {
+    "x": 142,
+    "y": 392,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Josefin Sans",
+    "size": 34,
+    "weight": 500,
+    "fill": "solid",
+    "color": "#ffe9b8",
+    "shadowColor": "#0a2530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 8
+   }
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gDucks = 'Ducks'; project.groups.gMist = 'Mist and rings'; let n = 0; for (const e of project.elements) { if (['Hen','Drake'].includes(e.name) || /^Duckling/.test(e.name)) { e.group = 'gDucks'; n++ } if (/^(Mist|Fish ring)/.test(e.name)) { e.group = 'gMist'; n++ } } return n"
+  },
+  {
+   "script": "document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'"
+  }
+ ]
+}

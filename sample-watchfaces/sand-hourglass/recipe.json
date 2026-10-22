@@ -1,0 +1,193 @@
+{
+ "name": "Sand Hourglass",
+ "device": "bip-6",
+ "font": "Bebas Neue",
+ "description": "A wooden hourglass that runs once a minute: the sand follows the seconds, a thin stream falls from the neck with grains that tumble off the pile.",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/sand-hourglass",
+ "optimizePng": 24,
+ "userImports": "import { Time as DCTime } from '@zos/sensor'",
+ "userCode": "{\n  const OX = 18, OY = 35, CX = OX + 80, YN = OY + 190, YB = OY + 362, SLOPE = 0.7, NS = 45, STEP = 4\n  const GR = 8, HP = 4, MS = 70, GRAV = 1100\n  const APEX = [361,343.9,339.2,335.9,333.3,330.9,328.7,326.5,324.3,322.2,320.2,318.2,316.2,314.3,312.4,310.6,308.8,307,305.2,303.5,301.8,300.1,298.5,296.9,295.2,293.6,292.1,290.5,289,287.4,285.9,284.4,282.9,281.4,280,278.5,277,275.6,274.2,272.7,271.3,269.9,268.5,267.1,265.7,264.3,262.9,261.5,260.1,258.7,257.3,256,254.6,253.2,251.8,250.4,249.1,247.7,246.3,244.9,243.5]\n  let seed = 7\n  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647\n  let id = null, via = '', n = 0, curL = -1, last = 0, clock = null\n  try { clock = new DCTime() } catch (e) {}\n  const seconds = () => {\n    try { if (clock) { const s = clock.getSeconds(); if (typeof s === 'number' && s >= 0) return s } } catch (e) {}\n    try { const s = new Date().getSeconds(); if (typeof s === 'number' && s >= 0) return s } catch (e) {}\n    return Math.floor(n * MS / 1000) % 60\n  }\n  const away = (w) => w.setProperty(ui.prop.MORE, { x: pxv(-20), y: pxv(0) })\n  const gr = [], hp = []\n  for (let i = 0; i < GR; i++) gr.push({ w: W['g' + i], y: YN + rnd() * 80, vy: 0, dx: 0 })\n  for (let i = 0; i < HP; i++) hp.push({ w: W['h' + i], on: false, x: 0, y: 0, vx: 0, vy: 0 })\n  const surf = (x, apex) => Math.min(YB, apex + SLOPE * Math.abs(x - CX))\n  const tick = () => {\n    n++\n    const now = Date.now(), dt = Math.min(0.12, last ? (now - last) / 1000 : MS / 1000); last = now\n    const L = Math.min(60, seconds())\n    const apex = OY + APEX[L]\n    if (L !== curL) { curL = L; W.sand.setProperty(ui.prop.MORE, { x: pxv(OX), y: pxv(OY), src: F.sand[(L - 36 + 61) % 61] }) }\n    if (L >= 60) { away(W.stream); for (const g of gr) away(g.w); }\n    else {\n      const k = Math.max(1, Math.min(NS, Math.round((apex - YN - 1) / STEP)))\n      W.stream.setProperty(ui.prop.MORE, { x: pxv(CX - 2), y: pxv(YN + 1), src: F.stream[((n % 2) * NS + k - 1 - 21 + 2 * NS) % (2 * NS)] })\n      for (const g of gr) {\n        g.vy += GRAV * dt; g.y += g.vy * dt\n        if (g.y >= apex - 1) {\n          const h = hp.find((q) => !q.on)\n          if (h && rnd() < 0.6) { h.on = true; h.x = CX + (rnd() - 0.5) * 4; h.y = apex - 2; h.vx = (rnd() - 0.5) * 90; h.vy = -(45 + rnd() * 60) }\n          g.y = YN + 1; g.vy = 0; g.dx = Math.round(rnd() * 2) - 1\n        }\n        g.w.setProperty(ui.prop.MORE, { x: pxv(CX - 1 + g.dx), y: pxv(Math.round(g.y)) })\n      }\n    }\n    for (const h of hp) {\n      if (!h.on) { away(h.w); continue }\n      h.vy += GRAV * dt; h.x += h.vx * dt; h.y += h.vy * dt\n      if (h.vy > 0 && h.y >= surf(h.x, apex) - 1) { h.on = false; away(h.w); continue }\n      h.w.setProperty(ui.prop.MORE, { x: pxv(Math.round(h.x)), y: pxv(Math.round(h.y)) })\n    }\n  }\n  const safe = () => { try { tick() } catch (e) {} }\n  const stop = () => {\n    if (id === null) return\n    try { if (via === 't') timer.stopTimer(id); else clearInterval(id) } catch (e) {}\n    id = null\n  }\n  const start = () => {\n    if (id !== null) return\n    last = 0\n    try {\n      if (typeof setInterval === 'function') { id = setInterval(safe, MS); via = 'i' }\n      else if (typeof timer !== 'undefined' && timer && timer.createTimer) { id = timer.createTimer(0, MS, safe); via = 't' }\n    } catch (e) {}\n  }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: () => { curL = -1; start() }, pause_call: stop })\n  safe()\n  start()\n}",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst G = { W: 160, H: 380, cx: 80, yn: 190, y0: 18, R: 56, rn: 4, slope: 0.7, fill: 0.74 };\nconst rTop = (y) => { const t = Math.max(0, Math.min(1, (G.yn - y) / (G.yn - G.y0))); const p = t < 0.59 ? Math.sin(t / 0.59 * Math.PI / 2) : 1 - 0.25 * Math.pow((t - 0.59) / 0.41, 2); return G.rn + (G.R - G.rn) * p; };\nconst rAt = (y) => y <= G.yn ? rTop(y) : rTop(2 * G.yn - y);\nconst YB = 2 * G.yn - G.y0;\nlet Vbulb = 0; for (let y = G.y0; y < G.yn; y++) Vbulb += Math.PI * Math.pow(rAt(y + 0.5) - 2, 2);\nconst Vs = G.fill * Vbulb;\nconst pileVol = (apex) => { let v = 0; for (let y = Math.ceil(apex); y < YB; y++) { const w = Math.min(rAt(y + 0.5) - 2, (y + 0.5 - apex) / G.slope); if (w > 0) v += Math.PI * w * w; } return v; };\nconst solveApex = (V) => { let lo = G.yn, hi = YB; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (pileVol(m) > V) lo = m; else hi = m; } return (lo + hi) / 2; };\nconst topVol = (yt) => { let v = 0; for (let y = Math.ceil(yt); y < G.yn; y++) v += Math.PI * Math.pow(rAt(y + 0.5) - 2, 2); return v; };\nconst solveTop = (V) => { let lo = G.y0, hi = G.yn; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (topVol(m) > V) lo = m; else hi = m; } return (lo + hi) / 2; };\n\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];\nconst profile = (g, inset) => { g.beginPath(); for (let y = G.y0; y <= YB; y += 2) g.lineTo(G.cx - rAt(y) + inset, y); for (let y = YB; y >= G.y0; y -= 2) g.lineTo(G.cx + rAt(y) - inset, y); g.closePath(); };\n\nconst c = mk(G.W, G.H), g = c.getContext('2d');\n// faint tint of the empty glass\nprofile(g, 0); g.fillStyle = 'rgba(150,190,215,0.08)'; g.fill();\n// posts\nfor (const x of [6, 145]) {\n  const q = g.createLinearGradient(x, 0, x + 9, 0);\n  q.addColorStop(0, '#2a1809'); q.addColorStop(0.25, '#8a5a2e'); q.addColorStop(0.5, '#c58b4a'); q.addColorStop(0.75, '#7a4d26'); q.addColorStop(1, '#24140a');\n  g.fillStyle = q; g.fillRect(x, 12, 9, 356);\n  for (const y of [34, 336]) { const b = g.createLinearGradient(x - 1, 0, x + 10, 0); b.addColorStop(0, '#6e4a14'); b.addColorStop(0.45, '#f1d37a'); b.addColorStop(1, '#6e4a14'); g.fillStyle = b; g.fillRect(x - 1, y, 11, 6); }\n}\n// plates\nconst plate = (y) => {\n  g.save(); g.shadowColor = 'rgba(0,0,0,0.7)'; g.shadowBlur = 5; g.shadowOffsetY = y < 100 ? 3 : -2;\n  g.beginPath(); g.roundRect(2, y, 156, 18, 5); const q = g.createLinearGradient(0, y, 0, y + 18);\n  q.addColorStop(0, '#b87a3e'); q.addColorStop(0.5, '#8a5a2e'); q.addColorStop(1, '#4d2e15'); g.fillStyle = q; g.fill(); g.restore();\n  g.strokeStyle = 'rgba(0,0,0,0.16)'; g.lineWidth = 1;\n  for (let i = 0; i < 7; i++) { const yy = y + 3 + i * 2.2; g.beginPath(); g.moveTo(6, yy); g.bezierCurveTo(50, yy + 1.5, 100, yy - 1.5, 154, yy + 0.5); g.stroke(); }\n  g.fillStyle = '#e6bf62'; g.fillRect(4, y < 100 ? y + 15 : y, 152, 3);\n  g.fillStyle = 'rgba(255,235,170,0.45)'; g.fillRect(6, y < 100 ? y + 1 : y + 16, 148, 1);\n};\nplate(0); plate(362);\nnames.push(addProjectImage('hg/frame.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Frame'; e.src = names[0]; e.x = 18; e.y = 35; e.show = 'normal';  return 1"
+  },
+  {
+   "script": "\nconst G = { W: 160, H: 380, cx: 80, yn: 190, y0: 18, R: 56, rn: 4, slope: 0.7, fill: 0.74 };\nconst rTop = (y) => { const t = Math.max(0, Math.min(1, (G.yn - y) / (G.yn - G.y0))); const p = t < 0.59 ? Math.sin(t / 0.59 * Math.PI / 2) : 1 - 0.25 * Math.pow((t - 0.59) / 0.41, 2); return G.rn + (G.R - G.rn) * p; };\nconst rAt = (y) => y <= G.yn ? rTop(y) : rTop(2 * G.yn - y);\nconst YB = 2 * G.yn - G.y0;\nlet Vbulb = 0; for (let y = G.y0; y < G.yn; y++) Vbulb += Math.PI * Math.pow(rAt(y + 0.5) - 2, 2);\nconst Vs = G.fill * Vbulb;\nconst pileVol = (apex) => { let v = 0; for (let y = Math.ceil(apex); y < YB; y++) { const w = Math.min(rAt(y + 0.5) - 2, (y + 0.5 - apex) / G.slope); if (w > 0) v += Math.PI * w * w; } return v; };\nconst solveApex = (V) => { let lo = G.yn, hi = YB; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (pileVol(m) > V) lo = m; else hi = m; } return (lo + hi) / 2; };\nconst topVol = (yt) => { let v = 0; for (let y = Math.ceil(yt); y < G.yn; y++) v += Math.PI * Math.pow(rAt(y + 0.5) - 2, 2); return v; };\nconst solveTop = (V) => { let lo = G.y0, hi = G.yn; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (topVol(m) > V) lo = m; else hi = m; } return (lo + hi) / 2; };\n\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];\nconst profile = (g, inset) => { g.beginPath(); for (let y = G.y0; y <= YB; y += 2) g.lineTo(G.cx - rAt(y) + inset, y); for (let y = YB; y >= G.y0; y -= 2) g.lineTo(G.cx + rAt(y) - inset, y); g.closePath(); };\n\nconst rIn = []; for (let y = 0; y < G.H; y++) rIn.push(Math.max(0, rAt(y + 0.5) - 2));\nconst hash = (x, y) => { const s = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453; return s - Math.floor(s); };\nconst LIGHT = [247, 218, 148], MID = [222, 178, 98], DARK = [162, 114, 54];\nfor (let L = 0; L <= 60; L++) {\n  const f = L / 60, apex = solveApex(f * Vs), yt = solveTop((1 - f) * Vs);\n  const dipD = 16 * Math.min(1, f * 12) * Math.min(1, (1 - f) * 5), rt = rIn[Math.min(G.H - 1, Math.floor(yt))] + 1e-6;\n  const c = mk(G.W, G.H), g = c.getContext('2d'), im = g.createImageData(G.W, G.H), d = im.data;\n  for (let y = G.y0; y < YB; y++) for (let x = 0; x < G.W; x++) {\n    const dx = x + 0.5 - G.cx, ar = Math.abs(dx), r = rIn[y]; if (ar > r) continue;\n    let surf;\n    if (y < G.yn) surf = yt + dipD * Math.pow(1 - Math.min(1, ar / rt), 1.5); else surf = apex + G.slope * ar;\n    const depth = y + 0.5 - surf; if (depth < -0.5) continue;\n    if (y < G.yn && yt >= G.yn - 0.5) continue;\n    const n = hash(x, y) - 0.5, shade = 1 - 0.42 * Math.pow(ar / (r + 2), 2.2);\n    let k = 0.2 + 0.72 * shade + n * 0.55 + 0.05 * Math.sin(depth * 0.4 + ar * 0.06);\n    if (depth < 2.5) k += 0.2 * (1 - depth / 2.5);\n    k = clamp(k, 0, 1);\n    const col = k < 0.5 ? mix(DARK, MID, k * 2) : mix(MID, LIGHT, (k - 0.5) * 2);\n    const i = (y * G.W + x) * 4; d[i] = col[0]; d[i + 1] = col[1]; d[i + 2] = col[2]; d[i + 3] = Math.round(255 * clamp(depth + 0.5, 0, 1));\n  }\n  g.putImageData(im, 0, 0);\n  names.push(addProjectImage('hg/sand_' + L + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[36] }); e.name = 'Sand'; e.src = names[36]; e.images = names.slice(36).concat(names.slice(0, 36)); e.handle = 'sand'; e.x = 18; e.y = 35; e.show = 'normal'; return names.length"
+  },
+  {
+   "script": "\nconst G = { W: 160, H: 380, cx: 80, yn: 190, y0: 18, R: 56, rn: 4, slope: 0.7, fill: 0.74 };\nconst rTop = (y) => { const t = Math.max(0, Math.min(1, (G.yn - y) / (G.yn - G.y0))); const p = t < 0.59 ? Math.sin(t / 0.59 * Math.PI / 2) : 1 - 0.25 * Math.pow((t - 0.59) / 0.41, 2); return G.rn + (G.R - G.rn) * p; };\nconst rAt = (y) => y <= G.yn ? rTop(y) : rTop(2 * G.yn - y);\nconst YB = 2 * G.yn - G.y0;\nlet Vbulb = 0; for (let y = G.y0; y < G.yn; y++) Vbulb += Math.PI * Math.pow(rAt(y + 0.5) - 2, 2);\nconst Vs = G.fill * Vbulb;\nconst pileVol = (apex) => { let v = 0; for (let y = Math.ceil(apex); y < YB; y++) { const w = Math.min(rAt(y + 0.5) - 2, (y + 0.5 - apex) / G.slope); if (w > 0) v += Math.PI * w * w; } return v; };\nconst solveApex = (V) => { let lo = G.yn, hi = YB; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (pileVol(m) > V) lo = m; else hi = m; } return (lo + hi) / 2; };\nconst topVol = (yt) => { let v = 0; for (let y = Math.ceil(yt); y < G.yn; y++) v += Math.PI * Math.pow(rAt(y + 0.5) - 2, 2); return v; };\nconst solveTop = (V) => { let lo = G.y0, hi = G.yn; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (topVol(m) > V) lo = m; else hi = m; } return (lo + hi) / 2; };\n\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];\nconst profile = (g, inset) => { g.beginPath(); for (let y = G.y0; y <= YB; y += 2) g.lineTo(G.cx - rAt(y) + inset, y); for (let y = YB; y >= G.y0; y -= 2) g.lineTo(G.cx + rAt(y) - inset, y); g.closePath(); };\n\n// stream pictures: 4 px wide, lengths 4..180, two dash phases for a shimmer\nfor (let ph = 0; ph < 2; ph++) for (let k = 1; k <= 45; k++) {\n  const h = k * 4, c = mk(4, h), g = c.getContext('2d'), im = g.createImageData(4, h), d = im.data;\n  for (let y = 0; y < h; y++) { const m = 0.62 + 0.38 * Math.sin(y * 0.85 + ph * Math.PI); for (let x = 0; x < 4; x++) { const a = (x === 1 || x === 2 ? 0.95 : 0.3) * m, i = (y * 4 + x) * 4; d[i] = 244; d[i + 1] = 214; d[i + 2] = 140; d[i + 3] = Math.round(255 * a); } }\n  g.putImageData(im, 0, 0);\n  names.push(addProjectImage('hg/stream_' + ph + '_' + k + '.png', c, {}).name);\n}\nfor (const [nm, col] of [['a', '#fbe3a6'], ['b', '#d9aa58']]) { const c = mk(4, 4), g = c.getContext('2d'); g.beginPath(); g.arc(2, 2, 1.6, 0, 7); g.fillStyle = col; g.fill(); names.push(addProjectImage('hg/grain_' + nm + '.png', c, {}).name); }\n\nawait loadAllImages();\n\n    const st0 = names.slice(0, 90), st = st0.slice(21).concat(st0.slice(0, 21)), ga = names[90], gb = names[91];\n    const s = await addElement('IMG', { src: st[0] }); s.name = 'Sand stream'; s.src = st[0]; s.images = st.slice(); s.handle = 'stream'; s.x = 96; s.y = 226; s.show = 'normal';\n    const pos = [[97,232],[98,243],[96,253],[98,263],[97,274],[96,284],[98,294],[97,305],[84,304],[109,300],[92,307],[115,309]];\n    for (let i = 0; i < pos.length; i++) { const e = await addElement('IMG', { src: i % 2 ? gb : ga }); e.name = (i < 8 ? 'Grain ' : 'Hop grain ') + (i < 8 ? i + 1 : i - 8 + 1); e.src = i % 2 ? gb : ga; e.handle = (i < 8 ? 'g' : 'h') + (i < 8 ? i : i - 8); e.x = pos[i][0]; e.y = pos[i][1]; e.show = 'normal'; }\n    return pos.length"
+  },
+  {
+   "script": "\nconst G = { W: 160, H: 380, cx: 80, yn: 190, y0: 18, R: 56, rn: 4, slope: 0.7, fill: 0.74 };\nconst rTop = (y) => { const t = Math.max(0, Math.min(1, (G.yn - y) / (G.yn - G.y0))); const p = t < 0.59 ? Math.sin(t / 0.59 * Math.PI / 2) : 1 - 0.25 * Math.pow((t - 0.59) / 0.41, 2); return G.rn + (G.R - G.rn) * p; };\nconst rAt = (y) => y <= G.yn ? rTop(y) : rTop(2 * G.yn - y);\nconst YB = 2 * G.yn - G.y0;\nlet Vbulb = 0; for (let y = G.y0; y < G.yn; y++) Vbulb += Math.PI * Math.pow(rAt(y + 0.5) - 2, 2);\nconst Vs = G.fill * Vbulb;\nconst pileVol = (apex) => { let v = 0; for (let y = Math.ceil(apex); y < YB; y++) { const w = Math.min(rAt(y + 0.5) - 2, (y + 0.5 - apex) / G.slope); if (w > 0) v += Math.PI * w * w; } return v; };\nconst solveApex = (V) => { let lo = G.yn, hi = YB; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (pileVol(m) > V) lo = m; else hi = m; } return (lo + hi) / 2; };\nconst topVol = (yt) => { let v = 0; for (let y = Math.ceil(yt); y < G.yn; y++) v += Math.PI * Math.pow(rAt(y + 0.5) - 2, 2); return v; };\nconst solveTop = (V) => { let lo = G.y0, hi = G.yn; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (topVol(m) > V) lo = m; else hi = m; } return (lo + hi) / 2; };\n\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\nconst clamp = (v, a, b) => Math.max(a, Math.min(b, v));\nconst mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];\nconst profile = (g, inset) => { g.beginPath(); for (let y = G.y0; y <= YB; y += 2) g.lineTo(G.cx - rAt(y) + inset, y); for (let y = YB; y >= G.y0; y -= 2) g.lineTo(G.cx + rAt(y) - inset, y); g.closePath(); };\n\nconst c = mk(G.W, G.H), g = c.getContext('2d');\nprofile(g, 0);\nlet q = g.createLinearGradient(G.cx - G.R, 0, G.cx + G.R, 0); q.addColorStop(0, 'rgba(255,255,255,0.12)'); q.addColorStop(0.3, 'rgba(255,255,255,0.02)'); q.addColorStop(0.8, 'rgba(255,255,255,0)'); q.addColorStop(1, 'rgba(255,255,255,0.07)');\ng.fillStyle = q; g.fill();\ng.strokeStyle = 'rgba(205,232,250,0.6)'; g.lineWidth = 1.6; g.lineJoin = 'round'; g.stroke();\nprofile(g, 3.5); g.strokeStyle = 'rgba(255,255,255,0.1)'; g.lineWidth = 1; g.stroke();\n// specular streaks along the left and right sides of both bulbs\nconst streak = (y0, y1, side, off, a, w) => {\n  const gr = g.createLinearGradient(0, y0, 0, y1); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.3, 'rgba(255,255,255,' + a + ')'); gr.addColorStop(0.75, 'rgba(255,255,255,' + a + ')'); gr.addColorStop(1, 'rgba(255,255,255,0)');\n  g.strokeStyle = gr; g.lineWidth = w; g.lineCap = 'round'; g.beginPath();\n  for (let y = y0; y <= y1; y += 2) g.lineTo(G.cx + side * (rAt(y) - off), y); g.stroke();\n};\nstreak(G.y0 + 16, G.yn - 30, -1, 8, 0.55, 3.5); streak(G.yn + 30, YB - 14, -1, 8, 0.4, 3);\nstreak(G.y0 + 26, G.yn - 40, 1, 7, 0.2, 2); streak(G.yn + 40, YB - 22, 1, 7, 0.16, 2);\nnames.push(addProjectImage('hg/glass.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Glass'; e.src = names[0]; e.x = 18; e.y = 35; e.show = 'normal';  return 1"
+  },
+  {
+   "script": "project.groups = project.groups || {}; project.groups.gHg = 'Hourglass'; let n = 0; for (const e of project.elements) { if (['Frame','Sand','Sand stream','Glass'].includes(e.name) || /^(Hop grain|Grain) \\d/.test(e.name)) { e.group = 'gHg'; n++ } } return n"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Main'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Aod'; return 1"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "day"
+  },
+  {
+   "preset": "steps"
+  },
+  {
+   "preset": "battery"
+  },
+  {
+   "remove": "Colon Main"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "edit": "Hour Main",
+   "set": {
+    "x": 209,
+    "y": 90,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 160,
+    "fill": "gradient",
+    "from": "#ffe7ae",
+    "to": "#d9983c",
+    "angle": 90,
+    "borderColor": "#1c0f03",
+    "borderWidth": 3
+   }
+  },
+  {
+   "edit": "Minute Main",
+   "set": {
+    "x": 213,
+    "y": 233,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 160,
+    "fill": "gradient",
+    "from": "#ffe7ae",
+    "to": "#d9983c",
+    "angle": 90,
+    "borderColor": "#1c0f03",
+    "borderWidth": 3
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 139,
+    "y": 107,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 120,
+    "fill": "solid",
+    "color": "#7a5a24"
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 142,
+    "y": 247,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 120,
+    "fill": "solid",
+    "color": "#7a5a24"
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 232,
+    "y": 30,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 40,
+    "fill": "solid",
+    "color": "#e8c27a"
+   }
+  },
+  {
+   "edit": "Day",
+   "set": {
+    "x": 294,
+    "y": 37,
+    "space": -3,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 40,
+    "fill": "solid",
+    "color": "#e8c27a"
+   }
+  },
+  {
+   "edit": "Steps",
+   "set": {
+    "x": 206,
+    "y": 379,
+    "hSpace": -2,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 38,
+    "fill": "solid",
+    "color": "#e8c27a"
+   }
+  },
+  {
+   "edit": "Battery",
+   "set": {
+    "x": 297,
+    "y": 379,
+    "hSpace": -2,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 38,
+    "fill": "solid",
+    "color": "#e8c27a"
+   }
+  },
+  {
+   "script": "document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'"
+  }
+ ]
+}

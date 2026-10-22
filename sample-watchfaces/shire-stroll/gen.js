@@ -1,0 +1,243 @@
+// Shire Stroll: a sunny hillside with a round-door hobbit hole, a winding lane, a picket fence and a garden. Little folk of five kinds
+// (gardener, traveller, pipe-smoking elder, lass with a flower basket, child) stroll along the lane at random: random kind, direction,
+// pace, and sometimes they stop for a moment. Chimney smoke curls, clouds drift, two butterflies flutter, the elder puffs his pipe.
+const fs = require('fs');
+const pre = `
+const W = dev().w, H = dev().h;
+let seed = 12; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+const names = [];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const PY = (x) => 338 + 5 * Math.sin(x / 55);
+`;
+const sceneJS = pre + `
+const c = mk(W, H), g = c.getContext('2d');
+let gr = g.createLinearGradient(0, 0, 0, 250); gr.addColorStop(0, '#74c0ec'); gr.addColorStop(0.5, '#bfe6f6'); gr.addColorStop(1, '#fff1c8'); g.fillStyle = gr; g.fillRect(0, 0, W, 260);
+let rg = g.createRadialGradient(330, 48, 0, 330, 48, 210); rg.addColorStop(0, 'rgba(255,248,205,0.95)'); rg.addColorStop(0.3, 'rgba(255,240,180,0.4)'); rg.addColorStop(1, 'rgba(255,240,180,0)'); g.fillStyle = rg; g.fillRect(0, 0, W, 260);
+const ridge = (base, amp, o, c0, c1, trees) => { const f = (x) => base - amp * (0.5 * Math.sin(x / 70 + o) + 0.3 * Math.sin(x / 31 + o * 2) + 0.2);
+  g.beginPath(); g.moveTo(0, 300); for (let x = 0; x <= W; x += 5) g.lineTo(x, f(x)); g.lineTo(W, 300); g.closePath(); const q = g.createLinearGradient(0, base - amp, 0, base + 40); q.addColorStop(0, c0); q.addColorStop(1, c1); g.fillStyle = q; g.fill();
+  g.save(); g.clip(); for (let i = 0; i < 9; i++) { const y = base - amp + 8 + i * 6; g.strokeStyle = 'rgba(255,255,200,0.16)'; g.lineWidth = 1; g.beginPath(); for (let x = 0; x <= W; x += 6) g.lineTo(x, y + 3 * Math.sin(x / 40 + i + o)); g.stroke(); } g.restore();
+  for (let i = 0; i < trees; i++) { const x = rnd() * W, y = f(x) + 1, r = 2 + rnd() * 3.4; g.beginPath(); g.arc(x, y - r * 0.6, r, 0, 7); g.fillStyle = 'rgba(60,120,50,0.8)'; g.fill(); } };
+ridge(205, 26, 0.4, '#cfe9ac', '#b2da8c', 14); ridge(228, 30, 2.1, '#b4dc88', '#98cc72', 18); ridge(250, 22, 4.3, '#9ad070', '#86c462', 12);
+gr = g.createLinearGradient(0, 190, 0, 270); gr.addColorStop(0, 'rgba(255,245,210,0)'); gr.addColorStop(1, 'rgba(255,245,210,0.3)'); g.fillStyle = gr; g.fillRect(0, 190, W, 80);
+// the hill with the round door
+g.save(); g.beginPath(); g.ellipse(236, 330, 262, 178, 0, 0, 7); g.clip();
+gr = g.createLinearGradient(0, 150, 0, 340); gr.addColorStop(0, '#9be06a'); gr.addColorStop(0.5, '#6dbd46'); gr.addColorStop(1, '#559f3a'); g.fillStyle = gr; g.fillRect(0, 140, W, 220);
+for (let i = 0; i < 1500; i++) { const x = rnd() * W, y = 150 + rnd() * 190, l = 3 + rnd() * 6; g.strokeStyle = rnd() < 0.5 ? 'rgba(190,240,120,0.55)' : 'rgba(40,110,40,0.4)'; g.lineWidth = 1; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rnd() - 0.5) * 3, y - l); g.stroke(); }
+g.restore();
+// meadow in front
+g.beginPath(); g.moveTo(0, 312); for (let x = 0; x <= W; x += 6) g.lineTo(x, 306 + 6 * Math.sin(x / 50 + 1)); g.lineTo(W, H); g.lineTo(0, H); g.closePath();
+gr = g.createLinearGradient(0, 300, 0, H); gr.addColorStop(0, '#7ccd4c'); gr.addColorStop(0.5, '#62b241'); gr.addColorStop(1, '#4a9636'); g.fillStyle = gr; g.fill();
+g.save(); g.clip(); for (let i = 0; i < 1800; i++) { const x = rnd() * W, y = 306 + rnd() * 150, l = 3 + (y - 306) / 30 + rnd() * 4; g.strokeStyle = rnd() < 0.5 ? 'rgba(200,246,130,0.5)' : 'rgba(30,100,40,0.4)'; g.lineWidth = 1 + (y - 306) / 120; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rnd() - 0.5) * 4, y - l); g.stroke(); } g.restore();
+// the lane
+const lane = (th) => { g.beginPath(); for (let x = -4; x <= W + 4; x += 6) g.lineTo(x, PY(x) - th); for (let x = W + 4; x >= -4; x -= 6) g.lineTo(x, PY(x) + th); g.closePath(); };
+lane(19); g.fillStyle = '#b79a5e'; g.fill(); lane(16); gr = g.createLinearGradient(0, 318, 0, 360); gr.addColorStop(0, '#e8cd8e'); gr.addColorStop(1, '#cfae6c'); g.fillStyle = gr; g.fill();
+g.save(); lane(16); g.clip(); for (let i = 0; i < 90; i++) { const x = rnd() * W, y = PY(x) + (rnd() - 0.5) * 30; g.beginPath(); g.ellipse(x, y, 1.5 + rnd() * 2.5, 1 + rnd() * 1.4, 0, 0, 7); g.fillStyle = rnd() < 0.5 ? 'rgba(150,120,70,0.5)' : 'rgba(255,240,200,0.5)'; g.fill(); } g.restore();
+g.beginPath(); g.moveTo(190, 300); g.lineTo(222, 300); g.lineTo(240, PY(240) - 14); g.lineTo(178, PY(178) - 14); g.closePath(); gr = g.createLinearGradient(0, 300, 0, 330); gr.addColorStop(0, '#d6b878'); gr.addColorStop(1, '#e8cd8e'); g.fillStyle = gr; g.fill();
+// door: stone ring, green round door, brass fittings
+const DX = 206, DY = 262;
+g.save(); g.shadowColor = 'rgba(0,40,0,0.5)'; g.shadowBlur = 8; g.shadowOffsetY = 3; g.beginPath(); g.arc(DX, DY, 46, 0, 7); g.fillStyle = '#b9a47c'; g.fill(); g.restore();
+for (let i = 0; i < 26; i++) { const a = i / 26 * Math.PI * 2; g.beginPath(); g.arc(DX + Math.cos(a) * 41, DY + Math.sin(a) * 41, 6.5, 0, 7); g.fillStyle = i % 2 ? '#a89268' : '#c9b48a'; g.fill(); }
+g.beginPath(); g.arc(DX, DY, 36, 0, 7); gr = g.createRadialGradient(DX - 10, DY - 12, 4, DX, DY, 38); gr.addColorStop(0, '#6cc04a'); gr.addColorStop(1, '#2f7a2c'); g.fillStyle = gr; g.fill();
+g.save(); g.beginPath(); g.arc(DX, DY, 36, 0, 7); g.clip(); for (let i = -6; i <= 6; i++) { g.strokeStyle = 'rgba(20,70,20,0.45)'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(DX + i * 6, DY - 40); g.lineTo(DX + i * 6, DY + 40); g.stroke(); g.strokeStyle = 'rgba(190,240,150,0.22)'; g.beginPath(); g.moveTo(DX + i * 6 + 1.5, DY - 40); g.lineTo(DX + i * 6 + 1.5, DY + 40); g.stroke(); }
+for (const y of [-16, 14]) { g.fillStyle = '#5a4a22'; g.fillRect(DX - 36, DY + y - 2.5, 72, 5); g.fillStyle = '#c9a24a'; g.fillRect(DX - 36, DY + y - 2.5, 72, 1.8); } g.restore();
+g.beginPath(); g.arc(DX, DY, 36, 0, 7); g.strokeStyle = 'rgba(20,50,20,0.6)'; g.lineWidth = 1.5; g.stroke();
+g.beginPath(); g.arc(DX + 18, DY + 3, 4.6, 0, 7); gr = g.createRadialGradient(DX + 16.5, DY + 1.5, 0.5, DX + 18, DY + 3, 5); gr.addColorStop(0, '#fff2a8'); gr.addColorStop(1, '#a8801e'); g.fillStyle = gr; g.fill();
+// windows with shutters and flower boxes
+const win = (x, y, r) => { for (const s of [-1, 1]) { g.beginPath(); g.ellipse(x + s * (r + 5), y, 5, r * 0.9, 0, 0, 7); g.fillStyle = '#4c9a3c'; g.fill(); g.strokeStyle = 'rgba(20,70,20,0.5)'; g.lineWidth = 1; g.stroke(); }
+  g.beginPath(); g.arc(x, y, r + 3.5, 0, 7); g.fillStyle = '#8a6a38'; g.fill(); g.beginPath(); g.arc(x, y, r, 0, 7); const q = g.createRadialGradient(x - 4, y - 4, 1, x, y, r); q.addColorStop(0, '#fff7c8'); q.addColorStop(1, '#ffd470'); g.fillStyle = q; g.fill();
+  g.strokeStyle = '#7a5a2e'; g.lineWidth = 2; g.beginPath(); g.moveTo(x - r, y); g.lineTo(x + r, y); g.moveTo(x, y - r); g.lineTo(x, y + r); g.stroke();
+  g.fillStyle = '#7a4a24'; g.fillRect(x - r - 4, y + r + 4, 2 * r + 8, 6); for (let i = 0; i < 9; i++) { g.beginPath(); g.arc(x - r - 2 + i * ((2 * r + 4) / 8), y + r + 3 + Math.sin(i) * 1.5, 2.6, 0, 7); g.fillStyle = ['#f0506a', '#ffd23a', '#c06ae0', '#ffffff', '#ff8a3a'][i % 5]; g.fill(); } };
+win(122, 248, 14); win(292, 244, 14);
+// chimney
+g.fillStyle = '#8c8478'; g.fillRect(292, 152, 20, 30); for (let r = 0; r < 5; r++) for (let k = 0; k < 3; k++) { g.fillStyle = (r + k) % 2 ? '#a39a8c' : '#7a7266'; g.fillRect(293 + k * 6.4 + (r % 2) * 2, 153 + r * 6, 6, 5); } g.fillStyle = '#6a6256'; g.fillRect(289, 148, 26, 6);
+// the old oak
+g.fillStyle = '#6a4a2a'; g.beginPath(); g.moveTo(56, 262); g.quadraticCurveTo(60, 214, 62, 176); g.lineTo(78, 176); g.quadraticCurveTo(80, 214, 88, 262); g.closePath(); g.fill();
+g.strokeStyle = 'rgba(30,18,8,0.4)'; g.lineWidth = 1; for (let i = 0; i < 8; i++) { g.beginPath(); g.moveTo(62 + i * 3, 262); g.lineTo(64 + i * 2, 180); g.stroke(); }
+for (let i = 0; i < 70; i++) { const a = rnd() * 7, d = Math.sqrt(rnd()), x = 70 + Math.cos(a) * 62 * d, y = 150 + Math.sin(a) * 48 * d, r = 9 + rnd() * 11; const lit = (x - 70) / 62 + (y - 150) / 48 < 0; const q = g.createRadialGradient(x - r * 0.3, y - r * 0.3, 1, x, y, r); q.addColorStop(0, lit ? '#9adc5a' : '#5cae3c'); q.addColorStop(1, lit ? '#4c9a34' : '#2c7a2c'); g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = q; g.fill(); }
+// fence
+const fence = (x0, x1) => { g.strokeStyle = '#e6dcc0'; g.lineWidth = 3; for (const y of [312, 322]) { g.beginPath(); g.moveTo(x0, y); g.lineTo(x1, y + 1); g.stroke(); }
+  for (let x = x0; x <= x1; x += 13) { const h = 24 + rnd() * 3; g.beginPath(); g.moveTo(x - 3, 332); g.lineTo(x - 3, 332 - h + 4); g.lineTo(x, 332 - h); g.lineTo(x + 3, 332 - h + 4); g.lineTo(x + 3, 332); g.closePath(); const q = g.createLinearGradient(x - 3, 0, x + 3, 0); q.addColorStop(0, '#fbf4de'); q.addColorStop(1, '#cfc4a4'); g.fillStyle = q; g.fill(); g.strokeStyle = 'rgba(80,60,30,0.35)'; g.lineWidth = 0.8; g.stroke(); } };
+fence(8, 166); fence(246, 382);
+// lantern on a post
+g.fillStyle = '#5a4020'; g.fillRect(160, 270, 3, 40); g.beginPath(); g.roundRect(155, 258, 13, 16, 3); const lg = g.createRadialGradient(161, 266, 1, 161, 266, 10); lg.addColorStop(0, '#fff6b0'); lg.addColorStop(1, '#f2b030'); g.fillStyle = lg; g.fill(); g.strokeStyle = '#4a3418'; g.lineWidth = 1.5; g.stroke();
+g.beginPath(); g.arc(161, 266, 20, 0, 7); const gl = g.createRadialGradient(161, 266, 2, 161, 266, 20); gl.addColorStop(0, 'rgba(255,240,160,0.35)'); gl.addColorStop(1, 'rgba(255,240,160,0)'); g.fillStyle = gl; g.fill();
+// vegetable patch, sunflowers
+for (let row = 0; row < 3; row++) for (let i = 0; i < 7; i++) { const x = 22 + i * 15 + row * 4, y = 372 + row * 12; g.beginPath(); g.ellipse(x, y + 3, 8, 3, 0, 0, 7); g.fillStyle = 'rgba(60,40,10,0.3)'; g.fill(); g.beginPath(); g.arc(x, y, 6, 0, 7); const q = g.createRadialGradient(x - 2, y - 2, 1, x, y, 6); q.addColorStop(0, row === 1 ? '#c5e87a' : '#a0dc60'); q.addColorStop(1, row === 1 ? '#6aa832' : '#3f8f2a'); g.fillStyle = q; g.fill(); g.strokeStyle = 'rgba(20,80,20,0.4)'; g.lineWidth = 0.8; g.stroke(); }
+for (const [x, y] of [[336, 360], [356, 352], [374, 366]]) { g.strokeStyle = '#3f8a2a'; g.lineWidth = 3; g.beginPath(); g.moveTo(x, 400); g.lineTo(x, y); g.stroke(); for (let k = 0; k < 14; k++) { const a = k / 14 * Math.PI * 2; g.beginPath(); g.ellipse(x + Math.cos(a) * 9, y + Math.sin(a) * 9, 5, 2.4, a, 0, 7); g.fillStyle = '#ffd22a'; g.fill(); } g.beginPath(); g.arc(x, y, 6, 0, 7); g.fillStyle = '#6a4218'; g.fill(); }
+// flowers scattered on the grass
+for (let i = 0; i < 200; i++) { const x = rnd() * W, y = 190 + rnd() * 260; if (y > 318 && y < 360) continue; const r = 1 + rnd() * 1.6; g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = ['#ffffff', '#ffe34a', '#ff8aa8', '#c9a0f0', '#ff9a4a'][rnd() * 5 | 0]; g.fill(); }
+names.push(addProjectImage('scene.png', c, {}).name);
+`;
+const fgJS = pre + `
+const c = mk(W, H), g = c.getContext('2d');
+for (let i = 0; i < 220; i++) { const x = rnd() * W, base = H + 4, tip = 408 + rnd() * 40, lean = (rnd() - 0.5) * 22; g.strokeStyle = ['#3f8f2a', '#58ae3a', '#2f7a28', '#7ccb4a'][rnd() * 4 | 0]; g.lineWidth = 1.5 + rnd() * 2.2; g.lineCap = 'round'; g.beginPath(); g.moveTo(x, base); g.quadraticCurveTo(x + lean * 0.3, (base + tip) / 2, x + lean, tip); g.stroke(); }
+for (let i = 0; i < 34; i++) { const x = rnd() * W, y = 408 + rnd() * 36, r = 2.2 + rnd() * 2.6; g.strokeStyle = '#3a8a2a'; g.lineWidth = 1.4; g.beginPath(); g.moveTo(x, y + 12); g.lineTo(x, y); g.stroke(); for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; g.beginPath(); g.arc(x + Math.cos(a) * r, y + Math.sin(a) * r, r * 0.8, 0, 7); g.fillStyle = i % 3 ? '#ffffff' : '#ffd23a'; g.fill(); } g.beginPath(); g.arc(x, y, r * 0.8, 0, 7); g.fillStyle = '#f0a020'; g.fill(); }
+names.push(addProjectImage('foreground.png', c, {}).name);
+`;
+const cloudJS = pre + `
+const c = mk(W * 2, 120), g = c.getContext('2d'); seed = 8;
+const puffy = (x, y, s) => { for (let i = 0; i < 9; i++) { const cx = x + (i - 4) * 9 * s + (rnd() - 0.5) * 8, cy = y + (rnd() - 0.5) * 10 * s - Math.abs(i - 4) * 1.2, r = (11 + rnd() * 10) * s; const q = g.createRadialGradient(cx - r * 0.3, cy - r * 0.4, 1, cx, cy, r); q.addColorStop(0, 'rgba(255,255,255,0.98)'); q.addColorStop(0.75, 'rgba(236,246,255,0.92)'); q.addColorStop(1, 'rgba(210,228,246,0.7)'); g.fillStyle = q; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.fill(); } };
+for (const [x, y, s] of [[60, 40, 1.2], [210, 80, 0.8], [320, 30, 0.9]]) for (const k of [0, 1]) { seed = Math.round(x + y); puffy(x + k * W, y, s); }
+names.push(addProjectImage('clouds.png', c, {}).name);
+`;
+const smokeJS = pre + `
+const N = 8;
+for (let k = 0; k < N; k++) { const c = mk(70, 120), g = c.getContext('2d');
+  for (let j = 0; j < 4; j++) { const u = ((k / N) + j / 4) % 1, y = 114 - u * 108, x = 14 + u * 30 + Math.sin(u * 7 + j) * 5, r = 5 + u * 15, a = 0.7 * Math.min(1, u * 5) * (1 - u);
+    const q = g.createRadialGradient(x, y, 1, x, y, r); q.addColorStop(0, 'rgba(246,246,246,' + a + ')'); q.addColorStop(1, 'rgba(226,226,230,0)'); g.fillStyle = q; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+  names.push(addProjectImage('anim/smoke_' + k + '.png', c, {}).name); }
+`;
+const folkJS = pre + `
+const PAL = [
+  { trou: '#8a6a3c', vest: '#4f9a3c', shirt: '#f6eed2', hair: '#7a4a22' },
+  { trou: '#5a4a32', vest: '#7a5a2e', shirt: '#e8e0c0', hair: '#5a3a1a' },
+  { trou: '#6a6258', vest: '#9a2c3a', shirt: '#f6f0e0', hair: '#f0f0ea' },
+  { trou: '#e8b832', vest: '#e8b832', shirt: '#fff6e6', hair: '#a85a22' },
+  { trou: '#4a6aa8', vest: '#3f5f9a', shirt: '#ffe9a8', hair: '#c98a42' }];
+function hobbit(type, frame) {
+  const c = mk(48, 66), g = c.getContext('2d'); const p = PAL[type], sc = type === 4 ? 0.8 : 1;
+  g.translate(24, 62); g.scale(sc, sc);
+  const a = [0.55, 0, -0.55, 0][frame], bob = frame % 2 ? -1.3 : 0, skin = '#f1c498', skinD = '#d9a070';
+  const leg = (ang, col) => { const hx = 0, hy = -22, fx = Math.sin(ang) * 14, fy = -22 + Math.cos(ang) * 14 - 2; g.strokeStyle = col; g.lineWidth = 6; g.lineCap = 'round'; g.beginPath(); g.moveTo(hx, hy); g.lineTo(fx, fy); g.stroke();
+    g.beginPath(); g.ellipse(fx + 2, -3, 6.4, 3.4, 0, 0, 7); g.fillStyle = '#c98c58'; g.fill(); g.strokeStyle = '#7a4a22'; g.lineWidth = 1; for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(fx - 1 + k * 3.2, -5.4, 1.6, Math.PI, 0); g.stroke(); } };
+  const arm = (ang, col, hand) => { const sx = 0, sy = -38 + bob, ex = Math.sin(ang) * 14, ey = sy + Math.cos(ang) * 14; g.strokeStyle = col; g.lineWidth = 5; g.lineCap = 'round'; g.beginPath(); g.moveTo(sx, sy); g.lineTo(ex, ey); g.stroke(); g.beginPath(); g.arc(ex, ey, 2.8, 0, 7); g.fillStyle = skin; g.fill(); return [ex, ey]; };
+  const skirt = type === 3;
+  arm(a * 0.8, p.shirt === '#fff6e6' ? '#f1e2c6' : '#cfc6a8', false);
+  leg(a, skirt ? skin : p.trou); leg(-a, skirt ? skinD : p.trou);
+  if (type === 1) { g.beginPath(); g.moveTo(-3, -42 + bob); g.lineTo(-17, -18); g.lineTo(2, -16); g.closePath(); g.fillStyle = '#3f7a38'; g.fill(); g.beginPath(); g.roundRect(-16, -42 + bob, 10, 17, 3); g.fillStyle = '#8a5a2a'; g.fill(); g.strokeStyle = '#4a2e12'; g.lineWidth = 1; g.stroke(); }
+  g.save(); g.translate(0, -31 + bob); g.rotate(0.06);
+  g.beginPath(); g.ellipse(0, 0, 9, 11.5, 0, 0, 7); g.fillStyle = p.shirt; g.fill();
+  if (skirt) { g.beginPath(); g.moveTo(-8, 4); g.lineTo(-12, 16 - bob); g.lineTo(12, 16 - bob); g.lineTo(8, 4); g.closePath(); g.fillStyle = p.vest; g.fill(); g.fillStyle = '#fff6e6'; g.beginPath(); g.ellipse(0, 3, 6, 4, 0, 0, 7); g.fill(); for (let i = 0; i < 5; i++) { g.beginPath(); g.arc(-8 + i * 4, 11, 1.1, 0, 7); g.fillStyle = '#e0508a'; g.fill(); } }
+  else { g.beginPath(); g.ellipse(1, 1, 8, 10, 0, 0, 7); g.fillStyle = p.vest; g.fill(); g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 1; g.stroke(); for (let i = 0; i < 3; i++) { g.beginPath(); g.arc(5.5, -4 + i * 5, 1.2, 0, 7); g.fillStyle = '#e6c25a'; g.fill(); } }
+  g.restore();
+  // head
+  const hx = 2, hy = -49 + bob;
+  g.beginPath(); g.moveTo(-4, hy - 1); g.lineTo(-9, hy - 6); g.lineTo(-3, hy - 5); g.closePath(); g.fillStyle = skinD; g.fill();
+  g.beginPath(); g.arc(hx, hy, 9.4, 0, 7); const hg = g.createRadialGradient(hx - 2, hy - 3, 1, hx, hy, 10); hg.addColorStop(0, '#ffd8b0'); hg.addColorStop(1, skin); g.fillStyle = hg; g.fill();
+  g.beginPath(); g.arc(hx + 9, hy + 1, 2.4, 0, 7); g.fillStyle = skin; g.fill();
+  g.beginPath(); g.arc(hx + 5.5, hy - 1.5, 1.3, 0, 7); g.fillStyle = '#2a1608'; g.fill();
+  g.beginPath(); g.arc(hx + 4, hy + 4, 2.7, 0, 7); g.fillStyle = 'rgba(240,110,110,0.45)'; g.fill();
+  g.strokeStyle = '#8a4a30'; g.lineWidth = 1; g.beginPath(); g.arc(hx + 5, hy + 4, 3, 0.2, 1.2); g.stroke();
+  const curls = (cx, cy, rx, n, col) => { for (let i = 0; i < n; i++) { const t = i / (n - 1); g.beginPath(); g.arc(cx + (t - 0.5) * 2 * rx, cy - Math.sin(t * Math.PI) * 4, 3.4, 0, 7); g.fillStyle = col; g.fill(); } };
+  if (type !== 1) curls(hx - 2, hy - 7, 8, 6, p.hair);
+  g.beginPath(); g.arc(hx - 8, hy, 3.6, 0, 7); g.fillStyle = p.hair; g.fill();
+  let hand = arm(-a * 0.8, p.shirt, true);
+  if (type === 0) { g.beginPath(); g.ellipse(hx, hy - 8, 15, 3.8, 0, 0, 7); g.fillStyle = '#e8c86a'; g.fill(); g.strokeStyle = '#a8842a'; g.lineWidth = 1; g.stroke(); g.beginPath(); g.ellipse(hx, hy - 11, 8, 6, 0, Math.PI, 0); g.fillStyle = '#f0d27a'; g.fill(); g.stroke(); g.fillStyle = '#c0392b'; g.fillRect(hx - 8, hy - 11.5, 16, 2.4);
+    g.beginPath(); g.moveTo(hand[0] - 5, hand[1]); g.lineTo(hand[0] + 5, hand[1]); g.lineTo(hand[0] + 4, hand[1] + 7); g.lineTo(hand[0] - 4, hand[1] + 7); g.closePath(); g.fillStyle = '#9a6a30'; g.fill(); g.strokeStyle = '#5a3a14'; g.stroke(); for (const [dx, col] of [[-2, '#e8742a'], [2, '#6cc04a']]) { g.beginPath(); g.arc(hand[0] + dx, hand[1] - 0.5, 2.4, 0, 7); g.fillStyle = col; g.fill(); } }
+  if (type === 1) { g.beginPath(); g.moveTo(hx - 9, hy - 3); g.quadraticCurveTo(hx - 6, hy - 14, hx + 8, hy - 8); g.quadraticCurveTo(hx + 4, hy - 2, hx - 9, hy - 3); g.fillStyle = '#3f7a38'; g.fill(); g.beginPath(); g.moveTo(hx + 1, hy - 11); g.quadraticCurveTo(hx + 8, hy - 20, hx + 14, hy - 16); g.strokeStyle = '#d8423a'; g.lineWidth = 2; g.stroke();
+    g.strokeStyle = '#6a4a22'; g.lineWidth = 2.2; g.beginPath(); g.moveTo(hand[0], hand[1] - 2); g.lineTo(hand[0] + 4, -1); g.stroke(); }
+  if (type === 2) { g.strokeStyle = p.hair; g.lineWidth = 3.4; g.beginPath(); g.arc(hx + 3, hy + 7, 5, 0.2, 2.9); g.stroke(); g.strokeStyle = '#555'; g.lineWidth = 1; g.beginPath(); g.arc(hx + 5.5, hy - 1.5, 2.8, 0, 7); g.stroke();
+    g.strokeStyle = '#6a4a22'; g.lineWidth = 1.6; g.beginPath(); g.moveTo(hx + 9, hy + 5); g.lineTo(hx + 16, hy + 7); g.stroke(); g.beginPath(); g.arc(hx + 17.5, hy + 5.5, 2.6, 0, 7); g.fillStyle = '#7a4a22'; g.fill();
+    g.strokeStyle = '#6a4a22'; g.lineWidth = 2.2; g.beginPath(); g.moveTo(hand[0], hand[1] - 2); g.lineTo(hand[0] + 4, -1); g.stroke(); }
+  if (type === 3) { g.strokeStyle = p.hair; g.lineWidth = 3; g.beginPath(); g.moveTo(hx - 9, hy); g.quadraticCurveTo(hx - 15, hy + 12, hx - 10, hy + 22); g.stroke(); g.beginPath(); g.arc(hx - 10, hy + 23, 2.4, 0, 7); g.fillStyle = '#e0508a'; g.fill(); g.beginPath(); g.arc(hx - 2, hy - 11, 2.8, 0, 7); g.fillStyle = '#ff7aa0'; g.fill(); g.beginPath(); g.arc(hx - 2, hy - 11, 1, 0, 7); g.fillStyle = '#ffe34a'; g.fill();
+    g.beginPath(); g.ellipse(hand[0], hand[1] + 4, 6, 4, 0, 0, Math.PI); g.fillStyle = '#b98a50'; g.fill(); g.strokeStyle = '#6a4a22'; g.lineWidth = 1; g.stroke(); for (const [dx, col] of [[-3, '#ff6a8a'], [0, '#ffe34a'], [3, '#c9a0f0']]) { g.beginPath(); g.arc(hand[0] + dx, hand[1] + 1, 2.2, 0, 7); g.fillStyle = col; g.fill(); } }
+  if (type === 4) { g.beginPath(); g.ellipse(hx, hy - 8.5, 9, 4.5, 0, Math.PI, 0); g.fillStyle = '#d8423a'; g.fill(); g.fillRect(hx - 2, hy - 9, 14, 2.4); g.beginPath(); g.moveTo(hand[0], hand[1]); g.lineTo(hand[0] + 9, hand[1] - 14); g.strokeStyle = '#8a5a2a'; g.lineWidth = 1.6; g.stroke(); g.beginPath(); g.arc(hand[0] + 9.5, hand[1] - 15, 3, 0, 7); g.fillStyle = '#ffd23a'; g.fill(); }
+  return c;
+}
+const flip = (c) => { const o = mk(c.width, c.height), g = o.getContext('2d'); g.translate(c.width, 0); g.scale(-1, 1); g.drawImage(c, 0, 0); return o; };
+for (let t = 0; t < 5; t++) for (const dir of [0, 1]) for (let f = 0; f < 4; f++) { const c = hobbit(t, f); names.push(addProjectImage('folk/h' + t + dir + f + '.png', dir ? flip(c) : c, {}).name); }
+// pipe puffs, three sizes
+for (const [i, r] of [[0, 3], [1, 5], [2, 7]]) { const c = mk(16, 16), g = c.getContext('2d'); const q = g.createRadialGradient(8, 8, 0.5, 8, 8, r + 1); q.addColorStop(0, 'rgba(250,250,250,0.9)'); q.addColorStop(1, 'rgba(235,235,240,0)'); g.fillStyle = q; g.beginPath(); g.arc(8, 8, r + 1, 0, 7); g.fill(); names.push(addProjectImage('folk/puff' + i + '.png', c, {}).name); }
+// butterflies: two colours x open / closed
+for (const [col, col2] of [['#ff9a2e', '#ffd36a'], ['#4aa8ff', '#b8e0ff']]) for (const open of [1, 0]) { const c = mk(20, 16), g = c.getContext('2d'); g.translate(10, 8); const w = open ? 8 : 2.6;
+  for (const s of [-1, 1]) { g.beginPath(); g.ellipse(s * w * 0.55, -2, w * 0.6, 5, s * 0.5, 0, 7); g.fillStyle = col; g.fill(); g.beginPath(); g.ellipse(s * w * 0.4, 3, w * 0.45, 3.4, -s * 0.4, 0, 7); g.fillStyle = col2; g.fill(); }
+  g.fillStyle = '#2a1608'; g.fillRect(-0.8, -4, 1.6, 9); names.push(addProjectImage('folk/bf' + names.length + '.png', c, {}).name); }
+`;
+const wrap = (body, tail) => ({ script: `${body}\nawait loadAllImages();\n${tail}` });
+const F = 'Marcellus';
+const PY = (x) => 338 + 5 * Math.sin(x / 55);
+// preview: four folk on the lane, two butterflies, a puff by the elder
+const FW = [[70, 2, 0], [273, 12, 0], [156, 17, 0], [330, 39, 0]];   // x, canonical index, lane
+const NIMG = 40;
+const steps = [{ preset: 'bg' },
+  wrap(sceneJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Hillside'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1`),
+  wrap(cloudJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Clouds'; e.src = names[0]; e.handle = 'cl'; e.x = -90; e.y = 4; e.show = 'normal'; return 1`),
+  wrap(smokeJS, `const e = await addElement('IMG_ANIM', { frames: names, fps: 6, animPrefix: 'smoke', repeat: 0 }); e.name = 'Chimney smoke'; e.frames = names; e.x = 288; e.y = 40; e.show = 'normal'; return names.length`),
+  wrap(folkJS, `
+    const fk = names.slice(0, ${NIMG}), pf = names.slice(${NIMG}, ${NIMG + 3}), bf = names.slice(${NIMG + 3}, ${NIMG + 7});
+    const FW = ${JSON.stringify(FW)};
+    for (let i = 0; i < FW.length; i++) { const r = FW[i][1], e = await addElement('IMG', { src: fk[r] }); e.name = 'Walker ' + (i + 1); e.src = fk[r]; e.images = fk.slice(r).concat(fk.slice(0, r)); e.handle = 'w' + i; e.x = FW[i][0]; e.y = ${Math.round(PY(200))} - 62 + FW[i][2]; e.show = 'normal'; }
+    { const e = await addElement('IMG', { src: pf[2] }); e.name = 'Pipe puff'; e.src = pf[2]; e.images = pf.slice(2).concat(pf.slice(0, 2)); e.handle = 'pf'; e.x = 190; e.y = 290; e.show = 'normal'; }
+    return 1`),
+  wrap(fgJS, `const e = await addElement('IMG', { src: names[0] }); e.name = 'Foreground flowers'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1`),
+  wrap(folkJS.replace(/for \(let t = 0; t < 5[^\n]*\n/, '').replace(/\/\/ pipe puffs[^\n]*\n[^\n]*\n/, ''), `
+    const bf = names.slice(0, 4);
+    for (const [i, x, y] of [[0, 120, 204], [2, 250, 222]]) { const e = await addElement('IMG', { src: bf[i] }); e.name = 'Butterfly ' + (i / 2 + 1); e.src = bf[i]; e.images = [bf[i], bf[i + 1]]; e.handle = 'bf' + i / 2; e.x = x; e.y = y; e.show = 'normal'; }
+    return 1`),
+  { preset: 'clock' }, { preset: 'clock' },
+  { script: `const n = project.elements.length; ['Hour','Colon','Minute'].forEach((nm,i)=>{ project.elements[n-3+i].name = nm + ' Aod'; }); return 1` },
+  { preset: 'weekday' }, { preset: 'day' }, { preset: 'steps' }, { preset: 'battery' },
+  { remove: 'Colon Aod' },
+];
+const ink = (size, color, outline, extra) => ({ font: F, size, weight: 400, fill: 'solid', color, borderColor: outline, borderWidth: 3, shadowColor: 'rgba(40,70,20,0.5)', shadowX: 0, shadowY: 2, shadowBlur: 4, ...extra });
+steps.push(
+  { edit: 'Hour', set: { x: 73, y: 30, space: -12, show: 'normal', zero: 1 }, glyph: ink(62, '#4a2e16', '#fff6dc') },
+  { edit: 'Colon', set: { x: 176, y: 46, show: 'normal' }, glyph: ink(62, '#4a2e16', '#fff6dc') },
+  { edit: 'Minute', set: { x: 200, y: 30, show: 'normal', zero: 1 }, glyph: ink(62, '#4a2e16', '#fff6dc') },
+  { edit: 'Weekday', set: { x: 132, y: 96, show: 'normal' }, glyph: ink(26, '#4a2e16', '#fff6dc') },
+  { edit: 'Day', set: { x: 205, y: 100, space: -4, show: 'normal' }, glyph: ink(26, '#4a2e16', '#fff6dc') },
+  { edit: 'Steps', set: { x: 90, y: 396, hSpace: -4, show: 'normal' }, glyph: ink(32, '#fff6dc', '#3a6a22') },
+  { edit: 'Battery', set: { x: 214, y: 396, hSpace: -4, show: 'normal' }, glyph: ink(32, '#fff6dc', '#3a6a22') },
+  { edit: 'Hour Aod', set: { x: 104, y: 96, show: 'aod', zero: 1 }, glyph: { font: F, size: 120, fill: 'solid', color: '#8a9a78' } },
+  { edit: 'Minute Aod', set: { x: 82, y: 236, show: 'aod', zero: 1 }, glyph: { font: F, size: 120, fill: 'solid', color: '#8a9a78' } },
+  { script: `project.groups = project.groups || {}; project.groups.gFolk = 'Strollers'; project.groups.gSky = 'Sky and smoke'; let n = 0; for (const e of project.elements) { if (/^(Walker|Pipe puff)/.test(e.name)) { e.group = 'gFolk'; n++ } if (/^(Clouds|Chimney smoke|Butterfly)/.test(e.name)) { e.group = 'gSky'; n++ } } return n` },
+  { script: `document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'` },
+);
+// Runs on the watch: random strollers from five kinds, butterflies, drifting clouds. All motion is placed from Date.now().
+const userCode = `{
+  const MS = 100, NW = 4, MAXON = 3, NIMG = ${NIMG}
+  const WROT = ${JSON.stringify(FW.map((q) => q[1]))}
+  const PY = (x) => 338 + 5 * Math.sin(x / 55)
+  let seed = 5
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647
+  const ri = (a, b) => a + rnd() * (b - a)
+  const mv = (w, x, y, src) => { if (src === undefined) w.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)) }); else w.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src }) }
+  const away = (w) => w.setProperty(ui.prop.MORE, { x: pxv(-200), y: pxv(0) })
+  const wi = (k, canon) => F['w' + k][(canon - WROT[k] + NIMG) % NIMG]
+  const Wk = []
+  for (let k = 0; k < NW; k++) Wk.push({ k, w: W['w' + k], on: false, shown: true, type: 0, dir: 1, x: 0, lane: 0, spd: 18, dist: 0, pauseUntil: 0, key: -1, next: 0.5 + k * 1.2 })
+  const PF = { w: W.pf, on: false, x: 0, y: 0, t: 0, nextAt: 1, key: -1 }
+  const BF = [{ w: W.bf0, cx: 150, cy: 210, ax: 90, ay: 26, fx: 0.5, fy: 0.9, ph: 0, c: 0 }, { w: W.bf1, cx: 250, cy: 232, ax: 100, ay: 30, fx: 0.4, fy: 0.7, ph: 2, c: 1 }]
+  let t = 0, last = 0, id = null
+  const spawn = (b) => {
+    const used = Wk.filter((q) => q.on).map((q) => q.type)
+    let type = Math.floor(rnd() * 5), g = 0; while (used.indexOf(type) >= 0 && g++ < 12) type = Math.floor(rnd() * 5)
+    b.type = type; b.dir = rnd() < 0.5 ? 1 : -1; b.x = b.dir > 0 ? -32 : 396; b.lane = [-7, 0, 7][Math.floor(rnd() * 3)]; b.spd = ri(15, 25) * (type === 4 ? 1.15 : 1); b.dist = 0; b.pauseUntil = 0; b.key = -1; b.on = true
+  }
+  const tick = () => {
+    const now = Date.now(); let dt = last ? (now - last) / 1000 : MS / 1000; dt = Math.min(0.15, dt); last = now; t += dt
+    const active = Wk.filter((q) => q.on).length
+    let elder = null
+    for (const b of Wk) {
+      if (!b.on) { if (b.shown) { away(b.w); b.shown = false } if (t >= b.next && active < MAXON) spawn(b); continue }
+      const paused = t < b.pauseUntil
+      if (!paused) {
+        b.x += b.dir * b.spd * dt; b.dist += b.spd * dt
+        if (b.x > 40 && b.x < 340 && rnd() < dt * 0.045) b.pauseUntil = t + ri(1.6, 4.2)
+      }
+      if ((b.dir > 0 && b.x > 398) || (b.dir < 0 && b.x < -34)) { b.on = false; b.next = t + ri(1.5, 5); away(b.w); b.shown = false; continue }
+      const f = paused ? 1 : Math.floor(b.dist / 7) % 4, key = b.type * 100 + (b.dir > 0 ? 0 : 10) + f
+      const y = PY(b.x) + b.lane - 62 + (paused ? Math.sin(t * 2 + b.k) * 0.6 : 0)
+      if (key !== b.key || !b.shown) { b.key = key; b.shown = true; mv(b.w, b.x - 24, y, wi(b.k, (b.type * 2 + (b.dir > 0 ? 0 : 1)) * 4 + f)) } else mv(b.w, b.x - 24, y)
+      if (b.type === 2) elder = b
+    }
+    // the elder's pipe: a puff every now and then
+    if (elder && !PF.on && t >= PF.nextAt) { PF.on = true; PF.t = 0; PF.x = elder.x + elder.dir * 17 - 8; PF.y = PY(elder.x) + elder.lane - 62 + 17; PF.key = -1 }
+    if (PF.on) { PF.t += dt; PF.y -= 9 * dt; PF.x += 3 * dt; const i = Math.min(2, Math.floor(PF.t / 0.5)); if (PF.t > 1.6) { PF.on = false; PF.nextAt = t + ri(1.2, 3); away(PF.w) } else mv(PF.w, PF.x, PF.y, i !== PF.key ? F.pf[(i - 2 + 3) % 3] : undefined), PF.key = i }
+    else if (!PF.on) away(PF.w)
+    for (const q of BF) { const x = q.cx + q.ax * Math.sin(t * q.fx + q.ph), y = q.cy + q.ay * Math.sin(t * q.fy + q.ph * 2) + 6 * Math.sin(t * 5); mv(q.w, x, y, F['bf' + q.c][Math.floor(t * 6) % 2]) }
+    W.cl.setProperty(ui.prop.MORE, { x: pxv(-Math.round((t * 3) % 390)), y: pxv(4) })
+  }
+  const safe = () => { try { tick() } catch (e) {} }
+  const stop = () => { if (id === null) return; try { clearInterval(id) } catch (e) {} id = null }
+  const start = () => { if (id !== null) return; last = 0; try { id = setInterval(safe, MS) } catch (e) {} }
+  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })
+  safe()
+  start()
+}`;
+const MEASURE = !!process.env.MEASURE;
+if (MEASURE) steps.splice(1, 6);
+const full = { name: 'Shire Stroll', device: 'bip-6', font: F, description: 'A sunny hillside with a round-door hobbit hole, a winding lane and a picket fence. Five kinds of little folk stroll past at random; chimney smoke curls, clouds drift and butterflies flutter.', preview: 'preview.png', previewAod: 'preview-aod.png', save: 'project', out: 'out/shire-stroll', optimizePng: 24, userCode, steps };
+if (MEASURE) { delete full.save; delete full.out; delete full.optimizePng; full.preview = 'measure.png'; delete full.previewAod; }
+fs.writeFileSync(__dirname + (MEASURE ? '/recipe-measure.json' : '/recipe.json'), JSON.stringify(full, null, 1));
