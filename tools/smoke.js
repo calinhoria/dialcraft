@@ -14,6 +14,7 @@ const os = require('os');
 const { execFileSync } = require('child_process');
 const { app, BrowserWindow } = require('electron');
 
+process.env.DIALCRAFT_HIDDEN = '1';   // the app's own window, offscreen: no window shown, no Dock icon, no focus stealing (see main.js)
 require(path.join(__dirname, '..', 'main.js'));
 
 const TARGET = process.env.AMAZFIT_DEVICE || 'gtr-3-pro';

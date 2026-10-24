@@ -149,7 +149,7 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | Image | `IMG` | optional rotation around a centre point |
 | Animation | `IMG_ANIM` | frame images + fps/repeat/step, restart on resume, still frame; frames are exported to `images/anim/<prefix>_<i>.png`, the only name the widget can resolve. **Frames** in Properties takes a run of PNGs — or an animated GIF/WebP, which is split into one PNG per frame with the frame rate taken from the file's own delays (a still picture, even one saved as `.gif`, is just one frame); the preview plays the frames at `fps` (sampled every 1/30 s) |
 | Image level | `IMG_LEVEL` | one image per level (battery, weather …) |
-| Image progress | `IMG_PROGRESS` | segmented progress bar; irregular positions from an import are kept per picture |
+| Image progress | `IMG_PROGRESS` | segmented progress bar, data-bound with no code (steps, battery …); irregular positions are kept per picture. Prefer it to *Progress bar* for a bar that must fill on a real watch |
 | Image pointer | `IMG_POINTER` | pointer image rotated by a data value or angle |
 | Time (digit images) | `IMG_TIME` | hour / hour12 / minute / second |
 | Weekday images | `IMG_WEEK` | 7 images, with a **Names** row (Mon / Monday / M), **Case** and, per layer, the language |
@@ -175,6 +175,15 @@ updates them natively. `ARC_PROGRESS` is the one exception: its level is pushed
 from a small reader in the generated code (`@zos/sensor`), which the app writes
 for step, calorie, heart rate, battery, stand, distance, stress, SpO₂, barometer
 and fat-burning.
+
+
+### Next sunrise / sunset (the *Visible when* layers)
+
+A layer's **Visible when** can be *AM*, *PM*, *Sunset* or *Sunrise*; the watch switches it with generated code. The **Next sunrise / sunset (swapped by time)**
+preset uses it: the `SUN_RISE` and `SUN_SET` readings and an icon each sit in one place, the sunset shows from sunrise until sunset and the sunrise
+otherwise. The code reads today's sunrise and sunset from the weather data and falls back to 06:00–18:00 when the watch has none; after sunset the
+sunrise shown is today's, within a minute or two of tomorrow's. The editor has no weather data, so its preview assumes sunrise 06:30 and sunset 18:30.
+The older single **Sun time** (`SUN_CURRENT`) reading is documented as the next event, but on a real Bip 6 it stayed on a sunset that had passed.
 
 ## Images and glyphs
 

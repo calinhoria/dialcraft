@@ -18,6 +18,21 @@ const { LanServer, lanAddresses } = require('./core/lanserver');
 const { importFaceDir } = require('./core/importface');
 const { extractZip } = require('./core/zip');
 const { appIconPng } = require('./core/icon');
+
+// Headless mode (DIALCRAFT_HEADLESS=1 or --headless): the tools in tools/ load this file only for its IPC handlers and
+// drive the editor in their own hidden, offscreen window. Nothing may appear: no editor window, no Dock icon, no focus
+// stealing, no security-warning noise on the terminal.
+// DIALCRAFT_HIDDEN=1 is the same without the shortcut of skipping the window: the editor window is created but offscreen and never shown
+// (tools/smoke.js drives the app's own window).
+const HEADLESS = process.env.DIALCRAFT_HEADLESS === '1' || process.argv.includes('--headless');
+const HIDDEN = process.env.DIALCRAFT_HIDDEN === '1';
+if (HEADLESS || HIDDEN) {
+  process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
+  if (process.platform === 'darwin') {
+    try { app.setActivationPolicy('prohibited'); } catch (e) { /* older Electron */ }
+    try { if (app.dock) app.dock.hide(); } catch (e) { /* no dock */ }
+  }
+}
 const {
   generateWatchface, generateAppJson, generateAppJs, generateProjectReadme, animPrefixFor,
 } = require('./core/codegen');
@@ -48,11 +63,13 @@ function createWindow() {
     width: 1440, height: 940,
     minWidth: 1080, minHeight: 700,
     backgroundColor: '#0e1015',
+    show: !HIDDEN,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true, nodeIntegration: false,
       // the canvas runs a live clock; keep the renderer ticking when unfocused
       backgroundThrottling: false,
+      offscreen: HIDDEN,
     },
     title: 'Dialcraft',
     icon: APP_ICON,
@@ -134,6 +151,7 @@ ipcMain.handle('update-skip', () => getUpdater().skip());
 ipcMain.handle('update-auto', (_e, on) => { updateSettings.set({ auto: !!on }); return !!on; });
 
 app.whenReady().then(() => {
+  if (HEADLESS) return;   // the caller owns the (hidden) window
   migrateUserData();
   // a packaged app takes build/icon.icns; a dev run would show Electron's own
   if (process.platform === 'darwin' && app.dock && fs.existsSync(APP_ICON)) app.dock.setIcon(APP_ICON);
@@ -142,7 +160,7 @@ app.whenReady().then(() => {
   setTimeout(() => { try { if (app.isPackaged && updateSettings.get().auto) getUpdater().check({ manual: false }); } catch (e) { /* never block start-up */ } }, 8000);
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
-app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
+app.on('activate', () => { if (!HEADLESS && BrowserWindow.getAllWindows().length === 0) createWindow(); });
 
 const PROJECT_EXT = '.wfproj.json';
 

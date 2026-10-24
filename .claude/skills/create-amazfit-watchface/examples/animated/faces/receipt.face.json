@@ -1,0 +1,19 @@
+{
+  "name": "Bon fiscal",
+  "slug": "receipt",
+  "language": "ro-RO",
+  "fonts": [["courier-prime-700.ttf", "Courier Prime"]],
+  "presets": ["bg", "clock", "weekday", "day", "steps", "hr", "battery", "temp"],
+  "bg": "#0c0c0e",
+  "styles": [
+    ["Hour", {"size": 56, "color": "#1d1b17"}],
+    ["Minute", {"size": 56, "color": "#1d1b17"}],
+    ["Colon", {"size": 56, "color": "#1d1b17"}],
+    ["Weekday", {"size": 13, "color": "#1d1b17"}, {"labelForm": "long", "labelCase": "none", "labelAlign": "right"}],
+    ["Day", {"size": 13, "color": "#1d1b17"}],
+    ["Steps", {"size": 16, "color": "#1d1b17"}, {"alignH": "LEFT", "hSpace": 0}],
+    ["Heart rate", {"size": 16, "color": "#1d1b17"}, {"alignH": "LEFT", "hSpace": 0, "unit": ""}],
+    ["Battery", {"size": 16, "color": "#1d1b17"}, {"alignH": "LEFT", "hSpace": 0}],
+    ["Temperature", {"size": 16, "color": "#1d1b17"}, {"alignH": "LEFT", "hSpace": 0}]
+  ]
+}

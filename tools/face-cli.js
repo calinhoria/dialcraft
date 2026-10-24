@@ -5,12 +5,15 @@
 //
 //   env -u ELECTRON_RUN_AS_NODE node_modules/.bin/electron tools/face-cli.js recipe.json
 //
+// It runs headless: no window is shown, no Dock icon appears and the app never takes focus (DIALCRAFT_HEADLESS, see main.js).
+//
 // Prints one JSON object on stdout (the last line that starts with `{"ok"`). See
 // .claude/skills/create-amazfit-watchface/references/recipe.md for the recipe format.
 const path = require('path');
 const fs = require('fs');
 const { app, BrowserWindow } = require('electron');
 
+process.env.DIALCRAFT_HEADLESS = '1';   // no editor window, no Dock icon, no focus stealing (see main.js)
 require(path.join(__dirname, '..', 'main.js'));
 
 const recipePath = process.argv.slice(2).find((a) => !a.startsWith('-') && /\.json$/i.test(a));
@@ -148,6 +151,7 @@ app.whenReady().then(async () => {
       res.export.syntax = 'ok';
     } catch (e) { res.export.syntax = 'error: ' + e.message; }
   }
+  res.windows = BrowserWindow.getAllWindows().length;   // 1: only the hidden offscreen one
   console.log(JSON.stringify(res));
   app.exit(0);
 }).catch((e) => fail(String(e && e.message || e)));

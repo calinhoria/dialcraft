@@ -676,11 +676,13 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   out.push('// ---------------------------------------------------------------------------');
   if (els.some((e) => e.showWhen && !missingPicture(e)) || els.some((e) => hoursOf(e) && e.show !== 'aod')) ctx.sensors.add('Time');
   const hasVariants = els.some((e) => variantsOf(e) && e.show !== 'aod');
+  const hasSunWhen = els.some((e) => (e.showWhen === 'sunrise' || e.showWhen === 'sunset') && !missingPicture(e));
   out.push("import ui from '@zos/ui'");
 
   if (ctx.sensors.size) {
     out.push(`import { ${[...ctx.sensors].sort().join(', ')} } from '@zos/sensor'`);
   }
+  if (hasSunWhen) out.push("import * as zosSensors from '@zos/sensor'   // Weather is read from here: a watch without it gives undefined, it never stops the face loading");
   // code of your own (a game, a custom sensor): project.userImports sits with the imports, project.userCode runs at the end of initView
   if (typeof project.userImports === 'string' && project.userImports.trim()) out.push(project.userImports.trim());
   // the import line comes before the widgets, so the system apps the tap zones use are collected here
@@ -708,6 +710,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   out.push('WatchFace({');
   out.push('  initView() {');
   const whenVars = [];
+  const sunVars = [];
   if (!els.length) {
     out.push('    // no visible elements yet');
   }
@@ -749,7 +752,11 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
       const chunk = [];
       emitElement({ ...el, show: state, _emitState: both ? state : null }, ctx, chunk);
       // a layer tied to AM / PM keeps a handle so the hour can show or hide it
-      if (el.showWhen && chunk.length && /ui\.createWidget\(/.test(chunk[chunk.length - 1])) {
+      if ((el.showWhen === 'sunrise' || el.showWhen === 'sunset') && chunk.length && /ui\.createWidget\(/.test(chunk[chunk.length - 1])) {
+        const v = `sun_${sunVars.length}`;
+        chunk[chunk.length - 1] = chunk[chunk.length - 1].replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2const ${v} = ui.createWidget(`);
+        sunVars.push({ v, set: el.showWhen === 'sunset' });
+      } else if (el.showWhen && chunk.length && /ui\.createWidget\(/.test(chunk[chunk.length - 1])) {
         const v = `when_${whenVars.length}`;
         chunk[chunk.length - 1] = chunk[chunk.length - 1].replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2const ${v} = ui.createWidget(`);
         whenVars.push({ v, pm: el.showWhen === 'pm' });
@@ -848,6 +855,31 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('    updateWhen()');
     out.push('    clockNow.onPerMinute(updateWhen)');
     out.push('    ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: updateWhen })');
+  }
+  if (sunVars.length) {
+    out.push('    // Sunrise / sunset swap. The watch has no "next sunrise" reading: SUN_CURRENT stays on today\'s sunset once it has passed.');
+    out.push('    // So the plain SUN_RISE and SUN_SET readings sit in the same place and this shows the one that comes next:');
+    out.push('    // the sunset from sunrise until sunset, the sunrise otherwise (after sunset it is today\'s sunrise time, within a minute or two of tomorrow\'s).');
+    out.push('    const sunClock = new Time()');
+    out.push('    const sunTimes = () => {   // today\'s [sunrise, sunset] in minutes since midnight, from the weather data; null when the watch has none');
+    out.push('      try {');
+    out.push('        const WeatherCls = zosSensors && zosSensors.Weather');
+    out.push('        const wx = WeatherCls ? new WeatherCls() : null');
+    out.push('        const f = wx ? (wx.getForecastWeather ? wx.getForecastWeather() : wx.getForecast()) : null');
+    out.push('        const t = f && f.tideData && f.tideData.data && f.tideData.data[0]');
+    out.push('        if (t && t.sunrise && t.sunset) return [t.sunrise.hour * 60 + t.sunrise.minute, t.sunset.hour * 60 + t.sunset.minute]');
+    out.push('      } catch (e) {}');
+    out.push('      return null');
+    out.push('    }');
+    out.push('    const updateSun = () => {');
+    out.push('      const m = sunClock.getHours() * 60 + sunClock.getMinutes()');
+    out.push('      const t = sunTimes() || [360, 1080]   // without weather data: 06:00 to 18:00 counts as day');
+    out.push('      const nextIsSunset = m >= t[0] && m < t[1]');
+    for (const w of sunVars) out.push(`      ${w.v}.setProperty(ui.prop.VISIBLE, ${w.set ? 'nextIsSunset' : '!nextIsSunset'})`);
+    out.push('    }');
+    out.push('    updateSun()');
+    out.push('    sunClock.onPerMinute(updateSun)');
+    out.push('    ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: updateSun })');
   }
   if (themed) {
     // Everything above becomes buildFace(): a theme switch deletes the widgets it made and builds again

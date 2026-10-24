@@ -7,7 +7,9 @@ description: Design and build a watchface for an Amazfit / Zepp OS watch (Bip, B
 
 You design the face in **Dialcraft** (this repository): a headless driver (`tools/face-cli.js`) runs the
 real editor offscreen from a JSON *recipe*, so the preview, the glyph images, the lint and the Zeus export are
-exactly what the app produces. You write the recipe, look at the preview, fix it, and export.
+exactly what the app produces. You write the recipe, look at the preview, fix it, and export. The driver is truly headless
+(`DIALCRAFT_HEADLESS`, set by the tool): no editor window opens, no Dock icon bounces, nothing takes focus, so it can run
+hundreds of times in a session without bothering the user. Never launch the app itself (`npm start`) to build a face.
 
 Work from the repository root (the folder with `package.json`; `npm install` must have been run). Keep the
 recipe, previews and output in a scratch folder (not in the repo).
@@ -30,7 +32,9 @@ recipe, previews and output in a scratch folder (not in the repo).
    ```
    The last stdout line is JSON: `ok`, the step `log`, the `layers` (name, kind, position), the `lint` messages,
    the `preview` / `previewAod` PNG paths and the `export` result (`syntax: "ok"`, warnings, artifacts).
-   Nothing is installed or opened on the machine.
+   Nothing is installed or opened on the machine, and no window appears (`windows: 1` in the result is the hidden offscreen one).
+   A face that **animates** is not a plain recipe: follow [references/animated-faces.md](references/animated-faces.md) (sprites, a
+   toolkit in [examples/animated/](examples/animated/), and a capture tool that runs the face's own code on a virtual clock and writes a GIF).
 4. **Look at the preview** (read the PNG). Check it against the brief: overlaps, text running off the screen,
    contrast, balance. The lint list is a floor, not a verdict — it knows overlaps, off-screen layers and
    AOD budgets, not taste. Fix with `edit` steps (`set` for position / size, `glyph` for font size and colour)
@@ -56,6 +60,10 @@ recipe, previews and output in a scratch folder (not in the repo).
 8. **Hand it over honestly.** Say where the files are, show the preview, list the lint warnings you left and why,
    and say plainly that the face has been built and syntax-checked but **not run on a watch** — the user installs
    it with the Dialcraft app (Install → QR code in the Zepp App's developer mode) or `zeus preview`, and tests it.
+   For an animated face also report the **unique sprite frames and their bytes** and the **export assets size** (counted from the
+   project's own image list, not the folder: stale files stay in a re-used folder), and give the GIF. If the face goes into
+   `sample-watchfaces/`, use `examples/animated/publish_sample.py`: it regenerates everything in place, puts the fonts into the project
+   and reopens it to prove the fonts load and the render matches. Commit and push only when the user asks.
 
 ## House rules (always follow)
 
@@ -70,8 +78,17 @@ recipe, previews and output in a scratch folder (not in the repo).
   layer first, so in the project the order is minute, colon, hour. The `clock` / `clocksec` presets already do this and put the
   parts in a group named `Clock`; a second clock preset makes `Clock 2` (rename it, e.g. `Clock AOD`, with a `script` step on
   `project.groups`). Never add the parts by hand in the wrong order, and check the saved project's element order.
-- **Sunrise / sunset is the `sun` preset**: the next event as a clock time (sunset until it has passed, then sunrise), with an icon,
-  a colon in the digits' style, grouped as `Sunrise / sunset`. Do not use the "time to sunrise" reading for it.
+- **Next sunrise / sunset is the `suntimes` preset**, not `sun`. The native `SUN_CURRENT` reading (what `sun` makes) is documented as the next
+  event but on a real Bip 6 it stayed on today's sunset for hours after the sunset had passed; there is no "next sunrise" value on the watch.
+  `suntimes` places the two plain readings (`SUN_RISE`, `SUN_SET`) and an icon each in **one spot**, and the generated code shows the one that
+  is next (`showWhen: sunset` / `sunrise`): the sunset from sunrise until sunset, the sunrise otherwise (after sunset it is today's sunrise
+  time, within a minute or two of tomorrow's). The code reads today's times from the weather data (`Weather` via a namespace import, both
+  method names tried) and falls back to 06:00–18:00 when the watch has none. Remove the preset's two default icons if you draw your own and
+  give any label or formula that sits with the reading the same `showWhen` (APUS / RĂSĂRIT). `showWhen` hides a layer in the editor too, so set
+  it only after measuring and placing (the toolkit's `sunChipAt` does). Never use the "time to sunrise" reading.
+- **A bar that must fill is a native `IMG_PROGRESS`** (segments, data-bound, no code), not a `BAR`. `BAR` exports as a `FILL_RECT` that a sensor
+  callback resizes from zero; on a real Bip 6 such bars (steps, battery, a vine) never filled. Draw the segment picture, give `positions`
+  (bottom to top for a vertical bar, one entry per segment) and a `dataType`; the dim track goes in the scene. `ARC_PROGRESS` rings are fine.
 - **Subtle borders and shadows.** Use a thin border (1–2 px) and a soft shadow only where legibility needs it.
   Heavy outlines, thick glows and drop shadows only when the theme is that by nature (neon, cartoon, fire) or the
   user asks. When in doubt, leave them off.
@@ -94,6 +111,15 @@ recipe, previews and output in a scratch folder (not in the repo).
 - **Stats must be visible and not small.** Readings need to be readable at a glance on the real screen; as a
   floor use ~28 px glyph height on ~400 px screens (~24 px on the smallest) and enough contrast with their
   background. Do not shrink a stat to make it fit.
+- **Animation is sprites, always (the owner's standing rule).** One static scene image plus small sprites that the code moves or swaps
+  with `setProperty(MORE, {x, y, src, w, h})`; never a full-screen frame sequence. Smaller export, less work for the watch. The time and
+  every reading stay **native, data-bound layers** (never baked into a sprite), and the code takes everything else from `Date`. Details,
+  the facts that make it work (an image is drawn at its natural size and **clipped**, never stretched; the first picture of a slot is the
+  static preview) and the toolkit: [references/animated-faces.md](references/animated-faces.md).
+- **Taste for the funny / weird / witty request (the owner's standing preference).** No characters, no mascots, no cartoon art. The
+  humour lives in the interface itself: a player that buffers, a BIOS report, a departure board, a receipt, subtitles, a spreadsheet that
+  errors, deadpan copy. Write the copy in the watch's language with real diacritics. When asked for concepts first, show **animated GIFs**
+  of working faces, not still sketches.
 - **If space runs out, ask the user, do not decide alone.** When the chosen elements will not fit at readable
   sizes, stop and ask a multiple-choice question for the resolution (drop an element, move it to AOD only or to
   a tap / complication slot, shrink the clock, change the layout …) with your recommendation first.
@@ -105,13 +131,23 @@ recipe, previews and output in a scratch folder (not in the repo).
   value aligned inside (`alignH`); check the box in the layer list, not just the ink.
 - **Glyph size** is the digit image height in pixels; ~100–140 px for a hero time, ~30–40 px for a reading on a
   ~400 px screen. Edit the **glyph** (`"glyph": {…}`), not `size`, on digit / weekday / reading layers.
-- **Fonts:** 33 bundled families (Orbitron, Inter, Montserrat, Bebas Neue, DSEG7 …); use one family per face.
-  Other fonts are not available headlessly.
+- **Fonts:** use one family per face (two when one is a masthead). The 33 bundled families (Orbitron, Inter, Montserrat, Bebas Neue,
+  DSEG7 …) are the fallback; when the user wants **new / external fonts**, fetch free OFL fonts with
+  `examples/animated/get_fonts.py` (Fontsource, `latin` + `latin-ext` merged into one TTF so **ă â î ș ț** come from the font, not from a
+  system fallback) and register them in a `script` step with `registerCustomFont(...)` — see [references/fonts.md](references/fonts.md),
+  which also lists which families really cover Romanian. A saved project needs the font files in `project/fonts/` and a `fonts` list,
+  which face-cli's `save` does not write; `publish_sample.py` does it.
 - **Data bindings are native:** `TEXT_IMG`, `IMG_LEVEL`, `IMG_POINTER` take a `dataType`; the watch updates them.
   `ARC_PROGRESS` / `BAR` get a small reader only for the data types listed in `docs/ZEPP_COVERAGE.md`.
 - **Custom code** (animation that follows the clock, games, timers): [references/custom-code.md](references/custom-code.md) has the
   recipe keys, the device facts that cost hours to find (`px(variable)` throws, `IMG_ANIM` moves with `Y` not `MORE`, no global
   `timer`) and how to test on a real watch with logs over the developer bridge. Read it before writing `userCode`.
+- **Weekday names of any length.** The weekday layer is one cell as wide as the longest name (Romanian long names run from *Luni* to
+  *Miercuri*), anchored at its left edge, so a fixed `x` for the day number overlaps or leaves a hole. Right-align the names
+  (`labelAlign: right`), keep a fixed ink gap to the day, share the baseline and centre the row on the average name: `dateRow()` in the
+  toolkit does it from measurements of all seven names. Check the row for every weekday, not just the reference one.
+- **Rounded corners are part of the layout.** The Bip 6 screen is a rounded rectangle (radius 86); baked pills, bars and frames count too,
+  not only layers. Measure the outline of every baked shape against the corner (the toolkit's checks do) and keep ≥ 2 px clearance.
 - **Don't invent widgets.** Only the kinds in [references/kinds.md](references/kinds.md) exist; for anything
   else, say it is not supported rather than faking it. Coverage and known gaps: `docs/ZEPP_COVERAGE.md`.
 - **Don't overwrite** a user's existing project: write to a new `out` / `save` folder.
@@ -122,8 +158,10 @@ recipe, previews and output in a scratch folder (not in the repo).
 
 - `unknown device …` — use a key from the devices table.
 - A step in `log` says `failed:` — the message is the editor's; fix the property name or value (see kinds.md).
-- Preview is blank or glyphs missing — the glyph font name must be exactly a bundled family; re-run after
-  checking the `lint` for `no images assigned`.
+- Preview is blank or glyphs missing — the glyph font name must be exactly a bundled family or a font registered with
+  `registerCustomFont`; re-run after checking the `lint` for `no images assigned`.
+- Lint `error: … is off-screen` on an animated sprite — see the lint section of
+  [references/animated-faces.md](references/animated-faces.md) (blank picture first, park the slot, or split a wide sprite into chunks).
 - `export.syntax` is not `ok` — report it with the message; do not hand the face over.
 - A build error `Could not run the Zeus CLI` — Node / npx are missing from the PATH; export without `build` and
   tell the user to install Node.js.

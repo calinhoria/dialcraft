@@ -889,7 +889,7 @@ function spaceHandlePos(e) {
 // Align as three buttons; dimmed when the value already fills the box (nothing to shift)
 function ctlAlignSeg(e, title) {
   const wrap = mkEl('div', 'seg');
-  wrap.style.gridTemplateColumns = 'repeat(3, 1fr)';
+  wrap.style.gridTemplateColumns = 'repeat(5, 1fr)';
   const cur = e.alignH || 'LEFT';
   const b = digitBox(e);
   const idle = b.run >= b.w;
@@ -1291,8 +1291,15 @@ function syncVariantSel() {
   variantIdx = Math.min(variantIdx, n - 1);
   sel.value = String(variantIdx);
 }
+// the editor has no weather data: the preview takes a sunrise at 06:30 and a sunset at 18:30 (the watch reads today's real times)
+const SUN_PREVIEW = { rise: 6 * 60 + 30, set: 18 * 60 + 30 };
 function whenAllows(e, h = clock.h) {
-  return !e.showWhen || (e.showWhen === 'pm') === (h >= 12);
+  if (!e.showWhen) return true;
+  if (e.showWhen === 'sunset' || e.showWhen === 'sunrise') {
+    const m = h * 60 + (+clock.m || 0), day = m >= SUN_PREVIEW.rise && m < SUN_PREVIEW.set;
+    return (e.showWhen === 'sunset') === day;
+  }
+  return (e.showWhen === 'pm') === (h >= 12);
 }
 function showAllowed(show, mode) {
   // the customise screen draws the normal face plus the edit-only pictures (masks)
@@ -2396,7 +2403,7 @@ function layerRow(e) {
   if (e.showWhen) {
     const w = document.createElement('span');
     w.className = 'grp when'; w.textContent = e.showWhen.toUpperCase();
-    w.title = e.showWhen === 'am' ? 'Visible before noon only' : 'Visible after noon only';
+    w.title = { am: 'Visible before noon only', pm: 'Visible after noon only', sunset: 'Visible while the next sun event is the sunset (from sunrise until sunset)', sunrise: 'Visible while the next sun event is the sunrise (from sunset until sunrise)' }[e.showWhen] || '';
     left.appendChild(w);
   }
   if (badge) { const b = document.createElement('span'); b.className = 'grp ' + badge.toLowerCase(); b.textContent = badge; b.title = 'Shown in: ' + badge.toLowerCase(); left.appendChild(b); }
@@ -3208,6 +3215,8 @@ const WHEN_SEGMENTS = [
   ['', 'Always', 'Drawn at any time of day'],
   ['am', 'AM', 'Only before noon — e.g. a lit “AM” label. The watch switches it by the hour.'],
   ['pm', 'PM', 'Only from noon on — e.g. a lit “PM” label. The watch switches it by the hour.'],
+  ['sunset', 'Sunset', 'Only while the next sun event is the sunset (from sunrise until sunset). The watch reads today\'s sunrise and sunset from the weather data.'],
+  ['sunrise', 'Sunrise', 'Only while the next sun event is the sunrise (from sunset until sunrise). The watch reads today\'s sunrise and sunset from the weather data.'],
 ];
 function ctlWhen(targets) {
   const wrap = mkEl('div', 'seg');
@@ -3221,7 +3230,7 @@ function ctlWhen(targets) {
       pushHistory();
       for (const t of targets) { if (key) t.showWhen = key; else delete t.showWhen; }
       refreshPanels(); render(); scheduleCode();
-      status(key ? `Shown ${key === 'am' ? 'before' : 'after'} noon only — the preview follows the clock (${String(clock.h).padStart(2, '0')}:${String(clock.m).padStart(2, '0')}).` : 'Shown at any time of day.');
+      status(key ? (key === 'sunset' || key === 'sunrise' ? `Shown while the next sun event is the ${key} — the preview assumes sunrise 06:30 and sunset 18:30; the watch uses today's real times.` : `Shown ${key === 'am' ? 'before' : 'after'} noon only — the preview follows the clock (${String(clock.h).padStart(2, '0')}:${String(clock.m).padStart(2, '0')}).`) : 'Shown at any time of day.');
     };
     wrap.appendChild(b);
   }
@@ -5547,7 +5556,8 @@ const PRESETS = [
   { group: 'Text & misc' },
   { id: 'text', label: 'Text', sub: 'TEXT widget' },
   { id: 'datatext', label: 'Any reading as images', sub: 'TEXT_IMG' },
-  { id: 'sun', label: 'Sunrise / sunset', sub: 'next one, as a time, with an icon' },
+  { id: 'sun', label: 'Sun time (SUN_CURRENT)', sub: 'one reading; some watches keep it on a sun event that has passed' },
+  { id: 'suntimes', label: 'Next sunrise / sunset (swapped by time)', sub: 'SUN_RISE and SUN_SET in one place, the next one shown' },
   { id: 'status', label: 'Bluetooth status', sub: 'IMG_STATUS' },
   { id: 'click', label: 'Tap shortcut', sub: 'IMG_CLICK' },
   { id: 'tap', label: 'Tap zone', sub: 'opens a screen / cycles variants' },
@@ -5639,6 +5649,7 @@ async function applyPreset(id) {
     case 'text': await addElement('TEXT', { text: 'MONDAY', size: 32, x: cx - 90, y: cy - 20, w: 180, h: 40, color: '#ffffff', alignH: 'CENTER_H', alignV: 'CENTER_V', show: 'normal' }); break;
     case 'datatext': return dataTextPreset('STEP', 'Reading', null);
     case 'sun': return sunPreset();
+    case 'suntimes': return sunTimesPreset();
     case 'status': {
       pushHistory();
       const e = newElement('IMG_STATUS', { status: 'DISCONNECT', show: 'normal', x: 40, y: 40, w: 0, h: 0, name: 'Bluetooth off icon' });
@@ -5709,8 +5720,10 @@ function groupElements(els, name) {
 }
 // The next sunrise or sunset as a time (the watch shows whichever comes next: sunset until it has passed, then sunrise),
 // with a small sun-on-the-horizon icon and a colon picture drawn in the digits' own style.
-async function sunPreset() {
-  await dataTextPreset('SUN_CURRENT', 'Sun time', null, null, false);
+// A watch shows SUN_CURRENT as the next event on paper, but on a real Bip 6 it stayed on today's sunset after sunset had passed, so the
+// 'suntimes' preset gives the two plain readings instead (SUN_RISE and SUN_SET), each with its own icon, which are always right.
+async function sunPreset(dataType = 'SUN_CURRENT', name = 'Sun time', arrow = null, group = true) {
+  await dataTextPreset(dataType, name, null, null, false);
   const e = elements().find((x) => x.id === selectedId);
   if (!e) return;
   e.dot = await genUnit('colon', ':', { style: digitStyleOf(e.images) });
@@ -5721,14 +5734,30 @@ async function sunPreset() {
   for (let i = 0; i < 5; i++) { const a = Math.PI + (i + 0.5) * Math.PI / 5; g.beginPath(); g.moveTo(Math.cos(a) * 12, Math.sin(a) * 12); g.lineTo(Math.cos(a) * 17, Math.sin(a) * 17); g.stroke(); }
   q = g.createRadialGradient(-2, -6, 1, 0, 0, 10); q.addColorStop(0, '#fff3c0'); q.addColorStop(1, '#ffb347'); g.fillStyle = q; g.beginPath(); g.arc(0, 0, 10, Math.PI, 0); g.fill();
   g.strokeStyle = '#cfe8ff'; g.lineWidth = 2; g.beginPath(); g.moveTo(-20, 2); g.lineTo(20, 2); g.stroke();
-  const icon = addProjectImage('sun_icon.png', c, { replace: true });
+  if (arrow) { g.strokeStyle = '#ffd37a'; g.lineWidth = 2.4; g.lineJoin = 'round'; const up = arrow === 'up'; g.beginPath(); g.moveTo(17, up ? -8 : -20); g.lineTo(17, up ? -20 : -8); g.moveTo(13, up ? -16 : -12); g.lineTo(17, up ? -21 : -7); g.lineTo(21, up ? -16 : -12); g.stroke(); }
+  const icon = addProjectImage(arrow ? `sun${arrow}_icon.png` : 'sun_icon.png', c, { replace: true });
   await loadAllImages();
   const cell = imgMeta((e.images || []).find(Boolean));
-  const ic = newElement('IMG', { src: icon.name, show: 'normal', w: 0, h: 0, x: (+e.x || 0) - 54, y: (+e.y || 0) + Math.round(((cell ? cell.height : 44) - 34) / 2), name: 'Sun icon' });
+  const ic = newElement('IMG', { src: icon.name, show: 'normal', w: 0, h: 0, x: (+e.x || 0) - 54, y: (+e.y || 0) + Math.round(((cell ? cell.height : 44) - 34) / 2), name: `${name} icon` });
   project.elements.push(ic);
-  groupElements([ic, e], 'Sunrise / sunset');
+  if (group) groupElements([ic, e], arrow ? name : 'Sunrise / sunset');
   selectedId = e.id; multiSel = new Set([e.id, ic.id]);
   refreshPanels(); render(); scheduleCode();
+  return { e, ic };
+}
+// The two plain readings (SUN_RISE, SUN_SET), each with its icon, in one place. The watch shows the one that is next: the sunset from
+// sunrise until sunset, the sunrise otherwise (the generated code reads today's times from the weather data). See core/codegen.js.
+async function sunTimesPreset() {
+  pushHistory();
+  const rise = await sunPreset('SUN_RISE', 'Sunrise', 'up', false);
+  const set = await sunPreset('SUN_SET', 'Sunset', 'down', false);
+  set.e.x = rise.e.x; set.e.y = rise.e.y; set.ic.x = rise.ic.x; set.ic.y = rise.ic.y;
+  for (const l of [rise.e, rise.ic]) l.showWhen = 'sunrise';
+  for (const l of [set.e, set.ic]) l.showWhen = 'sunset';
+  groupElements([rise.ic, rise.e, set.ic, set.e], 'Sunrise / sunset');
+  selectedId = set.e.id; multiSel = new Set([rise.e.id, rise.ic.id, set.e.id, set.ic.id]);
+  refreshPanels(); render(); scheduleCode();
+  status('Added the sunrise and sunset readings in one place: the watch shows the next one (sunset from sunrise until sunset, then sunrise).');
 }
 async function clockPreset(withSeconds) {
   pushHistory();

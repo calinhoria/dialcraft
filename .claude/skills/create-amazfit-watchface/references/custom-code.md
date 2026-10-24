@@ -26,11 +26,15 @@ with the recipe as usual; give the ones the code must reach a **handle**; put th
   (libimagequant, then oxipng, both WebAssembly, so it is the same on every platform). Everything else is only recompressed
   losslessly. The saved project keeps the full-colour originals; only the export is small. A frame of about 10–20 KB at 16 colours is normal.
 
+> Animation made of sprites, a toolkit and a capture tool that runs the code headlessly: [animated-faces.md](animated-faces.md).
+
 ## What is true on a real watch (Bip 6, API 4.x, checked over bridge logs)
 
 - `px()` is a **build-time macro**: `px(300)` works, `px(y)` with a variable throws "not a function". Use `pxv(y)` in user code
   (Dialcraft defines it before the user block).
 - There is no global `timer` and no `hmUI`. `setInterval`, `setTimeout`, `clearInterval` and `Date.now()` exist. Use `ui`.
+- An `IMG` is drawn at its own pixel size and **clipped** to its box: `w` / `h` in `MORE` never stretch it (a growing bar is a full-length
+  sprite with a changing box width).
 - `IMG_ANIM`: `setProperty(ui.prop.MORE, {x, y})` is accepted but **does not move it**; `setProperty(ui.prop.Y, v)` does, and
   `getProperty(ui.prop.Y)` reads it back. `MORE` works on a plain `IMG` and on a `GROUP`.
 - `Time` from `@zos/sensor` counts whole seconds. For smooth motion keep the time since the second last changed (`Date.now()`

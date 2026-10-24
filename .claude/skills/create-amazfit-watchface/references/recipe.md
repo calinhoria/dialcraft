@@ -37,12 +37,21 @@ Each step is an object with exactly one action.
 ### `edit` fields
 
 - **`set`** — any layer property: `x`, `y`, `w`, `h`, `show` (`normal` | `aod` | `both`), `alpha`, `name`,
-  `alignH` (`LEFT` | `CENTER_H` | `RIGHT`), `hSpace` / `space` (digit spacing), `dataType`, `color`, `text`, `size` (TEXT only) …
+  `showWhen` (`am` | `pm` | `sunrise` | `sunset`: shown only then, the watch switches it), `alignH` (`LEFT` | `CENTER_H` | `RIGHT`), `hSpace` / `space` (digit spacing), `dataType`, `color`, `text`, `size` (TEXT only) …
 - **`glyph`** — style of a digit / weekday / reading layer (its pictures are re-drawn): `font`, `size` (px height of
   the digits), `weight`, `fill` (`solid` | `gradient` | `css` | `outline`), `color`, `from`, `to`, `angle`, `css`
   (e.g. `"linear-gradient(180deg,#ffd400,#ff2d55)"`), `outlineColor`, `outlineWidth`, `bold`, `italic`.
 - **`set` also takes** `handle` (names the layer for your code as `W.<handle>`) and `previewOnly` — see [custom-code.md](custom-code.md).
 - **`tint`** — for level sets and icons: `{ "fill": "solid", "color": "#39ff14" }` paints the pictures over.
+
+### The `script` step's environment
+
+A `script` step runs inside the editor page (async, `return` a value to log it) with the editor's own functions in scope: `find`, `project`,
+`applyPreset`, `addElement`, `rerenderGlyphLayers`, plus `registerCustomFont({name, family, format, ext, dataBase64})` (an external font,
+then usable as `glyph.font`), `addProjectImage(name, canvas, {})` (a PNG built on a canvas becomes a project image), `elBox(layer)`,
+`drawScene(ctx, w, h, 'normal' | 'aod', false)`, `startCodeRun()` / `stopCodeRun()` and `composePreviewB64()`. Each step is its own scope, so
+share state through `globalThis`. A layer's `name` in `log` is truncated at 200 characters: write large results into the project
+(for example `project.description`) and read the saved project instead. Animated faces: [animated-faces.md](animated-faces.md).
 
 ### Order matters
 
@@ -70,7 +79,8 @@ glyph size at its default. (`%`, `°` and the colon follow the digits.)
 | `level` | battery image level |
 | `rect` `stroke` `circle` `arc` | shapes |
 | `text` `datatext` | a text widget / any reading as images |
-| `sun` | next sunrise / sunset as a time (`SUN_CURRENT`) with a sun icon and colon, grouped (layers `Sun time`, `Sun icon`) |
+| `suntimes` | the next sunrise / sunset: `SUN_RISE` and `SUN_SET` readings with an icon each, in one place, swapped by the time (`showWhen`) by generated code; use this one |
+| `sun` | one `SUN_CURRENT` reading with a sun icon and colon, grouped (layers `Sun time`, `Sun icon`); on a real Bip 6 it stays on a sun event that has already passed, prefer `suntimes` |
 | `status` | Bluetooth status icon |
 | `click` `tap` | tap shortcut / tap zone |
 | `editslot` | complication slot (the wearer picks what it shows) |

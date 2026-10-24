@@ -17,6 +17,7 @@ const path = require('path');
 const fs = require('fs');
 const { app, BrowserWindow } = require('electron');
 
+process.env.DIALCRAFT_HEADLESS = '1';   // no editor window, no Dock icon, no focus stealing (see main.js)
 require(path.join(__dirname, '..', 'main.js'));
 
 const W = +(process.env.W || 1440);
