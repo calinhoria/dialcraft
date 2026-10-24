@@ -205,7 +205,7 @@ const refPlace = (codeSrc) => {
     e.src = e.images[0];
   }
 };
-const fillCode = (CODE_SRC, RUNTIME_SRC) => CODE_SRC.replace('/*FW*/', String(globalThis.__FW || 0)).replace('/*TL*/0', String(globalThis.__TL || 0)).replace('/*CW*/0', String(globalThis.__CW || 0)).replace('/*K*/0', String(globalThis.__K || 0)).replace('/*PT*/0', String(globalThis.__PT || 0)).replace('/*PH*/0', String(globalThis.__PH || 0)).replace('/*PX*/0', String(globalThis.__PX || 0)).replace('/*V*/', 'const V = ' + JSON.stringify(VMAP()) + ';').replace('/*RUNTIME*/', RUNTIME_SRC);
+const fillCode = (CODE_SRC, RUNTIME_SRC) => CODE_SRC.replace('/*PER*/[]', JSON.stringify(globalThis.__PER || [])).replace('/*FW*/', String(globalThis.__FW || 0)).replace('/*TL*/0', String(globalThis.__TL || 0)).replace('/*CW*/0', String(globalThis.__CW || 0)).replace('/*K*/0', String(globalThis.__K || 0)).replace('/*PT*/0', String(globalThis.__PT || 0)).replace('/*PH*/0', String(globalThis.__PH || 0)).replace('/*PX*/0', String(globalThis.__PX || 0)).replace('/*V*/', 'const V = ' + JSON.stringify(VMAP()) + ';').replace('/*RUNTIME*/', RUNTIME_SRC);
 const chipRow = async (groups, cx, gap) => {
   const ws = []; for (const g of groups) ws.push((await inkBox(g)).w);
   const tot = ws.reduce((a, b) => a + b, 0) + gap * (groups.length - 1); let x = cx - tot / 2;

@@ -31,7 +31,7 @@ def build(stem):
         if len(st) > 2: step["set"] = st[2]
         steps.append(step)
     main = ("const CODE_SRC = " + json.dumps(code) + ";\nconst RUNTIME_SRC = " + json.dumps(RUNTIME) + ";\n" + KIT + "\n" + build_js +
-            "\nrefPlace(fillCode(CODE_SRC, RUNTIME_SRC));\nproject.userCode = fillCode(CODE_SRC, RUNTIME_SRC);\nproject.userImports = '';\nreturn project.elements.length;")
+            "\nrefPlace(fillCode(CODE_SRC, RUNTIME_SRC));\nproject.userCode = fillCode(CODE_SRC, RUNTIME_SRC);\nproject.userImports = globalThis.__IMPORTS || '';\nreturn project.elements.length;")
     steps.append({"script": main})
     steps.append({"script": KIT + "\n" + TAIL})
     rec = {"language": cfg['language'], "name": cfg['name'], "device": cfg.get('device', 'bip-6'), "steps": steps,

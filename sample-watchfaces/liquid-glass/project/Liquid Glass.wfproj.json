@@ -1,0 +1,5678 @@
+{
+  "version": 1,
+  "name": "Liquid Glass",
+  "device": "bip-6",
+  "appId": 2326257,
+  "vender": "dialcraft",
+  "description": "Liquid glass: a glass time panel, three gradient rings (steps, heart rate, battery) and a weather pill over a drifting glass background, with a glass bead lapping the screen edge once a minute.",
+  "font": "Inter Thin",
+  "language": "en-US",
+  "fonts": [
+    {
+      "name": "inter-100.ttf",
+      "family": "Inter Thin"
+    },
+    {
+      "name": "inter-500.ttf",
+      "family": "Inter Medium"
+    },
+    {
+      "name": "inter-600.ttf",
+      "family": "Inter Semibold"
+    },
+    {
+      "name": "nunito-500.ttf",
+      "family": "Nunito Medium"
+    }
+  ],
+  "groups": {
+    "gmvmqagjc2z": "Clock",
+    "gmvmqahwh14": "Clock AOD",
+    "gDate": "Date",
+    "gSteps": "Steps",
+    "gHeartrate": "Heart rate",
+    "gBattery": "Battery",
+    "gWeather": "Weather",
+    "gSecondsbead": "Seconds bead",
+    "gAlwayson": "Always on"
+  },
+  "elements": [
+    {
+      "id": "elmvmqaghu7go",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#03040b",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvmqagugms",
+      "kind": "IMG",
+      "name": "Glow 1",
+      "x": -155,
+      "y": -197,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/o0_000.png",
+      "images": [
+        "sp/o0_000.png",
+        "sp/o0_001.png"
+      ],
+      "handle": "o0"
+    },
+    {
+      "id": "elmvmqagv876n",
+      "kind": "IMG",
+      "name": "Glow 2",
+      "x": 78,
+      "y": -100,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/o1_002.png",
+      "images": [
+        "sp/o1_002.png",
+        "sp/o1_003.png"
+      ],
+      "handle": "o1"
+    },
+    {
+      "id": "elmvmqagw01l0",
+      "kind": "IMG",
+      "name": "Glow 3",
+      "x": -216,
+      "y": 70,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/o2_004.png",
+      "images": [
+        "sp/o2_004.png",
+        "sp/o2_005.png"
+      ],
+      "handle": "o2"
+    },
+    {
+      "id": "elmvmqagws63n",
+      "kind": "IMG",
+      "name": "Glow 4",
+      "x": 80,
+      "y": 152,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/o3_006.png",
+      "images": [
+        "sp/o3_006.png",
+        "sp/o3_007.png"
+      ],
+      "handle": "o3"
+    },
+    {
+      "id": "elmvmqagxobd",
+      "kind": "IMG",
+      "name": "Glow 5",
+      "x": -89,
+      "y": -34,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/o4_008.png",
+      "images": [
+        "sp/o4_008.png",
+        "sp/o4_009.png"
+      ],
+      "handle": "o4"
+    },
+    {
+      "id": "elmvmqagyj1ow",
+      "kind": "IMG",
+      "name": "Ribbon 1",
+      "x": 0,
+      "y": 60,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/r0_010.png",
+      "images": [
+        "sp/r0_010.png",
+        "sp/r0_011.png"
+      ],
+      "handle": "r0"
+    },
+    {
+      "id": "elmvmqagz54vb",
+      "kind": "IMG",
+      "name": "Ribbon 2",
+      "x": 0,
+      "y": 223,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/r1_012.png",
+      "images": [
+        "sp/r1_012.png",
+        "sp/r1_013.png"
+      ],
+      "handle": "r1"
+    },
+    {
+      "id": "elmvmqagzv2z",
+      "kind": "IMG",
+      "name": "Ribbon 3",
+      "x": 0,
+      "y": 142,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/r2_014.png",
+      "images": [
+        "sp/r2_014.png",
+        "sp/r2_015.png"
+      ],
+      "handle": "r2"
+    },
+    {
+      "id": "elmvmqah0f4o7",
+      "kind": "IMG",
+      "name": "Glass",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "lg/glass.png"
+    },
+    {
+      "id": "elmvmqagjcw4",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 186,
+      "y": 109,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmqagjc2z",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -16,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 122,
+        "weight": 400,
+        "variations": "",
+        "fill": "css",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg,#ffffff,#d6e4ff)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(0,0,0,0.33)",
+        "shadowX": 0,
+        "shadowY": 3,
+        "shadowBlur": 5
+      },
+      "aidPad": 8
+    },
+    {
+      "id": "elmvmqagjc1u4",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 173,
+      "y": 122,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmqagjc2z",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 122,
+        "weight": 400,
+        "variations": "",
+        "fill": "css",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg,#ffffff,#d6e4ff)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(0,0,0,0.33)",
+        "shadowX": 0,
+        "shadowY": 3,
+        "shadowBlur": 5
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 8,
+      "handle": "colon"
+    },
+    {
+      "id": "elmvmqagjc1dy",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 47,
+      "y": 109,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmqagjc2z",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -16,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 122,
+        "weight": 400,
+        "variations": "",
+        "fill": "css",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg,#ffffff,#d6e4ff)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "rgba(0,0,0,0.33)",
+        "shadowX": 0,
+        "shadowY": 3,
+        "shadowBlur": 5
+      },
+      "aidPad": 8
+    },
+    {
+      "id": "elmvmqahwh2dj",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 194,
+      "y": 117,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmqahwh14",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_13_0.png",
+        "font_13_1.png",
+        "font_13_2.png",
+        "font_13_3.png",
+        "font_13_4.png",
+        "font_13_5.png",
+        "font_13_6.png",
+        "font_13_7.png",
+        "font_13_8.png",
+        "font_13_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 122,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmqahwh1e2",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 181,
+      "y": 130,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmqahwh14",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 122,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmvmqahwh326",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 55,
+      "y": 117,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmqahwh14",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_14_0.png",
+        "font_14_1.png",
+        "font_14_2.png",
+        "font_14_3.png",
+        "font_14_4.png",
+        "font_14_5.png",
+        "font_14_6.png",
+        "font_14_7.png",
+        "font_14_8.png",
+        "font_14_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 122,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmqagjt4gf",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 137,
+      "y": 35,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Inter Semibold",
+        "size": 13,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ededed",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmvmqah6o33z",
+      "kind": "IMG",
+      "name": "Dot 1",
+      "x": 175,
+      "y": 44,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "lg_dot.png"
+    },
+    {
+      "id": "elmvmqagkk3wm",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 180,
+      "y": 39,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "hSpace": -2,
+      "glyph": {
+        "font": "Inter Semibold",
+        "size": 13,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ededed",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmqah756iw",
+      "kind": "IMG",
+      "name": "Dot 2",
+      "x": 210,
+      "y": 44,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "lg_dot.png"
+    },
+    {
+      "id": "elmvmqagks3ik",
+      "kind": "IMG_DATE",
+      "name": "Month",
+      "x": 219,
+      "y": 35,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "month_m1.png",
+        "month_m2.png",
+        "month_m3.png",
+        "month_m4.png",
+        "month_m5.png",
+        "month_m6.png",
+        "month_m7.png",
+        "month_m8.png",
+        "month_m9.png",
+        "month_m10.png",
+        "month_m11.png",
+        "month_m12.png"
+      ],
+      "part": "month",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": true,
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "left",
+      "glyph": {
+        "font": "Inter Semibold",
+        "size": 13,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ededed",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmqahkw5f5",
+      "kind": "IMG",
+      "name": "Steps 1",
+      "x": 50,
+      "y": 313,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/st_024.png",
+      "images": [
+        "sp/st_024.png",
+        "sp/st_017.png",
+        "sp/st_018.png",
+        "sp/st_019.png",
+        "sp/st_020.png",
+        "sp/st_021.png",
+        "sp/st_022.png",
+        "sp/st_023.png",
+        "sp/st_016.png",
+        "sp/st_025.png",
+        "sp/st_026.png",
+        "sp/st_027.png",
+        "sp/st_028.png"
+      ],
+      "handle": "st0"
+    },
+    {
+      "id": "elmvmqahljbu",
+      "kind": "IMG",
+      "name": "Steps 2",
+      "x": 62,
+      "y": 313,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/st_026.png",
+      "images": [
+        "sp/st_026.png",
+        "sp/st_017.png",
+        "sp/st_018.png",
+        "sp/st_019.png",
+        "sp/st_020.png",
+        "sp/st_021.png",
+        "sp/st_022.png",
+        "sp/st_023.png",
+        "sp/st_024.png",
+        "sp/st_025.png",
+        "sp/st_016.png",
+        "sp/st_027.png",
+        "sp/st_028.png"
+      ],
+      "handle": "st1"
+    },
+    {
+      "id": "elmvmqahm34fp",
+      "kind": "IMG",
+      "name": "Steps 3",
+      "x": 66,
+      "y": 313,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/st_018.png",
+      "images": [
+        "sp/st_018.png",
+        "sp/st_017.png",
+        "sp/st_016.png",
+        "sp/st_019.png",
+        "sp/st_020.png",
+        "sp/st_021.png",
+        "sp/st_022.png",
+        "sp/st_023.png",
+        "sp/st_024.png",
+        "sp/st_025.png",
+        "sp/st_026.png",
+        "sp/st_027.png",
+        "sp/st_028.png"
+      ],
+      "handle": "st2"
+    },
+    {
+      "id": "elmvmqahmo86",
+      "kind": "IMG",
+      "name": "Steps 4",
+      "x": 78,
+      "y": 313,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/st_027.png",
+      "images": [
+        "sp/st_027.png",
+        "sp/st_017.png",
+        "sp/st_018.png",
+        "sp/st_019.png",
+        "sp/st_020.png",
+        "sp/st_021.png",
+        "sp/st_022.png",
+        "sp/st_023.png",
+        "sp/st_024.png",
+        "sp/st_025.png",
+        "sp/st_026.png",
+        "sp/st_016.png",
+        "sp/st_028.png"
+      ],
+      "handle": "st3"
+    },
+    {
+      "id": "elmvmqahn96ed",
+      "kind": "IMG",
+      "name": "Steps 5",
+      "x": 86,
+      "y": 313,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/st_028.png",
+      "images": [
+        "sp/st_028.png",
+        "sp/st_017.png",
+        "sp/st_018.png",
+        "sp/st_019.png",
+        "sp/st_020.png",
+        "sp/st_021.png",
+        "sp/st_022.png",
+        "sp/st_023.png",
+        "sp/st_024.png",
+        "sp/st_025.png",
+        "sp/st_026.png",
+        "sp/st_027.png",
+        "sp/st_016.png"
+      ],
+      "handle": "st4"
+    },
+    {
+      "id": "elmvmqahdh517",
+      "kind": "IMG_PROGRESS",
+      "name": "Steps ring",
+      "x": 66,
+      "y": 288,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "images": [
+        "lg/ring/steps_00.png",
+        "lg/ring/steps_01.png",
+        "lg/ring/steps_02.png",
+        "lg/ring/steps_03.png",
+        "lg/ring/steps_04.png",
+        "lg/ring/steps_05.png",
+        "lg/ring/steps_06.png",
+        "lg/ring/steps_07.png",
+        "lg/ring/steps_08.png",
+        "lg/ring/steps_09.png",
+        "lg/ring/steps_10.png",
+        "lg/ring/steps_11.png",
+        "lg/ring/steps_12.png",
+        "lg/ring/steps_13.png",
+        "lg/ring/steps_14.png",
+        "lg/ring/steps_15.png",
+        "lg/ring/steps_16.png",
+        "lg/ring/steps_17.png",
+        "lg/ring/steps_18.png",
+        "lg/ring/steps_19.png",
+        "lg/ring/steps_20.png",
+        "lg/ring/steps_21.png",
+        "lg/ring/steps_22.png",
+        "lg/ring/steps_23.png",
+        "lg/ring/steps_24.png",
+        "lg/ring/steps_25.png",
+        "lg/ring/steps_26.png",
+        "lg/ring/steps_27.png",
+        "lg/ring/steps_28.png",
+        "lg/ring/steps_29.png",
+        "lg/ring/steps_30.png",
+        "lg/ring/steps_31.png",
+        "lg/ring/steps_32.png",
+        "lg/ring/steps_33.png",
+        "lg/ring/steps_34.png",
+        "lg/ring/steps_35.png",
+        "lg/ring/steps_36.png",
+        "lg/ring/steps_37.png",
+        "lg/ring/steps_38.png",
+        "lg/ring/steps_39.png",
+        "lg/ring/steps_40.png",
+        "lg/ring/steps_41.png",
+        "lg/ring/steps_42.png",
+        "lg/ring/steps_43.png",
+        "lg/ring/steps_44.png",
+        "lg/ring/steps_45.png",
+        "lg/ring/steps_46.png",
+        "lg/ring/steps_47.png",
+        "lg/ring/steps_48.png",
+        "lg/ring/steps_49.png",
+        "lg/ring/steps_50.png",
+        "lg/ring/steps_51.png",
+        "lg/ring/steps_52.png",
+        "lg/ring/steps_53.png",
+        "lg/ring/steps_54.png",
+        "lg/ring/steps_55.png",
+        "lg/ring/steps_56.png",
+        "lg/ring/steps_57.png",
+        "lg/ring/steps_58.png",
+        "lg/ring/steps_59.png",
+        "lg/ring/steps_60.png",
+        "lg/ring/steps_61.png",
+        "lg/ring/steps_62.png",
+        "lg/ring/steps_63.png",
+        "lg/ring/steps_64.png",
+        "lg/ring/steps_65.png",
+        "lg/ring/steps_66.png",
+        "lg/ring/steps_67.png",
+        "lg/ring/steps_68.png",
+        "lg/ring/steps_69.png",
+        "lg/ring/steps_70.png",
+        "lg/ring/steps_71.png",
+        "lg/ring/steps_72.png",
+        "lg/ring/steps_73.png",
+        "lg/ring/steps_74.png",
+        "lg/ring/steps_75.png",
+        "lg/ring/steps_76.png",
+        "lg/ring/steps_77.png",
+        "lg/ring/steps_78.png",
+        "lg/ring/steps_79.png",
+        "lg/ring/steps_80.png",
+        "lg/ring/steps_81.png",
+        "lg/ring/steps_82.png",
+        "lg/ring/steps_83.png",
+        "lg/ring/steps_84.png",
+        "lg/ring/steps_85.png",
+        "lg/ring/steps_86.png",
+        "lg/ring/steps_87.png",
+        "lg/ring/steps_88.png",
+        "lg/ring/steps_89.png",
+        "lg/ring/steps_90.png",
+        "lg/ring/steps_91.png",
+        "lg/ring/steps_92.png",
+        "lg/ring/steps_93.png",
+        "lg/ring/steps_94.png",
+        "lg/ring/steps_95.png"
+      ],
+      "dataType": "STEP",
+      "level": 0,
+      "spread": 24,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      },
+      "positions": [
+        [
+          66,
+          288
+        ],
+        [
+          69,
+          288
+        ],
+        [
+          71,
+          288
+        ],
+        [
+          74,
+          288
+        ],
+        [
+          76,
+          289
+        ],
+        [
+          79,
+          290
+        ],
+        [
+          81,
+          291
+        ],
+        [
+          84,
+          292
+        ],
+        [
+          86,
+          293
+        ],
+        [
+          89,
+          294
+        ],
+        [
+          91,
+          296
+        ],
+        [
+          93,
+          298
+        ],
+        [
+          95,
+          299
+        ],
+        [
+          96,
+          301
+        ],
+        [
+          98,
+          303
+        ],
+        [
+          100,
+          305
+        ],
+        [
+          101,
+          308
+        ],
+        [
+          102,
+          310
+        ],
+        [
+          103,
+          313
+        ],
+        [
+          104,
+          315
+        ],
+        [
+          105,
+          318
+        ],
+        [
+          106,
+          320
+        ],
+        [
+          106,
+          323
+        ],
+        [
+          106,
+          325
+        ],
+        [
+          106,
+          328
+        ],
+        [
+          106,
+          331
+        ],
+        [
+          106,
+          333
+        ],
+        [
+          106,
+          336
+        ],
+        [
+          105,
+          338
+        ],
+        [
+          104,
+          341
+        ],
+        [
+          103,
+          343
+        ],
+        [
+          102,
+          346
+        ],
+        [
+          101,
+          348
+        ],
+        [
+          100,
+          351
+        ],
+        [
+          98,
+          353
+        ],
+        [
+          96,
+          355
+        ],
+        [
+          95,
+          357
+        ],
+        [
+          93,
+          358
+        ],
+        [
+          91,
+          360
+        ],
+        [
+          89,
+          362
+        ],
+        [
+          86,
+          363
+        ],
+        [
+          84,
+          364
+        ],
+        [
+          81,
+          365
+        ],
+        [
+          79,
+          366
+        ],
+        [
+          76,
+          367
+        ],
+        [
+          74,
+          368
+        ],
+        [
+          71,
+          368
+        ],
+        [
+          69,
+          368
+        ],
+        [
+          66,
+          368
+        ],
+        [
+          63,
+          368
+        ],
+        [
+          61,
+          368
+        ],
+        [
+          58,
+          368
+        ],
+        [
+          56,
+          367
+        ],
+        [
+          53,
+          366
+        ],
+        [
+          51,
+          365
+        ],
+        [
+          48,
+          364
+        ],
+        [
+          46,
+          363
+        ],
+        [
+          43,
+          362
+        ],
+        [
+          41,
+          360
+        ],
+        [
+          39,
+          358
+        ],
+        [
+          37,
+          357
+        ],
+        [
+          36,
+          355
+        ],
+        [
+          34,
+          353
+        ],
+        [
+          32,
+          351
+        ],
+        [
+          31,
+          348
+        ],
+        [
+          30,
+          346
+        ],
+        [
+          29,
+          343
+        ],
+        [
+          28,
+          341
+        ],
+        [
+          27,
+          338
+        ],
+        [
+          26,
+          336
+        ],
+        [
+          26,
+          333
+        ],
+        [
+          26,
+          331
+        ],
+        [
+          26,
+          328
+        ],
+        [
+          26,
+          325
+        ],
+        [
+          26,
+          323
+        ],
+        [
+          26,
+          320
+        ],
+        [
+          27,
+          318
+        ],
+        [
+          28,
+          315
+        ],
+        [
+          29,
+          313
+        ],
+        [
+          30,
+          310
+        ],
+        [
+          31,
+          308
+        ],
+        [
+          32,
+          305
+        ],
+        [
+          34,
+          303
+        ],
+        [
+          36,
+          301
+        ],
+        [
+          37,
+          299
+        ],
+        [
+          39,
+          298
+        ],
+        [
+          41,
+          296
+        ],
+        [
+          43,
+          294
+        ],
+        [
+          46,
+          293
+        ],
+        [
+          48,
+          292
+        ],
+        [
+          51,
+          291
+        ],
+        [
+          53,
+          290
+        ],
+        [
+          56,
+          289
+        ],
+        [
+          58,
+          288
+        ],
+        [
+          61,
+          288
+        ],
+        [
+          63,
+          288
+        ]
+      ]
+    },
+    {
+      "id": "elmvmqaglc7pa",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 179,
+      "y": 318,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Nunito Medium",
+        "size": 21,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#f7f7f7",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmqahnz67d",
+      "kind": "IMG",
+      "name": "Heart glow",
+      "x": 145,
+      "y": 282,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/hg_031.png",
+      "images": [
+        "sp/hg_031.png",
+        "sp/hg_030.png",
+        "sp/hg_029.png",
+        "sp/hg_032.png"
+      ],
+      "handle": "hg"
+    },
+    {
+      "id": "elmvmqaheo4h",
+      "kind": "IMG_PROGRESS",
+      "name": "Heart ring",
+      "x": 191,
+      "y": 288,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "images": [
+        "lg/ring/heart_00.png",
+        "lg/ring/heart_01.png",
+        "lg/ring/heart_02.png",
+        "lg/ring/heart_03.png",
+        "lg/ring/heart_04.png",
+        "lg/ring/heart_05.png",
+        "lg/ring/heart_06.png",
+        "lg/ring/heart_07.png",
+        "lg/ring/heart_08.png",
+        "lg/ring/heart_09.png",
+        "lg/ring/heart_10.png",
+        "lg/ring/heart_11.png",
+        "lg/ring/heart_12.png",
+        "lg/ring/heart_13.png",
+        "lg/ring/heart_14.png",
+        "lg/ring/heart_15.png",
+        "lg/ring/heart_16.png",
+        "lg/ring/heart_17.png",
+        "lg/ring/heart_18.png",
+        "lg/ring/heart_19.png",
+        "lg/ring/heart_20.png",
+        "lg/ring/heart_21.png",
+        "lg/ring/heart_22.png",
+        "lg/ring/heart_23.png",
+        "lg/ring/heart_24.png",
+        "lg/ring/heart_25.png",
+        "lg/ring/heart_26.png",
+        "lg/ring/heart_27.png",
+        "lg/ring/heart_28.png",
+        "lg/ring/heart_29.png",
+        "lg/ring/heart_30.png",
+        "lg/ring/heart_31.png",
+        "lg/ring/heart_32.png",
+        "lg/ring/heart_33.png",
+        "lg/ring/heart_34.png",
+        "lg/ring/heart_35.png",
+        "lg/ring/heart_36.png",
+        "lg/ring/heart_37.png",
+        "lg/ring/heart_38.png",
+        "lg/ring/heart_39.png",
+        "lg/ring/heart_40.png",
+        "lg/ring/heart_41.png",
+        "lg/ring/heart_42.png",
+        "lg/ring/heart_43.png",
+        "lg/ring/heart_44.png",
+        "lg/ring/heart_45.png",
+        "lg/ring/heart_46.png",
+        "lg/ring/heart_47.png",
+        "lg/ring/heart_48.png",
+        "lg/ring/heart_49.png",
+        "lg/ring/heart_50.png",
+        "lg/ring/heart_51.png",
+        "lg/ring/heart_52.png",
+        "lg/ring/heart_53.png",
+        "lg/ring/heart_54.png",
+        "lg/ring/heart_55.png",
+        "lg/ring/heart_56.png",
+        "lg/ring/heart_57.png",
+        "lg/ring/heart_58.png",
+        "lg/ring/heart_59.png",
+        "lg/ring/heart_60.png",
+        "lg/ring/heart_61.png",
+        "lg/ring/heart_62.png",
+        "lg/ring/heart_63.png",
+        "lg/ring/heart_64.png",
+        "lg/ring/heart_65.png",
+        "lg/ring/heart_66.png",
+        "lg/ring/heart_67.png",
+        "lg/ring/heart_68.png",
+        "lg/ring/heart_69.png",
+        "lg/ring/heart_70.png",
+        "lg/ring/heart_71.png",
+        "lg/ring/heart_72.png",
+        "lg/ring/heart_73.png",
+        "lg/ring/heart_74.png",
+        "lg/ring/heart_75.png",
+        "lg/ring/heart_76.png",
+        "lg/ring/heart_77.png",
+        "lg/ring/heart_78.png",
+        "lg/ring/heart_79.png",
+        "lg/ring/heart_80.png",
+        "lg/ring/heart_81.png",
+        "lg/ring/heart_82.png",
+        "lg/ring/heart_83.png",
+        "lg/ring/heart_84.png",
+        "lg/ring/heart_85.png",
+        "lg/ring/heart_86.png",
+        "lg/ring/heart_87.png",
+        "lg/ring/heart_88.png",
+        "lg/ring/heart_89.png",
+        "lg/ring/heart_90.png",
+        "lg/ring/heart_91.png",
+        "lg/ring/heart_92.png",
+        "lg/ring/heart_93.png",
+        "lg/ring/heart_94.png",
+        "lg/ring/heart_95.png"
+      ],
+      "dataType": "HEART",
+      "level": 0,
+      "spread": 24,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      },
+      "positions": [
+        [
+          191,
+          288
+        ],
+        [
+          194,
+          288
+        ],
+        [
+          196,
+          288
+        ],
+        [
+          199,
+          288
+        ],
+        [
+          201,
+          289
+        ],
+        [
+          204,
+          290
+        ],
+        [
+          206,
+          291
+        ],
+        [
+          209,
+          292
+        ],
+        [
+          211,
+          293
+        ],
+        [
+          214,
+          294
+        ],
+        [
+          216,
+          296
+        ],
+        [
+          218,
+          298
+        ],
+        [
+          220,
+          299
+        ],
+        [
+          221,
+          301
+        ],
+        [
+          223,
+          303
+        ],
+        [
+          225,
+          305
+        ],
+        [
+          226,
+          308
+        ],
+        [
+          227,
+          310
+        ],
+        [
+          228,
+          313
+        ],
+        [
+          229,
+          315
+        ],
+        [
+          230,
+          318
+        ],
+        [
+          231,
+          320
+        ],
+        [
+          231,
+          323
+        ],
+        [
+          231,
+          325
+        ],
+        [
+          232,
+          328
+        ],
+        [
+          231,
+          331
+        ],
+        [
+          231,
+          333
+        ],
+        [
+          231,
+          336
+        ],
+        [
+          230,
+          338
+        ],
+        [
+          229,
+          341
+        ],
+        [
+          228,
+          343
+        ],
+        [
+          227,
+          346
+        ],
+        [
+          226,
+          348
+        ],
+        [
+          225,
+          351
+        ],
+        [
+          223,
+          353
+        ],
+        [
+          221,
+          355
+        ],
+        [
+          220,
+          357
+        ],
+        [
+          218,
+          358
+        ],
+        [
+          216,
+          360
+        ],
+        [
+          214,
+          362
+        ],
+        [
+          211,
+          363
+        ],
+        [
+          209,
+          364
+        ],
+        [
+          206,
+          365
+        ],
+        [
+          204,
+          366
+        ],
+        [
+          201,
+          367
+        ],
+        [
+          199,
+          368
+        ],
+        [
+          196,
+          368
+        ],
+        [
+          194,
+          368
+        ],
+        [
+          191,
+          368
+        ],
+        [
+          188,
+          368
+        ],
+        [
+          186,
+          368
+        ],
+        [
+          183,
+          368
+        ],
+        [
+          181,
+          367
+        ],
+        [
+          178,
+          366
+        ],
+        [
+          176,
+          365
+        ],
+        [
+          173,
+          364
+        ],
+        [
+          171,
+          363
+        ],
+        [
+          168,
+          362
+        ],
+        [
+          166,
+          360
+        ],
+        [
+          164,
+          358
+        ],
+        [
+          162,
+          357
+        ],
+        [
+          161,
+          355
+        ],
+        [
+          159,
+          353
+        ],
+        [
+          157,
+          351
+        ],
+        [
+          156,
+          348
+        ],
+        [
+          155,
+          346
+        ],
+        [
+          154,
+          343
+        ],
+        [
+          153,
+          341
+        ],
+        [
+          152,
+          338
+        ],
+        [
+          151,
+          336
+        ],
+        [
+          151,
+          333
+        ],
+        [
+          151,
+          331
+        ],
+        [
+          150,
+          328
+        ],
+        [
+          151,
+          325
+        ],
+        [
+          151,
+          323
+        ],
+        [
+          151,
+          320
+        ],
+        [
+          152,
+          318
+        ],
+        [
+          153,
+          315
+        ],
+        [
+          154,
+          313
+        ],
+        [
+          155,
+          310
+        ],
+        [
+          156,
+          308
+        ],
+        [
+          157,
+          305
+        ],
+        [
+          159,
+          303
+        ],
+        [
+          161,
+          301
+        ],
+        [
+          162,
+          299
+        ],
+        [
+          164,
+          298
+        ],
+        [
+          166,
+          296
+        ],
+        [
+          168,
+          294
+        ],
+        [
+          171,
+          293
+        ],
+        [
+          173,
+          292
+        ],
+        [
+          176,
+          291
+        ],
+        [
+          178,
+          290
+        ],
+        [
+          181,
+          289
+        ],
+        [
+          183,
+          288
+        ],
+        [
+          186,
+          288
+        ],
+        [
+          188,
+          288
+        ]
+      ]
+    },
+    {
+      "id": "elmvmqaglx3kz",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 293,
+      "y": 317,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Nunito Medium",
+        "size": 21,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#f7f7f7",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmqahfz6ae",
+      "kind": "IMG_PROGRESS",
+      "name": "Battery ring",
+      "x": 316,
+      "y": 288,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "images": [
+        "lg/ring/batt_00.png",
+        "lg/ring/batt_01.png",
+        "lg/ring/batt_02.png",
+        "lg/ring/batt_03.png",
+        "lg/ring/batt_04.png",
+        "lg/ring/batt_05.png",
+        "lg/ring/batt_06.png",
+        "lg/ring/batt_07.png",
+        "lg/ring/batt_08.png",
+        "lg/ring/batt_09.png",
+        "lg/ring/batt_10.png",
+        "lg/ring/batt_11.png",
+        "lg/ring/batt_12.png",
+        "lg/ring/batt_13.png",
+        "lg/ring/batt_14.png",
+        "lg/ring/batt_15.png",
+        "lg/ring/batt_16.png",
+        "lg/ring/batt_17.png",
+        "lg/ring/batt_18.png",
+        "lg/ring/batt_19.png",
+        "lg/ring/batt_20.png",
+        "lg/ring/batt_21.png",
+        "lg/ring/batt_22.png",
+        "lg/ring/batt_23.png",
+        "lg/ring/batt_24.png",
+        "lg/ring/batt_25.png",
+        "lg/ring/batt_26.png",
+        "lg/ring/batt_27.png",
+        "lg/ring/batt_28.png",
+        "lg/ring/batt_29.png",
+        "lg/ring/batt_30.png",
+        "lg/ring/batt_31.png",
+        "lg/ring/batt_32.png",
+        "lg/ring/batt_33.png",
+        "lg/ring/batt_34.png",
+        "lg/ring/batt_35.png",
+        "lg/ring/batt_36.png",
+        "lg/ring/batt_37.png",
+        "lg/ring/batt_38.png",
+        "lg/ring/batt_39.png",
+        "lg/ring/batt_40.png",
+        "lg/ring/batt_41.png",
+        "lg/ring/batt_42.png",
+        "lg/ring/batt_43.png",
+        "lg/ring/batt_44.png",
+        "lg/ring/batt_45.png",
+        "lg/ring/batt_46.png",
+        "lg/ring/batt_47.png",
+        "lg/ring/batt_48.png",
+        "lg/ring/batt_49.png",
+        "lg/ring/batt_50.png",
+        "lg/ring/batt_51.png",
+        "lg/ring/batt_52.png",
+        "lg/ring/batt_53.png",
+        "lg/ring/batt_54.png",
+        "lg/ring/batt_55.png",
+        "lg/ring/batt_56.png",
+        "lg/ring/batt_57.png",
+        "lg/ring/batt_58.png",
+        "lg/ring/batt_59.png",
+        "lg/ring/batt_60.png",
+        "lg/ring/batt_61.png",
+        "lg/ring/batt_62.png",
+        "lg/ring/batt_63.png",
+        "lg/ring/batt_64.png",
+        "lg/ring/batt_65.png",
+        "lg/ring/batt_66.png",
+        "lg/ring/batt_67.png",
+        "lg/ring/batt_68.png",
+        "lg/ring/batt_69.png",
+        "lg/ring/batt_70.png",
+        "lg/ring/batt_71.png",
+        "lg/ring/batt_72.png",
+        "lg/ring/batt_73.png",
+        "lg/ring/batt_74.png",
+        "lg/ring/batt_75.png",
+        "lg/ring/batt_76.png",
+        "lg/ring/batt_77.png",
+        "lg/ring/batt_78.png",
+        "lg/ring/batt_79.png",
+        "lg/ring/batt_80.png",
+        "lg/ring/batt_81.png",
+        "lg/ring/batt_82.png",
+        "lg/ring/batt_83.png",
+        "lg/ring/batt_84.png",
+        "lg/ring/batt_85.png",
+        "lg/ring/batt_86.png",
+        "lg/ring/batt_87.png",
+        "lg/ring/batt_88.png",
+        "lg/ring/batt_89.png",
+        "lg/ring/batt_90.png",
+        "lg/ring/batt_91.png",
+        "lg/ring/batt_92.png",
+        "lg/ring/batt_93.png",
+        "lg/ring/batt_94.png",
+        "lg/ring/batt_95.png"
+      ],
+      "dataType": "BATTERY",
+      "level": 0,
+      "spread": 24,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      },
+      "positions": [
+        [
+          316,
+          288
+        ],
+        [
+          319,
+          288
+        ],
+        [
+          321,
+          288
+        ],
+        [
+          324,
+          288
+        ],
+        [
+          326,
+          289
+        ],
+        [
+          329,
+          290
+        ],
+        [
+          331,
+          291
+        ],
+        [
+          334,
+          292
+        ],
+        [
+          336,
+          293
+        ],
+        [
+          339,
+          294
+        ],
+        [
+          341,
+          296
+        ],
+        [
+          343,
+          298
+        ],
+        [
+          345,
+          299
+        ],
+        [
+          346,
+          301
+        ],
+        [
+          348,
+          303
+        ],
+        [
+          350,
+          305
+        ],
+        [
+          351,
+          308
+        ],
+        [
+          352,
+          310
+        ],
+        [
+          353,
+          313
+        ],
+        [
+          354,
+          315
+        ],
+        [
+          355,
+          318
+        ],
+        [
+          356,
+          320
+        ],
+        [
+          356,
+          323
+        ],
+        [
+          356,
+          325
+        ],
+        [
+          356,
+          328
+        ],
+        [
+          356,
+          331
+        ],
+        [
+          356,
+          333
+        ],
+        [
+          356,
+          336
+        ],
+        [
+          355,
+          338
+        ],
+        [
+          354,
+          341
+        ],
+        [
+          353,
+          343
+        ],
+        [
+          352,
+          346
+        ],
+        [
+          351,
+          348
+        ],
+        [
+          350,
+          351
+        ],
+        [
+          348,
+          353
+        ],
+        [
+          346,
+          355
+        ],
+        [
+          345,
+          357
+        ],
+        [
+          343,
+          358
+        ],
+        [
+          341,
+          360
+        ],
+        [
+          339,
+          362
+        ],
+        [
+          336,
+          363
+        ],
+        [
+          334,
+          364
+        ],
+        [
+          331,
+          365
+        ],
+        [
+          329,
+          366
+        ],
+        [
+          326,
+          367
+        ],
+        [
+          324,
+          368
+        ],
+        [
+          321,
+          368
+        ],
+        [
+          319,
+          368
+        ],
+        [
+          316,
+          368
+        ],
+        [
+          313,
+          368
+        ],
+        [
+          311,
+          368
+        ],
+        [
+          308,
+          368
+        ],
+        [
+          306,
+          367
+        ],
+        [
+          303,
+          366
+        ],
+        [
+          301,
+          365
+        ],
+        [
+          298,
+          364
+        ],
+        [
+          296,
+          363
+        ],
+        [
+          293,
+          362
+        ],
+        [
+          291,
+          360
+        ],
+        [
+          289,
+          358
+        ],
+        [
+          287,
+          357
+        ],
+        [
+          286,
+          355
+        ],
+        [
+          284,
+          353
+        ],
+        [
+          282,
+          351
+        ],
+        [
+          281,
+          348
+        ],
+        [
+          280,
+          346
+        ],
+        [
+          279,
+          343
+        ],
+        [
+          278,
+          341
+        ],
+        [
+          277,
+          338
+        ],
+        [
+          276,
+          336
+        ],
+        [
+          276,
+          333
+        ],
+        [
+          276,
+          331
+        ],
+        [
+          276,
+          328
+        ],
+        [
+          276,
+          325
+        ],
+        [
+          276,
+          323
+        ],
+        [
+          276,
+          320
+        ],
+        [
+          277,
+          318
+        ],
+        [
+          278,
+          315
+        ],
+        [
+          279,
+          313
+        ],
+        [
+          280,
+          310
+        ],
+        [
+          281,
+          308
+        ],
+        [
+          282,
+          305
+        ],
+        [
+          284,
+          303
+        ],
+        [
+          286,
+          301
+        ],
+        [
+          287,
+          299
+        ],
+        [
+          289,
+          298
+        ],
+        [
+          291,
+          296
+        ],
+        [
+          293,
+          294
+        ],
+        [
+          296,
+          293
+        ],
+        [
+          298,
+          292
+        ],
+        [
+          301,
+          291
+        ],
+        [
+          303,
+          290
+        ],
+        [
+          306,
+          289
+        ],
+        [
+          308,
+          288
+        ],
+        [
+          311,
+          288
+        ],
+        [
+          313,
+          288
+        ]
+      ]
+    },
+    {
+      "id": "elmvmqahh75vl",
+      "kind": "IMG_LEVEL",
+      "name": "Weather icon",
+      "x": 134,
+      "y": 401,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWeather",
+      "alpha": 255,
+      "images": [
+        "lg/wx/icon_00.png",
+        "lg/wx/icon_01.png",
+        "lg/wx/icon_02.png",
+        "lg/wx/icon_03.png",
+        "lg/wx/icon_04.png",
+        "lg/wx/icon_05.png",
+        "lg/wx/icon_06.png",
+        "lg/wx/icon_07.png",
+        "lg/wx/icon_08.png",
+        "lg/wx/icon_09.png",
+        "lg/wx/icon_10.png",
+        "lg/wx/icon_11.png",
+        "lg/wx/icon_12.png",
+        "lg/wx/icon_13.png",
+        "lg/wx/icon_14.png",
+        "lg/wx/icon_15.png",
+        "lg/wx/icon_16.png",
+        "lg/wx/icon_17.png",
+        "lg/wx/icon_18.png",
+        "lg/wx/icon_19.png",
+        "lg/wx/icon_20.png",
+        "lg/wx/icon_21.png",
+        "lg/wx/icon_22.png",
+        "lg/wx/icon_23.png",
+        "lg/wx/icon_24.png",
+        "lg/wx/icon_25.png",
+        "lg/wx/icon_26.png",
+        "lg/wx/icon_27.png",
+        "lg/wx/icon_28.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "WEATHER",
+      "level": 0,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      }
+    },
+    {
+      "id": "elmvmqahib409",
+      "kind": "IMG_LEVEL",
+      "name": "Weather label",
+      "x": 147,
+      "y": 402,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWeather",
+      "alpha": 255,
+      "images": [
+        "lg/wx/label_00.png",
+        "lg/wx/label_01.png",
+        "lg/wx/label_02.png",
+        "lg/wx/label_03.png",
+        "lg/wx/label_04.png",
+        "lg/wx/label_05.png",
+        "lg/wx/label_06.png",
+        "lg/wx/label_07.png",
+        "lg/wx/label_08.png",
+        "lg/wx/label_09.png",
+        "lg/wx/label_10.png",
+        "lg/wx/label_11.png",
+        "lg/wx/label_12.png",
+        "lg/wx/label_13.png",
+        "lg/wx/label_14.png",
+        "lg/wx/label_15.png",
+        "lg/wx/label_16.png",
+        "lg/wx/label_17.png",
+        "lg/wx/label_18.png",
+        "lg/wx/label_19.png",
+        "lg/wx/label_20.png",
+        "lg/wx/label_21.png",
+        "lg/wx/label_22.png",
+        "lg/wx/label_23.png",
+        "lg/wx/label_24.png",
+        "lg/wx/label_25.png",
+        "lg/wx/label_26.png",
+        "lg/wx/label_27.png",
+        "lg/wx/label_28.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "WEATHER",
+      "level": 0,
+      "glyph": {
+        "font": "Inter Thin",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      }
+    },
+    {
+      "id": "elmvmqagmd6vm",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 221,
+      "y": 405,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWeather",
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Inter Medium",
+        "size": 14,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#f2f2f2",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmqahp61da",
+      "kind": "IMG",
+      "name": "Bead",
+      "x": 40,
+      "y": 416,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSecondsbead",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/bead_033.png",
+      "images": [
+        "sp/bead_033.png",
+        "sp/bead_034.png"
+      ],
+      "handle": "bead"
+    },
+    {
+      "id": "elmvmqahqj1wb",
+      "kind": "IMG",
+      "name": "Bead tail 1",
+      "x": 71,
+      "y": 432,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSecondsbead",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/t1_035.png",
+      "images": [
+        "sp/t1_035.png",
+        "sp/t1_036.png"
+      ],
+      "handle": "t1"
+    },
+    {
+      "id": "elmvmqahrh59c",
+      "kind": "IMG",
+      "name": "Bead tail 2",
+      "x": 95,
+      "y": 433,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSecondsbead",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/t2_037.png",
+      "images": [
+        "sp/t2_037.png",
+        "sp/t2_038.png"
+      ],
+      "handle": "t2"
+    },
+    {
+      "id": "elmvmqahsf6wj",
+      "kind": "IMG",
+      "name": "Bead tail 3",
+      "x": 119,
+      "y": 433,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSecondsbead",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/t3_039.png",
+      "images": [
+        "sp/t3_039.png",
+        "sp/t3_040.png"
+      ],
+      "handle": "t3"
+    },
+    {
+      "id": "elmvmqahty26q",
+      "kind": "IMG",
+      "name": "AOD panel outline",
+      "x": 30,
+      "y": 88,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gAlwayson",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "lg/aod_panel.png"
+    },
+    {
+      "id": "elmvmqahut2k2",
+      "kind": "IMG",
+      "name": "AOD date outline",
+      "x": 125,
+      "y": 28,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gAlwayson",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "lg/aod_pill.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "colon.png",
+      "width": 7,
+      "height": 21
+    },
+    {
+      "name": "week_w1.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "week_w2.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "week_w3.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "week_w4.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "week_w5.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "week_w6.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "week_w7.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "bpm.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "percent.png",
+      "width": 24,
+      "height": 23
+    },
+    {
+      "name": "degree.png",
+      "width": 11,
+      "height": 18
+    },
+    {
+      "name": "negative.png",
+      "width": 11,
+      "height": 18
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 80,
+      "height": 116
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 31,
+      "height": 89
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 14,
+      "height": 17
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 14,
+      "height": 18
+    },
+    {
+      "name": "sp/o0_000.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o0_001.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o1_002.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o1_003.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o2_004.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o2_005.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o3_006.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o3_007.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o4_008.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/o4_009.png",
+      "width": 520,
+      "height": 520
+    },
+    {
+      "name": "sp/r0_010.png",
+      "width": 690,
+      "height": 176
+    },
+    {
+      "name": "sp/r0_011.png",
+      "width": 690,
+      "height": 176
+    },
+    {
+      "name": "sp/r1_012.png",
+      "width": 780,
+      "height": 146
+    },
+    {
+      "name": "sp/r1_013.png",
+      "width": 780,
+      "height": 146
+    },
+    {
+      "name": "sp/r2_014.png",
+      "width": 878,
+      "height": 165
+    },
+    {
+      "name": "sp/r2_015.png",
+      "width": 878,
+      "height": 165
+    },
+    {
+      "name": "lg/glass.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "month_m1.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m2.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m3.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m4.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m5.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m6.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m7.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m8.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m9.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m10.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m11.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "month_m12.png",
+      "width": 36,
+      "height": 23
+    },
+    {
+      "name": "lg_dot.png",
+      "width": 6,
+      "height": 6
+    },
+    {
+      "name": "lg/ring/steps_00.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_01.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_02.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_03.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_04.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_05.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_06.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_07.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_08.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_09.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_10.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_11.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_12.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_13.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_14.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_15.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_16.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_17.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_18.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_19.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_20.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_21.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_22.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_23.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_24.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_25.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_26.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_27.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_28.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_29.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_30.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_31.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_32.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_33.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_34.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_35.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_36.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_37.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_38.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_39.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_40.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_41.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_42.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_43.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_44.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_45.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_46.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_47.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_48.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_49.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_50.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_51.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_52.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_53.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_54.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_55.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_56.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_57.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_58.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_59.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_60.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_61.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_62.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_63.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_64.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_65.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_66.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_67.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_68.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_69.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_70.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_71.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_72.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_73.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_74.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_75.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_76.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_77.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_78.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_79.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_80.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_81.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_82.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_83.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_84.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_85.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_86.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_87.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_88.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_89.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_90.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_91.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_92.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_93.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_94.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/steps_95.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "font_9_0.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_1.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_2.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_3.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_4.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_5.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_6.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_7.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_8.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_9_9.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "lg/ring/heart_00.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_01.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_02.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_03.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_04.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_05.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_06.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_07.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_08.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_09.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_10.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_11.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_12.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_13.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_14.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_15.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_16.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_17.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_18.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_19.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_20.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_21.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_22.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_23.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_24.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_25.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_26.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_27.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_28.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_29.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_30.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_31.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_32.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_33.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_34.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_35.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_36.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_37.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_38.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_39.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_40.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_41.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_42.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_43.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_44.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_45.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_46.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_47.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_48.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_49.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_50.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_51.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_52.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_53.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_54.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_55.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_56.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_57.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_58.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_59.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_60.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_61.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_62.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_63.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_64.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_65.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_66.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_67.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_68.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_69.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_70.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_71.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_72.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_73.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_74.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_75.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_76.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_77.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_78.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_79.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_80.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_81.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_82.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_83.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_84.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_85.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_86.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_87.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_88.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_89.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_90.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_91.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_92.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_93.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_94.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/heart_95.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "font_10_0.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_1.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_2.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_3.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_4.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_5.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_6.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_7.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_8.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_10_9.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "lg/ring/batt_00.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_01.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_02.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_03.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_04.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_05.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_06.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_07.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_08.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_09.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_10.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_11.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_12.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_13.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_14.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_15.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_16.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_17.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_18.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_19.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_20.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_21.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_22.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_23.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_24.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_25.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_26.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_27.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_28.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_29.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_30.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_31.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_32.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_33.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_34.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_35.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_36.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_37.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_38.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_39.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_40.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_41.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_42.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_43.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_44.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_45.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_46.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_47.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_48.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_49.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_50.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_51.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_52.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_53.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_54.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_55.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_56.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_57.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_58.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_59.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_60.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_61.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_62.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_63.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_64.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_65.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_66.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_67.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_68.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_69.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_70.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_71.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_72.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_73.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_74.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_75.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_76.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_77.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_78.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_79.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_80.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_81.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_82.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_83.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_84.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_85.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_86.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_87.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_88.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_89.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_90.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_91.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_92.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_93.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_94.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/ring/batt_95.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "font_11_0.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_1.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_2.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_3.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_4.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_5.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_6.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_7.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_8.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_11_9.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "lg/wx/icon_00.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_00.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_01.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_01.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_02.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_02.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_03.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_03.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_04.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_04.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_05.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_05.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_06.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_06.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_07.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_07.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_08.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_08.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_09.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_09.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_10.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_10.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_11.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_11.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_12.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_12.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_13.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_13.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_14.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_14.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_15.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_15.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_16.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_16.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_17.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_17.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_18.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_18.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_19.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_19.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_20.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_20.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_21.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_21.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_22.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_22.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_23.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_23.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_24.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_24.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_25.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_25.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_26.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_26.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_27.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_27.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "lg/wx/icon_28.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "lg/wx/label_28.png",
+      "width": 72,
+      "height": 22
+    },
+    {
+      "name": "font_12_0.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_1.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_2.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_3.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_4.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_5.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_6.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_7.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_8.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_12_9.png",
+      "width": 15,
+      "height": 21
+    },
+    {
+      "name": "font_13_0.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_1.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_2.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_3.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_4.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_5.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_6.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_7.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_8.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_13_9.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "sp/st_016.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_017.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_018.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_019.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_020.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_021.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_022.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_023.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_024.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_025.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_026.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_027.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/st_028.png",
+      "width": 16,
+      "height": 30
+    },
+    {
+      "name": "sp/hg_029.png",
+      "width": 100,
+      "height": 100
+    },
+    {
+      "name": "sp/hg_030.png",
+      "width": 100,
+      "height": 100
+    },
+    {
+      "name": "sp/hg_031.png",
+      "width": 100,
+      "height": 100
+    },
+    {
+      "name": "sp/hg_032.png",
+      "width": 100,
+      "height": 100
+    },
+    {
+      "name": "sp/bead_033.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "sp/bead_034.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "sp/t1_035.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "sp/t1_036.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "sp/t2_037.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "sp/t2_038.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "sp/t3_039.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "sp/t3_040.png",
+      "width": 8,
+      "height": 8
+    },
+    {
+      "name": "lg/aod_panel.png",
+      "width": 330,
+      "height": 168
+    },
+    {
+      "name": "lg/aod_pill.png",
+      "width": 140,
+      "height": 35
+    },
+    {
+      "name": "colon_2.png",
+      "width": 7,
+      "height": 21
+    },
+    {
+      "name": "font_14_0.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_1.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_2.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_3.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_4.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_5.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_6.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_7.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_8.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "font_14_9.png",
+      "width": 64,
+      "height": 100
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 15,
+      "height": 73
+    }
+  ],
+  "savePath": null,
+  "optimizePng": true,
+  "userCode": "{\n  // Liquid Glass: the seconds bead circles the screen edge (one step a second, with a short tail) and the colon blinks\n  const MS = 125;\n  const ORB = [[[-155,-197],[-155,-194],[-156,-191],[-157,-188],[-158,-185],[-160,-182],[-162,-179],[-164,-177],[-167,-175],[-170,-173],[-174,-171],[-177,-169],[-181,-168],[-185,-167],[-189,-166],[-193,-166],[-198,-166],[-202,-166],[-206,-166],[-210,-167],[-214,-168],[-218,-169],[-221,-171],[-225,-173],[-228,-175],[-231,-177],[-233,-179],[-235,-182],[-237,-185],[-239,-188],[-240,-191],[-240,-194],[-240,-197],[-240,-200],[-240,-203],[-239,-206],[-237,-209],[-235,-212],[-233,-215],[-231,-217],[-228,-219],[-225,-221],[-221,-223],[-218,-225],[-214,-226],[-210,-227],[-206,-228],[-202,-228],[-198,-228],[-193,-228],[-189,-228],[-185,-227],[-181,-226],[-177,-225],[-174,-223],[-170,-221],[-167,-219],[-164,-217],[-162,-215],[-160,-212],[-158,-209],[-157,-206],[-156,-203],[-155,-200]],[[78,-100],[74,-102],[69,-104],[66,-106],[62,-109],[58,-112],[55,-114],[52,-117],[49,-120],[47,-123],[45,-127],[43,-130],[42,-133],[41,-136],[40,-138],[40,-141],[41,-144],[41,-146],[43,-148],[44,-150],[46,-152],[48,-153],[51,-155],[54,-156],[57,-156],[60,-156],[64,-156],[68,-156],[72,-156],[76,-155],[80,-153],[85,-152],[89,-150],[93,-148],[97,-146],[101,-144],[105,-141],[108,-138],[111,-136],[114,-133],[117,-130],[120,-127],[122,-123],[123,-120],[125,-117],[126,-114],[126,-112],[126,-109],[126,-106],[125,-104],[124,-102],[122,-100],[120,-98],[118,-97],[116,-95],[113,-94],[109,-94],[106,-94],[102,-94],[98,-94],[94,-94],[90,-95],[86,-97],[82,-98]],[[-216,70],[-214,69],[-213,69],[-211,69],[-208,69],[-206,69],[-203,70],[-199,71],[-196,72],[-192,74],[-188,76],[-184,78],[-180,80],[-176,83],[-172,85],[-167,88],[-163,91],[-159,94],[-155,97],[-152,100],[-148,103],[-145,106],[-142,109],[-139,112],[-137,115],[-135,118],[-134,120],[-132,122],[-132,124],[-131,126],[-131,128],[-132,129],[-133,130],[-134,131],[-136,131],[-138,131],[-140,131],[-143,131],[-146,130],[-149,129],[-153,128],[-156,126],[-160,124],[-164,122],[-168,120],[-173,117],[-177,115],[-181,112],[-185,109],[-189,106],[-193,103],[-197,100],[-200,97],[-203,94],[-206,91],[-209,88],[-211,85],[-213,82],[-215,80],[-216,78],[-217,76],[-217,74],[-217,72],[-217,71]],[[80,152],[84,155],[88,158],[91,160],[95,163],[98,165],[101,168],[103,170],[105,172],[107,173],[109,174],[110,175],[110,176],[110,176],[110,176],[110,176],[109,176],[107,175],[106,174],[103,172],[101,171],[98,169],[95,167],[92,164],[88,162],[84,159],[80,156],[76,154],[72,151],[68,147],[64,144],[60,141],[55,138],[51,135],[48,132],[44,130],[41,127],[37,125],[35,122],[32,120],[30,118],[28,117],[27,116],[26,115],[25,114],[25,114],[25,114],[25,114],[26,114],[28,115],[30,116],[32,118],[34,119],[37,121],[40,123],[44,126],[47,128],[51,131],[55,134],[59,136],[63,139],[67,143],[72,146],[76,149]],[[-89,-34],[-92,-37],[-94,-40],[-96,-43],[-98,-46],[-99,-49],[-100,-52],[-100,-54],[-100,-57],[-100,-59],[-99,-61],[-98,-62],[-96,-64],[-94,-65],[-92,-66],[-89,-66],[-86,-66],[-83,-66],[-79,-66],[-76,-65],[-72,-64],[-68,-63],[-64,-62],[-60,-60],[-55,-58],[-51,-56],[-47,-53],[-43,-50],[-39,-48],[-35,-45],[-32,-42],[-29,-39],[-26,-36],[-23,-33],[-21,-30],[-19,-27],[-17,-24],[-16,-21],[-15,-18],[-14,-16],[-14,-13],[-15,-11],[-16,-9],[-17,-8],[-18,-6],[-20,-5],[-23,-4],[-25,-4],[-28,-4],[-31,-4],[-35,-4],[-39,-5],[-43,-6],[-47,-7],[-51,-8],[-55,-10],[-59,-12],[-63,-14],[-67,-17],[-71,-20],[-75,-22],[-79,-25],[-83,-28],[-86,-31]]], RIB = [[0,-5,-9,-14,-19,-23,-28,-33,-38,-42,-47,-52,-56,-61,-66,-70,-75,-80,-84,-89,-94,-98,-103,-108,-112,-117,-122,-127,-131,-136,-141,-145,-150,-155,-159,-164,-169,-173,-178,-183,-188,-192,-197,-202,-206,-211,-216,-220,-225,-230,-234,-239,-244,-248,-253,-258,-262,-267,-272,-277,-281,-286,-291,-295],[0,-6,-12,-18,-24,-30,-37,-43,-49,-55,-61,-67,-73,-79,-85,-91,-98,-104,-110,-116,-122,-128,-134,-140,-146,-152,-158,-165,-171,-177,-183,-189,-195,-201,-207,-213,-219,-225,-232,-238,-244,-250,-256,-262,-268,-274,-280,-286,-292,-299,-305,-311,-317,-323,-329,-335,-341,-347,-353,-360,-366,-372,-378,-384],[0,-8,-15,-23,-30,-38,-46,-53,-61,-69,-76,-84,-91,-99,-107,-114,-122,-129,-137,-145,-152,-160,-168,-175,-183,-190,-198,-206,-213,-221,-229,-236,-244,-251,-259,-267,-274,-282,-289,-297,-305,-312,-320,-328,-335,-343,-350,-358,-366,-373,-381,-388,-396,-404,-411,-419,-427,-434,-442,-449,-457,-465,-472,-480]], RY = [60, 223, 142];\n  const PER = [[195,13],[219,13],[243,13],[266.9,13],[290.9,13],[315.4,13.9],[337.1,21],[357,35.8],[370.7,56.3],[376.6,78.4],[377,102.7],[377,127.7],[377,149.9],[377,175],[377,200],[377,222.2],[377,247.2],[377,272.3],[377,297.3],[377,319.5],[377,344.5],[376.8,369.7],[371.4,391.9],[358.2,412.8],[338.8,428.2],[317.3,435.8],[293.1,437],[269.1,437],[245.1,437],[221.2,437],[197.2,437],[171,437],[147,437],[123.1,437],[99.1,437],[74.6,436.1],[52.9,429],[33,414.2],[19.3,393.7],[13.4,371.6],[13,347.3],[13,322.3],[13,300.1],[13,275],[13,250],[13,227.8],[13,202.8],[13,177.7],[13,152.7],[13,130.5],[13,105.5],[13.2,80.3],[18.6,58.1],[31.8,37.2],[51.2,21.8],[72.7,14.2],[98,13],[122,13],[145.9,13],[169.9,13]];\n  const V = {\"o0\":{\"s\":0,\"__blank\":1},\"o1\":{\"s\":0,\"__blank\":1},\"o2\":{\"s\":0,\"__blank\":1},\"o3\":{\"s\":0,\"__blank\":1},\"o4\":{\"s\":0,\"__blank\":1},\"r0\":{\"s\":0,\"__blank\":1},\"r1\":{\"s\":0,\"__blank\":1},\"r2\":{\"s\":0,\"__blank\":1},\"st0\":{\"0\":8,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":0,\"9\":9,\"d\":10,\"k\":11,\"__blank\":12},\"st1\":{\"0\":10,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\"d\":0,\"k\":11,\"__blank\":12},\"st2\":{\"0\":2,\"1\":1,\"2\":0,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\"d\":10,\"k\":11,\"__blank\":12},\"st3\":{\"0\":11,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\"k\":0,\"d\":10,\"__blank\":12},\"st4\":{\"0\":12,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\"__blank\":0,\"d\":10,\"k\":11},\"hg\":{\"g3\":0,\"g2\":1,\"g1\":2,\"__blank\":3},\"bead\":{\"s\":0,\"__blank\":1},\"t1\":{\"s\":0,\"__blank\":1},\"t2\":{\"s\":0,\"__blank\":1},\"t3\":{\"s\":0,\"__blank\":1}};\n  const ADV = [12,12,12,12,12,12,12,12,12,12,4.5,10];\n  const STY = 313;\n  let colonOn = true, SS = null, HS = null, steps = 8200, bpm = 72, lastSt = '', n = 0;\n  try { SS = new DCStep(); } catch (e) {}\n  try { HS = new DCHeart(); } catch (e) {}\n  const stepStr = (v) => v < 1000 ? String(v) : v < 9950 ? (Math.round(v / 100) / 10).toFixed(1) + 'k' : Math.round(v / 1000) + 'k';\n  const gi = (c) => c === '.' ? 10 : c === 'k' ? 11 : +c;\n  const showSteps = () => {\n    const s = stepStr(steps); if (s === lastSt) return; lastSt = s;\n    let tot = 0; for (let i = 0; i < s.length; i++) tot += ADV[gi(s[i])];\n    let x = 70 - tot / 2 - 1;\n    for (let i = 0; i < 5; i++) {\n      const sl = slot('st' + i);\n      if (i < s.length) { const g = gi(s[i]); sl(Math.round(x), STY, g); x += ADV[g]; } else sl.hide();\n    }\n  };\n  const tick = () => {\n    if (n++ % 20 === 0) {\n      try { if (SS) { const v = SS.getCurrent(); if (v >= 0) steps = v; } } catch (e) {}\n      try { if (HS) { const h = HS.getLast(); if (h > 30 && h < 220) bpm = h; } } catch (e) {}\n    }\n    showSteps();\n    const k = Math.floor(Date.now() / 125) % 64;\n    for (let i = 0; i < 5; i++) slot('o' + i)(ORB[i][k][0], ORB[i][k][1], V['o' + i].s);\n    for (let j = 0; j < 3; j++) slot('r' + j)(RIB[j][k], RY[j], V['r' + j].s);\n    const now = Date.now(), sec = new Date(now).getSeconds();\n    const p = PER[sec];\n    slot('bead')(Math.round(p[0] - 13), Math.round(p[1] - 13), V.bead.s);\n    for (let j = 1; j <= 3; j++) { const q = PER[(sec - j + 60) % 60]; slot('t' + j)(Math.round(q[0] - 4), Math.round(q[1] - 4), V['t' + j].s); }\n    const ph = ((now / 1000) * bpm / 60) % 1, hg = slot('hg');\n    if (ph < 0.25) hg(145, 282, V.hg.g3); else if (ph < 0.5) hg(145, 282, V.hg.g2); else if (ph < 0.75) hg(145, 282, V.hg.g1); else hg.hide();\n    const on = (now % 1000) < 650;\n    if (on !== colonOn) { colonOn = on; try { W.colon.setProperty(ui.prop.VISIBLE, on); } catch (e) {} }\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": "import { Step as DCStep, HeartRate as DCHeart } from '@zos/sensor'"
+}
