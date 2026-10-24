@@ -1,0 +1,56 @@
+{
+ "cell": {
+  "w": 96,
+  "h": 135,
+  "ax": 48,
+  "ay": 131
+ },
+ "clips": {
+  "roll": [
+   "roll_00.png",
+   "roll_01.png",
+   "roll_02.png",
+   "roll_03.png",
+   "roll_04.png",
+   "roll_05.png",
+   "roll_06.png",
+   "roll_07.png",
+   "roll_08.png",
+   "roll_09.png"
+  ],
+  "push": [
+   "push_00.png",
+   "push_01.png",
+   "push_02.png",
+   "push_03.png",
+   "push_04.png",
+   "push_05.png",
+   "push_06.png",
+   "push_07.png",
+   "push_08.png",
+   "push_09.png"
+  ],
+  "flip": [
+   "flip_00.png",
+   "flip_01.png",
+   "flip_02.png",
+   "flip_03.png",
+   "flip_04.png",
+   "flip_05.png",
+   "flip_06.png",
+   "flip_07.png",
+   "flip_08.png",
+   "flip_09.png",
+   "flip_10.png",
+   "flip_11.png"
+  ],
+  "grab": [
+   "grab_00.png",
+   "grab_01.png",
+   "grab_02.png",
+   "grab_03.png",
+   "grab_04.png",
+   "grab_05.png"
+  ]
+ }
+}

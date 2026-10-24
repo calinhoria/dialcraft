@@ -1,0 +1,438 @@
+{
+  "version": 1,
+  "name": "Skate Park",
+  "device": "bip-6",
+  "appId": 2024133,
+  "vender": "dialcraft",
+  "description": "Skate park demo: a skater rolls in, pushes, throws a heelflip or an indy grab and rolls out, on a dusk city street. Skater art \"Skater Girl 2D\" by overcrafted (opengameart.org), CC-BY 4.0.",
+  "font": "Orbitron",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gScene": "Skatepark",
+    "gClock": "Clock"
+  },
+  "elements": [
+    {
+      "id": "elmvmo5k7y36v",
+      "kind": "IMG",
+      "name": "Skatepark",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gScene",
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "skate/bg.png"
+    },
+    {
+      "id": "elmvmo5k7yya",
+      "kind": "IMG",
+      "name": "Skater",
+      "x": 245,
+      "y": 239,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gScene",
+      "alpha": 255,
+      "w": 96,
+      "h": 135,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "skate/flip_05.png",
+        "skate/roll_00.png",
+        "skate/roll_01.png",
+        "skate/roll_02.png",
+        "skate/roll_03.png",
+        "skate/roll_04.png",
+        "skate/roll_05.png",
+        "skate/roll_06.png",
+        "skate/roll_07.png",
+        "skate/roll_08.png",
+        "skate/roll_09.png",
+        "skate/push_00.png",
+        "skate/push_01.png",
+        "skate/push_02.png",
+        "skate/push_03.png",
+        "skate/push_04.png",
+        "skate/push_05.png",
+        "skate/push_06.png",
+        "skate/push_07.png",
+        "skate/push_08.png",
+        "skate/push_09.png",
+        "skate/flip_00.png",
+        "skate/flip_01.png",
+        "skate/flip_02.png",
+        "skate/flip_03.png",
+        "skate/flip_04.png",
+        "skate/flip_06.png",
+        "skate/flip_07.png",
+        "skate/flip_08.png",
+        "skate/flip_09.png",
+        "skate/flip_10.png",
+        "skate/flip_11.png",
+        "skate/grab_00.png",
+        "skate/grab_01.png",
+        "skate/grab_02.png",
+        "skate/grab_03.png",
+        "skate/grab_04.png",
+        "skate/grab_05.png"
+      ],
+      "handle": "sk"
+    },
+    {
+      "id": "elmvmo5k7y4bt",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 211,
+      "y": 26,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "skate/ui/clock_0.png",
+        "skate/ui/clock_1.png",
+        "skate/ui/clock_2.png",
+        "skate/ui/clock_3.png",
+        "skate/ui/clock_4.png",
+        "skate/ui/clock_5.png",
+        "skate/ui/clock_6.png",
+        "skate/ui/clock_7.png",
+        "skate/ui/clock_8.png",
+        "skate/ui/clock_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvmo5k7yj2",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 179,
+      "y": 26,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "w": 28,
+      "h": 58,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "skate/ui/clock_colon.png"
+    },
+    {
+      "id": "elmvmo5k7yxo",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 103,
+      "y": 26,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "skate/ui/clock_0.png",
+        "skate/ui/clock_1.png",
+        "skate/ui/clock_2.png",
+        "skate/ui/clock_3.png",
+        "skate/ui/clock_4.png",
+        "skate/ui/clock_5.png",
+        "skate/ui/clock_6.png",
+        "skate/ui/clock_7.png",
+        "skate/ui/clock_8.png",
+        "skate/ui/clock_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "RIGHT"
+    }
+  ],
+  "images": [
+    {
+      "name": "skate/bg.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "skate/flip_05.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_00.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_01.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_02.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_03.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_04.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_05.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_06.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_07.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_08.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/roll_09.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_00.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_01.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_02.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_03.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_04.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_05.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_06.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_07.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_08.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/push_09.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_00.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_01.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_02.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_03.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_04.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_06.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_07.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_08.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_09.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_10.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/flip_11.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/grab_00.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/grab_01.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/grab_02.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/grab_03.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/grab_04.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/grab_05.png",
+      "width": 96,
+      "height": 135
+    },
+    {
+      "name": "skate/ui/clock_0.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_1.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_2.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_3.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_4.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_5.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_6.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_7.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_8.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_9.png",
+      "width": 36,
+      "height": 58
+    },
+    {
+      "name": "skate/ui/clock_colon.png",
+      "width": 28,
+      "height": 58
+    }
+  ],
+  "savePath": null,
+  "userCode": "\n{\n  // The skater rides in, pushes twice, throws a trick off the flat and rolls out. Loops.\n  const MS = 55, CYCLE = 5600, BASE_Y = 299, START_X = -80, OUT_X = 470;\n  const ROLL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], PUSH = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];\n  const FLIP = [21, 22, 23, 24, 25, 0, 26, 27, 28, 29, 30, 31], GRAB = [32, 33, 34, 35, 36, 37];\n  const PICS = F.sk;\n\n  let seed = (Date.now() ^ 0x2545f491) >>> 0;\n  const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };\n  let passes = 0, trick = 0, t0 = Date.now();\n\n  const frame = (seq, el, ms) => seq[Math.min(seq.length - 1, Math.floor(el / ms))];\n\n  const tick = () => {\n    const now = Date.now();\n    let t = now - t0;\n    if (t >= CYCLE) {\n      // next pass: alternate the trick, nudge the pacing a little\n      trick = passes % 2 === 0 ? 0 : 1;\n      passes++;\n      t0 = now;\n      t = 0;\n    }\n    let x = 0, y = BASE_Y, pic = PICS[ROLL[0]];\n    const phase1 = 1100, phase2 = 2100, phase3 = 3400;\n    if (t < phase1) {                                   // roll in\n      x = START_X + (120 - START_X) * (t / phase1);\n      pic = PICS[frame(ROLL, t, 95)];\n    } else if (t < phase2) {                           // push\n      x = 120 + 90 * ((t - phase1) / (phase2 - phase1));\n      pic = PICS[frame(PUSH, t - phase1, 95)];\n    } else if (t < phase3) {                           // trick off the flat\n      const u = (t - phase2) / (phase3 - phase2);\n      x = 210 + 70 * u;\n      y = BASE_Y - Math.round(96 * 4 * u * (1 - u));\n      pic = PICS[trick === 0 ? frame(FLIP, t - phase2, 70) : frame(GRAB, t - phase2, 95)];\n    } else if (t < 4750) {                             // roll out\n      x = 280 + (OUT_X - 280) * ((t - phase3) / (4750 - phase3));\n      pic = PICS[frame(ROLL, t - phase3, 95)];\n    } else {\n      x = OUT_X;                                         // off screen until the loop restarts\n    }\n    W.sk.setProperty(ui.prop.MORE, { x: pxv(Math.round(x)), y: pxv(Math.round(y)), src: pic });\n  };\n\n  const safe = () => { try { tick(); } catch (e) {} };\n  let id = null, pausedAt = 0;\n  const start = () => {\n    if (pausedAt) { t0 += Date.now() - pausedAt; pausedAt = 0; }\n    if (id === null) { try { id = setInterval(safe, MS); } catch (e) {} }\n    safe();\n  };\n  const stop = () => {\n    if (id !== null) { try { clearInterval(id); } catch (e) {} id = null; }\n    pausedAt = Date.now();\n  };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  safe();\n  start();\n}\n",
+  "optimizePng": 64
+}
