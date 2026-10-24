@@ -1,0 +1,212 @@
+{
+ "ryu": {
+  "idle": [
+   "idle_0.png",
+   "idle_1.png",
+   "idle_2.png",
+   "idle_3.png"
+  ],
+  "punch": [
+   "punch_0.png",
+   "punch_1.png"
+  ],
+  "punchH": [
+   "punchH_0.png",
+   "punchH_1.png",
+   "punchH_2.png"
+  ],
+  "crouchP": [
+   "crouchP_0.png",
+   "crouchP_1.png"
+  ],
+  "kickL": [
+   "kickL_0.png",
+   "kickL_1.png",
+   "kickL_2.png"
+  ],
+  "kickB": [
+   "kickB_0.png",
+   "kickB_1.png",
+   "kickB_2.png"
+  ],
+  "kickH": [
+   "kickH_0.png",
+   "kickH_1.png"
+  ],
+  "kickR": [
+   "kickR_0.png",
+   "kickR_1.png",
+   "kickR_2.png",
+   "kickR_3.png",
+   "kickR_4.png"
+  ],
+  "sweep": [
+   "sweep_0.png",
+   "sweep_1.png",
+   "sweep_2.png",
+   "sweep_3.png"
+  ],
+  "block": [
+   "block_0.png",
+   "block_1.png"
+  ],
+  "fire": [
+   "fire_0.png",
+   "fire_1.png",
+   "fire_2.png",
+   "fire_3.png"
+  ],
+  "shoryu": [
+   "shoryu_0.png",
+   "shoryu_1.png",
+   "shoryu_2.png",
+   "shoryu_3.png",
+   "shoryu_4.png",
+   "shoryu_5.png"
+  ],
+  "tatsu": [
+   "tatsu_0.png",
+   "tatsu_1.png",
+   "tatsu_2.png",
+   "tatsu_3.png",
+   "tatsu_4.png",
+   "tatsu_5.png"
+  ],
+  "hit": [
+   "hit_0.png",
+   "hit_1.png",
+   "hit_2.png",
+   "hit_3.png"
+  ],
+  "down": [
+   "down_0.png",
+   "down_1.png",
+   "down_2.png",
+   "down_3.png",
+   "down_4.png"
+  ],
+  "up": [
+   "up_0.png",
+   "up_1.png",
+   "up_2.png",
+   "up_3.png"
+  ],
+  "win": [
+   "win_0.png",
+   "win_1.png",
+   "win_2.png"
+  ]
+ },
+ "ken": {
+  "idle": [
+   "idle_0.png",
+   "idle_1.png",
+   "idle_2.png",
+   "idle_3.png"
+  ],
+  "punch": [
+   "punch_0.png",
+   "punch_1.png"
+  ],
+  "punchH": [
+   "punchH_0.png",
+   "punchH_1.png",
+   "punchH_2.png"
+  ],
+  "crouchP": [
+   "crouchP_0.png",
+   "crouchP_1.png"
+  ],
+  "kickL": [
+   "kickL_0.png",
+   "kickL_1.png",
+   "kickL_2.png"
+  ],
+  "kickB": [
+   "kickB_0.png",
+   "kickB_1.png",
+   "kickB_2.png"
+  ],
+  "kickH": [
+   "kickH_0.png",
+   "kickH_1.png"
+  ],
+  "kickR": [
+   "kickR_0.png",
+   "kickR_1.png",
+   "kickR_2.png",
+   "kickR_3.png",
+   "kickR_4.png"
+  ],
+  "sweep": [
+   "sweep_0.png",
+   "sweep_1.png",
+   "sweep_2.png",
+   "sweep_3.png"
+  ],
+  "block": [
+   "block_0.png",
+   "block_1.png"
+  ],
+  "fire": [
+   "fire_0.png",
+   "fire_1.png",
+   "fire_2.png",
+   "fire_3.png"
+  ],
+  "shoryu": [
+   "shoryu_0.png",
+   "shoryu_1.png",
+   "shoryu_2.png",
+   "shoryu_3.png",
+   "shoryu_4.png",
+   "shoryu_5.png"
+  ],
+  "tatsu": [
+   "tatsu_0.png",
+   "tatsu_1.png",
+   "tatsu_2.png",
+   "tatsu_3.png",
+   "tatsu_4.png",
+   "tatsu_5.png"
+  ],
+  "hit": [
+   "hit_0.png",
+   "hit_1.png",
+   "hit_2.png",
+   "hit_3.png"
+  ],
+  "down": [
+   "down_0.png",
+   "down_1.png",
+   "down_2.png",
+   "down_3.png",
+   "down_4.png"
+  ],
+  "up": [
+   "up_0.png",
+   "up_1.png",
+   "up_2.png",
+   "up_3.png"
+  ],
+  "win": [
+   "win_0.png",
+   "win_1.png",
+   "win_2.png"
+  ]
+ },
+ "cell": {
+  "ryu": {
+   "w": 262,
+   "h": 322,
+   "ax": 130,
+   "ay": 318
+  },
+  "ken": {
+   "w": 262,
+   "h": 322,
+   "ax": 132,
+   "ay": 318
+  }
+ }
+}

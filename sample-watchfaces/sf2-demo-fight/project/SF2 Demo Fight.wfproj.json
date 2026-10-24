@@ -1,0 +1,1626 @@
+{
+  "version": 1,
+  "name": "SF2 Demo Fight",
+  "device": "bip-6",
+  "appId": 2023129,
+  "vender": "dialcraft",
+  "description": "Street Fighter II attract-mode demo fight between Ryu and Ken: best of three rounds, every round generated from a seed, with hadouken, shoryuken and hurricane kicks.",
+  "font": "Orbitron",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gStage": "Stage",
+    "gFighters": "Fighters",
+    "gHud": "Health bars",
+    "gClock": "Clock",
+    "gClockAod": "Clock (AOD)",
+    "gBanners": "Banners",
+    "gFx": "Effects"
+  },
+  "elements": [
+    {
+      "id": "elmvmcbt9d699",
+      "kind": "IMG",
+      "name": "Stage",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gStage",
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sf2/bg.png"
+    },
+    {
+      "id": "elmvmcbt9d52l",
+      "kind": "IMG",
+      "name": "Ken",
+      "x": 126,
+      "y": 124,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFighters",
+      "alpha": 255,
+      "w": 262,
+      "h": 322,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/ken/hit_1.png",
+        "sf2/ken/idle_0.png",
+        "sf2/ken/idle_1.png",
+        "sf2/ken/idle_2.png",
+        "sf2/ken/idle_3.png",
+        "sf2/ken/punch_0.png",
+        "sf2/ken/punch_1.png",
+        "sf2/ken/punchH_0.png",
+        "sf2/ken/punchH_1.png",
+        "sf2/ken/punchH_2.png",
+        "sf2/ken/crouchP_0.png",
+        "sf2/ken/crouchP_1.png",
+        "sf2/ken/kickL_0.png",
+        "sf2/ken/kickL_1.png",
+        "sf2/ken/kickL_2.png",
+        "sf2/ken/kickB_0.png",
+        "sf2/ken/kickB_1.png",
+        "sf2/ken/kickB_2.png",
+        "sf2/ken/kickH_0.png",
+        "sf2/ken/kickH_1.png",
+        "sf2/ken/kickR_0.png",
+        "sf2/ken/kickR_1.png",
+        "sf2/ken/kickR_2.png",
+        "sf2/ken/kickR_3.png",
+        "sf2/ken/kickR_4.png",
+        "sf2/ken/sweep_0.png",
+        "sf2/ken/sweep_1.png",
+        "sf2/ken/sweep_2.png",
+        "sf2/ken/sweep_3.png",
+        "sf2/ken/tatsu_0.png",
+        "sf2/ken/tatsu_1.png",
+        "sf2/ken/tatsu_2.png",
+        "sf2/ken/tatsu_3.png",
+        "sf2/ken/tatsu_4.png",
+        "sf2/ken/tatsu_5.png",
+        "sf2/ken/shoryu_0.png",
+        "sf2/ken/shoryu_1.png",
+        "sf2/ken/shoryu_2.png",
+        "sf2/ken/shoryu_3.png",
+        "sf2/ken/shoryu_4.png",
+        "sf2/ken/shoryu_5.png",
+        "sf2/ken/block_0.png",
+        "sf2/ken/block_1.png",
+        "sf2/ken/fire_0.png",
+        "sf2/ken/fire_1.png",
+        "sf2/ken/fire_2.png",
+        "sf2/ken/fire_3.png",
+        "sf2/ken/hit_0.png",
+        "sf2/ken/hit_2.png",
+        "sf2/ken/hit_3.png",
+        "sf2/ken/down_0.png",
+        "sf2/ken/down_1.png",
+        "sf2/ken/down_2.png",
+        "sf2/ken/down_3.png",
+        "sf2/ken/down_4.png",
+        "sf2/ken/up_0.png",
+        "sf2/ken/up_1.png",
+        "sf2/ken/up_2.png",
+        "sf2/ken/up_3.png",
+        "sf2/ken/win_0.png",
+        "sf2/ken/win_1.png",
+        "sf2/ken/win_2.png"
+      ],
+      "handle": "ken"
+    },
+    {
+      "id": "elmvmcbt9d24e",
+      "kind": "IMG",
+      "name": "Ryu",
+      "x": 2,
+      "y": 124,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFighters",
+      "alpha": 255,
+      "w": 262,
+      "h": 322,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/ryu/punchH_2.png",
+        "sf2/ryu/idle_0.png",
+        "sf2/ryu/idle_1.png",
+        "sf2/ryu/idle_2.png",
+        "sf2/ryu/idle_3.png",
+        "sf2/ryu/punch_0.png",
+        "sf2/ryu/punch_1.png",
+        "sf2/ryu/punchH_0.png",
+        "sf2/ryu/punchH_1.png",
+        "sf2/ryu/crouchP_0.png",
+        "sf2/ryu/crouchP_1.png",
+        "sf2/ryu/kickL_0.png",
+        "sf2/ryu/kickL_1.png",
+        "sf2/ryu/kickL_2.png",
+        "sf2/ryu/kickB_0.png",
+        "sf2/ryu/kickB_1.png",
+        "sf2/ryu/kickB_2.png",
+        "sf2/ryu/kickH_0.png",
+        "sf2/ryu/kickH_1.png",
+        "sf2/ryu/kickR_0.png",
+        "sf2/ryu/kickR_1.png",
+        "sf2/ryu/kickR_2.png",
+        "sf2/ryu/kickR_3.png",
+        "sf2/ryu/kickR_4.png",
+        "sf2/ryu/sweep_0.png",
+        "sf2/ryu/sweep_1.png",
+        "sf2/ryu/sweep_2.png",
+        "sf2/ryu/sweep_3.png",
+        "sf2/ryu/tatsu_0.png",
+        "sf2/ryu/tatsu_1.png",
+        "sf2/ryu/tatsu_2.png",
+        "sf2/ryu/tatsu_3.png",
+        "sf2/ryu/tatsu_4.png",
+        "sf2/ryu/tatsu_5.png",
+        "sf2/ryu/shoryu_0.png",
+        "sf2/ryu/shoryu_1.png",
+        "sf2/ryu/shoryu_2.png",
+        "sf2/ryu/shoryu_3.png",
+        "sf2/ryu/shoryu_4.png",
+        "sf2/ryu/shoryu_5.png",
+        "sf2/ryu/block_0.png",
+        "sf2/ryu/block_1.png",
+        "sf2/ryu/fire_0.png",
+        "sf2/ryu/fire_1.png",
+        "sf2/ryu/fire_2.png",
+        "sf2/ryu/fire_3.png",
+        "sf2/ryu/hit_0.png",
+        "sf2/ryu/hit_1.png",
+        "sf2/ryu/hit_2.png",
+        "sf2/ryu/hit_3.png",
+        "sf2/ryu/down_0.png",
+        "sf2/ryu/down_1.png",
+        "sf2/ryu/down_2.png",
+        "sf2/ryu/down_3.png",
+        "sf2/ryu/down_4.png",
+        "sf2/ryu/up_0.png",
+        "sf2/ryu/up_1.png",
+        "sf2/ryu/up_2.png",
+        "sf2/ryu/up_3.png",
+        "sf2/ryu/win_0.png",
+        "sf2/ryu/win_1.png",
+        "sf2/ryu/win_2.png"
+      ],
+      "handle": "ryu"
+    },
+    {
+      "id": "elmvmcbt9d3qr",
+      "kind": "FILL_RECT",
+      "name": "Win RYU 1",
+      "x": 12,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 9,
+      "h": 9,
+      "color": "#ffd400",
+      "radius": 4,
+      "angle": 0,
+      "handle": "pip1"
+    },
+    {
+      "id": "elmvmcbt9d9e",
+      "kind": "FILL_RECT",
+      "name": "Win RYU 2",
+      "x": 25,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 9,
+      "h": 9,
+      "color": "#ffd400",
+      "radius": 4,
+      "angle": 0,
+      "handle": "pip2"
+    },
+    {
+      "id": "elmvmcbt9d67c",
+      "kind": "FILL_RECT",
+      "name": "Win KEN 1",
+      "x": 369,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 9,
+      "h": 9,
+      "color": "#ffd400",
+      "radius": 4,
+      "angle": 0,
+      "handle": "pip3"
+    },
+    {
+      "id": "elmvmcbt9d6v2",
+      "kind": "FILL_RECT",
+      "name": "Win KEN 2",
+      "x": 356,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 9,
+      "h": 9,
+      "color": "#ffd400",
+      "radius": 4,
+      "angle": 0,
+      "handle": "pip4"
+    },
+    {
+      "id": "elmvmcbt9d7o7",
+      "kind": "FILL_RECT",
+      "name": "Health RYU lost",
+      "x": 12,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 158,
+      "h": 18,
+      "color": "#f41c1c",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvmcbt9dhg",
+      "kind": "FILL_RECT",
+      "name": "Health KEN lost",
+      "x": 220,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 158,
+      "h": 18,
+      "color": "#f41c1c",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvmcbt9dto",
+      "kind": "FILL_RECT",
+      "name": "Health RYU",
+      "x": 56,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 114,
+      "h": 18,
+      "color": "#ffe600",
+      "radius": 0,
+      "angle": 0,
+      "handle": "hpL"
+    },
+    {
+      "id": "elmvmcbt9dnz",
+      "kind": "FILL_RECT",
+      "name": "Health KEN",
+      "x": 220,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 87,
+      "h": 18,
+      "color": "#ffe600",
+      "radius": 0,
+      "angle": 0,
+      "handle": "hpR"
+    },
+    {
+      "id": "elmvmcbt9d6r",
+      "kind": "STROKE_RECT",
+      "name": "Frame RYU",
+      "x": 10,
+      "y": 24,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 162,
+      "h": 22,
+      "color": "#0c0c0c",
+      "radius": 0,
+      "lineWidth": 2,
+      "angle": 0
+    },
+    {
+      "id": "elmvmcbt9d1jh",
+      "kind": "STROKE_RECT",
+      "name": "Frame KEN",
+      "x": 218,
+      "y": 24,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 162,
+      "h": 22,
+      "color": "#0c0c0c",
+      "radius": 0,
+      "lineWidth": 2,
+      "angle": 0
+    },
+    {
+      "id": "elmvmcbt9d2k7",
+      "kind": "IMG",
+      "name": "Name RYU",
+      "x": 12,
+      "y": 48,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 56,
+      "h": 18,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sf2/hud/name_ryu.png"
+    },
+    {
+      "id": "elmvmcbt9d3aw",
+      "kind": "IMG",
+      "name": "Name KEN",
+      "x": 318,
+      "y": 48,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 60,
+      "h": 18,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sf2/hud/name_ken.png"
+    },
+    {
+      "id": "elmvmcbt9d3dy",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 203,
+      "y": 140,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 4,
+      "images": [
+        "sf2/hud/digit_0.png",
+        "sf2/hud/digit_1.png",
+        "sf2/hud/digit_2.png",
+        "sf2/hud/digit_3.png",
+        "sf2/hud/digit_4.png",
+        "sf2/hud/digit_5.png",
+        "sf2/hud/digit_6.png",
+        "sf2/hud/digit_7.png",
+        "sf2/hud/digit_8.png",
+        "sf2/hud/digit_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvmcbt9d100",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 187,
+      "y": 155,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "w": 12,
+      "h": 30,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sf2/hud/colon.png"
+    },
+    {
+      "id": "elmvmcbt9d70c",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 56,
+      "y": 140,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 4,
+      "images": [
+        "sf2/hud/digit_0.png",
+        "sf2/hud/digit_1.png",
+        "sf2/hud/digit_2.png",
+        "sf2/hud/digit_3.png",
+        "sf2/hud/digit_4.png",
+        "sf2/hud/digit_5.png",
+        "sf2/hud/digit_6.png",
+        "sf2/hud/digit_7.png",
+        "sf2/hud/digit_8.png",
+        "sf2/hud/digit_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "RIGHT"
+    },
+    {
+      "id": "elmvmcbt9d6wj",
+      "kind": "IMG_TIME",
+      "name": "Minute AOD",
+      "x": 203,
+      "y": 197,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAod",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 4,
+      "images": [
+        "sf2/hud/digit_0.png",
+        "sf2/hud/digit_1.png",
+        "sf2/hud/digit_2.png",
+        "sf2/hud/digit_3.png",
+        "sf2/hud/digit_4.png",
+        "sf2/hud/digit_5.png",
+        "sf2/hud/digit_6.png",
+        "sf2/hud/digit_7.png",
+        "sf2/hud/digit_8.png",
+        "sf2/hud/digit_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvmcbt9d4kc",
+      "kind": "IMG",
+      "name": "Colon AOD",
+      "x": 187,
+      "y": 212,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAod",
+      "alpha": 255,
+      "w": 12,
+      "h": 30,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sf2/hud/colon.png"
+    },
+    {
+      "id": "elmvmcbt9d3e8",
+      "kind": "IMG_TIME",
+      "name": "Hour AOD",
+      "x": 56,
+      "y": 197,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAod",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 4,
+      "images": [
+        "sf2/hud/digit_0.png",
+        "sf2/hud/digit_1.png",
+        "sf2/hud/digit_2.png",
+        "sf2/hud/digit_3.png",
+        "sf2/hud/digit_4.png",
+        "sf2/hud/digit_5.png",
+        "sf2/hud/digit_6.png",
+        "sf2/hud/digit_7.png",
+        "sf2/hud/digit_8.png",
+        "sf2/hud/digit_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "RIGHT"
+    },
+    {
+      "id": "elmvmcbt9d52x",
+      "kind": "IMG",
+      "name": "Timer tens",
+      "x": 171,
+      "y": 47,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 24,
+      "h": 20,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/hud/timer_9.png",
+        "sf2/hud/timer_0.png",
+        "sf2/hud/timer_1.png",
+        "sf2/hud/timer_2.png",
+        "sf2/hud/timer_3.png",
+        "sf2/hud/timer_4.png",
+        "sf2/hud/timer_5.png",
+        "sf2/hud/timer_6.png",
+        "sf2/hud/timer_7.png",
+        "sf2/hud/timer_8.png"
+      ],
+      "handle": "tens"
+    },
+    {
+      "id": "elmvmcbt9d5jy",
+      "kind": "IMG",
+      "name": "Timer ones",
+      "x": 195,
+      "y": 47,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 24,
+      "h": 20,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/hud/timer_9.png",
+        "sf2/hud/timer_0.png",
+        "sf2/hud/timer_1.png",
+        "sf2/hud/timer_2.png",
+        "sf2/hud/timer_3.png",
+        "sf2/hud/timer_4.png",
+        "sf2/hud/timer_5.png",
+        "sf2/hud/timer_6.png",
+        "sf2/hud/timer_7.png",
+        "sf2/hud/timer_8.png"
+      ],
+      "handle": "ones"
+    },
+    {
+      "id": "elmvmcbt9d2gc",
+      "kind": "IMG",
+      "name": "KO small",
+      "x": 177,
+      "y": 24,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHud",
+      "alpha": 255,
+      "w": 36,
+      "h": 14,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/fx/empty.png",
+        "sf2/hud/ko_small.png"
+      ],
+      "handle": "koko"
+    },
+    {
+      "id": "elmvmcbt9d4en",
+      "kind": "IMG",
+      "name": "Round banner",
+      "x": 53,
+      "y": 98,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBanners",
+      "alpha": 255,
+      "w": 284,
+      "h": 40,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/fx/empty.png",
+        "sf2/hud/round_1.png",
+        "sf2/hud/round_2.png",
+        "sf2/hud/round_3.png"
+      ],
+      "handle": "round"
+    },
+    {
+      "id": "elmvmcbt9d1fg",
+      "kind": "IMG",
+      "name": "Win banner",
+      "x": 53,
+      "y": 98,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBanners",
+      "alpha": 255,
+      "w": 284,
+      "h": 40,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/fx/empty.png",
+        "sf2/hud/youwin.png"
+      ],
+      "handle": "youwin"
+    },
+    {
+      "id": "elmvmcbt9d6m7",
+      "kind": "IMG",
+      "name": "Fight banner",
+      "x": 100,
+      "y": 246,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBanners",
+      "alpha": 255,
+      "w": 189,
+      "h": 81,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/fx/empty.png",
+        "sf2/hud/fight.png"
+      ],
+      "handle": "fight"
+    },
+    {
+      "id": "elmvmcbt9d10d",
+      "kind": "IMG",
+      "name": "KO banner",
+      "x": 123,
+      "y": 50,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBanners",
+      "alpha": 255,
+      "w": 144,
+      "h": 56,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/fx/empty.png",
+        "sf2/hud/ko.png"
+      ],
+      "handle": "ko"
+    },
+    {
+      "id": "elmvmcbt9d6fi",
+      "kind": "IMG",
+      "name": "Hit spark",
+      "x": 208,
+      "y": 294,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFx",
+      "alpha": 255,
+      "w": 64,
+      "h": 60,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/fx/spark_1.png",
+        "sf2/fx/spark_0.png",
+        "sf2/fx/spark_2.png"
+      ],
+      "handle": "spark"
+    },
+    {
+      "id": "elmvmcbt9d5bn",
+      "kind": "IMG",
+      "name": "Hadouken",
+      "x": 158,
+      "y": 286,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFx",
+      "alpha": 255,
+      "w": 76,
+      "h": 80,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "images": [
+        "sf2/fx/empty.png",
+        "sf2/fx/orb_0.png",
+        "sf2/fx/orb_1.png"
+      ],
+      "handle": "orb"
+    }
+  ],
+  "images": [
+    {
+      "name": "sf2/bg.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sf2/ryu/punchH_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/idle_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/idle_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/idle_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/idle_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/punch_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/punch_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/punchH_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/punchH_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/crouchP_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/crouchP_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickL_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickL_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickL_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickB_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickB_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickB_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickH_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickH_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickR_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickR_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickR_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickR_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/kickR_4.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/sweep_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/sweep_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/sweep_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/sweep_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/tatsu_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/tatsu_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/tatsu_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/tatsu_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/tatsu_4.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/tatsu_5.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/shoryu_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/shoryu_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/shoryu_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/shoryu_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/shoryu_4.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/shoryu_5.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/block_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/block_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/fire_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/fire_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/fire_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/fire_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/hit_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/hit_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/hit_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/hit_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/down_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/down_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/down_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/down_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/down_4.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/up_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/up_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/up_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/up_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/win_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/win_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ryu/win_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/hit_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/idle_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/idle_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/idle_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/idle_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/punch_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/punch_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/punchH_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/punchH_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/punchH_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/crouchP_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/crouchP_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickL_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickL_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickL_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickB_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickB_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickB_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickH_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickH_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickR_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickR_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickR_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickR_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/kickR_4.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/sweep_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/sweep_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/sweep_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/sweep_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/tatsu_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/tatsu_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/tatsu_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/tatsu_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/tatsu_4.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/tatsu_5.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/shoryu_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/shoryu_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/shoryu_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/shoryu_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/shoryu_4.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/shoryu_5.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/block_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/block_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/fire_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/fire_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/fire_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/fire_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/hit_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/hit_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/hit_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/down_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/down_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/down_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/down_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/down_4.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/up_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/up_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/up_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/up_3.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/win_0.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/win_1.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/ken/win_2.png",
+      "width": 262,
+      "height": 322
+    },
+    {
+      "name": "sf2/hud/digit_0.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_0.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_1.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_1.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_2.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_2.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_3.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_3.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_4.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_4.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_5.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_5.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_6.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_6.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_7.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_7.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_8.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_8.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/digit_9.png",
+      "width": 60,
+      "height": 68
+    },
+    {
+      "name": "sf2/hud/timer_9.png",
+      "width": 24,
+      "height": 20
+    },
+    {
+      "name": "sf2/hud/colon.png",
+      "width": 12,
+      "height": 30
+    },
+    {
+      "name": "sf2/hud/name_ryu.png",
+      "width": 56,
+      "height": 18
+    },
+    {
+      "name": "sf2/hud/name_ken.png",
+      "width": 60,
+      "height": 18
+    },
+    {
+      "name": "sf2/hud/ko.png",
+      "width": 144,
+      "height": 56
+    },
+    {
+      "name": "sf2/hud/ko_small.png",
+      "width": 36,
+      "height": 14
+    },
+    {
+      "name": "sf2/hud/round_1.png",
+      "width": 284,
+      "height": 40
+    },
+    {
+      "name": "sf2/hud/round_2.png",
+      "width": 300,
+      "height": 40
+    },
+    {
+      "name": "sf2/hud/round_3.png",
+      "width": 300,
+      "height": 40
+    },
+    {
+      "name": "sf2/hud/youwin.png",
+      "width": 284,
+      "height": 40
+    },
+    {
+      "name": "sf2/hud/fight.png",
+      "width": 189,
+      "height": 81
+    },
+    {
+      "name": "sf2/fx/spark_1.png",
+      "width": 64,
+      "height": 60
+    },
+    {
+      "name": "sf2/fx/spark_0.png",
+      "width": 64,
+      "height": 60
+    },
+    {
+      "name": "sf2/fx/spark_2.png",
+      "width": 64,
+      "height": 60
+    },
+    {
+      "name": "sf2/fx/orb_0.png",
+      "width": 76,
+      "height": 80
+    },
+    {
+      "name": "sf2/fx/orb_1.png",
+      "width": 76,
+      "height": 80
+    },
+    {
+      "name": "sf2/fx/empty.png",
+      "width": 4,
+      "height": 4
+    }
+  ],
+  "savePath": null,
+  "userCode": "\n{\n  // Attract-mode demo: two CPU fighters, every round generated from a seed, best of three.\n  // 0 = Ryu (left), 1 = Ken (right). The clock is the real time; the bars show the round's HP.\n  const MS = 55, BARW = 158, RYU_L = [2, 124], KEN_L = [126, 124];\n  const RY = {\"idle\": [1, 2, 3, 4], \"punch\": [5, 6], \"punchH\": [7, 8, 0], \"crouchP\": [9, 10], \"kickL\": [11, 12, 13], \"kickB\": [14, 15, 16], \"kickH\": [17, 18], \"kickR\": [19, 20, 21, 22, 23], \"sweep\": [24, 25, 26, 27], \"tatsu\": [28, 29, 30, 31, 32, 33], \"shoryu\": [34, 35, 36, 37, 38, 39], \"block\": [40, 41], \"fire\": [42, 43, 44, 45], \"hit\": [46, 47, 48, 49], \"down\": [50, 51, 52, 53, 54], \"up\": [55, 56, 57, 58], \"win\": [59, 60, 61]};\n  const KN = {\"idle\": [1, 2, 3, 4], \"punch\": [5, 6], \"punchH\": [7, 8, 9], \"crouchP\": [10, 11], \"kickL\": [12, 13, 14], \"kickB\": [15, 16, 17], \"kickH\": [18, 19], \"kickR\": [20, 21, 22, 23, 24], \"sweep\": [25, 26, 27, 28], \"tatsu\": [29, 30, 31, 32, 33, 34], \"shoryu\": [35, 36, 37, 38, 39, 40], \"block\": [41, 42], \"fire\": [43, 44, 45, 46], \"hit\": [47, 0, 48, 49], \"down\": [50, 51, 52, 53, 54], \"up\": [55, 56, 57, 58], \"win\": [59, 60, 61]};\n\n  const mkClips = (M) => ({\n    idle:    { f: M.idle,    d: [200, 160, 200, 160], loop: 1 },\n    punch:   { f: M.punch,   d: [60, 90] },\n    punchH:  { f: M.punchH,  d: [70, 80, 120] },\n    crouchP: { f: M.crouchP, d: [80, 110] },\n    kickL:   { f: M.kickL,   d: [70, 90, 110] },\n    kickB:   { f: M.kickB,   d: [70, 80, 110] },\n    kickH:   { f: M.kickH,   d: [80, 120] },\n    kickR:   { f: M.kickR,   d: [70, 70, 70, 90, 120] },\n    sweep:   { f: M.sweep,   d: [80, 90, 90, 110] },\n    tatsu:   { f: M.tatsu,   d: [70, 70, 70, 70, 80, 100] },\n    shoryu:  { f: M.shoryu,  d: [70, 70, 80, 80, 90, 110] },\n    block:   { f: M.block,   d: [110, 240] },\n    fire:    { f: M.fire,    d: [60, 70, 70, 180] },\n    hit:     { f: M.hit,     d: [60, 80, 60, 90] },\n    down:    { f: M.down,    d: [80, 80, 90, 100, 140] },\n    up:      { f: M.up,      d: [90, 90, 90, 110] },\n    win:     { f: M.win,     d: [150, 150, 170] },\n  });\n  const CL = [mkClips(RY), mkClips(KN)];\n  const DUR = (side, k) => { let s = 0; for (const d of CL[side][k].d) s += d; return s; };\n  const HIT_T = DUR(0, 'hit'), BLOCK_T = DUR(0, 'block'), DOWN_T = DUR(0, 'down'), UP_T = DUR(0, 'up');\n\n  // every attack: when it connects (ms after the clip starts), damage, lunge, knockdown, weight\n  const MOVES = [\n    { k: 'punch',   hit: 60,  dmg: 9,  lunge: 8,  w: 3 },\n    { k: 'punchH',  hit: 150, dmg: 13, lunge: 12, w: 3 },\n    { k: 'crouchP', hit: 80,  dmg: 10, lunge: 6,  w: 2 },\n    { k: 'kickL',   hit: 120, dmg: 11, lunge: 8,  w: 4 },\n    { k: 'kickB',   hit: 140, dmg: 12, lunge: 8,  w: 4 },\n    { k: 'kickH',   hit: 80,  dmg: 13, lunge: 7,  w: 4 },\n    { k: 'kickR',   hit: 250, dmg: 15, lunge: 10, w: 5 },\n    { k: 'sweep',   hit: 90,  dmg: 12, lunge: 8,  w: 3, knock: 1 },\n    { k: 'tatsu',   hit: 150, dmg: 13, lunge: 6,  w: 4 },\n    { k: 'shoryu',  hit: 200, dmg: 15, lunge: 4,  w: 4, knock: 1 },\n    { k: 'fire',    hit: 500, dmg: 16, lunge: 4,  w: 2, knock: 1, orb: 1 },\n  ];\n  const POOL = [];\n  MOVES.forEach((m, i) => { for (let k = 0; k < m.w; k++) POOL.push(i); });\n\n  // ---- seeded PRNG (LCG): a new seed every round, so the demo never repeats ----\n  let seed = (Date.now() ^ 0x9e3779b9) >>> 0;\n  let rngState = seed;\n  const rnd = () => { rngState = (rngState * 1664525 + 1013904223) >>> 0; return rngState / 4294967296; };\n  const pickMove = (last) => {\n    let i = POOL[Math.floor(rnd() * POOL.length)];\n    for (let n = 0; n < 3 && i === last; n++) i = POOL[Math.floor(rnd() * POOL.length)];\n    return i;\n  };\n\n  const buildPlan = () => {\n    const winner = rnd() < 0.5 ? 0 : 1, loser = 1 - winner;   // the round's winner is drawn first\n    const beats = [];\n    let hp = [100, 100], t = 820, ko = null;\n    let atk = rnd() < 0.5 ? 0 : 1;\n    const lastMove = [-1, -1];\n    for (let n = 0; n < 30 && ko === null; n++) {\n      let who = atk;\n      if (hp[loser] <= 28 && rnd() < 0.7) who = winner;        // go for the finish\n      else if (rnd() < 0.3) who = 1 - atk;\n      const mi = pickMove(lastMove[who]);\n      lastMove[who] = mi;\n      const mv = MOVES[mi];\n      const def = 1 - who;\n      const blocked = rnd() < 0.22;\n      let dmg = blocked ? 0 : mv.dmg;\n      if (who !== winner) dmg = Math.round(dmg * 0.5);         // the loser only chips away\n      hp[def] = Math.max(0, hp[def] - dmg);\n      if (def === winner) hp[winner] = Math.max(1, hp[winner]);\n      const start = t, hitT = start + mv.hit;\n      const react = blocked ? 'block' : (mv.knock ? 'down' : 'hit');\n      beats.push({\n        atk: who, k: mv.k, start: start, hitT: hitT, lunge: mv.lunge, orb: mv.orb || 0,\n        react: react, hp: [hp[0], hp[1]],\n      });\n      if (hp[loser] <= 0) { ko = hitT; break; }\n      const rd = react === 'down' ? DOWN_T + UP_T : react === 'block' ? BLOCK_T : HIT_T;\n      t = hitT + rd + 150 + Math.floor(rnd() * 220);\n      atk = def;\n    }\n    if (ko === null) {                                          // ran long: the winner finishes it\n      const mi = pickMove(-1), mv = MOVES[mi];\n      hp[loser] = 0;\n      const start = t, hitT = start + mv.hit;\n      beats.push({ atk: winner, k: mv.k, start: start, hitT: hitT, lunge: mv.lunge, orb: mv.orb || 0, react: 'down', hp: [hp[0], hp[1]] });\n      ko = hitT;\n    }\n    return { beats: beats, ko: ko, winner: winner, end: ko + 2600 };\n  };\n\n  let P = null, t0 = 0, hpRd = 100, hpKd = 100, matchWins = [0, 0], phase = 0, endT = 0, roundNo = 1;\n  const newRound = (now) => {\n    seed = (seed * 1664525 + 1013904223 + (now & 0xffff)) >>> 0;\n    rngState = seed;\n    P = buildPlan();\n    t0 = now;\n    hpRd = 100; hpKd = 100;\n    roundNo = matchWins[0] + matchWins[1] + 1;\n  };\n\n  const frameOf = (side, clip, el) => {\n    const c = CL[side][clip];\n    let total = 0; for (const d of c.d) total += d;\n    const x = c.loop ? el % total : el;\n    let acc = 0;\n    for (let i = 0; i < c.d.length; i++) { if (x < acc + c.d[i]) return c.f[i]; acc += c.d[i]; }\n    return c.f[c.f.length - 1];\n  };\n\n  const stateOf = (side, t, b) => {\n    if (P.ko !== null && t >= P.ko + 500) {\n      return side === P.winner ? { clip: 'win', el: t - P.ko - 500 } : { clip: 'down', el: 9999 };\n    }\n    if (b) {\n      if (b.atk === side && t >= b.start) {\n        const tot = DUR(side, b.k);\n        if (t < b.start + tot) return { clip: b.k, el: t - b.start };\n        return { clip: 'idle', el: t - b.start - tot };\n      }\n      if (b.atk !== side && t >= b.hitT) {\n        const e2 = t - b.hitT;\n        if (b.react === 'block') return e2 < BLOCK_T ? { clip: 'block', el: e2 } : { clip: 'idle', el: e2 - BLOCK_T };\n        if (b.react === 'hit') return e2 < HIT_T ? { clip: 'hit', el: e2 } : { clip: 'idle', el: e2 - HIT_T };\n        if (e2 < DOWN_T) return { clip: 'down', el: e2 };\n        if (e2 < DOWN_T + UP_T) return { clip: 'up', el: e2 - DOWN_T };\n        return { clip: 'idle', el: e2 - DOWN_T - UP_T };\n      }\n    }\n    return { clip: 'idle', el: t };\n  };\n\n  const pips = [[W.pip1, 12], [W.pip2, 25], [W.pip3, 369], [W.pip4, 356]];\n\n  const tick = () => {\n    const now = Date.now();\n    if (!P) newRound(now);\n    let t = now - t0;\n    if (phase === 1) {\n      if (now - endT > 3000) { phase = 0; matchWins = [0, 0]; newRound(now); t = 0; }\n    } else if (t >= P.end) {\n      matchWins[P.winner]++;\n      if (matchWins[P.winner] >= 2) { phase = 1; endT = now; }   // match won: hold the win screen\n      else { newRound(now); t = 0; }\n    }\n    let b = null, prevB = null;\n    for (let i = 0; i < P.beats.length; i++) { if (t >= P.beats[i].start) { prevB = b; b = P.beats[i]; } else break; }\n\n    // health: the target only changes when the blow lands\n    const hpSrc = b ? (t >= b.hitT ? b : (prevB || b)) : null;\n    const hp = hpSrc ? hpSrc.hp : [100, 100];\n    hpRd += (hp[0] - hpRd) * 0.3; hpKd += (hp[1] - hpKd) * 0.3;\n    const wl = Math.round(BARW * hpRd / 100), wk = Math.round(BARW * hpKd / 100);\n    W.hpL.setProperty(ui.prop.MORE, { x: pxv(12 + BARW - wl), y: pxv(26), w: pxv(wl), h: pxv(18) });\n    W.hpR.setProperty(ui.prop.MORE, { x: pxv(220), y: pxv(26), w: pxv(wk), h: pxv(18) });\n\n    // round timer 99 → 0, hitting 0 on the KO; the little KO takes its place\n    const left = Math.max(0, Math.min(99, Math.round(99 * (1 - t / Math.max(1, P.ko)))));\n    W.tens.setProperty(ui.prop.MORE, { x: pxv(171), y: pxv(P.ko !== null && t >= P.ko ? -40 : 47), src: F.tens[(Math.floor(left / 10) + 1) % 10] });\n    W.ones.setProperty(ui.prop.MORE, { x: pxv(195), y: pxv(P.ko !== null && t >= P.ko ? -40 : 47), src: F.ones[(left % 10 + 1) % 10] });\n    W.koko.setProperty(ui.prop.MORE, { x: pxv(177), y: pxv(24), src: F.koko[P.ko !== null && t >= P.ko ? 1 : 0] });\n\n    // round win pips\n    for (let i = 0; i < 4; i++) {\n      const on = i < 2 ? matchWins[0] > i : matchWins[1] > (i - 2);\n      pips[i][0].setProperty(ui.prop.MORE, { x: pxv(pips[i][1]), y: pxv(on ? 72 : 26), w: pxv(9), h: pxv(9) });\n    }\n\n    // fighters\n    for (const side of [0, 1]) {\n      const st = stateOf(side, t, b);\n      let dx = 0;\n      if (b && b.atk === side && t >= b.start && t < b.start + DUR(side, b.k)) dx = side === 0 ? b.lunge : -b.lunge;\n      if (b && b.atk !== side) {\n        const dt = t - b.hitT;\n        if (dt >= 0 && dt < 200) dx = (side === 0 ? -1 : 1) * Math.round(12 * (1 - dt / 200));\n      }\n      const base = side === 0 ? RYU_L : KEN_L;\n      const w = side === 0 ? W.ryu : W.ken;\n      const pics = side === 0 ? F.ryu : F.ken;\n      w.setProperty(ui.prop.MORE, { x: pxv(base[0] + dx), y: pxv(base[1]), src: pics[frameOf(side, st.clip, st.el)] });\n    }\n\n    // hit spark\n    let sparkAt = null;\n    if (b && t >= b.hitT && t < b.hitT + 180) sparkAt = b.atk === 0 ? [236, 286] : [150, 286];\n    if (sparkAt) {\n      W.spark.setProperty(ui.prop.MORE, { x: pxv(sparkAt[0]), y: pxv(sparkAt[1]),\n        src: F.spark[[1, 0, 2][Math.min(2, Math.floor((t - b.hitT) / 60))]] });\n    } else W.spark.setProperty(ui.prop.MORE, { x: pxv(-200), y: pxv(-200), src: F.spark[0] });\n\n    // hadouken: leaves the thrower's hands and lands on the hit frame\n    let ox = -300, oy = -300, of = 0;\n    if (b && b.orb && t >= b.hitT - 200 && t < b.hitT) {\n      const k = (t - (b.hitT - 200)) / 200;\n      const to = b.atk === 0 ? 212 : 112;\n      ox = Math.round(158 + (to - 158) * k);\n      oy = 286;\n      of = 1 + (Math.floor((t - (b.hitT - 200)) / 70) % 2);\n    }\n    W.orb.setProperty(ui.prop.MORE, { x: pxv(ox), y: pxv(oy), src: F.orb[of] });\n\n    // banners: ROUND n → FIGHT!, the big KO on a knockout, YOU WIN when the match is won\n    const koNow = P.ko !== null && t >= P.ko;\n    W.round.setProperty(ui.prop.MORE, { x: pxv(53), y: pxv(98), src: F.round[!koNow && t < 800 ? Math.min(3, roundNo) : 0] });\n    W.fight.setProperty(ui.prop.MORE, { x: pxv(100), y: pxv(246), src: F.fight[!koNow && t >= 800 && t < 1500 ? 1 : 0] });\n    W.ko.setProperty(ui.prop.MORE, { x: pxv(123), y: pxv(50), src: F.ko[koNow && phase === 0 ? 1 : 0] });\n    W.youwin.setProperty(ui.prop.MORE, { x: pxv(53), y: pxv(98), src: F.youwin[phase === 1 ? 1 : 0] });\n  };\n\n  // the animation only runs while the face is on screen: pause_call clears the\n  // interval, resume_call starts it again and continues where it stopped\n  let id = null, pausedAt = 0;\n  const safe = () => { try { tick(); } catch (e) {} };\n  const start = () => {\n    if (pausedAt) { t0 += Date.now() - pausedAt; pausedAt = 0; }\n    if (id === null) { try { id = setInterval(safe, MS); } catch (e) {} }\n    safe();\n  };\n  const stop = () => {\n    if (id !== null) { try { clearInterval(id); } catch (e) {} id = null; }\n    pausedAt = Date.now();\n  };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  safe();\n  start();\n}\n",
+  "optimizePng": 32
+}
