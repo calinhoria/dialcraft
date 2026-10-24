@@ -91,7 +91,13 @@ AOD_CELL = digit_set('aod', 150, 112)
 
 # ---------------------------------------------------------------- particles --
 def particle_frame(sim):
-    """Same maths as wf.render, but as an RGBA overlay instead of compositing."""
+    """The concept's water, as an alpha overlay (rgb + alpha) instead of a composite.
+
+    The concept renders ``SCENE*(1-a) + wc*a`` and then *adds* the droplets and the
+    mist. Painting that as one picture over live digits only works if the glow is
+    folded in as soft alpha — doing it as opaque colour turned the mist into white
+    blobs over the numbers.
+    """
     x, y, vx, vy, kind = sim.x * S, sim.y * S, sim.vx * S, sim.vy * S, sim.kind
     xs, ys, ws = [], [], []
     for j in range(11):
@@ -114,16 +120,21 @@ def particle_frame(sim):
     deep = np.array([0.42, 0.72, 0.88], np.float32)
     light = np.array([0.95, 1.0, 1.0], np.float32)
     wc = deep * (1 - depth[..., None]) + light * depth[..., None] * 0.9
-    wc = wc + spec[..., None] * 0.55 + foam[..., None] * 0.55
+    wc = np.clip(wc + spec[..., None] * 0.55 + foam[..., None] * 0.55, 0, 1)
     a = np.clip(alpha * 0.92 + foam * 0.55 * alpha, 0, 1)
+    # sparkles and mist, the two things the concept adds on top
     dd = wf.gblur(Dd, 1.0)
-    wc = wc + (np.clip(dd * 1.1, 0, 1) * 0.65)[..., None] * np.array([0.8, 0.95, 1.0], np.float32)
+    drop = (np.clip(dd * 1.1, 0, 1) * 0.65)[..., None] * np.array([0.8, 0.95, 1.0], np.float32)
     mist = np.asarray(Image.fromarray((np.clip(Dd * 40, 0, 255)).astype(np.uint8)).resize((W // 4, H // 4), Image.BILINEAR), np.float32) / 255
     mist = wf.gblur(mist, 6.0)
     mist = np.asarray(Image.fromarray((np.clip(mist, 0, 1) * 255).astype(np.uint8)).resize((W, H), Image.BICUBIC), np.float32) / 255
-    wc = wc + (mist * 0.9)[..., None] * np.array([0.55, 0.75, 0.85], np.float32)
-    rgb = np.clip(wc, 0, 1)
-    al = np.clip(a + mist * 0.35, 0, 1)
+    add = drop + mist[..., None] * 0.9 * np.array([0.55, 0.75, 0.85], np.float32)
+    # fold the glow in as alpha that never goes opaque: the digits stay readable
+    lum = np.clip(add.max(axis=-1) * 0.8, 0, 0.5)
+    col = add / np.maximum(add.max(axis=-1, keepdims=True), 1e-3)
+    col = np.clip(col * 0.92 + 0.06, 0, 1)
+    al = np.clip(a + lum * (1 - a), 0, 1)
+    rgb = np.clip((wc * a[..., None] + col * lum[..., None]) / np.maximum(al[..., None], 1e-4), 0, 1)
     rgba = np.dstack([rgb * 255, al * 255]).astype(np.uint8)
     return Image.fromarray(rgba, 'RGBA').resize((SW, SH), Image.LANCZOS)
 

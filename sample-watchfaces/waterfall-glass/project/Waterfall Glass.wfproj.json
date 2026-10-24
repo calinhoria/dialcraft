@@ -16,7 +16,7 @@
   },
   "elements": [
     {
-      "id": "elmvmqvzm46ea",
+      "id": "elmvmtct2j5xi",
       "kind": "IMG",
       "name": "Waterfall",
       "x": 0,
@@ -34,7 +34,7 @@
       "src": "wf/bg.png"
     },
     {
-      "id": "elmvmqvzm464y",
+      "id": "elmvmtct2j3gl",
       "kind": "IMG_TIME",
       "name": "Minute Main",
       "x": 79,
@@ -70,7 +70,7 @@
       "alignH": "LEFT"
     },
     {
-      "id": "elmvmqvzm46k4",
+      "id": "elmvmtct2j2fq",
       "kind": "IMG_TIME",
       "name": "Hour Main",
       "x": 79,
@@ -106,7 +106,7 @@
       "alignH": "LEFT"
     },
     {
-      "id": "elmvmqvzm44ry",
+      "id": "elmvmtct2j29z",
       "kind": "IMG",
       "name": "Spray",
       "x": 0,
@@ -138,7 +138,7 @@
       "handle": "spray"
     },
     {
-      "id": "elmvmqvzm4687",
+      "id": "elmvmtct2jqz",
       "kind": "IMG_WEEK",
       "name": "Weekday",
       "x": 73,
@@ -159,7 +159,7 @@
       ]
     },
     {
-      "id": "elmvmqvzm4pe",
+      "id": "elmvmtct2j5la",
       "kind": "IMG",
       "name": "Dot",
       "x": 106,
@@ -177,7 +177,7 @@
       "src": "wf/ui/dot.png"
     },
     {
-      "id": "elmvmqvzm45o9",
+      "id": "elmvmtct2j2n5",
       "kind": "IMG_DATE",
       "name": "Day",
       "x": 115,
@@ -208,7 +208,7 @@
       "alignH": "LEFT"
     },
     {
-      "id": "elmvmqvzm42yg",
+      "id": "elmvmtct2j1vo",
       "kind": "IMG_DATE",
       "name": "Month",
       "x": 137,
@@ -240,7 +240,7 @@
       "isCharacter": true
     },
     {
-      "id": "elmvmqvzm44lk",
+      "id": "elmvmtct2j2lb",
       "kind": "IMG",
       "name": "Heart icon",
       "x": 181,
@@ -258,7 +258,7 @@
       "src": "wf/ui/heart.png"
     },
     {
-      "id": "elmvmqvzm45wi",
+      "id": "elmvmtct2j3ci",
       "kind": "TEXT_IMG",
       "name": "Heart rate",
       "x": 197,
@@ -289,7 +289,7 @@
       "w": 27
     },
     {
-      "id": "elmvmqvzm44q1",
+      "id": "elmvmtct2j526",
       "kind": "IMG",
       "name": "BPM label",
       "x": 228,
@@ -307,7 +307,7 @@
       "src": "wf/ui/bpm.png"
     },
     {
-      "id": "elmvmqvzm42l0",
+      "id": "elmvmtct2j3p8",
       "kind": "IMG",
       "name": "Step icon",
       "x": 264,
@@ -325,7 +325,7 @@
       "src": "wf/ui/foot.png"
     },
     {
-      "id": "elmvmqvzm4qy",
+      "id": "elmvmtct2j351",
       "kind": "TEXT_IMG",
       "name": "Steps",
       "x": 281,
@@ -356,7 +356,7 @@
       "w": 45
     },
     {
-      "id": "elmvmqvzm43i4",
+      "id": "elmvmtct2j4xa",
       "kind": "IMG_TIME",
       "name": "Minute AOD",
       "x": 126,
@@ -392,7 +392,7 @@
       "alignH": "LEFT"
     },
     {
-      "id": "elmvmqvzm41iz",
+      "id": "elmvmtct2j6ad",
       "kind": "IMG_TIME",
       "name": "Hour AOD",
       "x": 126,

@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_Main_464y = [
+const img_Minute_Main_j3gl = [
   A('wf/digits/min_0.png'),
   A('wf/digits/min_1.png'),
   A('wf/digits/min_2.png'),
@@ -27,7 +27,7 @@ const img_Minute_Main_464y = [
   A('wf/digits/min_9.png'),
 ]
 
-const img_Hour_Main_46k4 = [
+const img_Hour_Main_j2fq = [
   A('wf/digits/hour_0.png'),
   A('wf/digits/hour_1.png'),
   A('wf/digits/hour_2.png'),
@@ -40,7 +40,7 @@ const img_Hour_Main_46k4 = [
   A('wf/digits/hour_9.png'),
 ]
 
-const img_Weekday_4687 = [
+const img_Weekday_2jqz = [
   A('wf/ui/day_0.png'),
   A('wf/ui/day_1.png'),
   A('wf/ui/day_2.png'),
@@ -50,7 +50,7 @@ const img_Weekday_4687 = [
   A('wf/ui/day_6.png'),
 ]
 
-const img_Day_45o9 = [
+const img_Day_j2n5 = [
   A('wf/ui/num_0.png'),
   A('wf/ui/num_1.png'),
   A('wf/ui/num_2.png'),
@@ -63,7 +63,7 @@ const img_Day_45o9 = [
   A('wf/ui/num_9.png'),
 ]
 
-const img_Month_42yg = [
+const img_Month_j1vo = [
   A('wf/ui/month_0.png'),
   A('wf/ui/month_1.png'),
   A('wf/ui/month_2.png'),
@@ -78,7 +78,7 @@ const img_Month_42yg = [
   A('wf/ui/month_11.png'),
 ]
 
-const img_Minute_AOD_43i4 = [
+const img_Minute_AOD_j4xa = [
   A('wf/digits/aod_0.png'),
   A('wf/digits/aod_1.png'),
   A('wf/digits/aod_2.png'),
@@ -117,7 +117,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_464y,
+      minute_array: img_Minute_Main_j3gl,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -129,7 +129,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Main_46k4,
+      hour_array: img_Hour_Main_j2fq,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -151,9 +151,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(73),
       y: px(411),
-      week_en: img_Weekday_4687,
-      week_sc: img_Weekday_4687,
-      week_tc: img_Weekday_4687,
+      week_en: img_Weekday_2jqz,
+      week_sc: img_Weekday_2jqz,
+      week_tc: img_Weekday_2jqz,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -175,9 +175,9 @@ WatchFace({
       day_space: px(0),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_45o9,
-      day_sc_array: img_Day_45o9,
-      day_tc_array: img_Day_45o9,
+      day_en_array: img_Day_j2n5,
+      day_sc_array: img_Day_j2n5,
+      day_tc_array: img_Day_j2n5,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -190,9 +190,9 @@ WatchFace({
       month_align: ui.align.LEFT,
       month_follow: 0,
       month_is_character: true,
-      month_en_array: img_Month_42yg,
-      month_sc_array: img_Month_42yg,
-      month_tc_array: img_Month_42yg,
+      month_en_array: img_Month_j1vo,
+      month_sc_array: img_Month_j1vo,
+      month_tc_array: img_Month_j1vo,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -212,7 +212,7 @@ WatchFace({
       y: px(411),
       w: px(27),
       type: ui.data_type.HEART,
-      font_array: img_Day_45o9,
+      font_array: img_Day_j2n5,
       align_h: ui.align.RIGHT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -243,7 +243,7 @@ WatchFace({
       y: px(411),
       w: px(45),
       type: ui.data_type.STEP,
-      font_array: img_Day_45o9,
+      font_array: img_Day_j2n5,
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -255,7 +255,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_AOD_43i4,
+      minute_array: img_Minute_AOD_j4xa,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -267,7 +267,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Minute_AOD_43i4,
+      hour_array: img_Minute_AOD_j4xa,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
