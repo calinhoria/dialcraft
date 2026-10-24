@@ -1,0 +1,1496 @@
+{
+  "version": 1,
+  "name": "Candy Pop",
+  "device": "bip-6",
+  "appId": 2711271,
+  "vender": "dialcraft",
+  "description": "Playful pink and yellow time over confetti, with bright icon pills for steps, heart rate, battery, temperature and sunrise / sunset.",
+  "font": "Baloo 2",
+  "language": "en-US",
+  "fonts": [
+    {
+      "name": "baloo-2-800.ttf",
+      "family": "Baloo 2"
+    }
+  ],
+  "groups": {
+    "gmvmllsnh89": "Clock",
+    "gmvmllsqz74": "Sunrise / sunset",
+    "gmvmlltab1u": "Clock AOD",
+    "gDate": "Date",
+    "gSteps": "Steps",
+    "gHeartrate": "Heart rate",
+    "gTemperature": "Temperature",
+    "gBattery": "Battery"
+  },
+  "elements": [
+    {
+      "id": "elmvmllslv4vb",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#17082a",
+      "radius": 0,
+      "angle": 0,
+      "layoutInfo": {
+        "cx": 195,
+        "pills": [
+          [
+            [
+              19,
+              261,
+              172,
+              44
+            ],
+            [
+              "Steps",
+              "Steps icon"
+            ]
+          ],
+          [
+            [
+              199,
+              261,
+              172,
+              44
+            ],
+            [
+              "Heart rate",
+              "Heart rate icon"
+            ]
+          ],
+          [
+            [
+              19,
+              315,
+              172,
+              44
+            ],
+            [
+              "Battery",
+              "Battery level"
+            ]
+          ],
+          [
+            [
+              199,
+              315,
+              172,
+              44
+            ],
+            [
+              "Temperature",
+              "Temperature icon"
+            ]
+          ],
+          [
+            [
+              75,
+              369,
+              240,
+              44
+            ],
+            [
+              "Sun time",
+              "Sun time icon"
+            ]
+          ],
+          [
+            [
+              127,
+              199,
+              136,
+              40
+            ],
+            [
+              "Weekday",
+              "Day"
+            ]
+          ]
+        ],
+        "stack": [
+          "Hour Main",
+          "Minute Main",
+          [
+            "Weekday",
+            "Day"
+          ]
+        ],
+        "aodStack": [
+          "Hour",
+          "Minute"
+        ]
+      }
+    },
+    {
+      "id": "elmvmllt9q76d",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene.png"
+    },
+    {
+      "id": "elmvmllsnh7ek",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 134,
+      "y": 109,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmllsnh89",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 98,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffd84d",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllsnhsg",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 127,
+      "y": 33,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmllsnh89",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 98,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ff6fb5",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmlltabwg",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 143,
+      "y": 115,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmlltab1u",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_9_0.png",
+        "font_9_1.png",
+        "font_9_2.png",
+        "font_9_3.png",
+        "font_9_4.png",
+        "font_9_5.png",
+        "font_9_6.png",
+        "font_9_7.png",
+        "font_9_8.png",
+        "font_9_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 84,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#a8588a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#a8588a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmlltab71x",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 137,
+      "y": 39,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmlltab1u",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_10_0.png",
+        "font_10_1.png",
+        "font_10_2.png",
+        "font_10_3.png",
+        "font_10_4.png",
+        "font_10_5.png",
+        "font_10_6.png",
+        "font_10_7.png",
+        "font_10_8.png",
+        "font_10_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 84,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#a8588a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#a8588a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllsnx66t",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 140,
+      "y": 201,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#17082a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllsok2he",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 201,
+      "y": 207,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#17082a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllsoq4hd",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 74,
+      "y": 270,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#17082a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllt2h2fa",
+      "kind": "IMG",
+      "name": "Steps icon",
+      "x": 40,
+      "y": 270,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_steps_17082a.png"
+    },
+    {
+      "id": "elmvmllsp47mm",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 279,
+      "y": 270,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#17082a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllt3t1fq",
+      "kind": "IMG",
+      "name": "Heart rate icon",
+      "x": 245,
+      "y": 269,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_heart_17082a.png"
+    },
+    {
+      "id": "elmvmllsq45v0",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 268,
+      "y": 324,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#17082a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllt6o5rl",
+      "kind": "IMG",
+      "name": "Temperature icon",
+      "x": 234,
+      "y": 324,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_thermo_17082a.png"
+    },
+    {
+      "id": "elmvmllspofp",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 86,
+      "y": 324,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#17082a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllt5a71r",
+      "kind": "IMG_LEVEL",
+      "name": "Battery level",
+      "x": 50,
+      "y": 330,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "images": [
+        "bat/bt17082a_0.png",
+        "bat/bt17082a_1.png",
+        "bat/bt17082a_2.png",
+        "bat/bt17082a_3.png",
+        "bat/bt17082a_4.png",
+        "bat/bt17082a_5.png",
+        "bat/bt17082a_6.png",
+        "bat/bt17082a_7.png",
+        "bat/bt17082a_8.png",
+        "bat/bt17082a_9.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "BATTERY",
+      "level": 0,
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      }
+    },
+    {
+      "id": "elmvmllsqd40e",
+      "kind": "TEXT_IMG",
+      "name": "Sun time",
+      "x": 160,
+      "y": 378,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmllsqz74",
+      "alpha": 255,
+      "dataType": "SUN_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "colon_2.png",
+      "negative": "",
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#17082a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmllt7t165",
+      "kind": "IMG",
+      "name": "Sun time icon",
+      "x": 126,
+      "y": 378,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmllsqz74",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_sun_17082a.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "colon.png",
+      "width": 10,
+      "height": 19
+    },
+    {
+      "name": "week_w1.png",
+      "width": 64,
+      "height": 38
+    },
+    {
+      "name": "week_w2.png",
+      "width": 64,
+      "height": 38
+    },
+    {
+      "name": "week_w3.png",
+      "width": 64,
+      "height": 38
+    },
+    {
+      "name": "week_w4.png",
+      "width": 64,
+      "height": 38
+    },
+    {
+      "name": "week_w5.png",
+      "width": 64,
+      "height": 38
+    },
+    {
+      "name": "week_w6.png",
+      "width": 64,
+      "height": 38
+    },
+    {
+      "name": "week_w7.png",
+      "width": 64,
+      "height": 38
+    },
+    {
+      "name": "bpm.png",
+      "width": 41,
+      "height": 22
+    },
+    {
+      "name": "percent.png",
+      "width": 29,
+      "height": 26
+    },
+    {
+      "name": "degree.png",
+      "width": 16,
+      "height": 26
+    },
+    {
+      "name": "negative.png",
+      "width": 15,
+      "height": 26
+    },
+    {
+      "name": "colon_2.png",
+      "width": 12,
+      "height": 26
+    },
+    {
+      "name": "sun_icon.png",
+      "width": 44,
+      "height": 34
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 63,
+      "height": 72
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 22,
+      "height": 25
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "ic_steps_17082a.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "ic_heart_17082a.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "bat/bt17082a_0.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_1.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_2.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_3.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_4.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_5.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_6.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_7.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_8.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "bat/bt17082a_9.png",
+      "width": 28,
+      "height": 15
+    },
+    {
+      "name": "font_9_0.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_1.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_2.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_3.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_4.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_5.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_6.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_7.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_8.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_9_9.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "ic_thermo_17082a.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "ic_sun_17082a.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "colon_3.png",
+      "width": 10,
+      "height": 19
+    },
+    {
+      "name": "font_10_0.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_1.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_2.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_3.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_4.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_5.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_6.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_7.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_8.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_10_9.png",
+      "width": 53,
+      "height": 61
+    }
+  ],
+  "savePath": null
+}

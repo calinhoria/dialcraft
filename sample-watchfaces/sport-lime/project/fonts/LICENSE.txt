@@ -1,0 +1,1 @@
+Big Shoulders Display (big-shoulders-display-800.ttf) - SIL Open Font License 1.1, from Fontsource (fonts.google.com); the latin and latin-ext subsets merged, so Romanian and other Latin-Extended letters are drawn from the font itself. Used only to draw the digit and weekday images; no font is shipped in the watchface.
