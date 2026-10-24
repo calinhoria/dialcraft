@@ -408,31 +408,41 @@ WatchFace({
     {
       // Attract-mode demo: two CPU fighters, every round generated from a seed, best of three.
       // 0 = Ryu (left), 1 = Ken (right). The clock is the real time; the bars show the round's HP.
-      const MS = 55, BARW = 158, RYU_L = [2, 124], KEN_L = [126, 124];
+      const MS = 100, BARW = 158, RYU_L = [2, 124], KEN_L = [126, 124];
       const RY = {"idle": [1, 2, 3, 4], "punch": [5, 6], "punchH": [7, 8, 0], "crouchP": [9, 10], "kickL": [11, 12, 13], "kickB": [14, 15, 16], "kickH": [17, 18], "kickR": [19, 20, 21, 22, 23], "sweep": [24, 25, 26, 27], "tatsu": [28, 29, 30, 31, 32, 33], "shoryu": [34, 35, 36, 37, 38, 39], "block": [40, 41], "fire": [42, 43, 44, 45], "hit": [46, 47, 48, 49], "down": [50, 51, 52, 53, 54], "up": [55, 56, 57, 58], "win": [59, 60, 61]};
       const KN = {"idle": [1, 2, 3, 4], "punch": [5, 6], "punchH": [7, 8, 9], "crouchP": [10, 11], "kickL": [12, 13, 14], "kickB": [15, 16, 17], "kickH": [18, 19], "kickR": [20, 21, 22, 23, 24], "sweep": [25, 26, 27, 28], "tatsu": [29, 30, 31, 32, 33, 34], "shoryu": [35, 36, 37, 38, 39, 40], "block": [41, 42], "fire": [43, 44, 45, 46], "hit": [47, 0, 48, 49], "down": [50, 51, 52, 53, 54], "up": [55, 56, 57, 58], "win": [59, 60, 61]};
 
-      const mkClips = (M) => ({
-        idle:    { f: M.idle,    d: [200, 160, 200, 160], loop: 1 },
-        punch:   { f: M.punch,   d: [60, 90] },
-        punchH:  { f: M.punchH,  d: [70, 80, 120] },
-        crouchP: { f: M.crouchP, d: [80, 110] },
-        kickL:   { f: M.kickL,   d: [70, 90, 110] },
-        kickB:   { f: M.kickB,   d: [70, 80, 110] },
-        kickH:   { f: M.kickH,   d: [80, 120] },
-        kickR:   { f: M.kickR,   d: [70, 70, 70, 90, 120] },
-        sweep:   { f: M.sweep,   d: [80, 90, 90, 110] },
-        tatsu:   { f: M.tatsu,   d: [70, 70, 70, 70, 80, 100] },
-        shoryu:  { f: M.shoryu,  d: [70, 70, 80, 80, 90, 110] },
-        block:   { f: M.block,   d: [110, 240] },
-        fire:    { f: M.fire,    d: [60, 70, 70, 180] },
-        hit:     { f: M.hit,     d: [60, 80, 60, 90] },
-        down:    { f: M.down,    d: [80, 80, 90, 100, 140] },
-        up:      { f: M.up,      d: [90, 90, 90, 110] },
-        win:     { f: M.win,     d: [150, 150, 170] },
-      });
+      // per-frame durations (ms) shared by both fighters; only the frame ids differ
+      const TIMING = {
+        idle:    [200, 160, 200, 160],
+        punch:   [60, 90],
+        punchH:  [70, 80, 120],
+        crouchP: [80, 110],
+        kickL:   [70, 90, 110],
+        kickB:   [70, 80, 110],
+        kickH:   [80, 120],
+        kickR:   [70, 70, 70, 90, 120],
+        sweep:   [80, 90, 90, 110],
+        tatsu:   [70, 70, 70, 70, 80, 100],
+        shoryu:  [70, 70, 80, 80, 90, 110],
+        block:   [110, 240],
+        fire:    [60, 70, 70, 180],
+        hit:     [60, 80, 60, 90],
+        down:    [80, 80, 90, 100, 140],
+        up:      [90, 90, 90, 110],
+        win:     [150, 150, 170],
+      };
+      const mkClips = (M) => {
+        const out = {};
+        for (const k in TIMING) {
+          const d = TIMING[k];
+          let total = 0; for (let i = 0; i < d.length; i++) total += d[i];
+          out[k] = { f: M[k], d: d, total: total, loop: k === 'idle' };
+        }
+        return out;
+      };
       const CL = [mkClips(RY), mkClips(KN)];
-      const DUR = (side, k) => { let s = 0; for (const d of CL[side][k].d) s += d; return s; };
+      const DUR = (side, k) => CL[side][k].total;
       const HIT_T = DUR(0, 'hit'), BLOCK_T = DUR(0, 'block'), DOWN_T = DUR(0, 'down'), UP_T = DUR(0, 'up');
 
       // every attack: when it connects (ms after the clip starts), damage, lunge, knockdown, weight
@@ -453,60 +463,73 @@ WatchFace({
       MOVES.forEach((m, i) => { for (let k = 0; k < m.w; k++) POOL.push(i); });
 
       // ---- seeded PRNG (LCG): a new seed every round, so the demo never repeats ----
+      // Math.imul keeps the multiply in exact 32-bit integer arithmetic
+      const lcg = (s) => (Math.imul(s, 1664525) + 1013904223) >>> 0;
       let seed = (Date.now() ^ 0x9e3779b9) >>> 0;
       let rngState = seed;
-      const rnd = () => { rngState = (rngState * 1664525 + 1013904223) >>> 0; return rngState / 4294967296; };
+      const rnd = () => { rngState = lcg(rngState); return rngState / 4294967296; };
       const pickMove = (last) => {
         let i = POOL[Math.floor(rnd() * POOL.length)];
         for (let n = 0; n < 3 && i === last; n++) i = POOL[Math.floor(rnd() * POOL.length)];
         return i;
       };
 
+      // The round clock is real: FIGHT starts at FIGHT_AT, the counter drops one per second from 99,
+      // and at 0 the fighter with more health wins. A plan ends either in a KO or on the clock.
+      const FIGHT_AT = 800, ROUND_S = 99, T_END = FIGHT_AT + ROUND_S * 1000;
+
       const buildPlan = () => {
         const winner = rnd() < 0.5 ? 0 : 1, loser = 1 - winner;   // the round's winner is drawn first
+        const byKO = rnd() < 0.5;
+        const limit = byKO ? 18000 + Math.floor(rnd() * 70000) : T_END - 2800;
         const beats = [];
-        let hp = [100, 100], t = 820, ko = null;
-        let atk = rnd() < 0.5 ? 0 : 1;
         const lastMove = [-1, -1];
-        for (let n = 0; n < 30 && ko === null; n++) {
-          let who = atk;
-          if (hp[loser] <= 28 && rnd() < 0.7) who = winner;        // go for the finish
-          else if (rnd() < 0.3) who = 1 - atk;
+        let t = 820, atk = winner;
+
+        // pass 1: who attacks when, with what, and whether it is blocked
+        const push = (who, mi, blocked, forceDown) => {
+          const mv = MOVES[mi];
+          const react = blocked ? 'block' : (forceDown || mv.knock ? 'down' : 'hit');
+          const b = { atk: who, k: mv.k, start: t, hitT: t + mv.hit, lunge: mv.lunge, orb: mv.orb || 0,
+                      react: react, w: mv.dmg, hp: null };
+          beats.push(b);
+          return b;
+        };
+        for (let n = 0; t < limit; n++) {
+          const who = n === 0 ? winner : n === 1 ? loser : (rnd() < 0.3 ? 1 - atk : atk);
           const mi = pickMove(lastMove[who]);
           lastMove[who] = mi;
-          const mv = MOVES[mi];
-          const def = 1 - who;
-          const blocked = rnd() < 0.22;
-          let dmg = blocked ? 0 : mv.dmg;
-          if (who !== winner) dmg = Math.round(dmg * 0.5);         // the loser only chips away
-          hp[def] = Math.max(0, hp[def] - dmg);
-          if (def === winner) hp[winner] = Math.max(1, hp[winner]);
-          const start = t, hitT = start + mv.hit;
-          const react = blocked ? 'block' : (mv.knock ? 'down' : 'hit');
-          beats.push({
-            atk: who, k: mv.k, start: start, hitT: hitT, lunge: mv.lunge, orb: mv.orb || 0,
-            react: react, hp: [hp[0], hp[1]],
-          });
-          if (hp[loser] <= 0) { ko = hitT; break; }
-          const rd = react === 'down' ? DOWN_T + UP_T : react === 'block' ? BLOCK_T : HIT_T;
-          t = hitT + rd + 150 + Math.floor(rnd() * 220);
-          atk = def;
+          const b = push(who, mi, n >= 2 && rnd() < 0.22, false);   // each side lands its first blow
+          const rd = b.react === 'down' ? DOWN_T + UP_T : b.react === 'block' ? BLOCK_T : HIT_T;
+          t = b.hitT + rd + 200 + Math.floor(rnd() * 1200);
+          atk = 1 - who;
         }
-        if (ko === null) {                                          // ran long: the winner finishes it
-          const mi = pickMove(-1), mv = MOVES[mi];
-          hp[loser] = 0;
-          const start = t, hitT = start + mv.hit;
-          beats.push({ atk: winner, k: mv.k, start: start, hitT: hitT, lunge: mv.lunge, orb: mv.orb || 0, react: 'down', hp: [hp[0], hp[1]] });
-          ko = hitT;
+        let ko = T_END;
+        if (byKO) ko = push(winner, pickMove(-1), false, true).hitT;  // the finishing blow
+
+        // pass 2: spread each fighter's total damage over the blows that land on them
+        const fin = [100, 100];
+        if (byKO) { fin[loser] = 0; fin[winner] = 20 + Math.floor(rnd() * 65); }
+        else {
+          fin[winner] = 40 + Math.floor(rnd() * 55);
+          fin[loser] = 5 + Math.floor(rnd() * (fin[winner] - 13));  // strictly lower than the winner
         }
-        return { beats: beats, ko: ko, winner: winner, end: ko + 2600 };
+        const tot = [0, 0], cum = [0, 0];
+        for (const b of beats) if (b.react !== 'block') tot[1 - b.atk] += b.w;
+        for (const b of beats) {
+          if (b.react !== 'block') cum[1 - b.atk] += b.w;
+          b.hp = [0, 1].map((d) => tot[d] ? 100 - Math.floor((100 - fin[d]) * cum[d] / tot[d]) : 100);
+        }
+        return { beats: beats, ko: ko, timeout: !byKO, winner: winner, end: ko + 2600 };
       };
 
-      let P = null, t0 = 0, hpRd = 100, hpKd = 100, matchWins = [0, 0], phase = 0, endT = 0, roundNo = 1;
+      let P = null, bi = -1, t0 = 0, lastNow = 0, hpRd = 100, hpKd = 100;
+      let matchWins = [0, 0], phase = 0, endT = 0, roundNo = 1;
       const newRound = (now) => {
-        seed = (seed * 1664525 + 1013904223 + (now & 0xffff)) >>> 0;
+        seed = lcg(seed + (now & 0xffff));
         rngState = seed;
         P = buildPlan();
+        bi = -1;
         t0 = now;
         hpRd = 100; hpKd = 100;
         roundNo = matchWins[0] + matchWins[1] + 1;
@@ -514,16 +537,16 @@ WatchFace({
 
       const frameOf = (side, clip, el) => {
         const c = CL[side][clip];
-        let total = 0; for (const d of c.d) total += d;
-        const x = c.loop ? el % total : el;
+        const x = c.loop ? el % c.total : el;
         let acc = 0;
         for (let i = 0; i < c.d.length; i++) { if (x < acc + c.d[i]) return c.f[i]; acc += c.d[i]; }
         return c.f[c.f.length - 1];
       };
 
       const stateOf = (side, t, b) => {
-        if (P.ko !== null && t >= P.ko + 500) {
-          return side === P.winner ? { clip: 'win', el: t - P.ko - 500 } : { clip: 'down', el: 9999 };
+        if (t >= P.ko + 500) {
+          if (side === P.winner) return { clip: 'win', el: t - P.ko - 500 };
+          return P.timeout ? { clip: 'idle', el: t } : { clip: 'down', el: 9999 };   // time-up: the loser just stands
         }
         if (b) {
           if (b.atk === side && t >= b.start) {
@@ -543,10 +566,45 @@ WatchFace({
         return { clip: 'idle', el: t };
       };
 
-      const pips = [[W.pip1, 12], [W.pip2, 25], [W.pip3, 369], [W.pip4, 356]];
+      // Widget setter that skips the native call when nothing changed. Most widgets
+      // (banners, pips, timer, bars between hits) sit still for many ticks, and each
+      // setProperty crosses into the renderer, so this is the main battery saver.
+      const mkSet = (w) => {
+        let key = '';
+        return (x, y, src, ww, hh) => {
+          const k = x + '|' + y + '|' + src + '|' + ww + '|' + hh;
+          if (k === key) return;
+          key = k;
+          const p = { x: pxv(x), y: pxv(y) };
+          if (src !== undefined) p.src = src;
+          if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }
+          w.setProperty(ui.prop.MORE, p);
+        };
+      };
+      const S = {
+        hpL: mkSet(W.hpL), hpR: mkSet(W.hpR), tens: mkSet(W.tens), ones: mkSet(W.ones), koko: mkSet(W.koko),
+        ryu: mkSet(W.ryu), ken: mkSet(W.ken), spark: mkSet(W.spark), orb: mkSet(W.orb),
+        round: mkSet(W.round), fight: mkSet(W.fight), ko: mkSet(W.ko), youwin: mkSet(W.youwin),
+        pips: [mkSet(W.pip1), mkSet(W.pip2), mkSet(W.pip3), mkSet(W.pip4)],
+      };
+      // "RYU WINS" / "KEN WINS" end-of-round caption (plain text, so no extra image assets)
+      const NAMES = ['RYU', 'KEN'];
+      const winsTxt = ui.createWidget(ui.widget.TEXT, {
+        x: pxv(0), y: pxv(-200), w: pxv(390), h: pxv(60), text: '',
+        text_size: pxv(40), color: 0xffffff, align_h: ui.align.CENTER_H, align_v: ui.align.CENTER_V,
+      });
+      let winsKey = '';
+      const setWins = (side) => {                                   // side: 0/1 to show, -1 to hide
+        if (side === winsKey) return;
+        winsKey = side;
+        winsTxt.setProperty(ui.prop.MORE, side < 0 ? { y: pxv(-200) } : { y: pxv(98), text: NAMES[side] + ' WINS' });
+      };
+      const PIP_X =[12, 25, 369, 356], PIP_ON_Y = 72, PIP_OFF_Y = 26, OFFSCREEN = -300;
 
       const tick = () => {
         const now = Date.now();
+        const dt = Math.min(200, now - (lastNow || now));
+        lastNow = now;
         if (!P) newRound(now);
         let t = now - t0;
         if (phase === 1) {
@@ -556,86 +614,98 @@ WatchFace({
           if (matchWins[P.winner] >= 2) { phase = 1; endT = now; }   // match won: hold the win screen
           else { newRound(now); t = 0; }
         }
-        let b = null, prevB = null;
-        for (let i = 0; i < P.beats.length; i++) { if (t >= P.beats[i].start) { prevB = b; b = P.beats[i]; } else break; }
 
-        // health: the target only changes when the blow lands
-        const hpSrc = b ? (t >= b.hitT ? b : (prevB || b)) : null;
-        const hp = hpSrc ? hpSrc.hp : [100, 100];
-        hpRd += (hp[0] - hpRd) * 0.3; hpKd += (hp[1] - hpKd) * 0.3;
+        // current beat = last one that has started (beats are sorted, so just walk forward)
+        while (bi + 1 < P.beats.length && t >= P.beats[bi + 1].start) bi++;
+        const b = bi >= 0 ? P.beats[bi] : null;
+        const prevB = bi > 0 ? P.beats[bi - 1] : null;
+
+        // health: the target only changes when the blow lands (full bars before the first hit)
+        const hp = b && t >= b.hitT ? b.hp : prevB ? prevB.hp : [100, 100];
+        const ease = 1 - Math.pow(0.7, dt / MS);                     // frame-rate independent smoothing
+        hpRd += (hp[0] - hpRd) * ease; hpKd += (hp[1] - hpKd) * ease;
+        if (Math.abs(hp[0] - hpRd) < 0.3) hpRd = hp[0];
+        if (Math.abs(hp[1] - hpKd) < 0.3) hpKd = hp[1];
         const wl = Math.round(BARW * hpRd / 100), wk = Math.round(BARW * hpKd / 100);
-        W.hpL.setProperty(ui.prop.MORE, { x: pxv(12 + BARW - wl), y: pxv(26), w: pxv(wl), h: pxv(18) });
-        W.hpR.setProperty(ui.prop.MORE, { x: pxv(220), y: pxv(26), w: pxv(wk), h: pxv(18) });
+        S.hpL(12 + BARW - wl, 26, undefined, wl, 18);
+        S.hpR(220, 26, undefined, wk, 18);
 
         // round timer 99 → 0, hitting 0 on the KO; the little KO takes its place
-        const left = Math.max(0, Math.min(99, Math.round(99 * (1 - t / Math.max(1, P.ko)))));
-        W.tens.setProperty(ui.prop.MORE, { x: pxv(171), y: pxv(P.ko !== null && t >= P.ko ? -40 : 47), src: F.tens[(Math.floor(left / 10) + 1) % 10] });
-        W.ones.setProperty(ui.prop.MORE, { x: pxv(195), y: pxv(P.ko !== null && t >= P.ko ? -40 : 47), src: F.ones[(left % 10 + 1) % 10] });
-        W.koko.setProperty(ui.prop.MORE, { x: pxv(177), y: pxv(24), src: F.koko[P.ko !== null && t >= P.ko ? 1 : 0] });
+        const koNow = t >= P.ko && !P.timeout;                       // a time-up keeps the 00 on screen
+        const left = t >= P.ko ? (P.timeout ? 0 : Math.max(0, ROUND_S - Math.floor((P.ko - FIGHT_AT) / 1000)))
+                               : Math.max(0, ROUND_S - Math.floor(Math.max(0, t - FIGHT_AT) / 1000));
+        const ty = koNow ? -40 : 47;
+        S.tens(171, ty, F.tens[(Math.floor(left / 10) + 1) % 10]);
+        S.ones(195, ty, F.ones[(left % 10 + 1) % 10]);
+        S.koko(177, 24, F.koko[koNow ? 1 : 0]);
 
         // round win pips
         for (let i = 0; i < 4; i++) {
           const on = i < 2 ? matchWins[0] > i : matchWins[1] > (i - 2);
-          pips[i][0].setProperty(ui.prop.MORE, { x: pxv(pips[i][1]), y: pxv(on ? 72 : 26), w: pxv(9), h: pxv(9) });
+          S.pips[i](PIP_X[i], on ? PIP_ON_Y : PIP_OFF_Y, undefined, 9, 9);
         }
 
         // fighters
-        for (const side of [0, 1]) {
+        for (let side = 0; side < 2; side++) {
           const st = stateOf(side, t, b);
           let dx = 0;
           if (b && b.atk === side && t >= b.start && t < b.start + DUR(side, b.k)) dx = side === 0 ? b.lunge : -b.lunge;
           if (b && b.atk !== side) {
-            const dt = t - b.hitT;
-            if (dt >= 0 && dt < 200) dx = (side === 0 ? -1 : 1) * Math.round(12 * (1 - dt / 200));
+            const d = t - b.hitT;
+            if (d >= 0 && d < 200) dx = (side === 0 ? -1 : 1) * Math.round(12 * (1 - d / 200));
           }
           const base = side === 0 ? RYU_L : KEN_L;
-          const w = side === 0 ? W.ryu : W.ken;
           const pics = side === 0 ? F.ryu : F.ken;
-          w.setProperty(ui.prop.MORE, { x: pxv(base[0] + dx), y: pxv(base[1]), src: pics[frameOf(side, st.clip, st.el)] });
+          (side === 0 ? S.ryu : S.ken)(base[0] + dx, base[1], pics[frameOf(side, st.clip, st.el)]);
         }
 
         // hit spark
-        let sparkAt = null;
-        if (b && t >= b.hitT && t < b.hitT + 180) sparkAt = b.atk === 0 ? [236, 286] : [150, 286];
-        if (sparkAt) {
-          W.spark.setProperty(ui.prop.MORE, { x: pxv(sparkAt[0]), y: pxv(sparkAt[1]),
-            src: F.spark[[1, 0, 2][Math.min(2, Math.floor((t - b.hitT) / 60))]] });
-        } else W.spark.setProperty(ui.prop.MORE, { x: pxv(-200), y: pxv(-200), src: F.spark[0] });
+        if (b && t >= b.hitT && t < b.hitT + 180) {
+          const at = b.atk === 0 ? [236, 286] : [150, 286];
+          S.spark(at[0], at[1], F.spark[[1, 0, 2][Math.min(2, Math.floor((t - b.hitT) / 60))]]);
+        } else S.spark(OFFSCREEN + 100, OFFSCREEN + 100, F.spark[0]);
 
         // hadouken: leaves the thrower's hands and lands on the hit frame
-        let ox = -300, oy = -300, of = 0;
         if (b && b.orb && t >= b.hitT - 200 && t < b.hitT) {
           const k = (t - (b.hitT - 200)) / 200;
           const to = b.atk === 0 ? 212 : 112;
-          ox = Math.round(158 + (to - 158) * k);
-          oy = 286;
-          of = 1 + (Math.floor((t - (b.hitT - 200)) / 70) % 2);
-        }
-        W.orb.setProperty(ui.prop.MORE, { x: pxv(ox), y: pxv(oy), src: F.orb[of] });
+          S.orb(Math.round(158 + (to - 158) * k), 286, F.orb[1 + (Math.floor((t - (b.hitT - 200)) / 70) % 2)]);
+        } else S.orb(OFFSCREEN, OFFSCREEN, F.orb[0]);
 
         // banners: ROUND n → FIGHT!, the big KO on a knockout, YOU WIN when the match is won
-        const koNow = P.ko !== null && t >= P.ko;
-        W.round.setProperty(ui.prop.MORE, { x: pxv(53), y: pxv(98), src: F.round[!koNow && t < 800 ? Math.min(3, roundNo) : 0] });
-        W.fight.setProperty(ui.prop.MORE, { x: pxv(100), y: pxv(246), src: F.fight[!koNow && t >= 800 && t < 1500 ? 1 : 0] });
-        W.ko.setProperty(ui.prop.MORE, { x: pxv(123), y: pxv(50), src: F.ko[koNow && phase === 0 ? 1 : 0] });
-        W.youwin.setProperty(ui.prop.MORE, { x: pxv(53), y: pxv(98), src: F.youwin[phase === 1 ? 1 : 0] });
+        S.round(53, 98, F.round[!koNow && t < 800 ? Math.min(3, roundNo) : 0]);
+        S.fight(100, 246, F.fight[!koNow && t >= 800 && t < 1500 ? 1 : 0]);
+        // a KO flashes the big KO for 1.2s; then (or straight away on a time-up) the winner's name
+        const showKO = koNow && phase === 0 && t < P.ko + 1200;
+        S.ko(123, 50, F.ko[showKO ? 1 : 0]);
+        setWins(t >= P.ko && phase === 0 && !showKO ? P.winner : -1);
+        S.youwin(53, 98, F.youwin[phase === 1 ? 1 : 0]);
       };
 
-      // the animation only runs while the face is on screen: pause_call clears the
-      // interval, resume_call starts it again and continues where it stopped
-      let id = null, pausedAt = 0;
-      const safe = () => { try { tick(); } catch (e) {} };
+      // the animation only runs while the face is on screen: pause_call stops the loop,
+      // resume_call starts it again and continues where it stopped. The loop is a chain of
+      // setTimeout calls (the next one is armed after a tick finishes), so a slow tick can
+      // never leave a queue of overdue calls running back to back and hogging the watch.
+      let gen = 0, running = false, pausedAt = 0;
+      const safe = () => { try { tick(); } catch (e) { /* keep the face alive; a bad frame must not stop the loop */ } };
+      const loop = (g) => {
+        if (!running || g !== gen) return;
+        safe();
+        if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }
+      };
       const start = () => {
-        if (pausedAt) { t0 += Date.now() - pausedAt; pausedAt = 0; }
-        if (id === null) { try { id = setInterval(safe, MS); } catch (e) {} }
+        if (pausedAt) {
+          const gap = Date.now() - pausedAt;
+          t0 += gap; endT += gap;                                    // freeze both the round clock and the win-screen hold
+          pausedAt = 0; lastNow = 0;
+        }
+        gen++; running = true;
+        const g = gen;
+        try { setTimeout(() => loop(g), MS); } catch (e) {}
         safe();
       };
-      const stop = () => {
-        if (id !== null) { try { clearInterval(id); } catch (e) {} id = null; }
-        pausedAt = Date.now();
-      };
+      const stop = () => { running = false; gen++; pausedAt = Date.now(); };
       ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });
-      safe();
       start();
     }
   },
