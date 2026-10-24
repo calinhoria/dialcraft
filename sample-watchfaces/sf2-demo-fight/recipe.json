@@ -14,5 +14,5 @@
  "previewAod": "preview-aod.png",
  "save": "project",
  "out": "out/sf2-demo-fight",
- "build": true
+ "build": false
 }

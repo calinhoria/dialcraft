@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_Main_d3dy = [
+const img_Minute_Main_k5er = [
   A('sf2/hud/digit_0.png'),
   A('sf2/hud/digit_1.png'),
   A('sf2/hud/digit_2.png'),
@@ -207,7 +207,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(4),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_d3dy,
+      minute_array: img_Minute_Main_k5er,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -229,7 +229,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(4),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Minute_Main_d3dy,
+      hour_array: img_Minute_Main_k5er,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -241,7 +241,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(4),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_d3dy,
+      minute_array: img_Minute_Main_k5er,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -263,7 +263,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(4),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Minute_Main_d3dy,
+      hour_array: img_Minute_Main_k5er,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })

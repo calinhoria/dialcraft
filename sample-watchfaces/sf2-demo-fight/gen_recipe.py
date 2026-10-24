@@ -428,7 +428,7 @@ recipe = {
     'previewAod': 'preview-aod.png',
     'save': 'project',
     'out': 'out/sf2-demo-fight',
-    'build': True,
+    'build': False,
 }
 
 os.makedirs(BUILD, exist_ok=True)
