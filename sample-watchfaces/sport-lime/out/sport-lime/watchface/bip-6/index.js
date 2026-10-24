@@ -10,12 +10,13 @@
 // the pixel budget under 10% with a black background and no second hand.
 // ---------------------------------------------------------------------------
 import ui from '@zos/ui'
-import { Battery, Step } from '@zos/sensor'
+import { Time } from '@zos/sensor'
+import * as zosSensors from '@zos/sensor'   // Weather is read from here: a watch without it gives undefined, it never stops the face loading
 
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_Main_g55a = [
+const img_Minute_Main_j6ql = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -28,7 +29,7 @@ const img_Minute_Main_g55a = [
   A('font_3_9.png'),
 ]
 
-const img_Hour_Main_g1z1 = [
+const img_Hour_Main_j3yq = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -41,33 +42,33 @@ const img_Hour_Main_g1z1 = [
   A('font_2_9.png'),
 ]
 
-const img_Minute_w6ex = [
-  A('font_10_0.png'),
-  A('font_10_1.png'),
-  A('font_10_2.png'),
-  A('font_10_3.png'),
-  A('font_10_4.png'),
-  A('font_10_5.png'),
-  A('font_10_6.png'),
-  A('font_10_7.png'),
-  A('font_10_8.png'),
-  A('font_10_9.png'),
+const img_Minute_g20z = [
+  A('font_11_0.png'),
+  A('font_11_1.png'),
+  A('font_11_2.png'),
+  A('font_11_3.png'),
+  A('font_11_4.png'),
+  A('font_11_5.png'),
+  A('font_11_6.png'),
+  A('font_11_7.png'),
+  A('font_11_8.png'),
+  A('font_11_9.png'),
 ]
 
-const img_Hour_w687 = [
-  A('font_9_0.png'),
-  A('font_9_1.png'),
-  A('font_9_2.png'),
-  A('font_9_3.png'),
-  A('font_9_4.png'),
-  A('font_9_5.png'),
-  A('font_9_6.png'),
-  A('font_9_7.png'),
-  A('font_9_8.png'),
-  A('font_9_9.png'),
+const img_Hour_g6gf = [
+  A('font_12_0.png'),
+  A('font_12_1.png'),
+  A('font_12_2.png'),
+  A('font_12_3.png'),
+  A('font_12_4.png'),
+  A('font_12_5.png'),
+  A('font_12_6.png'),
+  A('font_12_7.png'),
+  A('font_12_8.png'),
+  A('font_12_9.png'),
 ]
 
-const img_Weekday_w6j7 = [
+const img_Weekday_12h0 = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -77,7 +78,7 @@ const img_Weekday_w6j7 = [
   A('week_w7.png'),
 ]
 
-const img_Day_h286 = [
+const img_Day_r2oq = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -90,7 +91,7 @@ const img_Day_h286 = [
   A('font_4_9.png'),
 ]
 
-const img_Steps_p21h = [
+const img_Steps_015n = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -103,7 +104,34 @@ const img_Steps_p21h = [
   A('font_5_9.png'),
 ]
 
-const img_Heart_rate_t3go = [
+const img_Steps_progress_t4qk = [
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+  A('seg_steps.png'),
+]
+
+const img_Heart_rate_g1yg = [
   A('font_6_0.png'),
   A('font_6_1.png'),
   A('font_6_2.png'),
@@ -116,7 +144,7 @@ const img_Heart_rate_t3go = [
   A('font_6_9.png'),
 ]
 
-const img_Temperature_66e5 = [
+const img_Temperature_j5mk = [
   A('font_8_0.png'),
   A('font_8_1.png'),
   A('font_8_2.png'),
@@ -129,7 +157,7 @@ const img_Temperature_66e5 = [
   A('font_8_9.png'),
 ]
 
-const img_Battery_m49w = [
+const img_Battery_06js = [
   A('font_7_0.png'),
   A('font_7_1.png'),
   A('font_7_2.png'),
@@ -142,7 +170,34 @@ const img_Battery_m49w = [
   A('font_7_9.png'),
 ]
 
-const img_Sun_time_ufq9 = [
+const img_Battery_progress_i6fg = [
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+  A('seg_battery.png'),
+]
+
+const img_Sunrise_s69h = [
+  A('font_9_0.png'),
+  A('font_9_1.png'),
+  A('font_9_2.png'),
+  A('font_9_3.png'),
+  A('font_9_4.png'),
+  A('font_9_5.png'),
+  A('font_9_6.png'),
+  A('font_9_7.png'),
+  A('font_9_8.png'),
+  A('font_9_9.png'),
+]
+
+const img_Sunset_s46j = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -182,7 +237,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_g55a,
+      minute_array: img_Minute_Main_j6ql,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -194,7 +249,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Main_g1z1,
+      hour_array: img_Hour_Main_j3yq,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -206,7 +261,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_w6ex,
+      minute_array: img_Minute_g20z,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -218,41 +273,41 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_w687,
+      hour_array: img_Hour_g6gf,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
 
     // Weekday (IMG_WEEK)
     ui.createWidget(ui.widget.IMG_WEEK, {
-      x: px(31),
-      y: px(226),
-      week_en: img_Weekday_w6j7,
-      week_sc: img_Weekday_w6j7,
-      week_tc: img_Weekday_w6j7,
+      x: px(37),
+      y: px(230),
+      week_en: img_Weekday_12h0,
+      week_sc: img_Weekday_12h0,
+      week_tc: img_Weekday_12h0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Day (IMG_DATE)
     ui.createWidget(ui.widget.IMG_DATE, {
-      day_startX: px(85),
-      day_startY: px(231),
+      day_startX: px(96),
+      day_startY: px(230),
       day_zero: 0,
       day_space: px(0),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_h286,
-      day_sc_array: img_Day_h286,
-      day_tc_array: img_Day_h286,
+      day_en_array: img_Day_r2oq,
+      day_sc_array: img_Day_r2oq,
+      day_tc_array: img_Day_r2oq,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Steps (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
       x: px(71),
-      y: px(302),
+      y: px(304),
       type: ui.data_type.STEP,
-      font_array: img_Steps_p21h,
+      font_array: img_Steps_015n,
       h_space: px(-2),
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
@@ -261,35 +316,27 @@ WatchFace({
     // Steps icon (IMG)
     ui.createWidget(ui.widget.IMG, {
       x: px(35),
-      y: px(304),
+      y: px(306),
       src: A('ic_steps_ffffff.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
 
-    // Steps bar (BAR)
-    const bar_1 = ui.createWidget(ui.widget.FILL_RECT, {
-      x: px(42),
-      y: px(278),
-      w: px(0),
-      h: px(10),
-      radius: px(5),
-      color: 0xffffff,
+    // Steps progress (IMG_PROGRESS)
+    ui.createWidget(ui.widget.IMG_PROGRESS, {
+      x: [px(41), px(54), px(67), px(80), px(93), px(106), px(119), px(132), px(145), px(157), px(170), px(183), px(196), px(209), px(222), px(235), px(248), px(261), px(274), px(287), px(300), px(312), px(325), px(338)],
+      y: [px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279), px(279)],
+      image_array: img_Steps_progress_t4qk,
+      image_length: img_Steps_progress_t4qk.length,
+      type: ui.data_type.STEP,
       show_level: ui.show_level.ONLY_NORMAL,
     })
-    const s_step = new Step()
-    const upd_bar_1 = () => {
-      const fill = Math.round(px(306) * Math.max(0, Math.min(1, s_step.getCurrent() / (s_step.getTarget() || 1))))
-      bar_1.setProperty(ui.prop.MORE, { x: px(42) + 0, y: px(278), w: fill, h: px(10) })
-    }
-    s_step.onChange(upd_bar_1)
-    upd_bar_1()
 
     // Heart rate (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
       x: px(73),
-      y: px(344),
+      y: px(345),
       type: ui.data_type.HEART,
-      font_array: img_Heart_rate_t3go,
+      font_array: img_Heart_rate_g1yg,
       h_space: px(-2),
       align_h: ui.align.LEFT,
       unit_en: A('bpm.png'),
@@ -301,7 +348,7 @@ WatchFace({
     // Heart rate icon (IMG)
     ui.createWidget(ui.widget.IMG, {
       x: px(37),
-      y: px(346),
+      y: px(347),
       src: A('ic_heart_ff4d6d.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -309,9 +356,9 @@ WatchFace({
     // Temperature (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
       x: px(241),
-      y: px(344),
+      y: px(345),
       type: ui.data_type.WEATHER_CURRENT,
-      font_array: img_Temperature_66e5,
+      font_array: img_Temperature_j5mk,
       h_space: px(-2),
       align_h: ui.align.LEFT,
       unit_en: A('degree.png'),
@@ -324,19 +371,19 @@ WatchFace({
     // Temperature icon (IMG)
     ui.createWidget(ui.widget.IMG, {
       x: px(205),
-      y: px(346),
+      y: px(347),
       src: A('ic_thermo_ffffff.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
 
     // Battery (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(283),
+      x: px(292),
       y: px(226),
       type: ui.data_type.BATTERY,
-      font_array: img_Battery_m49w,
+      font_array: img_Battery_06js,
       h_space: px(-2),
-      align_h: ui.align.CENTER_H,
+      align_h: ui.align.LEFT,
       unit_en: A('percent.png'),
       unit_sc: A('percent.png'),
       unit_tc: A('percent.png'),
@@ -351,44 +398,82 @@ WatchFace({
       show_level: ui.show_level.ONLY_NORMAL
     })
 
-    // Battery bar (BAR)
-    const bar_2 = ui.createWidget(ui.widget.FILL_RECT, {
-      x: px(311),
-      y: px(36),
-      w: px(22),
-      h: px(0),
-      radius: px(11),
-      color: 0xc6ff3d,
+    // Battery progress (IMG_PROGRESS)
+    ui.createWidget(ui.widget.IMG_PROGRESS, {
+      x: [px(309), px(309), px(309), px(309), px(309), px(309), px(309), px(309), px(309), px(309), px(309)],
+      y: [px(172), px(158), px(144), px(131), px(117), px(103), px(90), px(76), px(62), px(49), px(35)],
+      image_array: img_Battery_progress_i6fg,
+      image_length: img_Battery_progress_i6fg.length,
+      type: ui.data_type.BATTERY,
       show_level: ui.show_level.ONLY_NORMAL,
     })
-    const s_battery = new Battery()
-    const upd_bar_2 = () => {
-      const fill = Math.round(px(146) * Math.max(0, Math.min(1, s_battery.getCurrent() / 100)))
-      bar_2.setProperty(ui.prop.MORE, { x: px(311), y: px(36) + px(146) - fill, w: px(22), h: fill })
-    }
-    s_battery.onChange(upd_bar_2)
-    upd_bar_2()
 
-    // Sun time (TEXT_IMG)
-    ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(76),
+    // Sunrise (TEXT_IMG)
+    const sun_0 = ui.createWidget(ui.widget.TEXT_IMG, {
+      x: px(74),
       y: px(386),
-      type: ui.data_type.SUN_CURRENT,
-      font_array: img_Sun_time_ufq9,
+      type: ui.data_type.SUN_RISE,
+      font_array: img_Sunrise_s69h,
       h_space: px(-2),
       align_h: ui.align.LEFT,
       dot_image: A('colon_2.png'),
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
-    // Sun time icon (IMG)
-    ui.createWidget(ui.widget.IMG, {
-      x: px(40),
-      y: px(388),
-      src: A('ic_sun_c6ff3d.png'),
+    // Sunrise icon (IMG)
+    const sun_1 = ui.createWidget(ui.widget.IMG, {
+      x: px(38),
+      y: px(389),
+      src: A('ic_sunrise_c6ff3d.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
 
+    // Sunset (TEXT_IMG)
+    const sun_2 = ui.createWidget(ui.widget.TEXT_IMG, {
+      x: px(74),
+      y: px(386),
+      type: ui.data_type.SUN_SET,
+      font_array: img_Sunset_s46j,
+      h_space: px(-2),
+      align_h: ui.align.LEFT,
+      dot_image: A('colon_3.png'),
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+
+    // Sunset icon (IMG)
+    const sun_3 = ui.createWidget(ui.widget.IMG, {
+      x: px(38),
+      y: px(388),
+      src: A('ic_sunset_c6ff3d.png'),
+      show_level: ui.show_level.ONLY_NORMAL
+    })
+
+    // Sunrise / sunset swap. The watch has no "next sunrise" reading: SUN_CURRENT stays on today's sunset once it has passed.
+    // So the plain SUN_RISE and SUN_SET readings sit in the same place and this shows the one that comes next:
+    // the sunset from sunrise until sunset, the sunrise otherwise (after sunset it is today's sunrise time, within a minute or two of tomorrow's).
+    const sunClock = new Time()
+    const sunTimes = () => {   // today's [sunrise, sunset] in minutes since midnight, from the weather data; null when the watch has none
+      try {
+        const WeatherCls = zosSensors && zosSensors.Weather
+        const wx = WeatherCls ? new WeatherCls() : null
+        const f = wx ? (wx.getForecastWeather ? wx.getForecastWeather() : wx.getForecast()) : null
+        const t = f && f.tideData && f.tideData.data && f.tideData.data[0]
+        if (t && t.sunrise && t.sunset) return [t.sunrise.hour * 60 + t.sunrise.minute, t.sunset.hour * 60 + t.sunset.minute]
+      } catch (e) {}
+      return null
+    }
+    const updateSun = () => {
+      const m = sunClock.getHours() * 60 + sunClock.getMinutes()
+      const t = sunTimes() || [360, 1080]   // without weather data: 06:00 to 18:00 counts as day
+      const nextIsSunset = m >= t[0] && m < t[1]
+      sun_0.setProperty(ui.prop.VISIBLE, !nextIsSunset)
+      sun_1.setProperty(ui.prop.VISIBLE, !nextIsSunset)
+      sun_2.setProperty(ui.prop.VISIBLE, nextIsSunset)
+      sun_3.setProperty(ui.prop.VISIBLE, nextIsSunset)
+    }
+    updateSun()
+    sunClock.onPerMinute(updateSun)
+    ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: updateSun })
   },
 
   build() {

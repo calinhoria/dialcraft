@@ -1,0 +1,1274 @@
+{
+  "version": 1,
+  "name": "Monitorul de pe mână",
+  "device": "bip-6",
+  "appId": 2164832,
+  "vender": "dialcraft",
+  "description": "A newspaper front page: the time is the headline, steps and heart rate are the stories, and a red ticker runs deadpan news.",
+  "font": "Abril Fatface",
+  "language": "ro-RO",
+  "fonts": [
+    {
+      "name": "abril-fatface-400.ttf",
+      "family": "Abril Fatface"
+    },
+    {
+      "name": "libre-franklin-700.ttf",
+      "family": "Libre Franklin"
+    }
+  ],
+  "groups": {
+    "gmvmn7ddx9r": "Clock",
+    "gmvmn7duq10": "Clock AOD",
+    "gDate": "Date",
+    "gSteps": "Steps",
+    "gHeartrate": "Heart rate",
+    "gTicker": "Ticker"
+  },
+  "elements": [
+    {
+      "id": "elmvmn7dc1776",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#0d0d0b",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvmn7dr1664",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_f06.png"
+    },
+    {
+      "id": "elmvmn7ddx4sf",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 203,
+      "y": 119,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7ddx9r",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Abril Fatface",
+        "size": 124,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#efe9da",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7ddx3f5",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 175,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7ddx9r",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Abril Fatface",
+        "size": 124,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#efe9da",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmvmn7ddx308",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 11,
+      "y": 119,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7ddx9r",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Abril Fatface",
+        "size": 124,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#efe9da",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7duq4o2",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 206,
+      "y": 160,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7duq10",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Abril Fatface",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#8a8578",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#8a8578",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7duq32y",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 178,
+      "y": 171,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7duq10",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Abril Fatface",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#8a8578",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#8a8578",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmvmn7duq4na",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 38,
+      "y": 160,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7duq10",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Abril Fatface",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#8a8578",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#8a8578",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7dekv1",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 121,
+      "y": 84,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Libre Franklin",
+        "size": 18,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8d887a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "long",
+      "labelCase": "none",
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmvmn7dffey",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 208,
+      "y": 89,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Libre Franklin",
+        "size": 18,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8d887a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7dfo2bf",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 33,
+      "y": 299,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Abril Fatface",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#efe9da",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7dg310o",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 205,
+      "y": 299,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Abril Fatface",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#efe9da",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7drk589",
+      "kind": "IMG",
+      "name": "Tag",
+      "x": 36,
+      "y": 232,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTicker",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/tag_001.png",
+      "images": [
+        "sp/tag_001.png",
+        "sp/tag_000.png",
+        "sp/tag_002.png"
+      ],
+      "handle": "tag"
+    },
+    {
+      "id": "elmvmn7dry16",
+      "kind": "IMG",
+      "name": "Ticker 1",
+      "x": 36,
+      "y": 394,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTicker",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/tk0_003.png",
+      "images": [
+        "sp/tk0_003.png",
+        "sp/tk0_004.png"
+      ],
+      "handle": "tk0"
+    },
+    {
+      "id": "elmvmn7dsa6tt",
+      "kind": "IMG",
+      "name": "Ticker 2",
+      "x": 36,
+      "y": 394,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTicker",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/tk1_006.png",
+      "images": [
+        "sp/tk1_006.png",
+        "sp/tk1_005.png"
+      ],
+      "handle": "tk1"
+    },
+    {
+      "id": "elmvmn7dsm7kp",
+      "kind": "IMG",
+      "name": "Ticker 3",
+      "x": 36,
+      "y": 394,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTicker",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/tk2_008.png",
+      "images": [
+        "sp/tk2_008.png",
+        "sp/tk2_007.png"
+      ],
+      "handle": "tk2"
+    },
+    {
+      "id": "elmvmn7dt11fg",
+      "kind": "IMG",
+      "name": "Ticker 4",
+      "x": 36,
+      "y": 394,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTicker",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/tk3_010.png",
+      "images": [
+        "sp/tk3_010.png",
+        "sp/tk3_009.png"
+      ],
+      "handle": "tk3"
+    },
+    {
+      "id": "elmvmn7dtc5xk",
+      "kind": "IMG",
+      "name": "Ticker 5",
+      "x": 36,
+      "y": 394,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTicker",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/tk4_012.png",
+      "images": [
+        "sp/tk4_012.png",
+        "sp/tk4_011.png"
+      ],
+      "handle": "tk4"
+    },
+    {
+      "id": "elmvmn7dtn6gz",
+      "kind": "IMG",
+      "name": "Cover L",
+      "x": 0,
+      "y": 390,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTicker",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/CoverL_013.png",
+      "images": [
+        "sp/CoverL_013.png",
+        "sp/CoverL_014.png"
+      ],
+      "handle": "CoverL"
+    },
+    {
+      "id": "elmvmn7dty2eg",
+      "kind": "IMG",
+      "name": "Cover R",
+      "x": 360,
+      "y": 390,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTicker",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/CoverR_015.png",
+      "images": [
+        "sp/CoverR_015.png",
+        "sp/CoverR_016.png"
+      ],
+      "handle": "CoverR"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "colon.png",
+      "width": 10,
+      "height": 20
+    },
+    {
+      "name": "week_w1.png",
+      "width": 83,
+      "height": 29
+    },
+    {
+      "name": "week_w2.png",
+      "width": 83,
+      "height": 29
+    },
+    {
+      "name": "week_w3.png",
+      "width": 83,
+      "height": 29
+    },
+    {
+      "name": "week_w4.png",
+      "width": 83,
+      "height": 29
+    },
+    {
+      "name": "week_w5.png",
+      "width": 83,
+      "height": 29
+    },
+    {
+      "name": "week_w6.png",
+      "width": 83,
+      "height": 29
+    },
+    {
+      "name": "week_w7.png",
+      "width": 83,
+      "height": 29
+    },
+    {
+      "name": "bpm.png",
+      "width": 43,
+      "height": 25
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 83,
+      "height": 99
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 30,
+      "height": 72
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 18,
+      "height": 21
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 34,
+      "height": 40
+    },
+    {
+      "name": "scene_f06.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/tag_000.png",
+      "width": 130,
+      "height": 24
+    },
+    {
+      "name": "sp/tag_001.png",
+      "width": 130,
+      "height": 24
+    },
+    {
+      "name": "sp/tag_002.png",
+      "width": 130,
+      "height": 24
+    },
+    {
+      "name": "sp/tk0_003.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk0_004.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk1_005.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk1_006.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk2_007.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk2_008.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk3_009.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk3_010.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk4_011.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/tk4_012.png",
+      "width": 291,
+      "height": 30
+    },
+    {
+      "name": "sp/CoverL_013.png",
+      "width": 30,
+      "height": 38
+    },
+    {
+      "name": "sp/CoverL_014.png",
+      "width": 30,
+      "height": 38
+    },
+    {
+      "name": "sp/CoverR_015.png",
+      "width": 30,
+      "height": 38
+    },
+    {
+      "name": "sp/CoverR_016.png",
+      "width": 30,
+      "height": 38
+    },
+    {
+      "name": "colon_2.png",
+      "width": 15,
+      "height": 40
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 69,
+      "height": 81
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 26,
+      "height": 59
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // Monitorul de pe mână: the tag blinks and a red ticker runs the headlines, forever\n  const MS = 100, TX0 = 36, TL = 1453, CW = 290.6, K = 5, SPEED = 70;\n  const V = {\"tag\":{\"b\":0,\"a\":1,\"__blank\":2},\"tk0\":{\"s\":0,\"__blank\":1},\"tk1\":{\"__blank\":0,\"s\":1},\"tk2\":{\"__blank\":0,\"s\":1},\"tk3\":{\"__blank\":0,\"s\":1},\"tk4\":{\"__blank\":0,\"s\":1},\"CoverL\":{\"s\":0,\"__blank\":1},\"CoverR\":{\"s\":0,\"__blank\":1}};\n  const tick = () => {\n    const now = Date.now();\n    slot('tag')(36, 232, V.tag[Math.floor(now / 500) % 2 ? 'a' : 'b']);\n    const off = (now / 1000 * SPEED) % TL;\n    for (let i = 0; i < K; i++) { const p = (((i * CW - off) % TL) + TL) % TL; slot('tk' + i)(Math.round(TX0 + (p > TL - CW ? p - TL : p)), 394, V['tk' + i].s); }\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}

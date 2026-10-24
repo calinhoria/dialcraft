@@ -1,0 +1,1 @@
+Libre Franklin (libre-franklin-700.ttf) - SIL Open Font License 1.1, from Fontsource (fonts.google.com); the latin and latin-ext subsets merged, so Romanian and other Latin-Extended letters come from the font itself. Used only to draw the digit, weekday and text images; no font is shipped in the watchface.

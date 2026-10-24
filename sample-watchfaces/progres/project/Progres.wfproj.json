@@ -1,0 +1,1546 @@
+{
+  "version": 1,
+  "name": "Progres",
+  "device": "bip-6",
+  "appId": 2822755,
+  "vender": "dialcraft",
+  "description": "Day, week and year progress bars filled from the date, a native battery bar, and a motivation bar that fails with #DIV/0!.",
+  "font": "DM Mono",
+  "language": "ro-RO",
+  "fonts": [
+    {
+      "name": "dm-mono-500.ttf",
+      "family": "DM Mono"
+    }
+  ],
+  "groups": {
+    "gmvmo6czxpo": "Clock",
+    "gmvmo6dim14": "Clock AOD",
+    "gDate": "Date",
+    "gBattery": "Battery",
+    "gProgress": "Progress",
+    "gMotivation": "Motivation"
+  },
+  "elements": [
+    {
+      "id": "elmvmo6cy56m0",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#0a0b0e",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvmo6ddc225",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_f05.png"
+    },
+    {
+      "id": "elmvmo6czx5a",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 204,
+      "y": 79,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmo6czxpo",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DM Mono",
+        "size": 84,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmo6czx3sm",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 184,
+      "y": 85,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmo6czxpo",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "DM Mono",
+        "size": 84,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmvmo6czx12g",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 81,
+      "y": 79,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmo6czxpo",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DM Mono",
+        "size": 84,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmo6dim4iu",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 209,
+      "y": 166,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmo6dim14",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DM Mono",
+        "size": 86,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6a7088",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6a7088",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmo6dim7ld",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 183,
+      "y": 173,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmo6dim14",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "DM Mono",
+        "size": 86,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6a7088",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6a7088",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmvmo6dim7bv",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 73,
+      "y": 166,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmo6dim14",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DM Mono",
+        "size": 86,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6a7088",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6a7088",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmo6d0g2zd",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 113,
+      "y": 32,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "DM Mono",
+        "size": 20,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#6d7280",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "long",
+      "labelCase": "none",
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmvmo6d1946y",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 217,
+      "y": 36,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "DM Mono",
+        "size": 20,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#6d7280",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmo6d1y6en",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 302,
+      "y": 287,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "DM Mono",
+        "size": 22,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmo6dc5619",
+      "kind": "IMG_PROGRESS",
+      "name": "Battery progress",
+      "x": 37,
+      "y": 316,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "images": [
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png",
+        "seg_battery.png"
+      ],
+      "dataType": "BATTERY",
+      "level": 0,
+      "spread": 24,
+      "glyph": {
+        "font": "DM Mono",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      },
+      "positions": [
+        [
+          37,
+          316
+        ],
+        [
+          50,
+          316
+        ],
+        [
+          64,
+          316
+        ],
+        [
+          77,
+          316
+        ],
+        [
+          90,
+          316
+        ],
+        [
+          103,
+          316
+        ],
+        [
+          117,
+          316
+        ],
+        [
+          130,
+          316
+        ],
+        [
+          143,
+          316
+        ],
+        [
+          156,
+          316
+        ],
+        [
+          170,
+          316
+        ],
+        [
+          183,
+          316
+        ],
+        [
+          196,
+          316
+        ],
+        [
+          209,
+          316
+        ],
+        [
+          223,
+          316
+        ],
+        [
+          236,
+          316
+        ],
+        [
+          249,
+          316
+        ],
+        [
+          262,
+          316
+        ],
+        [
+          276,
+          316
+        ],
+        [
+          289,
+          316
+        ],
+        [
+          302,
+          316
+        ],
+        [
+          315,
+          316
+        ],
+        [
+          329,
+          316
+        ],
+        [
+          342,
+          316
+        ]
+      ]
+    },
+    {
+      "id": "elmvmo6ddo6zx",
+      "kind": "IMG",
+      "name": "Bar ZIUA",
+      "x": 36,
+      "y": 178,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 135,
+      "h": 8,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/bar0_000.png",
+      "images": [
+        "sp/bar0_000.png",
+        "sp/bar0_001.png"
+      ],
+      "handle": "bar0"
+    },
+    {
+      "id": "elmvmo6des4qg",
+      "kind": "IMG",
+      "name": "Bar SĂPTĂMÂNA",
+      "x": 36,
+      "y": 224,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 246,
+      "h": 8,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/bar1_013.png",
+      "images": [
+        "sp/bar1_013.png",
+        "sp/bar1_014.png"
+      ],
+      "handle": "bar1"
+    },
+    {
+      "id": "elmvmo6dfm71v",
+      "kind": "IMG",
+      "name": "Bar ANUL",
+      "x": 36,
+      "y": 270,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 258,
+      "h": 8,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/bar2_015.png",
+      "images": [
+        "sp/bar2_015.png",
+        "sp/bar2_016.png"
+      ],
+      "handle": "bar2"
+    },
+    {
+      "id": "elmvmo6de85dc",
+      "kind": "IMG",
+      "name": "Percent 00",
+      "x": 312,
+      "y": 151,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/pdig_006.png",
+      "images": [
+        "sp/pdig_006.png",
+        "sp/pdig_003.png",
+        "sp/pdig_004.png",
+        "sp/pdig_005.png",
+        "sp/pdig_002.png",
+        "sp/pdig_007.png",
+        "sp/pdig_008.png",
+        "sp/pdig_009.png",
+        "sp/pdig_010.png",
+        "sp/pdig_011.png",
+        "sp/pdig_012.png"
+      ],
+      "handle": "p00"
+    },
+    {
+      "id": "elmvmo6dei39t",
+      "kind": "IMG",
+      "name": "Percent 01",
+      "x": 325,
+      "y": 151,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/pdig_004.png",
+      "images": [
+        "sp/pdig_004.png",
+        "sp/pdig_003.png",
+        "sp/pdig_002.png",
+        "sp/pdig_005.png",
+        "sp/pdig_006.png",
+        "sp/pdig_007.png",
+        "sp/pdig_008.png",
+        "sp/pdig_009.png",
+        "sp/pdig_010.png",
+        "sp/pdig_011.png",
+        "sp/pdig_012.png"
+      ],
+      "handle": "p01"
+    },
+    {
+      "id": "elmvmo6df24bd",
+      "kind": "IMG",
+      "name": "Percent 10",
+      "x": 312,
+      "y": 197,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/pdig_009.png",
+      "images": [
+        "sp/pdig_009.png",
+        "sp/pdig_003.png",
+        "sp/pdig_004.png",
+        "sp/pdig_005.png",
+        "sp/pdig_006.png",
+        "sp/pdig_007.png",
+        "sp/pdig_008.png",
+        "sp/pdig_002.png",
+        "sp/pdig_010.png",
+        "sp/pdig_011.png",
+        "sp/pdig_012.png"
+      ],
+      "handle": "p10"
+    },
+    {
+      "id": "elmvmo6dfc93",
+      "kind": "IMG",
+      "name": "Percent 11",
+      "x": 325,
+      "y": 197,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/pdig_009.png",
+      "images": [
+        "sp/pdig_009.png",
+        "sp/pdig_003.png",
+        "sp/pdig_004.png",
+        "sp/pdig_005.png",
+        "sp/pdig_006.png",
+        "sp/pdig_007.png",
+        "sp/pdig_008.png",
+        "sp/pdig_002.png",
+        "sp/pdig_010.png",
+        "sp/pdig_011.png",
+        "sp/pdig_012.png"
+      ],
+      "handle": "p11"
+    },
+    {
+      "id": "elmvmo6dfv4fk",
+      "kind": "IMG",
+      "name": "Percent 20",
+      "x": 312,
+      "y": 243,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/pdig_010.png",
+      "images": [
+        "sp/pdig_010.png",
+        "sp/pdig_003.png",
+        "sp/pdig_004.png",
+        "sp/pdig_005.png",
+        "sp/pdig_006.png",
+        "sp/pdig_007.png",
+        "sp/pdig_008.png",
+        "sp/pdig_009.png",
+        "sp/pdig_002.png",
+        "sp/pdig_011.png",
+        "sp/pdig_012.png"
+      ],
+      "handle": "p20"
+    },
+    {
+      "id": "elmvmo6dg52h2",
+      "kind": "IMG",
+      "name": "Percent 21",
+      "x": 325,
+      "y": 243,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gProgress",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/pdig_003.png",
+      "images": [
+        "sp/pdig_003.png",
+        "sp/pdig_002.png",
+        "sp/pdig_004.png",
+        "sp/pdig_005.png",
+        "sp/pdig_006.png",
+        "sp/pdig_007.png",
+        "sp/pdig_008.png",
+        "sp/pdig_009.png",
+        "sp/pdig_010.png",
+        "sp/pdig_011.png",
+        "sp/pdig_012.png"
+      ],
+      "handle": "p21"
+    },
+    {
+      "id": "elmvmo6dgl5xd",
+      "kind": "IMG",
+      "name": "Bar MOTIVAȚIE",
+      "x": 36,
+      "y": 362,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gMotivation",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mot_018.png",
+      "images": [
+        "sp/mot_018.png",
+        "sp/mot_017.png"
+      ],
+      "handle": "mot"
+    },
+    {
+      "id": "elmvmo6dgy1nv",
+      "kind": "IMG",
+      "name": "Error",
+      "x": 244,
+      "y": 335,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gMotivation",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/err_019.png",
+      "images": [
+        "sp/err_019.png",
+        "sp/err_020.png"
+      ],
+      "handle": "err"
+    },
+    {
+      "id": "elmvmo6dhc3ah",
+      "kind": "IMG",
+      "name": "Recalculating",
+      "x": 130,
+      "y": 340,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gMotivation",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/calc_025.png",
+      "images": [
+        "sp/calc_025.png",
+        "sp/calc_022.png",
+        "sp/calc_023.png",
+        "sp/calc_024.png",
+        "sp/calc_021.png"
+      ],
+      "handle": "calc"
+    },
+    {
+      "id": "elmvmo6dhrj7",
+      "kind": "IMG",
+      "name": "Veil",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/veil_027.png",
+      "images": [
+        "sp/veil_027.png",
+        "sp/veil_026.png"
+      ],
+      "handle": "veil"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "colon.png",
+      "width": 10,
+      "height": 20
+    },
+    {
+      "name": "week_w1.png",
+      "width": 100,
+      "height": 30
+    },
+    {
+      "name": "week_w2.png",
+      "width": 100,
+      "height": 30
+    },
+    {
+      "name": "week_w3.png",
+      "width": 100,
+      "height": 30
+    },
+    {
+      "name": "week_w4.png",
+      "width": 100,
+      "height": 30
+    },
+    {
+      "name": "week_w5.png",
+      "width": 100,
+      "height": 30
+    },
+    {
+      "name": "week_w6.png",
+      "width": 100,
+      "height": 30
+    },
+    {
+      "name": "week_w7.png",
+      "width": 100,
+      "height": 30
+    },
+    {
+      "name": "percent.png",
+      "width": 19,
+      "height": 23
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 21,
+      "height": 54
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 17,
+      "height": 22
+    },
+    {
+      "name": "seg_battery.png",
+      "width": 11,
+      "height": 8
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "scene_f05.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/bar0_000.png",
+      "width": 318,
+      "height": 8
+    },
+    {
+      "name": "sp/bar0_001.png",
+      "width": 318,
+      "height": 8
+    },
+    {
+      "name": "sp/pdig_002.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_003.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_004.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_005.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_006.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_007.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_008.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_009.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_010.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_011.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/pdig_012.png",
+      "width": 16,
+      "height": 28
+    },
+    {
+      "name": "sp/bar1_013.png",
+      "width": 318,
+      "height": 8
+    },
+    {
+      "name": "sp/bar1_014.png",
+      "width": 318,
+      "height": 8
+    },
+    {
+      "name": "sp/bar2_015.png",
+      "width": 318,
+      "height": 8
+    },
+    {
+      "name": "sp/bar2_016.png",
+      "width": 318,
+      "height": 8
+    },
+    {
+      "name": "sp/mot_017.png",
+      "width": 318,
+      "height": 8
+    },
+    {
+      "name": "sp/mot_018.png",
+      "width": 318,
+      "height": 8
+    },
+    {
+      "name": "sp/err_019.png",
+      "width": 110,
+      "height": 28
+    },
+    {
+      "name": "sp/err_020.png",
+      "width": 110,
+      "height": 28
+    },
+    {
+      "name": "sp/calc_021.png",
+      "width": 150,
+      "height": 24
+    },
+    {
+      "name": "sp/calc_022.png",
+      "width": 150,
+      "height": 24
+    },
+    {
+      "name": "sp/calc_023.png",
+      "width": 150,
+      "height": 24
+    },
+    {
+      "name": "sp/calc_024.png",
+      "width": 150,
+      "height": 24
+    },
+    {
+      "name": "sp/calc_025.png",
+      "width": 150,
+      "height": 24
+    },
+    {
+      "name": "sp/veil_026.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/veil_027.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "colon_2.png",
+      "width": 10,
+      "height": 20
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 53,
+      "height": 70
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 22,
+      "height": 55
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // Progres: the day, the week and the year fill in from the date; the motivation bar is calculated and fails, every minute\n  const MS = 100, BX = 36, BW = 318, RY = 168, RP = 46;\n  const V = {\"bar0\":{\"s\":0,\"__blank\":1},\"p00\":{\"0\":4,\"1\":1,\"2\":2,\"3\":3,\"4\":0,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\"__blank\":10},\"p01\":{\"0\":2,\"1\":1,\"2\":0,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\"__blank\":10},\"bar1\":{\"s\":0,\"__blank\":1},\"p10\":{\"0\":7,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":0,\"8\":8,\"9\":9,\"__blank\":10},\"p11\":{\"0\":7,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":0,\"8\":8,\"9\":9,\"__blank\":10},\"bar2\":{\"s\":0,\"__blank\":1},\"p20\":{\"0\":8,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":0,\"9\":9,\"__blank\":10},\"p21\":{\"0\":1,\"1\":0,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\"__blank\":10},\"mot\":{\"__blank\":0,\"s\":1},\"err\":{\"s\":0,\"__blank\":1},\"calc\":{\"__blank\":0,\"d1\":1,\"d2\":2,\"d3\":3,\"d0\":4},\"veil\":{\"__blank\":0,\"s\":1}};\n  const ease = (t) => 1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3), cl = (v) => Math.max(0, Math.min(1, v));\n  const tick = () => {\n    const now = Date.now(), d = new Date(now), sec = d.getSeconds() + (now % 1000) / 1000;\n    const frac = (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()) / 86400;\n    const doy = Math.floor((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(d.getFullYear(), 0, 0)) / 86400000);\n    const target = [frac * 100, ((d.getDay() + 6) % 7 + frac) / 7 * 100, (doy + frac) / 365 * 100];\n    for (let r = 0; r < 3; r++) {\n      const k = ease((sec - 0.2 - r * 0.35) / 2.2), v = Math.min(99, target[r] * k), w = Math.round(BW * v / 100), iv = Math.floor(v);\n      if (w > 0) slot('bar' + r)(BX, RY + r * RP + 10, V['bar' + r].s, w, 8); else slot('bar' + r).hide();\n      const tens = Math.floor(iv / 10), ones = iv % 10;\n      if (iv >= 10) slot('p' + r + '0')(BX + BW - 12 - 26 - 4, RY + r * RP - 17, V['p' + r + '0'][String(tens)]); else slot('p' + r + '0').hide();\n      slot('p' + r + '1')(BX + BW - 12 - 13 - 4, RY + r * RP - 17, V['p' + r + '1'][String(ones)]);\n    }\n    // motivation: a flicker, then an error\n    const my = RY + 4 * RP;\n    if (sec > 2.2 && sec < 3.8) { const fl = Math.abs(Math.sin(sec * 9)) * (6 + 14 * cl((sec - 2.2) / 0.6)) * (1 - cl((sec - 3.4) / 0.4)); slot('mot')(BX, my + 10, V.mot.s, Math.max(1, Math.round(BW * fl / 100)), 8); }\n    else slot('mot').hide();\n    if (sec >= 3.8) slot('err')(BX + BW - 110, my - 17, V.err.s); else slot('err').hide();\n    if (sec > 50 && sec < 58.6) slot('calc')(BX + 94, my - 12, V.calc['d' + (Math.floor(now / 250) % 4)]); else slot('calc').hide();\n    if (sec > 59.3) slot('veil')(0, 0, V.veil.s); else slot('veil').hide();\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}

@@ -1,0 +1,61 @@
+{
+  "configVersion": "v3",
+  "app": {
+    "appId": 2615144,
+    "appName": "BOOT.SYS",
+    "appType": "watchface",
+    "version": {
+      "code": 1,
+      "name": "1.0.0"
+    },
+    "icon": "images/preview.png",
+    "vender": "dialcraft",
+    "description": "A BIOS check every minute: lines appear one by one with deadpan status tags, a blinking cursor and a refresh sweep; the "
+  },
+  "permissions": [],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "4.0",
+      "target": "4.0",
+      "minVersion": "4.0"
+    },
+    "type": 0
+  },
+  "targets": {
+    "bip-6": {
+      "module": {
+        "watchface": {
+          "path": "watchface/bip-6/index",
+          "main": 1,
+          "editable": 0,
+          "lockscreen": 1
+        }
+      },
+      "platforms": [
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 9765120
+        },
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 9765121
+        },
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 10158337
+        }
+      ],
+      "designWidth": 390
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "appName": "BOOT.SYS"
+    }
+  },
+  "defaultLanguage": "en-US",
+  "debug": false
+}

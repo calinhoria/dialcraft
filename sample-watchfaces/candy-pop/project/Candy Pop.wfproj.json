@@ -2,11 +2,11 @@
   "version": 1,
   "name": "Candy Pop",
   "device": "bip-6",
-  "appId": 2711271,
+  "appId": 2346059,
   "vender": "dialcraft",
   "description": "Playful pink and yellow time over confetti, with bright icon pills for steps, heart rate, battery, temperature and sunrise / sunset.",
   "font": "Baloo 2",
-  "language": "en-US",
+  "language": "ro-RO",
   "fonts": [
     {
       "name": "baloo-2-800.ttf",
@@ -14,18 +14,19 @@
     }
   ],
   "groups": {
-    "gmvmllsnh89": "Clock",
-    "gmvmllsqz74": "Sunrise / sunset",
-    "gmvmlltab1u": "Clock AOD",
+    "gmvmo5wfal8": "Clock",
+    "gmvmo5wjz4z": "Sunrise / sunset",
+    "gmvmo5x826n": "Clock AOD",
     "gDate": "Date",
     "gSteps": "Steps",
     "gHeartrate": "Heart rate",
     "gTemperature": "Temperature",
-    "gBattery": "Battery"
+    "gBattery": "Battery",
+    "gSunrisesunset": "Sunrise / sunset"
   },
   "elements": [
     {
-      "id": "elmvmllslv4vb",
+      "id": "elmvmo5wde5si",
       "kind": "FILL_RECT",
       "name": "Background",
       "x": 0,
@@ -99,15 +100,15 @@
               44
             ],
             [
-              "Sun time",
-              "Sun time icon"
+              "Sunset",
+              "Sunset icon"
             ]
           ],
           [
             [
-              127,
+              121.5,
               199,
-              136,
+              147,
               40
             ],
             [
@@ -131,7 +132,7 @@
       }
     },
     {
-      "id": "elmvmllt9q76d",
+      "id": "elmvmo5x7g3lx",
       "kind": "IMG",
       "name": "Scene",
       "x": 0,
@@ -149,7 +150,7 @@
       "src": "scene.png"
     },
     {
-      "id": "elmvmllsnh7ek",
+      "id": "elmvmo5wfaem",
       "kind": "IMG_TIME",
       "name": "Minute Main",
       "x": 134,
@@ -157,7 +158,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvmllsnh89",
+      "group": "gmvmo5wfal8",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -206,7 +207,7 @@
       }
     },
     {
-      "id": "elmvmllsnhsg",
+      "id": "elmvmo5wf94jm",
       "kind": "IMG_TIME",
       "name": "Hour Main",
       "x": 127,
@@ -214,7 +215,7 @@
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvmllsnh89",
+      "group": "gmvmo5wfal8",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -263,7 +264,7 @@
       }
     },
     {
-      "id": "elmvmlltabwg",
+      "id": "elmvmo5x823z1",
       "kind": "IMG_TIME",
       "name": "Minute",
       "x": 143,
@@ -271,66 +272,9 @@
       "show": "aod",
       "visible": true,
       "locked": false,
-      "group": "gmvmlltab1u",
+      "group": "gmvmo5x826n",
       "alpha": 255,
       "part": "minute",
-      "zero": 1,
-      "follow": 0,
-      "space": 0,
-      "images": [
-        "font_9_0.png",
-        "font_9_1.png",
-        "font_9_2.png",
-        "font_9_3.png",
-        "font_9_4.png",
-        "font_9_5.png",
-        "font_9_6.png",
-        "font_9_7.png",
-        "font_9_8.png",
-        "font_9_9.png"
-      ],
-      "unit": "",
-      "am": "",
-      "pm": "",
-      "amX": 0,
-      "amY": 0,
-      "pmX": 0,
-      "pmY": 0,
-      "glyph": {
-        "font": "Baloo 2",
-        "size": 84,
-        "weight": 400,
-        "variations": "",
-        "fill": "outline",
-        "color": "#a8588a",
-        "from": "#ffd400",
-        "to": "#ff2d55",
-        "angle": 180,
-        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
-        "outlineColor": "#a8588a",
-        "outlineWidth": 2,
-        "bold": false,
-        "italic": false,
-        "borderColor": "#000000",
-        "borderWidth": 0,
-        "shadowColor": "#000000",
-        "shadowX": 0,
-        "shadowY": 0,
-        "shadowBlur": 0
-      }
-    },
-    {
-      "id": "elmvmlltab71x",
-      "kind": "IMG_TIME",
-      "name": "Hour",
-      "x": 137,
-      "y": 39,
-      "show": "aod",
-      "visible": true,
-      "locked": false,
-      "group": "gmvmlltab1u",
-      "alpha": 255,
-      "part": "hour",
       "zero": 1,
       "follow": 0,
       "space": 0,
@@ -377,11 +321,68 @@
       }
     },
     {
-      "id": "elmvmllsnx66t",
+      "id": "elmvmo5x82qc",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 137,
+      "y": 39,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmo5x826n",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_11_0.png",
+        "font_11_1.png",
+        "font_11_2.png",
+        "font_11_3.png",
+        "font_11_4.png",
+        "font_11_5.png",
+        "font_11_6.png",
+        "font_11_7.png",
+        "font_11_8.png",
+        "font_11_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 84,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#a8588a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#a8588a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmo5wfr3ut",
       "kind": "IMG_WEEK",
       "name": "Weekday",
-      "x": 140,
-      "y": 201,
+      "x": 136,
+      "y": 204,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -417,14 +418,17 @@
         "shadowX": 0,
         "shadowY": 0,
         "shadowBlur": 0
-      }
+      },
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "right"
     },
     {
-      "id": "elmvmllsok2he",
+      "id": "elmvmo5wgg480",
       "kind": "IMG_DATE",
       "name": "Day",
-      "x": 201,
-      "y": 207,
+      "x": 202,
+      "y": 211,
       "show": "normal",
       "visible": true,
       "locked": false,
@@ -472,7 +476,7 @@
       }
     },
     {
-      "id": "elmvmllsoq4hd",
+      "id": "elmvmo5wgn1mw",
       "kind": "TEXT_IMG",
       "name": "Steps",
       "x": 74,
@@ -524,7 +528,7 @@
       }
     },
     {
-      "id": "elmvmllt2h2fa",
+      "id": "elmvmo5wyn3cv",
       "kind": "IMG",
       "name": "Steps icon",
       "x": 40,
@@ -542,7 +546,7 @@
       "src": "ic_steps_17082a.png"
     },
     {
-      "id": "elmvmllsp47mm",
+      "id": "elmvmo5wh3131",
       "kind": "TEXT_IMG",
       "name": "Heart rate",
       "x": 279,
@@ -594,7 +598,7 @@
       }
     },
     {
-      "id": "elmvmllt3t1fq",
+      "id": "elmvmo5x003rp",
       "kind": "IMG",
       "name": "Heart rate icon",
       "x": 245,
@@ -612,7 +616,7 @@
       "src": "ic_heart_17082a.png"
     },
     {
-      "id": "elmvmllsq45v0",
+      "id": "elmvmo5wi44hr",
       "kind": "TEXT_IMG",
       "name": "Temperature",
       "x": 268,
@@ -664,7 +668,7 @@
       }
     },
     {
-      "id": "elmvmllt6o5rl",
+      "id": "elmvmo5x2w5wo",
       "kind": "IMG",
       "name": "Temperature icon",
       "x": 234,
@@ -682,7 +686,7 @@
       "src": "ic_thermo_17082a.png"
     },
     {
-      "id": "elmvmllspofp",
+      "id": "elmvmo5whp3sq",
       "kind": "TEXT_IMG",
       "name": "Battery",
       "x": 86,
@@ -734,7 +738,7 @@
       }
     },
     {
-      "id": "elmvmllt5a71r",
+      "id": "elmvmo5x1e1yd",
       "kind": "IMG_LEVEL",
       "name": "Battery level",
       "x": 50,
@@ -770,28 +774,28 @@
       }
     },
     {
-      "id": "elmvmllsqd40e",
+      "id": "elmvmo5wicsl",
       "kind": "TEXT_IMG",
-      "name": "Sun time",
-      "x": 160,
+      "name": "Sunrise",
+      "x": 159,
       "y": 378,
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvmllsqz74",
+      "group": "gSunrisesunset",
       "alpha": 255,
-      "dataType": "SUN_CURRENT",
+      "dataType": "SUN_RISE",
       "images": [
-        "font_1_0.png",
-        "font_1_1.png",
-        "font_1_2.png",
-        "font_1_3.png",
-        "font_1_4.png",
-        "font_1_5.png",
-        "font_1_6.png",
-        "font_1_7.png",
-        "font_1_8.png",
-        "font_1_9.png"
+        "font_9_0.png",
+        "font_9_1.png",
+        "font_9_2.png",
+        "font_9_3.png",
+        "font_9_4.png",
+        "font_9_5.png",
+        "font_9_6.png",
+        "font_9_7.png",
+        "font_9_8.png",
+        "font_9_9.png"
       ],
       "hSpace": 1,
       "alignH": "LEFT",
@@ -819,25 +823,99 @@
         "shadowX": 0,
         "shadowY": 0,
         "shadowBlur": 0
-      }
+      },
+      "showWhen": "sunrise"
     },
     {
-      "id": "elmvmllt7t165",
+      "id": "elmvmo5x451x1",
       "kind": "IMG",
-      "name": "Sun time icon",
-      "x": 126,
-      "y": 378,
+      "name": "Sunrise icon",
+      "x": 125,
+      "y": 379,
       "show": "normal",
       "visible": true,
       "locked": false,
-      "group": "gmvmllsqz74",
+      "group": "gSunrisesunset",
       "alpha": 255,
       "w": 0,
       "h": 0,
       "angle": 0,
       "posX": 0,
       "posY": 0,
-      "src": "ic_sun_17082a.png"
+      "src": "ic_sunrise_17082a.png",
+      "showWhen": "sunrise"
+    },
+    {
+      "id": "elmvmo5wjb2md",
+      "kind": "TEXT_IMG",
+      "name": "Sunset",
+      "x": 159,
+      "y": 378,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSunrisesunset",
+      "alpha": 255,
+      "dataType": "SUN_SET",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "colon_3.png",
+      "negative": "",
+      "glyph": {
+        "font": "Baloo 2",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#17082a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "showWhen": "sunset"
+    },
+    {
+      "id": "elmvmo5x5av3",
+      "kind": "IMG",
+      "name": "Sunset icon",
+      "x": 125,
+      "y": 378,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSunrisesunset",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_sunset_17082a.png",
+      "showWhen": "sunset"
     }
   ],
   "images": [
@@ -898,37 +976,37 @@
     },
     {
       "name": "week_w1.png",
-      "width": 64,
+      "width": 63,
       "height": 38
     },
     {
       "name": "week_w2.png",
-      "width": 64,
+      "width": 63,
       "height": 38
     },
     {
       "name": "week_w3.png",
-      "width": 64,
+      "width": 63,
       "height": 38
     },
     {
       "name": "week_w4.png",
-      "width": 64,
+      "width": 63,
       "height": 38
     },
     {
       "name": "week_w5.png",
-      "width": 64,
+      "width": 63,
       "height": 38
     },
     {
       "name": "week_w6.png",
-      "width": 64,
+      "width": 63,
       "height": 38
     },
     {
       "name": "week_w7.png",
-      "width": 64,
+      "width": 63,
       "height": 38
     },
     {
@@ -957,7 +1035,17 @@
       "height": 26
     },
     {
-      "name": "sun_icon.png",
+      "name": "sunup_icon.png",
+      "width": 44,
+      "height": 34
+    },
+    {
+      "name": "colon_3.png",
+      "width": 12,
+      "height": 26
+    },
+    {
+      "name": "sundown_icon.png",
       "width": 44,
       "height": 34
     },
@@ -1312,6 +1400,56 @@
       "height": 26
     },
     {
+      "name": "font_9_0.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_1.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_2.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_3.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_4.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_5.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_6.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_7.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_8.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "font_9_9.png",
+      "width": 23,
+      "height": 26
+    },
+    {
       "name": "ic_steps_17082a.png",
       "width": 26,
       "height": 26
@@ -1372,76 +1510,6 @@
       "height": 15
     },
     {
-      "name": "font_9_0.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_1.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_2.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_3.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_4.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_5.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_6.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_7.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_8.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "font_9_9.png",
-      "width": 53,
-      "height": 61
-    },
-    {
-      "name": "ic_thermo_17082a.png",
-      "width": 26,
-      "height": 26
-    },
-    {
-      "name": "ic_sun_17082a.png",
-      "width": 26,
-      "height": 26
-    },
-    {
-      "name": "scene.png",
-      "width": 390,
-      "height": 450
-    },
-    {
-      "name": "colon_3.png",
-      "width": 10,
-      "height": 19
-    },
-    {
       "name": "font_10_0.png",
       "width": 53,
       "height": 61
@@ -1488,6 +1556,81 @@
     },
     {
       "name": "font_10_9.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "ic_thermo_17082a.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "ic_sunrise_17082a.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "ic_sunset_17082a.png",
+      "width": 26,
+      "height": 26
+    },
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "colon_4.png",
+      "width": 10,
+      "height": 19
+    },
+    {
+      "name": "font_11_0.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_1.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_2.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_3.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_4.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_5.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_6.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_7.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_8.png",
+      "width": 53,
+      "height": 61
+    },
+    {
+      "name": "font_11_9.png",
       "width": 53,
       "height": 61
     }

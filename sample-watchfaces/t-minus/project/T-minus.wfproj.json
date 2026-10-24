@@ -1,0 +1,1798 @@
+{
+  "version": 1,
+  "name": "T-minus",
+  "device": "bip-6",
+  "appId": 2615053,
+  "vender": "dialcraft",
+  "description": "A mission countdown cycling through coffee (next half hour), Monday and sleep, all computed from the date, with deadpan status lines.",
+  "font": "Oxanium",
+  "language": "ro-RO",
+  "fonts": [
+    {
+      "name": "oxanium-700.ttf",
+      "family": "Oxanium"
+    }
+  ],
+  "groups": {
+    "gmvmn7q9k7i": "Clock",
+    "gmvmn7qz7ez": "Clock AOD",
+    "gDate": "Date",
+    "gSteps": "Steps",
+    "gHeartrate": "Heart rate",
+    "gBattery": "Battery",
+    "gCountdown": "Countdown"
+  },
+  "elements": [
+    {
+      "id": "elmvmn7q7s4dd",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#070a10",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvmn7qsy34e",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_f10.png"
+    },
+    {
+      "id": "elmvmn7q9k2zc",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 203,
+      "y": 79,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7q9k7i",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Oxanium",
+        "size": 104,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#e8f1ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7q9k7j1",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 182,
+      "y": 87,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7q9k7i",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Oxanium",
+        "size": 104,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#e8f1ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmvmn7q9k1i4",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 67,
+      "y": 79,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7q9k7i",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Oxanium",
+        "size": 104,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#e8f1ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7qz75pc",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 210,
+      "y": 161,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7qz7ez",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Oxanium",
+        "size": 104,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#4d6a82",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#4d6a82",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7qz74c2",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 182,
+      "y": 169,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7qz7ez",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Oxanium",
+        "size": 104,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#4d6a82",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#4d6a82",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmvmn7qz754i",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 60,
+      "y": 161,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvmn7qz7ez",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Oxanium",
+        "size": 104,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#4d6a82",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#4d6a82",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7qa34h6",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 118,
+      "y": 32,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Oxanium",
+        "size": 20,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#68758f",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "long",
+      "labelCase": "none",
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmvmn7qaw1u9",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 213,
+      "y": 36,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Oxanium",
+        "size": 20,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#68758f",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7qb46fi",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 79,
+      "y": 414,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Oxanium",
+        "size": 20,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#68758f",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7qmf4tw",
+      "kind": "IMG",
+      "name": "Steps icon",
+      "x": 51,
+      "y": 414,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_steps_68758f.png"
+    },
+    {
+      "id": "elmvmn7qbn6vm",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 195,
+      "y": 414,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Oxanium",
+        "size": 20,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#68758f",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7qnrsx",
+      "kind": "IMG",
+      "name": "Heart rate icon",
+      "x": 167,
+      "y": 414,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_heart_68758f.png"
+    },
+    {
+      "id": "elmvmn7qcc2a2",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 286,
+      "y": 414,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Oxanium",
+        "size": 20,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#68758f",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvmn7qpj7f5",
+      "kind": "IMG_LEVEL",
+      "name": "Battery level",
+      "x": 252,
+      "y": 417,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "images": [
+        "bat/bt68758f_0.png",
+        "bat/bt68758f_1.png",
+        "bat/bt68758f_2.png",
+        "bat/bt68758f_3.png",
+        "bat/bt68758f_4.png",
+        "bat/bt68758f_5.png",
+        "bat/bt68758f_6.png",
+        "bat/bt68758f_7.png",
+        "bat/bt68758f_8.png",
+        "bat/bt68758f_9.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "BATTERY",
+      "level": 0,
+      "glyph": {
+        "font": "Oxanium",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      }
+    },
+    {
+      "id": "elmvmn7qte4ha",
+      "kind": "IMG",
+      "name": "Target",
+      "x": 110,
+      "y": 224,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/nm_000.png",
+      "images": [
+        "sp/nm_000.png",
+        "sp/nm_001.png",
+        "sp/nm_002.png",
+        "sp/nm_003.png"
+      ],
+      "handle": "nm"
+    },
+    {
+      "id": "elmvmn7qtu55g",
+      "kind": "IMG",
+      "name": "Status",
+      "x": 35,
+      "y": 372,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/st_004.png",
+      "images": [
+        "sp/st_004.png",
+        "sp/st_005.png",
+        "sp/st_006.png",
+        "sp/st_007.png"
+      ],
+      "handle": "st"
+    },
+    {
+      "id": "elmvmn7qub3rs",
+      "kind": "IMG",
+      "name": "Progress",
+      "x": 50,
+      "y": 328,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 21,
+      "h": 6,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/pb_008.png",
+      "images": [
+        "sp/pb_008.png",
+        "sp/pb_009.png",
+        "sp/pb_010.png",
+        "sp/pb_011.png"
+      ],
+      "handle": "pb"
+    },
+    {
+      "id": "elmvmn7qv32bg",
+      "kind": "IMG",
+      "name": "Countdown 0",
+      "x": 112,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_012.png",
+      "images": [
+        "sp/cdig_012.png",
+        "sp/cdig_013.png",
+        "sp/cdig_014.png",
+        "sp/cdig_015.png",
+        "sp/cdig_016.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_022.png",
+        "sp/cdig_023.png"
+      ],
+      "handle": "c0"
+    },
+    {
+      "id": "elmvmn7qve4y8",
+      "kind": "IMG",
+      "name": "Countdown 1",
+      "x": 137,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_012.png",
+      "images": [
+        "sp/cdig_012.png",
+        "sp/cdig_013.png",
+        "sp/cdig_014.png",
+        "sp/cdig_015.png",
+        "sp/cdig_016.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_022.png",
+        "sp/cdig_023.png"
+      ],
+      "handle": "c1"
+    },
+    {
+      "id": "elmvmn7qvn11i",
+      "kind": "IMG",
+      "name": "Countdown 2",
+      "x": 162,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_022.png",
+      "images": [
+        "sp/cdig_022.png",
+        "sp/cdig_013.png",
+        "sp/cdig_014.png",
+        "sp/cdig_015.png",
+        "sp/cdig_016.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_012.png",
+        "sp/cdig_023.png"
+      ],
+      "handle": "c2"
+    },
+    {
+      "id": "elmvmn7qvy1e0",
+      "kind": "IMG",
+      "name": "Countdown 3",
+      "x": 187,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_014.png",
+      "images": [
+        "sp/cdig_014.png",
+        "sp/cdig_013.png",
+        "sp/cdig_012.png",
+        "sp/cdig_015.png",
+        "sp/cdig_016.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_022.png",
+        "sp/cdig_023.png"
+      ],
+      "handle": "c3"
+    },
+    {
+      "id": "elmvmn7qw73tz",
+      "kind": "IMG",
+      "name": "Countdown 4",
+      "x": 212,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_012.png",
+      "images": [
+        "sp/cdig_012.png",
+        "sp/cdig_013.png",
+        "sp/cdig_014.png",
+        "sp/cdig_015.png",
+        "sp/cdig_016.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_022.png",
+        "sp/cdig_023.png"
+      ],
+      "handle": "c4"
+    },
+    {
+      "id": "elmvmn7qwh20j",
+      "kind": "IMG",
+      "name": "Countdown 5",
+      "x": 237,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_022.png",
+      "images": [
+        "sp/cdig_022.png",
+        "sp/cdig_013.png",
+        "sp/cdig_014.png",
+        "sp/cdig_015.png",
+        "sp/cdig_016.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_012.png",
+        "sp/cdig_023.png"
+      ],
+      "handle": "c5"
+    },
+    {
+      "id": "elmvmn7qws6fa",
+      "kind": "IMG",
+      "name": "Countdown 6",
+      "x": 262,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_014.png",
+      "images": [
+        "sp/cdig_014.png",
+        "sp/cdig_013.png",
+        "sp/cdig_012.png",
+        "sp/cdig_015.png",
+        "sp/cdig_016.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_022.png",
+        "sp/cdig_023.png"
+      ],
+      "handle": "c6"
+    },
+    {
+      "id": "elmvmn7qx25nx",
+      "kind": "IMG",
+      "name": "Countdown 7",
+      "x": 287,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_016.png",
+      "images": [
+        "sp/cdig_016.png",
+        "sp/cdig_013.png",
+        "sp/cdig_014.png",
+        "sp/cdig_015.png",
+        "sp/cdig_012.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_022.png",
+        "sp/cdig_023.png"
+      ],
+      "handle": "c7"
+    },
+    {
+      "id": "elmvmn7qxe3kp",
+      "kind": "IMG",
+      "name": "Countdown 8",
+      "x": 312,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/cdig_023.png",
+      "images": [
+        "sp/cdig_023.png",
+        "sp/cdig_013.png",
+        "sp/cdig_014.png",
+        "sp/cdig_015.png",
+        "sp/cdig_016.png",
+        "sp/cdig_017.png",
+        "sp/cdig_018.png",
+        "sp/cdig_019.png",
+        "sp/cdig_020.png",
+        "sp/cdig_021.png",
+        "sp/cdig_022.png",
+        "sp/cdig_012.png"
+      ],
+      "handle": "c8"
+    },
+    {
+      "id": "elmvmn7qxq4n5",
+      "kind": "IMG",
+      "name": "Live dot",
+      "x": 294,
+      "y": 198,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/dot_024.png",
+      "images": [
+        "sp/dot_024.png",
+        "sp/dot_025.png"
+      ],
+      "handle": "dot"
+    },
+    {
+      "id": "elmvmn7qy66gn",
+      "kind": "IMG",
+      "name": "Switch flash",
+      "x": 36,
+      "y": 182,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCountdown",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/flash_026.png",
+      "images": [
+        "sp/flash_026.png",
+        "sp/flash_027.png"
+      ],
+      "handle": "flash"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "colon.png",
+      "width": 9,
+      "height": 19
+    },
+    {
+      "name": "week_w1.png",
+      "width": 90,
+      "height": 29
+    },
+    {
+      "name": "week_w2.png",
+      "width": 90,
+      "height": 29
+    },
+    {
+      "name": "week_w3.png",
+      "width": 90,
+      "height": 29
+    },
+    {
+      "name": "week_w4.png",
+      "width": 90,
+      "height": 29
+    },
+    {
+      "name": "week_w5.png",
+      "width": 90,
+      "height": 29
+    },
+    {
+      "name": "week_w6.png",
+      "width": 90,
+      "height": 29
+    },
+    {
+      "name": "week_w7.png",
+      "width": 90,
+      "height": 29
+    },
+    {
+      "name": "bpm.png",
+      "width": 41,
+      "height": 24
+    },
+    {
+      "name": "percent.png",
+      "width": 23,
+      "height": 21
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 24,
+      "height": 63
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 16,
+      "height": 20
+    },
+    {
+      "name": "ic_steps_68758f.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "ic_heart_68758f.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "bat/bt68758f_0.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_1.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_2.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_3.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_4.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_5.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_6.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_7.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_8.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "bat/bt68758f_9.png",
+      "width": 26,
+      "height": 14
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "scene_f10.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/nm_000.png",
+      "width": 200,
+      "height": 44
+    },
+    {
+      "name": "sp/nm_001.png",
+      "width": 200,
+      "height": 44
+    },
+    {
+      "name": "sp/nm_002.png",
+      "width": 200,
+      "height": 44
+    },
+    {
+      "name": "sp/nm_003.png",
+      "width": 200,
+      "height": 44
+    },
+    {
+      "name": "sp/st_004.png",
+      "width": 320,
+      "height": 28
+    },
+    {
+      "name": "sp/st_005.png",
+      "width": 320,
+      "height": 28
+    },
+    {
+      "name": "sp/st_006.png",
+      "width": 320,
+      "height": 28
+    },
+    {
+      "name": "sp/st_007.png",
+      "width": 320,
+      "height": 28
+    },
+    {
+      "name": "sp/pb_008.png",
+      "width": 290,
+      "height": 6
+    },
+    {
+      "name": "sp/pb_009.png",
+      "width": 290,
+      "height": 6
+    },
+    {
+      "name": "sp/pb_010.png",
+      "width": 290,
+      "height": 6
+    },
+    {
+      "name": "sp/pb_011.png",
+      "width": 290,
+      "height": 6
+    },
+    {
+      "name": "sp/cdig_012.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_013.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_014.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_015.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_016.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_017.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_018.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_019.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_020.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_021.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_022.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/cdig_023.png",
+      "width": 26,
+      "height": 50
+    },
+    {
+      "name": "sp/dot_024.png",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "name": "sp/dot_025.png",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "name": "sp/flash_026.png",
+      "width": 318,
+      "height": 168
+    },
+    {
+      "name": "sp/flash_027.png",
+      "width": 318,
+      "height": 168
+    },
+    {
+      "name": "colon_2.png",
+      "width": 9,
+      "height": 19
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 59,
+      "height": 80
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 24,
+      "height": 63
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // T-minus: the countdown cycles through three targets, all computed from the date: the next half hour (coffee), Monday, 23:00 (sleep)\n  const MS = 100, PX = 36, PY = 182, PW = 318;\n  const NAMES = ['CAFEA', 'LUNI', 'SOMN'], STAT = ['STARE: OPTIMISTĂ', 'ABORT RECOMANDAT', 'NEGOCIABIL'];\n  const V = {\"nm\":{\"CAFEA\":0,\"LUNI\":1,\"SOMN\":2,\"__blank\":3},\"st\":{\"STARE: OPTIMISTĂ\":0,\"ABORT RECOMANDAT\":1,\"NEGOCIABIL\":2,\"__blank\":3},\"pb\":{\"CAFEA\":0,\"LUNI\":1,\"SOMN\":2,\"__blank\":3},\"c0\":{\"0\":0,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\":\":10,\"__blank\":11},\"c1\":{\"0\":0,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\":\":10,\"__blank\":11},\"c2\":{\"0\":10,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\":\":0,\"__blank\":11},\"c3\":{\"0\":2,\"1\":1,\"2\":0,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\":\":10,\"__blank\":11},\"c4\":{\"0\":0,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\":\":10,\"__blank\":11},\"c5\":{\"0\":10,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\":\":0,\"__blank\":11},\"c6\":{\"0\":2,\"1\":1,\"2\":0,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\":\":10,\"__blank\":11},\"c7\":{\"0\":4,\"1\":1,\"2\":2,\"3\":3,\"4\":0,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\":\":10,\"__blank\":11},\"c8\":{\"0\":11,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"5\":5,\"6\":6,\"7\":7,\"8\":8,\"9\":9,\"__blank\":0,\":\":10},\"dot\":{\"s\":0,\"__blank\":1},\"flash\":{\"s\":0,\"__blank\":1}};\n  const tick = () => {\n    const now = Date.now(), d = new Date(now), idx = Math.floor(now / 3000), si = idx % 3, k = (now % 3000) / 1000;\n    const sod = d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds() + (now % 1000) / 1000;   // seconds since midnight\n    let rem, span;\n    if (si === 0) { span = 1800; rem = span - (sod % 1800); }\n    else if (si === 1) { const dow = (d.getDay() + 6) % 7; span = 7 * 86400; rem = (7 - dow) * 86400 - sod; }\n    else { span = 86400; rem = sod < 82800 ? 82800 - sod : 82800 + 86400 - sod; }\n    const total = Math.max(0, Math.floor(rem)), hh = Math.floor(total / 3600), mm = Math.floor(total % 3600 / 60), ss = total % 60;\n    const p2 = (n) => (n < 10 ? '0' : '') + n, str = (hh < 100 ? p2(hh) : String(hh)) + ':' + p2(mm) + ':' + p2(ss);\n    const slideX = Math.round((1 - Math.min(1, k / 0.35)) * 60 * (1 - 0)) , prog = Math.max(0, Math.min(1, 1 - rem / span));\n    slot('nm')(PX + 14 + Math.round(Math.pow(1 - Math.min(1, k / 0.35), 3) * 60), PY + 42, V.nm[NAMES[si]]);\n    slot('st')(195 - 160, PY + 190, V.st[STAT[si]]);\n    for (let i = 0; i < 9; i++) { if (i < str.length) slot('c' + i)(PX + 14 + 62 + i * 25, PY + 82, V['c' + i][str[i]]); else slot('c' + i).hide(); }\n    const w = Math.round((PW - 28) * Math.min(1, prog) * (1 - Math.pow(1 - Math.min(1, (k + 0.1) / 1.2), 3)));\n    if (w > 0) slot('pb')(PX + 14, PY + 146, V.pb[NAMES[si]], w, 6); else slot('pb').hide();\n    if (Math.floor(now / 500) % 2 === 0) slot('dot')(PX + PW - 60, PY + 16, V.dot.s); else slot('dot').hide();\n    if (k < 0.2) slot('flash')(PX, PY, V.flash.s); else slot('flash').hide();\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}
