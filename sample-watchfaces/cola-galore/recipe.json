@@ -1,0 +1,224 @@
+{
+ "name": "Cola Galore",
+ "device": "bip-6",
+ "font": "Bebas Neue",
+ "description": "A glass of ice-cold cola that fills over one minute, the level following the seconds: dark brown cola with rising fizz, a tan head, a Coke-red band above, and a .",
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "save": "project",
+ "out": "out/cola-galore",
+ "optimizePng": 16,
+ "userImports": "import { Time as DCTime } from '@zos/sensor'",
+ "userCode": "{\n  const MS = 100, TOP_EMPTY = 450, TOP_FULL = 40\n  const NB = F.liquid.length\n  let n = 0, id = null, via = '', y = null, lastSec = -1, sub = 0, clock = null\n  try { clock = new DCTime() } catch (e) {}\n  // seconds of the minute from the Zepp Time sensor (else Date, else our own count)\n  const seconds = () => {\n    try { if (clock) { const s = clock.getSeconds(); if (typeof s === 'number' && s >= 0) return s } } catch (e) {}\n    try { const s = new Date().getSeconds(); if (typeof s === 'number' && s >= 0) return s } catch (e) {}\n    return Math.floor(n * MS / 1000) % 60\n  }\n  // the sensor only counts whole seconds, so the ticks since the second changed fill in the fraction\n  const fraction = () => {\n    const s = seconds()\n    if (s !== lastSec) { lastSec = s; sub = 0 } else sub++\n    return (s + Math.min(0.95, sub * MS / 1000)) / 60\n  }\n  const tick = () => {\n    n++\n    const ny = Math.round(TOP_EMPTY - (TOP_EMPTY - TOP_FULL) * fraction()) - TOP_EMPTY\n    y = ny\n    // MORE takes x, y and src together on a plain IMG (checked on a Bip 6); SRC alone did not swap the pictures\n    W.cover.setProperty(ui.prop.MORE, { x: 0, y: pxv(y), src: F.cover[n % NB] })\n    W.liquid.setProperty(ui.prop.MORE, { x: 0, y: 0, src: F.liquid[n % NB] })\n  }\n  const stop = () => {\n    if (id === null) return\n    try { if (via === 't') timer.stopTimer(id); else clearInterval(id) } catch (e) {}\n    id = null\n  }\n  const safe = () => { try { tick() } catch (e) {} }\n  const start = () => {\n    if (id !== null) return\n    try {\n      if (typeof timer !== 'undefined' && timer && timer.createTimer) { id = timer.createTimer(0, MS, safe); via = 't' }\n      else if (typeof setInterval === 'function') { id = setInterval(safe, MS); via = 'i' }\n    } catch (e) {}\n  }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: () => { lastSec = -1; start() }, pause_call: stop })\n  safe()\n  start()\n}",
+ "steps": [
+  {
+   "preset": "bg"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\n\nconst FH = 500, N = 10, S0 = 40, PER = 120, FOAM = 20;\nconst bub = Array.from({ length: 120 }, () => ({ x: 10 + rnd() * (W - 20), y: rnd() * PER, r: 0.7 + rnd() * 1.7 }));\nconst fz = Array.from({ length: 200 }, () => ({ x: rnd() * W, y: rnd() * (FOAM - 6), r: 0.8 + rnd() * 2.6 }));\nfor (let k = 0; k < N; k++) {\n  const ph = 2 * Math.PI * k / N;\n  const ys = (x) => S0 + 2 * Math.sin(2 * Math.PI * x / W - ph) + 1 * Math.sin(4 * Math.PI * x / W + 2 * ph);\n  const c = mk(W, FH), g = c.getContext('2d');\n  g.beginPath(); g.moveTo(0, FH); g.lineTo(0, ys(0) + 6);\n  for (let x = 0; x <= W; x += 6) g.lineTo(x, ys(x) + 6);\n  g.lineTo(W, FH); g.closePath();\n  const lg = g.createLinearGradient(0, S0, 0, FH);\n  lg.addColorStop(0, '#4a1a08'); lg.addColorStop(0.25, '#2f0f05'); lg.addColorStop(0.65, '#1a0803'); lg.addColorStop(1, '#0a0301');\n  g.fillStyle = lg; g.fill();\n  g.save(); g.clip();\n  const rg = g.createRadialGradient(W / 2, S0 + 230, 10, W / 2, S0 + 230, 330);\n  rg.addColorStop(0, 'rgba(200,85,20,0.3)'); rg.addColorStop(0.5, 'rgba(160,60,10,0.12)'); rg.addColorStop(1, 'rgba(200,80,15,0)');\n  g.fillStyle = rg; g.fillRect(0, S0, W, FH);\n  seed = 41;\n  for (let i = 0; i < 16; i++) {\n    const x = rnd() * W, w = 10 + rnd() * 34, a = 0.05 + rnd() * 0.07, light = rnd() > 0.5;\n    const sg = g.createLinearGradient(x - w, 0, x + w, 0), col = light ? '210,120,60' : '10,2,0';\n    sg.addColorStop(0, 'rgba(' + col + ',0)'); sg.addColorStop(0.5, 'rgba(' + col + ',' + a + ')'); sg.addColorStop(1, 'rgba(' + col + ',0)');\n    g.fillStyle = sg; g.fillRect(x - w, S0, w * 2, FH);\n  }\n  const hg = g.createLinearGradient(0, 0, W, 0);\n  hg.addColorStop(0, 'rgba(8,2,0,0.6)'); hg.addColorStop(0.1, 'rgba(8,2,0,0)'); hg.addColorStop(0.9, 'rgba(8,2,0,0)'); hg.addColorStop(1, 'rgba(8,2,0,0.6)');\n  g.fillStyle = hg; g.fillRect(0, 0, W, FH);\n  // plenty of fizz, rising 12 px per frame (loops every 120 px)\n  for (const b of bub) {\n    for (let t = ((b.y - k * 12) % PER + PER) % PER; t < FH; t += PER) {\n      if (t < S0 + FOAM) continue;\n      const bx = b.x + 2 * Math.sin((t + k * 12) / 26 + b.x);\n      g.beginPath(); g.arc(bx, t, b.r, 0, 7); g.fillStyle = 'rgba(255,225,215,0.22)'; g.fill();\n      g.lineWidth = 0.9; g.strokeStyle = 'rgba(255,240,235,0.75)'; g.stroke();\n    }\n  }\n  g.restore();\n  // beige fizz head\n  g.beginPath(); g.moveTo(0, ys(0) + FOAM);\n  for (let x = 0; x <= W; x += 4) g.lineTo(x, ys(x) - 1 + 1.2 * Math.sin(x / 7 + ph));\n  g.lineTo(W, ys(W) + FOAM); g.closePath();\n  const fg = g.createLinearGradient(0, S0 - 4, 0, S0 + FOAM);\n  fg.addColorStop(0, '#fff3e3'); fg.addColorStop(0.55, '#e9c9a4'); fg.addColorStop(1, 'rgba(120,55,22,0.9)');\n  g.fillStyle = fg; g.fill();\n  g.save(); g.clip();\n  for (const d of fz) { g.beginPath(); g.arc(d.x, ys(d.x) + 3 + d.y, d.r, 0, 7); g.strokeStyle = 'rgba(190,120,100,0.4)'; g.lineWidth = 0.8; g.stroke(); g.fillStyle = 'rgba(255,255,255,0.4)'; g.fill(); }\n  g.restore();\n  names.push(addProjectImage('cola_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Liquid'; e.src = names[0]; e.images = names.slice(); e.handle = 'liquid'; e.x = 0; e.y = 0; e.show = 'normal'; return names.length;"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\n\nconst FOAM = 20, TOP = H, CH = H + FOAM + 8, NF = 10;\nseed = 9;\nconst drops = Array.from({ length: 120 }, () => ({ x: rnd() * W, y: rnd() * (H - 10), r: 0.9 + rnd() * 2.4 }));\nconst fz = Array.from({ length: 160 }, () => ({ x: rnd() * W, y: rnd() * (FOAM - 6), r: 0.8 + rnd() * 2.6 }));\nfor (let k = 0; k < NF; k++) {\n  const ph = 2 * Math.PI * k / NF;\n  const c = mk(W, CH), g = c.getContext('2d');\n  const rd = g.createRadialGradient(W * 0.85, -20, 10, W * 0.5, TOP * 0.5, TOP * 0.95);\n  rd.addColorStop(0, '#f5434a'); rd.addColorStop(0.35, '#e8222a'); rd.addColorStop(1, '#b50f18');\n  g.fillStyle = rd; g.fillRect(0, 0, W, TOP + 8);\n  for (const d of drops) { g.beginPath(); g.arc(d.x, d.y, d.r, 0, 7); g.fillStyle = 'rgba(255,255,255,0.14)'; g.fill(); g.lineWidth = 0.8; g.strokeStyle = 'rgba(255,255,255,0.4)'; g.stroke(); g.beginPath(); g.arc(d.x - d.r * 0.3, d.y - d.r * 0.35, Math.max(0.5, d.r * 0.3), 0, 7); g.fillStyle = 'rgba(255,255,255,0.85)'; g.fill(); }\n  g.beginPath(); g.moveTo(0, TOP + FOAM);\n  for (let x = 0; x <= W; x += 4) g.lineTo(x, TOP - 1 + 3 * Math.sin(x / 19 + ph) + 1.4 * Math.sin(x / 7 - 2 * ph));\n  g.lineTo(W, TOP + FOAM); g.closePath();\n  const fg = g.createLinearGradient(0, TOP - 4, 0, TOP + FOAM);\n  fg.addColorStop(0, '#fff3e3'); fg.addColorStop(0.55, '#e9c9a4'); fg.addColorStop(1, 'rgba(120,55,22,0.9)');\n  g.fillStyle = fg; g.fill();\n  g.save(); g.clip();\n  for (const d of fz) { const y = TOP + 3 + d.y + 2 * Math.sin(ph + d.x); g.beginPath(); g.arc(d.x + 1.5 * Math.sin(ph + d.y), y, d.r, 0, 7); g.strokeStyle = 'rgba(190,120,100,0.4)'; g.lineWidth = 0.8; g.stroke(); g.fillStyle = 'rgba(255,255,255,0.4)'; g.fill(); }\n  g.restore();\n  names.push(addProjectImage('cover_' + k + '.png', c, {}).name);\n}\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Cover'; e.src = names[0]; e.images = names.slice(); e.handle = 'cover'; e.x = 0; e.y = 40 - dev().h; e.show = 'normal'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Main'; return 1"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "script": "const n = project.elements.length; for (const i of [n-3,n-2,n-1]) project.elements[i].name += ' Aod'; return 1"
+  },
+  {
+   "preset": "weekday"
+  },
+  {
+   "preset": "day"
+  },
+  {
+   "preset": "temp"
+  },
+  {
+   "script": "\nconst W = dev().w, H = dev().h;\nlet seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst names = [];\n\nconst c = mk(W, H), g = c.getContext('2d');\nfor (const left of [true, false]) {\n  const g1 = g.createLinearGradient(left ? 0 : W, 0, left ? 16 : W - 16, 0);\n  g1.addColorStop(0, 'rgba(255,225,220,0.4)'); g1.addColorStop(1, 'rgba(255,225,220,0)');\n  g.fillStyle = g1; g.fillRect(left ? 0 : W - 16, 0, 16, H);\n}\nconst refl = (x, y0, y1, w, a) => { const r = g.createLinearGradient(x, y0, x, y1); r.addColorStop(0, 'rgba(255,255,255,0)'); r.addColorStop(0.25, 'rgba(255,255,255,' + a + ')'); r.addColorStop(0.8, 'rgba(255,255,255,' + a + ')'); r.addColorStop(1, 'rgba(255,255,255,0)');\n  g.fillStyle = r; g.beginPath(); g.moveTo(x, y0); g.quadraticCurveTo(x + w * 1.6, (y0 + y1) / 2, x, y1); g.quadraticCurveTo(x + w * 0.4, (y0 + y1) / 2, x, y0); g.fill(); };\nrefl(26, 30, 380, 6, 0.34); refl(40, 70, 330, 2.5, 0.2); refl(W - 28, 80, 340, 4, 0.16);\n// condensation droplets, as on the cold glass in the photo\nseed = 23;\nfor (let i = 0; i < 70; i++) {\n  const x = 12 + rnd() * (W - 24), y = 40 + rnd() * (H - 130), r = 0.8 + rnd() * 1.8;\n  g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = 'rgba(255,255,255,0.12)'; g.fill();\n  g.strokeStyle = 'rgba(255,255,255,0.4)'; g.lineWidth = 0.8; g.stroke();\n  g.beginPath(); g.arc(x - r * 0.3, y - r * 0.35, Math.max(0.5, r * 0.3), 0, 7); g.fillStyle = 'rgba(255,255,255,0.85)'; g.fill();\n}\nconst bg2 = g.createLinearGradient(0, H - 40, 0, H); bg2.addColorStop(0, 'rgba(255,230,225,0)'); bg2.addColorStop(1, 'rgba(255,230,225,0.45)');\ng.fillStyle = bg2; g.fillRect(0, H - 40, W, 40);\nnames.push(addProjectImage('glass_front.png', c, {}).name);\n\nawait loadAllImages();\nconst e = await addElement('IMG', { src: names[0] }); e.name = 'Glass'; e.src = names[0]; e.x = 0; e.y = 0; e.show = 'normal'; return 1"
+  },
+  {
+   "remove": "Colon Aod"
+  },
+  {
+   "edit": "Hour Main",
+   "set": {
+    "x": 41,
+    "y": 171,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 150,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#ffd9d4",
+    "angle": 90,
+    "borderColor": "#4a0308",
+    "borderWidth": 1.5,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Colon Main",
+   "set": {
+    "x": 178,
+    "y": 188,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 150,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#ffd9d4",
+    "angle": 90,
+    "borderColor": "#4a0308",
+    "borderWidth": 1.5,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Minute Main",
+   "set": {
+    "x": 210,
+    "y": 171,
+    "show": "normal",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 150,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#ffd9d4",
+    "angle": 90,
+    "borderColor": "#4a0308",
+    "borderWidth": 1.5,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Hour Aod",
+   "set": {
+    "x": 140,
+    "y": 115,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 120,
+    "fill": "solid",
+    "color": "#c24a48"
+   }
+  },
+  {
+   "edit": "Minute Aod",
+   "set": {
+    "x": 142,
+    "y": 241,
+    "show": "aod",
+    "zero": 1
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 120,
+    "fill": "solid",
+    "color": "#c24a48"
+   }
+  },
+  {
+   "edit": "Weekday",
+   "set": {
+    "x": 134,
+    "y": 36,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 46,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#ffd9d4",
+    "angle": 90,
+    "borderColor": "#4a0308",
+    "borderWidth": 1.5,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Day",
+   "set": {
+    "x": 206,
+    "y": 44,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 46,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#ffd9d4",
+    "angle": 90,
+    "borderColor": "#4a0308",
+    "borderWidth": 1.5,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "edit": "Temperature",
+   "set": {
+    "x": 155,
+    "y": 378,
+    "show": "normal"
+   },
+   "glyph": {
+    "font": "Bebas Neue",
+    "size": 58,
+    "fill": "gradient",
+    "from": "#ffffff",
+    "to": "#ffd9d4",
+    "angle": 90,
+    "borderColor": "#4a0308",
+    "borderWidth": 1.5,
+    "shadowColor": "#000000",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 3
+   }
+  },
+  {
+   "script": "const W = dev().w, H = dev().h, CX = W / 2, TAU = Math.PI * 2, rad = (d) => d * Math.PI / 180;\nconst mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst E = (n) => project.elements.find((e) => e.name === n);\nlet seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;\nawait loadAllImages();\nconst inkOf = (e) => {\n  const names = ((e.images && e.images.length) ? e.images : [e.src]).filter(Boolean);\n  let t = 1e9, b = -1, l = 1e9, r = -1;\n  for (const n of names) {\n    const im = imgCache.get(n); if (!im) continue;\n    const w = im.naturalWidth || im.width, h = im.naturalHeight || im.height;\n    const c = mk(w, h), g = c.getContext('2d'); g.drawImage(im, 0, 0);\n    const d = g.getImageData(0, 0, w, h).data;\n    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] > 60) { if (y < t) t = y; if (y > b) b = y; if (x < l) l = x; if (x > r) r = x; }\n  }\n  return { t, b, l, r };\n};\nconst vy = (e, cy) => { const k = inkOf(e); return Math.round(cy - (k.t + k.b + 1) / 2); };\n// centre a layer on (cx, cy), measured on the ink vertically and on the box horizontally\nconst cc = (n, cx, cy) => { const e = E(n), b = elBox(e); e.alignH = 'CENTER_H'; e.x = Math.round(cx - b.w / 2); e.y = vy(e, cy); };\n// left-align a layer at x, ink centred on cy\nconst ll = (n, x, cy) => { const e = E(n); e.alignH = 'LEFT'; e.x = Math.round(x); e.y = vy(e, cy); };\nconst rowC = (names, cx, cy, gap) => {\n  const bs = names.map((n) => elBox(E(n)));\n  const tot = bs.reduce((s, b) => s + b.w, 0) + gap * (names.length - 1);\n  let x = cx - tot / 2;\n  names.forEach((n, i) => { const e = E(n); e.x = Math.round(x); e.y = vy(e, cy); x += bs[i].w + gap; });\n};\nconst under = (e, at = 1) => { project.elements.splice(project.elements.indexOf(e), 1); project.elements.splice(at, 0, e); return e; };\nconst addImg = async (key, canvas, x, y, name, show) => {\n  const nm = addProjectImage(key + '.png', canvas, {}).name;\n  const e = await addElement('IMG', { src: nm }); e.name = name; e.src = nm; e.x = Math.round(x); e.y = Math.round(y); e.show = show || 'normal'; return e;\n};\nconst addArc = async (name, dataType, cx, cy, r, lw, a0, a1, color) => {\n  const e = await addElement('ARC_PROGRESS', { dataType }); e.name = name; Object.assign(e, { dataType, centerX: cx, centerY: cy, radius: r, lineWidth: lw, startAngle: a0, endAngle: a1, color, show: 'normal' }); return e;\n};\nconst addBar = async (name, dataType, x, y, len, lw, color, o = {}) => {\n  const e = await addElement('BAR', { dataType }); e.name = name; Object.assign(e, { dataType, x, y, length: len, lineWidth: lw, color, rounded: true, show: 'normal' }, o); return e;\n};\nconst rr = (g, x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };\n// ---------- icons (square canvas of size s) ----------\nconst ICON = {\n  heart(g, s, c, line) { const k = s / 32; g.save(); g.scale(k, k); g.beginPath(); g.moveTo(16, 29); g.bezierCurveTo(3, 19, 1, 10, 8, 6); g.bezierCurveTo(12, 3.5, 16, 6, 16, 10); g.bezierCurveTo(16, 6, 20, 3.5, 24, 6); g.bezierCurveTo(31, 10, 29, 19, 16, 29); g.closePath(); if (line) { g.lineWidth = 2.6; g.strokeStyle = c; g.stroke(); } else { g.fillStyle = c; g.fill(); } g.restore(); },\n  steps(g, s, c, line) { const k = s / 32; g.save(); g.scale(k, k); const foot = (x, y, rot) => { g.save(); g.translate(x, y); g.rotate(rot); g.beginPath(); g.ellipse(0, -3, 4.6, 7.2, 0, 0, TAU); g.moveTo(3.6, 8.6); g.ellipse(0, 9.6, 3.4, 3.4, 0, 0, TAU); if (line) { g.lineWidth = 2.2; g.strokeStyle = c; g.stroke(); } else { g.fillStyle = c; g.fill(); } g.restore(); }; foot(10.5, 20, -0.12); foot(21.5, 12, 0.12); g.restore(); },\n  thermo(g, s, c, line) { const k = s / 32; g.save(); g.scale(k, k); g.strokeStyle = c; g.fillStyle = c; g.lineWidth = 2.6; rr(g, 12.5, 2.5, 7, 19, 3.5); g.stroke(); g.beginPath(); g.arc(16, 24.5, 5.6, 0, TAU); g.fill(); g.fillRect(14.7, 9, 2.6, 15); g.restore(); },\n  sun(g, s, c, line) { const k = s / 32; g.save(); g.scale(k, k); g.strokeStyle = c; g.fillStyle = c; g.lineWidth = 2.6; g.lineCap = 'round'; g.beginPath(); g.arc(16, 21, 7, Math.PI, 0); g.closePath(); if (line) g.stroke(); else g.fill(); for (let i = 0; i < 5; i++) { const a = Math.PI + (i + 0) * Math.PI / 4; g.beginPath(); g.moveTo(16 + Math.cos(a) * 11, 21 + Math.sin(a) * 11); g.lineTo(16 + Math.cos(a) * 15, 21 + Math.sin(a) * 15); g.stroke(); } g.beginPath(); g.moveTo(3, 25.5); g.lineTo(29, 25.5); g.stroke(); g.restore(); },\n\n  sunrise(g, s, c, line) { const k = s / 32; g.save(); g.scale(k, k); g.strokeStyle = c; g.fillStyle = c; g.lineWidth = 2.6; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); g.arc(16, 24, 6.5, Math.PI, 0); g.closePath(); if (line) g.stroke(); else g.fill(); g.beginPath(); g.moveTo(4, 27.5); g.lineTo(28, 27.5); g.stroke(); for (const a of [-2.1, -1.57, -1.04]) { g.beginPath(); g.moveTo(16 + Math.cos(a) * 10, 24 + Math.sin(a) * 10); g.lineTo(16 + Math.cos(a) * 13, 24 + Math.sin(a) * 13); g.stroke(); } g.beginPath(); g.moveTo(16, 11.5); g.lineTo(16, 2.5); g.moveTo(12.2, 6.3); g.lineTo(16, 2.5); g.lineTo(19.8, 6.3); g.stroke(); g.restore(); },\n  sunset(g, s, c, line) { const k = s / 32; g.save(); g.scale(k, k); g.strokeStyle = c; g.fillStyle = c; g.lineWidth = 2.6; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); g.arc(16, 15, 6.5, Math.PI, 0); g.closePath(); if (line) g.stroke(); else g.fill(); g.beginPath(); g.moveTo(4, 18.5); g.lineTo(28, 18.5); g.stroke(); for (const a of [-2.1, -1.57, -1.04]) { g.beginPath(); g.moveTo(16 + Math.cos(a) * 10, 15 + Math.sin(a) * 10); g.lineTo(16 + Math.cos(a) * 13, 15 + Math.sin(a) * 13); g.stroke(); } g.beginPath(); g.moveTo(16, 21.5); g.lineTo(16, 30.5); g.moveTo(12.2, 26.7); g.lineTo(16, 30.5); g.lineTo(19.8, 26.7); g.stroke(); g.restore(); },\n  bolt(g, s, c) { const k = s / 32; g.save(); g.scale(k, k); g.fillStyle = c; g.beginPath(); g.moveTo(19, 2); g.lineTo(7, 18); g.lineTo(15, 18); g.lineTo(12, 30); g.lineTo(25, 13); g.lineTo(17, 13); g.closePath(); g.fill(); g.restore(); },\n  calendar(g, s, c) { const k = s / 32; g.save(); g.scale(k, k); g.strokeStyle = c; g.lineWidth = 2.4; rr(g, 4, 6, 24, 22, 4); g.stroke(); g.beginPath(); g.moveTo(4, 13); g.lineTo(28, 13); g.moveTo(10, 3); g.lineTo(10, 9); g.moveTo(22, 3); g.lineTo(22, 9); g.stroke(); g.restore(); },\n};\nconst icon = (kind, s, color, line) => { const c = mk(s, s); ICON[kind](c.getContext('2d'), s, color, line); return c; };\n// battery cell, level 0..1 (drawn horizontally), returns a canvas\nconst cell = (w, h, level, col, frame, empty) => {\n  const c = mk(w, h), g = c.getContext('2d'), t = Math.max(2, Math.round(h * 0.09)), cap = Math.round(w * 0.07);\n  g.strokeStyle = frame; g.lineWidth = t; rr(g, t / 2, t / 2, w - cap - t, h - t, h * 0.28); g.stroke();\n  g.fillStyle = frame; rr(g, w - cap, h * 0.3, cap, h * 0.4, cap / 2); g.fill();\n  const iw = w - cap - t * 3, ih = h - t * 3;\n  g.save(); rr(g, t * 1.5, t * 1.5, iw, ih, ih * 0.22); g.clip();\n  g.fillStyle = empty || 'rgba(255,255,255,0.08)'; g.fillRect(0, 0, w, h);\n  g.fillStyle = col; g.fillRect(t * 1.5, 0, iw * level, h);\n  g.restore(); return c;\n};\nconst batterySet = async (key, w, h, cols, frame, x, y, name, mkcell) => {\n  const names = [];\n  for (let i = 0; i < 10; i++) {\n    const lv = (i + 1) / 10, col = lv <= 0.2 ? cols[2] : lv <= 0.5 ? cols[1] : cols[0];\n    names.push(addProjectImage('bat/' + key + '_' + i + '.png', (mkcell || cell)(w, h, lv, col, frame), {}).name);\n  }\n  const e = await addElement('IMG_LEVEL', { dataType: 'BATTERY', images: names, w: 0, h: 0 });\n  e.name = name; e.images = names; e.dataType = 'BATTERY'; e.x = Math.round(x); e.y = Math.round(y); e.show = 'normal'; return e;\n};\n// icon + reading chip: icon at x, reading left-aligned to its right, both centred on cy\nconst chip = async (layer, kind, x, cy, s, color, line, gap = 7) => {\n  const ic = await addImg('ic_' + kind + '_' + color.replace('#', ''), icon(kind, s, color, line), x, cy - s / 2, layer + ' icon');\n  ll(layer, x + s + gap, cy); return ic;\n};\nconst scene = async (c, name) => { const e = await addImg(name || 'scene', c, 0, 0, 'Scene'); under(e, 1); return e; };\nconst fillBg = (g, col) => { g.fillStyle = col; g.fillRect(0, 0, W, H); };\nconst glow = (g, x, y, r, rgba0, rgba1 = 'rgba(0,0,0,0)') => { const q = g.createRadialGradient(x, y, 0, x, y, r); q.addColorStop(0, rgba0); q.addColorStop(1, rgba1); g.fillStyle = q; g.fillRect(x - r, y - r, r * 2, r * 2); };\n\n// ---- graphics helpers ----\nconst clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));\nconst lerp = (a, b, t) => a + (b - a) * t;\nconst prog = (t, a, b) => clamp((t - a) / (b - a));\nconst Ease = {\n  out: (t) => 1 - Math.pow(1 - t, 3), in: (t) => t * t * t, io: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),\n  back: (t) => { const c = 1.70158; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },\n  bounce: (t) => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + 0.75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + 0.9375; return n * (t -= 2.625 / d) * t + 0.984375; },\n  elastic: (t) => (t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (TAU / 3)) + 1),\n};\nconst paint = (g, fill, stroke, lw) => { if (fill) { g.fillStyle = fill; g.fill(); } if (stroke) { g.strokeStyle = stroke; g.lineWidth = lw || 2; g.lineJoin = 'round'; g.lineCap = 'round'; g.stroke(); } };\nconst circ = (g, x, y, r, fill, stroke, lw) => { g.beginPath(); g.arc(x, y, r, 0, TAU); paint(g, fill, stroke, lw); };\nconst ell = (g, x, y, rx, ry, rot, fill, stroke, lw) => { g.beginPath(); g.ellipse(x, y, Math.max(0.01, rx), Math.max(0.01, ry), rot || 0, 0, TAU); paint(g, fill, stroke, lw); };\nconst poly = (g, pts, fill, stroke, lw, close = true) => { g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); if (close) g.closePath(); paint(g, fill, stroke, lw); };\nconst line = (g, x0, y0, x1, y1, col, lw) => { g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.strokeStyle = col; g.lineWidth = lw; g.lineCap = 'round'; g.stroke(); };\nconst quad = (g, x0, y0, cx, cy, x1, y1, col, lw) => { g.beginPath(); g.moveTo(x0, y0); g.quadraticCurveTo(cx, cy, x1, y1); g.strokeStyle = col; g.lineWidth = lw; g.lineCap = 'round'; g.stroke(); };\nlet FONT = 'sans-serif';\n// text: opts { align, base, font, stroke, lw, rot, sx, sy, shadow:[color,dx,dy,blur] }\nconst txt = (g, s, x, y, size, fill, o = {}) => {\n  g.save(); g.translate(x, y); if (o.rot) g.rotate(o.rot); if (o.sx || o.sy) g.scale(o.sx || 1, o.sy || 1);\n  g.font = size + 'px \"' + (o.font || FONT) + '\"'; g.textAlign = o.align || 'center'; g.textBaseline = o.base || 'alphabetic';\n  if (o.shadow) { g.shadowColor = o.shadow[0]; g.shadowOffsetX = o.shadow[1]; g.shadowOffsetY = o.shadow[2]; g.shadowBlur = o.shadow[3] || 0; }\n  if (o.stroke) { g.lineWidth = o.lw || 4; g.strokeStyle = o.stroke; g.lineJoin = 'round'; g.strokeText(s, 0, 0); }\n  if (fill) { g.fillStyle = fill; g.fillText(s, 0, 0); }\n  g.restore();\n};\nconst tw = (g, s, size, font) => { g.save(); g.font = size + 'px \"' + (font || FONT) + '\"'; const w = g.measureText(s).width; g.restore(); return w; };\nconst grad = (g, x0, y0, x1, y1, stops) => { const q = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(([o, c]) => q.addColorStop(o, c)); return q; };\nconst rgrad = (g, x, y, r0, r1, stops) => { const q = g.createRadialGradient(x, y, r0, x, y, r1); stops.forEach(([o, c]) => q.addColorStop(o, c)); return q; };\nconst srand = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };\nconst fit = (g) => { g.save(); };\n// ---------- sprite rig: a static background plus small cached sprites placed by a timeline ----------\nconst mkc = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };\nconst SPR = new Map();\n// a sprite is drawn once per key (pose) in local coordinates; the timeline only places it\nconst spr = (key, w, h, fn) => { if (!SPR.has(key)) { const c = mkc(w, h), g = c.getContext('2d'); fn(g); SPR.set(key, { key, c, w, h }); } return SPR.get(key); };\n\n// text sprite: the string drawn once in a tight canvas; returns { sprite, w } (anchor: left baseline at (pad, base))\nconst tspr = (key, s, size, fill, o = {}) => { const font = o.font || FONT; const g0 = mkc(1, 1).getContext('2d'); g0.font = size + 'px \"' + font + '\"'; const w = Math.ceil(g0.measureText(s).width) + 2 * (o.pad == null ? 4 : o.pad); const h = Math.ceil(size * 1.35);\n  return spr('t:' + key, w, h, (g) => { txt(g, s, o.align === 'center' ? w / 2 : (o.pad == null ? 4 : o.pad), size * 1.05, size, fill, Object.assign({}, o, { align: o.align || 'left' })); }); };\n\n// ---------- measured placement (ink bounds from a real render of just those layers) ----------\nconst inkBox = async (names, state, wd) => {\n  await loadAllImages();\n  const d = dev(), cv = mk(d.w, d.h), g = cv.getContext('2d');\n  const els = names.map(E); const miss = names.filter((n, i) => !els[i]);\n  if (miss.length) throw new Error('inkBox: no layer ' + miss.join(', '));\n  const keepEls = project.elements, set = new Set(els);\n  project.elements = keepEls.filter((e) => set.has(e));\n  const k = { clock, dateParts, exportRender };\n  clock = { ...REF_CLOCK }; dateParts = { ...REF_DATE, ...(wd ? { weekday: wd } : {}) }; exportRender = true;\n  try { drawScene(g, d.w, d.h, state || 'normal', false); } finally { clock = k.clock; dateParts = k.dateParts; exportRender = k.exportRender; project.elements = keepEls; }\n  const px = g.getImageData(0, 0, d.w, d.h).data; let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;\n  for (let y = 0; y < d.h; y++) for (let x = 0; x < d.w; x++) { const o = (y * d.w + x) * 4; if (px[o] > 8 || px[o + 1] > 8 || px[o + 2] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } }\n  if (x1 < 0) return { x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0, r: 0, b: 0 };\n  return { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1, cx: (x0 + x1 + 1) / 2, cy: (y0 + y1 + 1) / 2, r: x1 + 1, b: y1 + 1 };\n};\nconst shift = (names, dx, dy) => names.forEach((n) => { const e = E(n); e.x = Math.round(e.x + dx); e.y = Math.round(e.y + dy); });\n// move the ink of `names` so that its left / cx / right edge and top / cy / bottom edge hit the targets\nconst align = async (names, o, state) => {\n  const b = await inkBox(names, state); let dx = 0, dy = 0;\n  if (o.l !== undefined) dx = o.l - b.x; else if (o.cx !== undefined) dx = o.cx - b.cx; else if (o.r !== undefined) dx = o.r - b.r;\n  if (o.t !== undefined) dy = o.t - b.y; else if (o.cy !== undefined) dy = o.cy - b.cy; else if (o.b !== undefined) dy = o.b - b.b;\n  shift(names, dx, dy); return inkBox(names, state);\n};\n// a row of layers left to right with an equal ink gap, centred on cx, vertically on cy\nconst seqRow = async (names, cx, cy, gap, state) => {\n  const bs = []; for (const n of names) { await align([n], { cx: 195, cy: 225 }, state); bs.push(await inkBox([n], state)); }\n  const tot = bs.reduce((s, b) => s + b.w, 0) + gap * (names.length - 1); let x = cx - tot / 2;\n  for (let i = 0; i < names.length; i++) { await align([names[i]], { l: x, cy }, state); x += bs[i].w + gap; }\n};\n// park layers on screen so their size can be measured\nconst park = (names) => names.forEach((n) => { const e = E(n); e.x = 20; e.y = 20; });\n// icon + reading chip: icon centred on cy, digits' ink centred on cy, the pair centred on cx\nconst chipAt = async (layer, kind, cx, cy, s, color, line, gap = 8) => {\n  const icn = layer + ' icon';\n  await addImg('ic_' + kind + '_' + color.replace('#', ''), icon(kind, s, color, line), 100, 100, icn);\n  ll(layer, 100 + s + gap, cy); await align([icn], { cy }); await align([layer, icn], { cx }); return icn;\n};\nconst batChipAt = async (layer, cx, cy, w, h, cols, frame, gap = 8, mkcell) => {\n  await batterySet('bt' + frame.replace('#', ''), w, h, cols, frame, 100, 100, 'Battery level', mkcell);\n  ll(layer, 100 + w + gap, cy); await align(['Battery level'], { cy }); await align([layer, 'Battery level'], { cx });\n};\nconst pill = (g, x, y, w, h, fill, stroke) => { rr(g, x, y, w, h, h / 2); g.fillStyle = fill; g.fill(); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1; g.stroke(); } };\n// left-aligned chip: icon's left ink edge at l, reading after it, both centred on cy\nconst chipL = async (layer, kind, l, cy, s, color, line, gap = 8) => {\n  const icn = layer + ' icon';\n  await addImg('ic_' + kind + '_' + color.replace('#', ''), icon(kind, s, color, line), 100, 100, icn);\n  ll(layer, 100 + s + gap, cy); await align([icn], { cy }); await align([layer, icn], { l }); return icn;\n};\nconst allNames = ['Hour', 'Minute', 'Colon', 'Weekday', 'Day', 'Steps', 'Heart rate', 'Battery', 'Temperature', 'Sunrise', 'Sunset'];\n\n// ---- sprite slots: a slot is one IMG layer with several pictures (F.<handle>), all on one canvas size ----\nconst BAKED = {}; let bakeN = 0;\nconst bake = (slug, key, w, h, fn) => { const id = slug + '|' + key; if (!BAKED[id]) { const c = mkc(w, h); fn(c.getContext('2d')); BAKED[id] = addProjectImage('sp/' + slug + '_' + String(bakeN++).padStart(3, '0') + '.png', c, {}).name; } return BAKED[id]; };\nconst SLOTS = {};      // handle -> { keys: [], names: [] }\nconst mkSlot = async (handle, label, variants, w, h, x, y, share) => {\n  // variants: [[key, drawFn(g)], ...] all drawn on a w x h canvas; a blank picture is kept as the last one for hiding\n  const all = variants.concat([['__blank', () => {}]]);\n  const names = all.map(([k, fn]) => bake(share || handle, k, w, h, fn));\n  const e = await addElement('IMG', { src: names[0] });\n  Object.assign(e, { name: label, src: names[0], images: names, handle, x: Math.round(x), y: Math.round(y), show: 'normal' });\n  SLOTS[handle] = { keys: all.map((v) => v[0]), el: e }; return e;\n};\nconst VMAP = () => { const o = {}; for (const h in SLOTS) { o[h] = {}; SLOTS[h].keys.forEach((k, i) => { o[h][k] = i; }); } return o; };\n// run the face's own code once at the reference time (10:09:36) against recording stubs, then make that the static state:\n// positions/sizes as the code set them, the shown picture moved to first place (blank first where the code hides the slot)\nconst refPlace = (codeSrc) => {\n  const ref0 = new Date(2026, 9, 24, 10, 9, 36).getTime(), refMs = globalThis.__REFADJ ? globalThis.__REFADJ(ref0) : ref0, rec = {}, RDate = Date;\n  const stub = (h) => ({ setProperty: (p, v) => { rec[h] = Object.assign(rec[h] || {}, v); } });\n  const Wp = new Proxy({}, { get: (o, h) => o[h] || (o[h] = stub(h)) });\n  const Fp = new Proxy({}, { get: (o, h) => o[h] || (o[h] = new Proxy([], { get: (a, k) => 'ix' + k })) });\n  class RD extends RDate { constructor(...a) { if (a.length) super(...a); else super(refMs); } static now() { return refMs; } }\n  const ui = { prop: { MORE: 'MORE' }, widget: { WIDGET_DELEGATE: 'D' }, align: {}, createWidget: () => ({}) };\n  new Function('ui', 'pxv', 'W', 'F', 'setTimeout', 'Date', codeSrc)(ui, Math.round, Wp, Fp, () => 0, RD);\n  const swap = (s, i, j) => { const e = s.el; [s.keys[i], s.keys[j]] = [s.keys[j], s.keys[i]]; [e.images[i], e.images[j]] = [e.images[j], e.images[i]]; };\n  for (const h in SLOTS) {\n    const s = SLOTS[h], e = s.el, p = rec[h], bl = s.keys.indexOf('__blank');\n    if (p) { if (p.x != null) e.x = p.x; if (p.y != null) e.y = p.y; if (p.w != null) { e.w = p.w; e.h = p.h; } }\n    if (s.park) { e.x = s.park[0]; e.y = s.park[1]; if (!s.park[2]) { swap(s, 0, bl); e.src = e.images[0]; continue; } }\n    const idx = p && p.src ? +String(p.src).slice(2) : 0;\n    if (p && p.src && idx === bl) swap(s, 0, bl); else if (idx !== 0) swap(s, 0, idx);\n    e.src = e.images[0];\n  }\n};\nconst fillCode = (CODE_SRC, RUNTIME_SRC) => CODE_SRC.replace('/*PER*/[]', JSON.stringify(globalThis.__PER || [])).replace('/*FW*/', String(globalThis.__FW || 0)).replace('/*TL*/0', String(globalThis.__TL || 0)).replace('/*CW*/0', String(globalThis.__CW || 0)).replace('/*K*/0', String(globalThis.__K || 0)).replace('/*PT*/0', String(globalThis.__PT || 0)).replace('/*PH*/0', String(globalThis.__PH || 0)).replace('/*PX*/0', String(globalThis.__PX || 0)).replace('/*V*/', 'const V = ' + JSON.stringify(VMAP()) + ';').replace('/*RUNTIME*/', RUNTIME_SRC);\nconst chipRow = async (groups, cx, gap) => {\n  const ws = []; for (const g of groups) ws.push((await inkBox(g)).w);\n  const tot = ws.reduce((a, b) => a + b, 0) + gap * (groups.length - 1); let x = cx - tot / 2;\n  for (let i = 0; i < groups.length; i++) { await align(groups[i], { l: x }); x += ws[i] + gap; }\n};\nconst textVariant = (s, size, fill, o = {}) => [s, (g) => txt(g, s, o.align === 'center' ? (o.w || 0) / 2 : (o.pad || 2), size * 1.05, size, fill, Object.assign({ align: o.align || 'left' }, o))];\nconst OFFX = -600;\n// weekday + day row for names of any length (Romanian full names): names right-aligned in their cell, fixed ink gap to the day,\n// shared baseline, row centred on the average name; layers must be parked first\nconst dateRow = async (cx, cy, gap) => {\n  const W7 = []; for (let wd = 1; wd <= 7; wd++) W7.push(await inkBox(['Weekday'], 'normal', wd));\n  const dB = await inkBox(['Day']);\n  const mw = W7.reduce((s, b) => s + b.w, 0) / 7, avgR = W7.reduce((s, b) => s + b.r, 0) / 7, U0 = Math.min(...W7.map((b) => b.y));\n  const Bn = W7.map((b) => b.b).sort((a, b) => a - b)[3]; const hRow = Math.max(Bn - U0, dB.h);\n  const pivot = cx - (mw + gap + dB.w) / 2 + mw, base = cy + hRow / 2;\n  shift(['Weekday'], Math.round(pivot - avgR), Math.round(base - Bn)); await align(['Day'], { l: pivot + gap, b: base });\n};\n\n// ---- segmented progress bar: native IMG_PROGRESS (data-bound, nothing to run); pictures[i] shows at pos[i] once the reading reaches i/N ----\nconst segBar = async (name, dataType, pictures, pos) => {\n  const e = await addElement('IMG_PROGRESS', { dataType }); Object.assign(e, { name, dataType, images: pictures, positions: pos, x: pos[0][0], y: pos[0][1], show: 'normal' }); return e;\n};\n\n// the sunrise and sunset readings (SUN_RISE / SUN_SET) and their icons in ONE place; the watch shows the next one (showWhen sunset / sunrise).\n// showWhen hides a layer in the editor too, so it is set only when the placement is done.\nconst swapSun = () => { for (const n of ['Sunrise', 'Sunrise icon']) { const e = E(n); if (e) e.showWhen = 'sunrise'; } for (const n of ['Sunset', 'Sunset icon']) { const e = E(n); if (e) e.showWhen = 'sunset'; } };\nconst sunChipAt = async (cx, cy, s, col, line, gap = 8) => { await chipAt('Sunrise', 'sunrise', cx, cy, s, col, line, gap); await chipAt('Sunset', 'sunset', cx, cy, s, col, line, gap); swapSun(); };\nconst sunChipL = async (l, cy, s, col, line, gap = 8) => { await chipL('Sunrise', 'sunrise', l, cy, s, col, line, gap); await chipL('Sunset', 'sunset', l, cy, s, col, line, gap); swapSun(); };\n\nconst wd = E('Weekday'); wd.labelAlign = 'right'; rerenderGlyphLayers(); await loadAllImages();\npark(['Weekday', 'Day']); await dateRow(195, 63, 14); shift(['Weekday'], 0, 1); return 1"
+  },
+  {
+   "script": "project.groups = project.groups || {}; let n = 0;\nfor (const [k, v] of Object.entries(project.groups)) if (v === 'Clock 2') project.groups[k] = 'Clock AOD';\nproject.groups.gDate = 'Date'; for (const nm of ['Weekday', 'Day']) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gDate'; n++ } } return n"
+  },
+  {
+   "script": "document.getElementById('btnPruneImages').click(); return project.images.length + ' images left'"
+  }
+ ]
+}

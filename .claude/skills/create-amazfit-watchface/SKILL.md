@@ -92,6 +92,13 @@ recipe, previews and output in a scratch folder (not in the repo).
 - **Subtle borders and shadows.** Use a thin border (1–2 px) and a soft shadow only where legibility needs it.
   Heavy outlines, thick glows and drop shadows only when the theme is that by nature (neon, cartoon, fire) or the
   user asks. When in doubt, leave them off.
+- **Weekday + day row: always `dateRow()` from `examples/animated/kit.js`, then run `check_text_layout.py`.** Placing the weekday and the day
+  by hand always leaves them 1-13 px apart (names differ in width and ink height). In a recipe, add a script step with the kit, then
+  `wd = E('Weekday'); wd.labelAlign = 'right'; rerenderGlyphLayers(); await loadAllImages(); park(['Weekday','Day']); await dateRow(195, cy, 10)`
+  (a `script` step starting with the contents of kit.js; see `sample-watchfaces/cola-galore/gen.js`). Before hand-over run
+  `python3 .claude/skills/create-amazfit-watchface/check_text_layout.py recipe.json` (and `--mode aod`): it renders only the text layers and
+  exits non-zero if words in one row do not share a top and bottom line or a row is off-centre. Never build a measuring recipe by
+  filtering steps on a word like "handle": the kit contains it and the date step silently vanishes.
 - **Check text alignment in the preview, every time.** Read the PNG and verify the horizontal and vertical
   alignment of every text element: shared baselines on a row, equal cap heights, even gaps, columns centred
   where they should be. If it is unclear by eye, crop and zoom the preview or measure the ink bounds of each

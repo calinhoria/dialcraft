@@ -1,0 +1,1002 @@
+{
+  "version": 1,
+  "name": "Hot Chocolate",
+  "device": "bip-6",
+  "appId": 2828130,
+  "vender": "dialcraft",
+  "description": "A mug of cocoa that fills over one minute, the level following the seconds: swirling chocolate, floating sprinkles and stars, whipped cream on top, candy-pink sky above.",
+  "font": "Oswald",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gmvnp7bthm3": "Clock",
+    "gmvnp7buu7w": "Clock AOD",
+    "gDate": "Date"
+  },
+  "elements": [
+    {
+      "id": "elmvnp7biz1k4",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvnp7boo7ig",
+      "kind": "IMG",
+      "name": "Liquid",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "cocoa_0.png",
+      "images": [
+        "cocoa_0.png",
+        "cocoa_1.png",
+        "cocoa_2.png",
+        "cocoa_3.png",
+        "cocoa_4.png",
+        "cocoa_5.png",
+        "cocoa_6.png",
+        "cocoa_7.png",
+        "cocoa_8.png",
+        "cocoa_9.png"
+      ],
+      "handle": "liquid"
+    },
+    {
+      "id": "elmvnp7br7ha",
+      "kind": "IMG",
+      "name": "Cover",
+      "x": 0,
+      "y": -410,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "cover_0.png",
+      "images": [
+        "cover_0.png",
+        "cover_1.png",
+        "cover_2.png",
+        "cover_3.png",
+        "cover_4.png",
+        "cover_5.png",
+        "cover_6.png",
+        "cover_7.png",
+        "cover_8.png",
+        "cover_9.png"
+      ],
+      "handle": "cover"
+    },
+    {
+      "id": "elmvnp7bth2ge",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 201,
+      "y": 167,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp7bthm3",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -22,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Oswald",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#ffc2dc",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#3a1408",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 4,
+        "shadowBlur": 4
+      },
+      "aidPad": 11
+    },
+    {
+      "id": "elmvnp7bth1sn",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 167,
+      "y": 188,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp7bthm3",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Oswald",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#ffc2dc",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#3a1408",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 4,
+        "shadowBlur": 4
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 11
+    },
+    {
+      "id": "elmvnp7bth3gu",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 29,
+      "y": 167,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp7bthm3",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -22,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Oswald",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#ffc2dc",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#3a1408",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 4,
+        "shadowBlur": 4
+      },
+      "aidPad": 11
+    },
+    {
+      "id": "elmvnp7buu2ef",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 130,
+      "y": 240,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp7buu7w",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Oswald",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#9a6a52",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvnp7but7hg",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 125,
+      "y": 100,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp7buu7w",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Oswald",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#9a6a52",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvnp7bvl1xq",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 110,
+      "y": 21,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Oswald",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#ffc2dc",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#3a1408",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 4,
+        "shadowBlur": 4
+      },
+      "aidPad": 12,
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmvnp7bx47y",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 198,
+      "y": 33,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -24,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Oswald",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#ffc2dc",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#3a1408",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 4,
+        "shadowBlur": 4
+      },
+      "aidPad": 12
+    },
+    {
+      "id": "elmvnp7byx1hb",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 133,
+      "y": 366,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -22,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Oswald",
+        "size": 58,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#ffc2dc",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#3a1408",
+        "borderWidth": 4,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 4,
+        "shadowBlur": 4
+      },
+      "aidPad": 12
+    },
+    {
+      "id": "elmvnp7c0f35t",
+      "kind": "IMG",
+      "name": "Glass",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "glass_front.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "cocoa_0.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_1.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_2.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_3.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_4.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_5.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_6.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_7.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_8.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cocoa_9.png",
+      "width": 390,
+      "height": 500
+    },
+    {
+      "name": "cover_0.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_1.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_2.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_3.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_4.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_5.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_6.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_7.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_8.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "cover_9.png",
+      "width": 390,
+      "height": 520
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 58,
+      "height": 79
+    },
+    {
+      "name": "week_w1.png",
+      "width": 109,
+      "height": 96
+    },
+    {
+      "name": "week_w2.png",
+      "width": 109,
+      "height": 96
+    },
+    {
+      "name": "week_w3.png",
+      "width": 109,
+      "height": 96
+    },
+    {
+      "name": "week_w4.png",
+      "width": 109,
+      "height": 96
+    },
+    {
+      "name": "week_w5.png",
+      "width": 109,
+      "height": 96
+    },
+    {
+      "name": "week_w6.png",
+      "width": 109,
+      "height": 96
+    },
+    {
+      "name": "week_w7.png",
+      "width": 109,
+      "height": 96
+    },
+    {
+      "name": "degree.png",
+      "width": 53,
+      "height": 79
+    },
+    {
+      "name": "negative.png",
+      "width": 45,
+      "height": 79
+    },
+    {
+      "name": "glass_front.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 48,
+      "height": 97
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 87,
+      "height": 131
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 65,
+      "height": 109
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 52,
+      "height": 69
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 52,
+      "height": 69
+    }
+  ],
+  "savePath": null,
+  "userImports": "import { Time as DCTime } from '@zos/sensor'",
+  "userCode": "{\n  const MS = 100, TOP_EMPTY = 450, TOP_FULL = 40\n  const NB = F.liquid.length\n  let n = 0, id = null, via = '', y = null, lastSec = -1, sub = 0, clock = null\n  try { clock = new DCTime() } catch (e) {}\n  // seconds of the minute from the Zepp Time sensor (else Date, else our own count)\n  const seconds = () => {\n    try { if (clock) { const s = clock.getSeconds(); if (typeof s === 'number' && s >= 0) return s } } catch (e) {}\n    try { const s = new Date().getSeconds(); if (typeof s === 'number' && s >= 0) return s } catch (e) {}\n    return Math.floor(n * MS / 1000) % 60\n  }\n  // the sensor only counts whole seconds, so the ticks since the second changed fill in the fraction\n  const fraction = () => {\n    const s = seconds()\n    if (s !== lastSec) { lastSec = s; sub = 0 } else sub++\n    return (s + Math.min(0.95, sub * MS / 1000)) / 60\n  }\n  const tick = () => {\n    n++\n    const ny = Math.round(TOP_EMPTY - (TOP_EMPTY - TOP_FULL) * fraction()) - TOP_EMPTY\n    y = ny\n    // MORE takes x, y and src together on a plain IMG (checked on a Bip 6); SRC alone did not swap the pictures\n    W.cover.setProperty(ui.prop.MORE, { x: 0, y: pxv(y), src: F.cover[n % NB] })\n    W.liquid.setProperty(ui.prop.MORE, { x: 0, y: 0, src: F.liquid[n % NB] })\n  }\n  const stop = () => {\n    if (id === null) return\n    try { if (via === 't') timer.stopTimer(id); else clearInterval(id) } catch (e) {}\n    id = null\n  }\n  const safe = () => { try { tick() } catch (e) {} }\n  const start = () => {\n    if (id !== null) return\n    try {\n      if (typeof timer !== 'undefined' && timer && timer.createTimer) { id = timer.createTimer(0, MS, safe); via = 't' }\n      else if (typeof setInterval === 'function') { id = setInterval(safe, MS); via = 'i' }\n    } catch (e) {}\n  }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: () => { lastSec = -1; start() }, pause_call: stop })\n  safe()\n  start()\n}",
+  "optimizePng": 16
+}

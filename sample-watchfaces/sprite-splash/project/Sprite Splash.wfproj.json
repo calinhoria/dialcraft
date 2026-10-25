@@ -1,0 +1,944 @@
+{
+  "version": 1,
+  "name": "Sprite Splash",
+  "device": "bip-6",
+  "appId": 2487021,
+  "vender": "dialcraft",
+  "description": "A glass of lemon-lime soda in the Sprite colours (green, yellow and white): fizz, sparkles, lemon and lime slices; when it is full the time and date are under the soda.",
+  "font": "Bebas Neue",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gmvnp8kvpax": "Clock",
+    "gmvnp8kw8fn": "Clock AOD",
+    "gDate": "Date"
+  },
+  "elements": [
+    {
+      "id": "elmvnp8ksx3w9",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvnp8ktr3ko",
+      "kind": "IMG",
+      "name": "Sky",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sky.png"
+    },
+    {
+      "id": "elmvnp8kvp383",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 205,
+      "y": 166,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp8kvpax",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -10,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#fff59a",
+        "to": "#f4cf12",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#0b6b2d",
+        "borderWidth": 2,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "aidPad": 5
+    },
+    {
+      "id": "elmvnp8kvp4s8",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 173,
+      "y": 183,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp8kvpax",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#e4fbe4",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#0b6b2d",
+        "borderWidth": 2,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 5
+    },
+    {
+      "id": "elmvnp8kvp289",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 36,
+      "y": 166,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp8kvpax",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -10,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 150,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#e4fbe4",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#0b6b2d",
+        "borderWidth": 2,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "aidPad": 5
+    },
+    {
+      "id": "elmvnp8kw81x5",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 142,
+      "y": 241,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp8kw8fn",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#4fb86b",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvnp8kw84t6",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 140,
+      "y": 115,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvnp8kw8fn",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 120,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#4fb86b",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvnp8kwg13r",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 127,
+      "y": 31,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#fff59a",
+        "to": "#f4cf12",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#0b6b2d",
+        "borderWidth": 1.5,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "aidPad": 7,
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmvnp8kx4hn",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 198,
+      "y": 38,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -14,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 46,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#ffffff",
+        "to": "#e4fbe4",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#0b6b2d",
+        "borderWidth": 1.5,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "aidPad": 7
+    },
+    {
+      "id": "elmvnp8kxm3bm",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 148,
+      "y": 371,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -13,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Bebas Neue",
+        "size": 58,
+        "weight": 400,
+        "variations": "",
+        "fill": "gradient",
+        "color": "#ffffff",
+        "from": "#fff59a",
+        "to": "#f4cf12",
+        "angle": 90,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#0b6b2d",
+        "borderWidth": 1.5,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "aidPad": 7
+    },
+    {
+      "id": "elmvnp8l2c2xj",
+      "kind": "IMG",
+      "name": "Water",
+      "x": 0,
+      "y": 32,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "water_0.png",
+      "images": [
+        "water_0.png",
+        "water_1.png",
+        "water_2.png",
+        "water_3.png",
+        "water_4.png",
+        "water_5.png",
+        "water_6.png",
+        "water_7.png",
+        "water_8.png",
+        "water_9.png"
+      ],
+      "handle": "liquid"
+    },
+    {
+      "id": "elmvnp8l3g2w",
+      "kind": "IMG",
+      "name": "Glass",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "glass_front.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "sky.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 42,
+      "height": 63
+    },
+    {
+      "name": "week_w1.png",
+      "width": 80,
+      "height": 69
+    },
+    {
+      "name": "week_w2.png",
+      "width": 80,
+      "height": 69
+    },
+    {
+      "name": "week_w3.png",
+      "width": 80,
+      "height": 69
+    },
+    {
+      "name": "week_w4.png",
+      "width": 80,
+      "height": 69
+    },
+    {
+      "name": "week_w5.png",
+      "width": 80,
+      "height": 69
+    },
+    {
+      "name": "week_w6.png",
+      "width": 80,
+      "height": 69
+    },
+    {
+      "name": "week_w7.png",
+      "width": 80,
+      "height": 69
+    },
+    {
+      "name": "degree.png",
+      "width": 35,
+      "height": 63
+    },
+    {
+      "name": "negative.png",
+      "width": 33,
+      "height": 63
+    },
+    {
+      "name": "water_0.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_1.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_2.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_3.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_4.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_5.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_6.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_7.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_8.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "water_9.png",
+      "width": 390,
+      "height": 420
+    },
+    {
+      "name": "glass_front.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 36,
+      "height": 94
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 76,
+      "height": 129
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 53,
+      "height": 96
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 38,
+      "height": 54
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 38,
+      "height": 54
+    }
+  ],
+  "savePath": null,
+  "userImports": "import { Time as DCTime } from '@zos/sensor'",
+  "userCode": "{\n  const MS = 100, TOP_EMPTY = 448, TOP_FULL = 32\n  const NB = F.liquid.length\n  let n = 0, id = null, via = '', y = null, lastSec = -1, sub = 0, clock = null\n  try { clock = new DCTime() } catch (e) {}\n  // seconds of the minute from the Zepp Time sensor (else Date, else our own count)\n  const seconds = () => {\n    try { if (clock) { const s = clock.getSeconds(); if (typeof s === 'number' && s >= 0) return s } } catch (e) {}\n    try { const s = new Date().getSeconds(); if (typeof s === 'number' && s >= 0) return s } catch (e) {}\n    return Math.floor(n * MS / 1000) % 60\n  }\n  // the sensor only counts whole seconds, so the ticks since the second changed fill in the fraction\n  const fraction = () => {\n    const s = seconds()\n    if (s !== lastSec) { lastSec = s; sub = 0 } else sub++\n    return (s + Math.min(0.95, sub * MS / 1000)) / 60\n  }\n  const tick = () => {\n    n++\n    const ny = Math.round(TOP_EMPTY - (TOP_EMPTY - TOP_FULL) * fraction())\n    y = ny\n    // MORE takes x, y and src together on a plain IMG (checked on a Bip 6); SRC alone did not swap the pictures\n    W.liquid.setProperty(ui.prop.MORE, { x: 0, y: pxv(y), src: F.liquid[n % NB] })\n  }\n  const stop = () => {\n    if (id === null) return\n    try { if (via === 't') timer.stopTimer(id); else clearInterval(id) } catch (e) {}\n    id = null\n  }\n  const safe = () => { try { tick() } catch (e) {} }\n  const start = () => {\n    if (id !== null) return\n    try {\n      if (typeof timer !== 'undefined' && timer && timer.createTimer) { id = timer.createTimer(0, MS, safe); via = 't' }\n      else if (typeof setInterval === 'function') { id = setInterval(safe, MS); via = 'i' }\n    } catch (e) {}\n  }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: () => { lastSec = -1; start() }, pause_call: stop })\n  safe()\n  start()\n}",
+  "optimizePng": 16
+}
