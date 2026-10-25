@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Measured text-layout check: renders ONLY the text layers of a recipe (black background, no scene art) and reports,
 per row of text, each word group's ink top / bottom and the row centre. Exits 1 when words in one row do not share
-a top and bottom line (> 2 px; round digits overshoot by 1-2) or a row is not centred (> 3 px).  Run it on the FINAL recipe, every time.
+a top and bottom line (> 2 px; round digits overshoot by 1-2), a row is not centred (> 3 px), or text is too small to read
+(tallest glyph in a row under 6 % of the screen height / 24 px; a row 14 % tall or more counts as the clock).  Run it on the FINAL recipe, every time.
 
   python3 .claude/skills/create-amazfit-watchface/check_text_layout.py path/to/recipe.json [--mode normal|aod]
 
@@ -50,5 +51,6 @@ for y0, y1 in bands:
     flag = ''
     if len(info) > 1 and (max(tops) - min(tops) > 2 or max(bots) - min(bots) > 2): flag += ' <-- tops/bottoms differ'; bad = 1
     if abs(cx - W / 2) > 3 and len(info) > 1: flag += ' <-- row off-centre'; bad = 1
+    if hmax + 1 < max(24, 0.06 * H): flag += f' <-- too small ({hmax + 1}px, min {max(24, round(0.06 * H))}px)'; bad = 1
     print(f'band y {y0}-{y1}  centre x {cx:.1f}  groups(x0,x1,top,bottom) {info}{flag}')
 print('FAIL' if bad else 'ok'); sys.exit(bad)
