@@ -1,0 +1,571 @@
+{
+  "version": 1,
+  "name": "Coca-Cola Fizz",
+  "device": "bip-6",
+  "appId": 2128711,
+  "vender": "dialcraft",
+  "description": "Coca-Cola themed animated watchface: Spencerian logo, dynamic ribbon, bottle-cap temperature and rising soda fizz on classic Coke red.",
+  "font": "Montserrat",
+  "language": "en-US",
+  "fonts": [],
+  "groups": {
+    "gmvnzpmzb9m": "Clock",
+    "gClock": "Clock"
+  },
+  "elements": [
+    {
+      "id": "elmvnzpmw4eq",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvnzpmwa40e",
+      "kind": "IMG",
+      "name": "Cola Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "bg.png"
+    },
+    {
+      "id": "elmvnzpmwmbb",
+      "kind": "IMG_ANIM",
+      "name": "Fizz",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "frames": [
+        "fizz_0.png",
+        "fizz_1.png",
+        "fizz_2.png",
+        "fizz_3.png",
+        "fizz_4.png",
+        "fizz_5.png",
+        "fizz_6.png",
+        "fizz_7.png",
+        "fizz_8.png",
+        "fizz_9.png"
+      ],
+      "fps": 12,
+      "repeat": 0,
+      "step": 1,
+      "animPrefix": "fizz",
+      "w": 390,
+      "h": 450
+    },
+    {
+      "id": "elmvnzpmws56v",
+      "kind": "IMG",
+      "name": "Logo",
+      "x": 35,
+      "y": 34,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 320,
+      "h": 100,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "logo_white.png"
+    },
+    {
+      "id": "elmvnzpmzb1x6",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 248,
+      "y": 194,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Montserrat",
+        "size": 96,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": true,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "w": 176,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvnzpmzb1s8",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 187,
+      "y": 208,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "colon.png",
+      "glyph": {
+        "font": "Montserrat",
+        "size": 48,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvnzpmzb3za",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 4,
+      "y": 194,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Montserrat",
+        "size": 96,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": true,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "w": 176,
+      "alignH": "RIGHT"
+    },
+    {
+      "id": "elmvnzpn0140f",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 4,
+      "y": 322,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 2,
+      "alignH": "CENTER_H",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "w": 382,
+      "glyph": {
+        "font": "Montserrat",
+        "size": 30,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#e4001b",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": true,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvnzpn0b21x",
+      "kind": "TEXT",
+      "name": "Tagline",
+      "x": 4,
+      "y": 395,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "TASTE THE FEELING",
+      "color": "#ffffff",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 4,
+      "fontFile": "Montserrat-Bold.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "w": 382,
+      "h": 32
+    }
+  ],
+  "images": [
+    {
+      "name": "bg.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "logo_white.png",
+      "width": 320,
+      "height": 100
+    },
+    {
+      "name": "fizz_0.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_1.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_2.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_3.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_4.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_5.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_6.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_7.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_8.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fizz_9.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 26,
+      "height": 29
+    },
+    {
+      "name": "colon.png",
+      "width": 16,
+      "height": 42
+    },
+    {
+      "name": "degree.png",
+      "width": 17,
+      "height": 29
+    },
+    {
+      "name": "negative.png",
+      "width": 15,
+      "height": 29
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 69,
+      "height": 77
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 69,
+      "height": 77
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 64
+}

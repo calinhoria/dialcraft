@@ -1,0 +1,110 @@
+{
+ "name": "Coca-Cola Ice Cold",
+ "device": "bip-6",
+ "font": "Anton",
+ "language": "en-US",
+ "description": "A red Coca-Cola face: white script logo, ice-cold time, rising bubbles and a flowing ribbon carrying the temperature.",
+ "optimizePng": "lossless",
+ "steps": [
+  {
+   "script": "\nconst imp = async (p, name) => {\n  const r = await API.readImage(p);\n  if (!r) throw new Error('cannot read ' + p);\n  let n = name || r.name; if (!/\\.png$/i.test(n)) n += '.png';\n  const url = 'data:image/png;base64,' + r.dataBase64;\n  const i = project.images.findIndex((x) => x.name === n);\n  if (i >= 0) project.images[i] = { name: n, width: r.width, height: r.height, url };\n  else project.images.push({ name: n, width: r.width, height: r.height, url });\n  return n;\n};\nconst A = \"/Users/calinbelut/Downloads/deep/assets\";\nawait imp(A + '/bg.png', 'bg.png');\nconst bub = [];\nfor (let i = 0; i < 48; i++) bub.push(await imp(A + '/bub_' + String(i).padStart(2, '0') + '.png'));\nconst wave = [];\nfor (let i = 0; i < 60; i++) wave.push(await imp(A + '/wave_' + String(i).padStart(2, '0') + '.png'));\nawait imp(A + '/logo.png', 'logo.png');\nawait imp(A + '/logo_aod.png', 'logo_aod.png');\nfor (let i = 0; i < 29; i++) await imp(A + '/weather/weather_' + i + '.png');\nawait loadAllImages();\nconst mk = async (kind, patch, name) => {\n  const e = await addElement(kind, patch);\n  if (!e) return null;\n  e.name = name;\n  for (const k of ['x', 'y', 'w', 'h']) if (patch[k] !== undefined) e[k] = patch[k];\n  return e;\n};\nawait mk('FILL_RECT', { x: 0, y: 0, w: 390, h: 450, color: '#000000', radius: 0, show: 'aod' }, 'AOD background');\nawait mk('IMG', { src: 'bg.png', x: 0, y: 0, w: 390, h: 450, show: 'normal' }, 'Red background');\nawait mk('IMG_ANIM', { frames: bub, fps: 12, repeat: 0, x: 0, y: 0, w: 390, h: 450, show: 'normal' }, 'Bubbles');\nawait mk('IMG_ANIM', { frames: wave, fps: 10, repeat: 0, x: 0, y: 300, w: 390, h: 150, show: 'normal' }, 'White wave');\nawait mk('IMG', { src: 'logo.png', x: 80, y: 40, w: 230, h: 72, show: 'normal' }, 'Logo');\nreturn project.elements.length;\n"
+  },
+  {
+   "preset": "clock"
+  },
+  {
+   "preset": "weather"
+  },
+  {
+   "edit": "Weather icon",
+   "tint": {
+    "fill": "solid",
+    "color": "#E00A17"
+   }
+  },
+  {
+   "edit": "Hour",
+   "glyph": {
+    "font": "Anton",
+    "color": "#ffffff",
+    "size": 124
+   },
+   "set": {
+    "y": 140,
+    "show": "normal"
+   }
+  },
+  {
+   "edit": "Minute",
+   "glyph": {
+    "font": "Anton",
+    "color": "#ffffff",
+    "size": 124
+   },
+   "set": {
+    "y": 140,
+    "show": "normal"
+   }
+  },
+  {
+   "edit": "Colon",
+   "glyph": {
+    "font": "Anton",
+    "color": "#ffffff",
+    "size": 124
+   },
+   "set": {
+    "y": 140,
+    "show": "normal"
+   }
+  },
+  {
+   "add": "TEXT",
+   "name": "Tagline",
+   "patch": {
+    "text": "ICE COLD",
+    "color": "#ffffff",
+    "size": 28,
+    "weight": 400,
+    "charSpace": 10,
+    "alignH": "CENTER_H",
+    "alignV": "CENTER_V",
+    "fontFile": "Anton-Regular.ttf",
+    "show": "normal"
+   },
+   "set": {
+    "x": 10,
+    "y": 289,
+    "w": 370,
+    "h": 28
+   }
+  },
+  {
+   "script": "\nconst cx = dev().w / 2;\nconst byName = (n) => project.elements.find((e) => (e.name || '').toLowerCase() === n.toLowerCase());\nconst box = (e) => elBox(e);\nconst place = (list, gapY) => {};\nconst save = [glyphFont, +glyphOpts.size, glyphOpts.color];\nglyphFont = 'Anton';\n\n// --- temperature with its degree sign, drawn at the reading's own size -----\nglyphOpts.size = 42; glyphOpts.color = '#E00A17';\nconst temp = await addElement('TEXT_IMG', { dataType: 'WEATHER_CURRENT', hSpace: 3, alignH: 'CENTER_H', show: 'normal' });\ntemp.name = 'Temperature';\ntemp.unit = await genUnit('degree', '\\u00b0', { style: glyphStyle(temp) });\ntemp.alignH = 'CENTER_H';\ntemp.y = 380;\nglyphOpts.size = save[1]; glyphOpts.color = save[2];\n\n// --- AOD clock: its own digit set at the AOD size, dim ---------------------\nglyphOpts.size = 100; glyphOpts.color = '#ffffff';\nconst ah = await addElement('IMG_TIME', { part: 'hour', zero: 1, space: 0, show: 'aod', alpha: 160 });\nconst am = await addElement('IMG_TIME', { part: 'minute', zero: 1, space: 0, show: 'aod', alpha: 160, images: ah.images });\nconst ac = await addElement('IMG', { src: await genUnit('colon_aod', ':', { style: glyphStyle(ah) }), w: 0, h: 0, show: 'aod', alpha: 160 });\nah.name = 'Hour AOD'; am.name = 'Minute AOD'; ac.name = 'Colon AOD';\nfor (const e of [ah, am, ac]) e.y = 177;\n// the Layers panel lists the top layer first: minute, colon, hour\nconst aodSet = [am, ac, ah];\nproject.elements = project.elements.filter((e) => !aodSet.includes(e)).concat(aodSet);\nglyphOpts.size = save[1]; glyphOpts.color = save[2];\n\n// --- main clock: pack the three parts with an even gap, centre the run -----\nconst hr = byName('Hour'), co = byName('Colon'), mi = byName('Minute');\nlet gap = 8;\nconst packRow = (a, b, c, dx, dy) => {\n  const ba = box(a), bb = box(b), bc = box(c);\n  const total = ba.w + gap + bb.w + gap + bc.w;\n  let x = Math.round(cx - total / 2) + dx;\n  a.x = x; x += ba.w + gap;\n  b.x = x; x += bb.w + gap;\n  c.x = x;\n  // the colon cell is shorter than a digit: centre its ink on theirs\n  const digitsTop = ba.y, digitsBot = ba.y + ba.h;\n  b.y = Math.round(digitsTop + (digitsBot - digitsTop - bb.h) / 2) + dy;\n  return { total, boxes: [ba, bb, bc] };\n};\nconst main = packRow(hr, co, mi, -5, 6);\nconst aod = packRow(ah, ac, am, -4, -7);\n\n// --- weather row: icon + reading, centred as one block --------------------\nconst wi = byName('Weather icon'), ti = temp;\nwi.w = 46; wi.h = 41;\nconst bt = box(ti), bw = box(wi);\n// bearings measured on the preview: the icon picture starts 4 px into its box,\n// the reading's first digit 18 px into its own\nwi.x = 130; ti.x = 168;\nwi.y = Math.round(bt.y + (bt.h - bw.h) / 2);\nreturn JSON.stringify({ main: main.boxes, aod: aod.boxes, temp: [bt, bw], y: [hr.y, co.y, mi.y, wi.y] });\n"
+  },
+  {
+   "add": "IMG",
+   "name": "AOD logo",
+   "patch": {
+    "src": "logo_aod.png",
+    "show": "aod",
+    "alpha": 120
+   },
+   "set": {
+    "x": 125,
+    "y": 116,
+    "w": 140,
+    "h": 44
+   }
+  },
+  {
+   "script": "\n// reuse the group the clock preset made (it is already named \"Clock\") instead\n// of leaving a second, empty one behind\nconst gidFor = (title, fallback) => Object.keys(project.groups || {}).find((k) => project.groups[k] === title) || fallback;\nproject.groups = project.groups || {};\nconst put = (key, title, names) => {\n  const gid = gidFor(title, key);\n  project.groups[gid] = title;\n  let n = 0;\n  for (const nm of names) {\n    for (const e of project.elements) {\n      if ((e.name || '').toLowerCase() === nm.toLowerCase()) { e.group = gid; n++; }\n    }\n  }\n  return title + ' ' + n;\n};\nconst out = [\n  put('gDecor', 'Background and motion', ['AOD background', 'Red background', 'Bubbles', 'White wave']),\n  put('gLogo', 'Logo', ['Logo', 'AOD logo']),\n  put('gClock', 'Clock', ['Hour', 'Colon', 'Minute']),\n  put('gTag', 'Tagline', ['Tagline']),\n  put('gWeather', 'Weather', ['Weather icon', 'Temperature']),\n  put('gAod', 'AOD clock', ['Hour AOD', 'Colon AOD', 'Minute AOD'])\n];\n// drop groups nobody is in, and any leftover from a preset\nfor (const gid of Object.keys(project.groups)) {\n  if (!project.elements.some((e) => e.group === gid)) delete project.groups[gid];\n}\nreturn out.join(' \u00b7 ');\n"
+  },
+  {
+   "remove": "Bubbles"
+  }
+ ],
+ "preview": "probe.png",
+ "previewAod": "probe-aod.png",
+ "build": true
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Coca-Cola Fizz",
+  "device": "bip-6",
+  "font": "Montserrat",
+  "language": "en-US",
+  "optimizePng": 64,
+  "description": "Coca-Cola themed animated watchface: Spencerian logo, dynamic ribbon, bottle-cap temperature and rising soda fizz on classic Coke red.",
+  "preview": "preview.png",
+  "previewAod": "preview-aod.png",
+  "save": "project",
+  "out": "out/coca-cola-fizz",
+  "build": true,
+  "steps": [
+    { "script": "__IMAGES__" },
+    { "preset": "bg" },
+    { "add": "IMG", "name": "Cola Background", "set": { "src": "bg.png", "x": 0, "y": 0, "w": 390, "h": 450, "show": "normal" } },
+    { "add": "IMG_ANIM", "name": "Fizz", "set": { "frames": ["fizz_0.png", "fizz_1.png", "fizz_2.png", "fizz_3.png", "fizz_4.png", "fizz_5.png", "fizz_6.png", "fizz_7.png", "fizz_8.png", "fizz_9.png"], "animPrefix": "fizz", "fps": 12, "repeat": 0, "step": 1, "x": 0, "y": 0, "w": 390, "h": 450, "show": "normal" } },
+    { "add": "IMG", "name": "Logo", "set": { "src": "logo_white.png", "x": 35, "y": 34, "w": 320, "h": 100, "show": "normal" } },
+    { "preset": "clock" },
+    { "preset": "temp" },
+    { "add": "TEXT", "name": "Tagline", "set": { "text": "TASTE THE FEELING", "color": "#ffffff", "size": 21, "alignH": "CENTER_H", "alignV": "CENTER_V", "charSpace": 4, "fontFile": "Montserrat-Bold.ttf", "x": 4, "y": 395, "w": 382, "h": 32, "show": "normal" } },
+    { "edit": "Hour", "glyph": { "font": "Montserrat", "size": 96, "weight": 700, "bold": true, "color": "#ffffff" }, "set": { "x": 4, "y": 194, "w": 176, "alignH": "RIGHT", "show": "both" } },
+    { "edit": "Minute", "glyph": { "font": "Montserrat", "size": 96, "weight": 700, "bold": true, "color": "#ffffff" }, "set": { "x": 248, "y": 194, "w": 176, "alignH": "LEFT", "show": "both" } },
+    { "edit": "Colon", "set": { "x": 187, "y": 208, "show": "both" } },
+    { "edit": "Temperature", "glyph": { "font": "Montserrat", "size": 30, "weight": 700, "bold": true, "color": "#e4001b" }, "set": { "x": 4, "y": 322, "w": 382, "alignH": "CENTER_H", "show": "normal" } },
+    { "script": "project.groups = project.groups || {}; project.groups.gClock = 'Clock'; let n = 0; for (const nm of ['Hour','Colon','Minute']) { const e = project.elements.find((x) => x.name === nm); if (e) { e.group = 'gClock'; n++ } } return n" },
+    { "script": "const out = {}; for (const nm of ['Hour','Minute','Colon','Temperature','Tagline']) { const e = project.elements.find((x) => x.name === nm); out[nm] = e && [e.x, e.y, e.w, e.h, e.alignH, e.glyph && e.glyph.size]; } return out" }
+  ]
+}
