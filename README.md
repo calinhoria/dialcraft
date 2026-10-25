@@ -75,6 +75,20 @@
 | <img src="docs/screenshots/import.png" alt="Import report"> | |
 | **Import report.** What came across, what was traced, and what has no designer equivalent. | |
 
+## Sample watchfaces
+
+The repository ships ready-made faces in [`sample-watchfaces/`](sample-watchfaces/): open the `.wfproj.json` in its `project/` folder in Dialcraft to edit it, or take the `out/` folder (a Zeus project) to build it. Each folder has a `preview.png` and a dim always-on `preview-aod.png`. A few of them:
+
+| | | | |
+| --- | --- | --- | --- |
+| <img src="docs/screenshots/samples/liquid-glass.png" width="180" alt="Liquid Glass"> | <img src="docs/screenshots/samples/waterfall-clock.png" width="180" alt="Waterfall Glass"> | <img src="docs/screenshots/samples/mario-live.png" width="180" alt="Mario Live"> | <img src="docs/screenshots/samples/sf2-demo-fight.png" width="180" alt="SF2 Demo Fight"> |
+| **Liquid Glass**<br>Glass overlay, drifting glow, gradient rings | **Waterfall Glass**<br>Glass digits behind an animated waterfall | **Mario Live**<br>AI-played platformer, day and underground | **SF2 Demo Fight**<br>Self-playing Ryu vs Ken, with arcade HUD |
+| <img src="docs/screenshots/samples/american-poker-2.png" width="180" alt="American Poker 2"> | <img src="docs/screenshots/samples/skate-park.png" width="180" alt="Skate Park"> | <img src="docs/screenshots/samples/lcars-starship.png" width="180" alt="LCARS Starship"> | <img src="docs/screenshots/samples/aquarium.png" width="180" alt="Aquarium"> |
+| **American Poker 2**<br>Self-playing video poker with double-up | **Skate Park**<br>Sprite skater doing tricks over a dusk street | **LCARS Starship**<br>3D ship and animated console panels | **Aquarium**<br>Fish and a treasure chest around the clock |
+| <img src="docs/screenshots/samples/synth-sun.png" width="180" alt="Synth Sun"> | <img src="docs/screenshots/samples/fanta-fizz.png" width="180" alt="Fanta Fizz"> | <img src="docs/screenshots/samples/fishing-pond.png" width="180" alt="Fishing Pond"> | <img src="docs/screenshots/samples/inferno.png" width="180" alt="Inferno"> |
+| **Synth Sun**<br>Retro grid with icons per reading | **Fanta Fizz**<br>Soda-glass bubbles and a date row | **Fishing Pond**<br>Self-playing fishing, the lake follows the day | **Inferno**<br>Animated flames under glowing digits |
+
+
 ## Getting started
 
 ### Download
