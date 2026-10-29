@@ -820,8 +820,39 @@ ipcMain.handle('build-zeus', async (_e, payload) => {
     outDir = path.join(r.filePaths[0], slugName(payload.project && payload.project.name));
   }
   const device = deviceByKey(payload.project && payload.project.device) || DEVICES[0];
-  return runZeusBuild(outDir, payload, { apiLevel: zeusApiLevel(device.api) });
+  const res = await runZeusBuild(outDir, payload, { apiLevel: zeusApiLevel(device.api) });
+  if (res.ok) {
+    try { res.storeDir = writeStoreFolder(outDir, payload, device); } catch (err) { buildLog('Could not write the store folder: ' + String((err && err.message) || err)); }
+  }
+  return res;
 });
+
+// The Zepp console asks for a non-AOD preview at the screen size (png or gif, under 1 MB) and a description: they are written next to the
+// package, in <outDir>/store, so a release is one folder. The preview is the normal state at the reference time 10:09:36, the same picture the app
+// uses as the face's own preview. For an animated face (code or frame animations) the renderer also sends a GIF of it moving, written beside it.
+function writeStoreFolder(outDir, payload, device) {
+  const dir = path.join(outDir, 'store');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(dir, { recursive: true });
+  const written = [];
+  if (payload.previewBase64) {
+    const png = Buffer.from(payload.previewBase64, 'base64');
+    const name = `preview-${device.w}x${device.h}.png`;
+    fs.writeFileSync(path.join(dir, name), png);
+    written.push(name + (png.length > 1024 * 1024 ? ' (over the 1 MB limit)' : ''));
+  }
+  if (payload.gifBase64) {
+    const gif = Buffer.from(payload.gifBase64, 'base64');
+    const name = `preview-${device.w}x${device.h}.gif`;
+    fs.writeFileSync(path.join(dir, name), gif);
+    written.push(name + (gif.length > 1024 * 1024 ? ' (over the 1 MB limit)' : ''));
+  }
+  const p = payload.project || {};
+  fs.writeFileSync(path.join(dir, 'description.txt'), `${p.name || 'Watchface'}\n\n${p.description || ''}\n`);
+  written.push('description.txt');
+  buildLog('Store folder: ' + dir + ' (' + written.join(', ') + ')');
+  return dir;
+}
 
 // ---------------------------------------------------- LAN install ("Wi-Fi") --
 // Serves a built package on the local network so the Zepp App (Profile ->

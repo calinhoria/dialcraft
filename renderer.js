@@ -1821,7 +1821,7 @@ function drawElement(c, e) {
     case 'IMG_ANIM': {
       const frames = e.frames || [];
       if (!frames.length) { const b = elBox(e); drawMissing(c, b.x, b.y, b.w, b.h); break; }
-      const i = exportRender ? Math.min(frames.length - 1, Math.max(0, +e.defaultFrame || 0)) : Math.floor(animTick * (Math.max(1, +e.fps || 30) / 30)) % frames.length;
+      const i = exportRender && gifTick === null ? Math.min(frames.length - 1, Math.max(0, +e.defaultFrame || 0)) : Math.floor((gifTick === null ? animTick : gifTick) * (Math.max(1, +e.fps || 30) / 30)) % frames.length;
       const b = elBox(e);
       put(c, frames[i], b.x, b.y, b.w, b.h);
       break;
@@ -2273,7 +2273,8 @@ $('btnGrid').onclick = () => {
 };
 
 // compose the saved preview: black background, normal state, no editor overlay
-function composePreviewB64() {
+let gifTick = null;   // set while the store GIF is recorded: the animation clock in 1/30 s units (null: layers show their default frame)
+function composePreviewCanvas() {
   const d = dev();
   const cv = document.createElement('canvas');
   cv.width = d.w; cv.height = d.h;
@@ -2283,9 +2284,115 @@ function composePreviewB64() {
   const keep = { clock, dateParts };
   clock = { ...REF_CLOCK }; dateParts = { ...REF_DATE };
   exportRender = true;
-  try { drawScene(cv.getContext('2d'), d.w, d.h, 'normal', false); }
+  try { drawScene(cv.getContext('2d', { willReadFrequently: true }), d.w, d.h, 'normal', false); }
   finally { exportRender = prev; clock = keep.clock; dateParts = keep.dateParts; }
-  return cv.toDataURL('image/png').split(',')[1];
+  return cv;
+}
+function composePreviewB64() {
+  return composePreviewCanvas().toDataURL('image/png').split(',')[1];
+}
+
+// ---- animated store preview: the face's own code on a virtual clock, written as a GIF ----
+// One shared palette (exact when the frames use <= 255 colours, otherwise the most used 4-bit colours), index 255 is transparent, and a pixel
+// that did not change since the last frame is left transparent, so a face where little moves stays small.
+function gifLzw(idx, minCode) {
+  const clear = 1 << minCode, eoi = clear + 1, out = [];
+  let size = minCode + 1, next = eoi + 1, cur = 0, bits = 0, dict = new Map();
+  const emit = (c) => { cur |= c << bits; bits += size; while (bits >= 8) { out.push(cur & 255); cur >>>= 8; bits -= 8; } };
+  emit(clear);
+  let prefix = idx[0];
+  for (let i = 1; i < idx.length; i++) {
+    const k = idx[i], key = (prefix << 8) | k, f = dict.get(key);
+    if (f !== undefined) { prefix = f; continue; }
+    emit(prefix);
+    if (next >= 4096) { emit(clear); dict = new Map(); size = minCode + 1; next = eoi + 1; }
+    else { if (next >= (1 << size)) size++; dict.set(key, next++); }
+    prefix = k;
+  }
+  emit(prefix); emit(eoi);
+  if (bits > 0) out.push(cur & 255);
+  return out;
+}
+function gifEncode(frames, w, h, delayMs) {
+  // palette
+  const exact = new Map();
+  for (const f of frames) { const p = f.data; for (let i = 0; i < p.length; i += 4) { const k = (p[i] << 16) | (p[i + 1] << 8) | p[i + 2]; exact.set(k, (exact.get(k) || 0) + 1); if (exact.size > 4096) break; } if (exact.size > 4096) break; }
+  let pal = [];
+  if (exact.size <= 255) pal = [...exact.keys()];
+  else {
+    const bins = new Map();
+    for (const f of frames) { const p = f.data; for (let i = 0; i < p.length; i += 16) { const k = ((p[i] >> 4) << 8) | ((p[i + 1] >> 4) << 4) | (p[i + 2] >> 4); const b = bins.get(k) || [0, 0, 0, 0]; b[0]++; b[1] += p[i]; b[2] += p[i + 1]; b[3] += p[i + 2]; bins.set(k, b); } }
+    pal = [...bins.values()].sort((a, b) => b[0] - a[0]).slice(0, 255).map((b) => ((Math.round(b[1] / b[0]) << 16) | (Math.round(b[2] / b[0]) << 8) | Math.round(b[3] / b[0])));
+  }
+  const pr = pal.map((k) => [k >> 16, (k >> 8) & 255, k & 255]), cache = new Map();
+  const nearest = (r, g, b) => {
+    const key = (r << 16) | (g << 8) | b, c = cache.get(key); if (c !== undefined) return c;
+    let best = 0, bd = 1e9;
+    for (let i = 0; i < pr.length; i++) { const dr = pr[i][0] - r, dg = pr[i][1] - g, db = pr[i][2] - b, dd = dr * dr + dg * dg + db * db; if (dd < bd) { bd = dd; best = i; if (!dd) break; } }
+    cache.set(key, best); return best;
+  };
+  const out = [71, 73, 70, 56, 57, 97, w & 255, w >> 8, h & 255, h >> 8, 0xF7, 0, 0];
+  for (let i = 0; i < 256; i++) out.push(...(pr[i] || [0, 0, 0]));
+  out.push(0x21, 0xFF, 11, ...[...'NETSCAPE2.0'].map((c) => c.charCodeAt(0)), 3, 1, 0, 0, 0);
+  const delay = Math.max(2, Math.round(delayMs / 10));
+  let prev = null;
+  for (const f of frames) {
+    const p = f.data, idx = new Uint8Array(w * h), now = new Uint8Array(w * h);
+    for (let i = 0, j = 0; j < w * h; i += 4, j++) {
+      now[j] = nearest(p[i], p[i + 1], p[i + 2]);
+      idx[j] = prev && prev[j] === now[j] ? 255 : now[j];
+    }
+    prev = now;
+    out.push(0x21, 0xF9, 4, (1 << 2) | 1, delay & 255, delay >> 8, 255, 0);
+    out.push(0x2C, 0, 0, 0, 0, w & 255, w >> 8, h & 255, h >> 8, 0, 8);
+    const data = gifLzw(idx, 8);
+    for (let i = 0; i < data.length; i += 255) { const n = Math.min(255, data.length - i); out.push(n); for (let j = 0; j < n; j++) out.push(data[i + j]); }
+    out.push(0);
+  }
+  out.push(0x3B);
+  return Uint8Array.from(out);
+}
+// how long one loop of the face's frame animations is, so the GIF closes without a jump (at most 12 s, else 6 s)
+function storeLoopSeconds() {
+  const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+  let l = 0;
+  for (const e of elements()) {
+    if (e.kind !== 'IMG_ANIM' || e.visible === false || (e.frames || []).length < 2) continue;
+    const t = Math.round(10 * e.frames.length / Math.max(1, +e.fps || 30));   // period in tenths of a second
+    if (t > 0) l = l ? (l / gcd(l, t)) * t : t;
+    if (l > 120) return 6;
+  }
+  return l ? Math.max(l / 10, 2) : 6;
+}
+async function captureStoreGif(secs = storeLoopSeconds(), fps = 10) {
+  const d = dev(), N = Math.round(secs * fps), dt = 1000 / fps;
+  const hasCode = !!(project.userCode || '').trim();
+  const RD = Date, rs = window.setTimeout, ri = window.setInterval, rc = window.clearTimeout, rci = window.clearInterval;
+  let vt = new RD(2026, 9, 24, 10, 9, 0).getTime(), q = [], nid = 0;
+  class VD extends RD { constructor(...a) { if (a.length) super(...a); else super(vt); } static now() { return vt; } }
+  window.Date = VD;
+  window.setTimeout = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + (ms || 0) }); return id; };
+  window.setInterval = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + ms, rep: ms }); return id; };
+  window.clearTimeout = window.clearInterval = (id) => { q = q.filter((t) => t.id !== id); };
+  const frames = [], t0 = vt;
+  try {
+    if (hasCode) startCodeRun();
+    for (let i = 0; i < N; i++) {
+      const target = t0 + i * dt;
+      gifTick = (i * dt / 1000) * 30;
+      for (;;) { q.sort((a, b) => a.at - b.at); const n = q[0]; if (!n || n.at > target) break; vt = n.at; if (n.rep) n.at += n.rep; else q.shift(); try { n.f(); } catch (e) { /* the code's own errors show in the status bar */ } }
+      vt = target;
+      frames.push(composePreviewCanvas().getContext('2d').getImageData(0, 0, d.w, d.h));
+    }
+  } finally {
+    gifTick = null;
+    stopCodeRun();
+    window.Date = RD; window.setTimeout = rs; window.setInterval = ri; window.clearTimeout = rc; window.clearInterval = rci;
+  }
+  let use = frames, delay = dt, gif = gifEncode(use, d.w, d.h, delay);
+  while (gif.length > 1024 * 1024 && use.length > 8) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }   // the console takes at most 1 MB
+  let s = ''; for (let i = 0; i < gif.length; i += 0x8000) s += String.fromCharCode.apply(null, gif.subarray(i, i + 0x8000));
+  return { base64: btoa(s), frames: use.length, bytes: gif.length };
 }
 
 // ----------------------------------------------------------------- layers --
@@ -7342,6 +7449,15 @@ $('btnBuild').onclick = async () => {
   openLogModal('Zeus build', '', 'running the Zeus CLI…');
   appendLog('Exporting the project first…');
   const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
+  // an animated face (code, or frame animations) also gets a GIF of it moving, for the store folder
+  if ((project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false)) {
+    try {
+      appendLog('Recording the animated store preview…');
+      const g = await captureStoreGif();
+      payload.gifBase64 = g.base64;
+      appendLog(`  ${g.frames} frames, ${Math.round(g.bytes / 1024)} KB`);
+    } catch (err) { appendLog('  could not record it: ' + (err && err.message ? err.message : err)); }
+  }
   const res = await API.buildZeus(payload);
   lastLogPath = res.outDir || null;
   if (res.error && res.error !== 'cancelled') {
@@ -7356,6 +7472,7 @@ $('btnBuild').onclick = async () => {
   if (res.ok) {
     appendLog('\nArtifacts:');
     for (const a of res.artifacts || []) appendLog('  ' + a);
+    if (res.storeDir) appendLog('\nStore images (preview at the screen size, description): ' + res.storeDir);
     status('Build finished — see the log for the .zab path.');
   } else {
     status('Build failed — see the log.', true);

@@ -1,0 +1,1 @@
+Pixel Lattice - made for this face by make_font.py (squares on a grid, no third-party outlines). Draws the weekday names; no font is shipped in the watchface.
