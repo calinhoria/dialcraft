@@ -94,7 +94,10 @@ recipe, previews and output in a scratch folder (not in the repo).
   battery, temperature and heart rate, and **at least 14 % of the screen height** for the time digits. Icons next to a reading
   are at least as tall as its digits. Do not shrink a font to fit more elements: drop an element or rearrange instead, and never go
   below the floor in the AOD view either. `check_text_layout.py` measures this and fails the run (`<-- too small`); fix the
-  glyph size with an `edit` step and re-run until it prints `ok`. Never hand a face over with a failing check.
+  glyph size with an `edit` step and re-run until it prints `ok`. Faces laid out as a table or in columns (readings aligned to a column, not centred) run it with `--tabular`, which skips only the centring check. Never hand a face over with a failing check.
+  **Exception for data-heavy faces:** when a face shows five or more readings besides the clock and date (steps, heart rate, battery,
+  temperature, sunrise / sunset, …) or puts three or more readings side by side in one row those readings (not the clock or date) may drop to **4 % of the screen height** (about 18 px on a 390 x 450 panel) and **never below 18 px on any screen**, a hard floor that the check enforces; run the check with `--dense`. The clock (14 %) and the date row keep the normal minimum, and so does any face
+  that meets neither condition. Use the exception to fit the data in, not as the default size.
 - **Subtle borders and shadows.** Use a thin border (1–2 px) and a soft shadow only where legibility needs it.
   Heavy outlines, thick glows and drop shadows only when the theme is that by nature (neon, cartoon, fire) or the
   user asks. When in doubt, leave them off.

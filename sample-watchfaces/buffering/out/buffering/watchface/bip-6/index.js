@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_Main_95jj = [
+const img_Minute_Main_deg3 = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -27,7 +27,7 @@ const img_Minute_Main_95jj = [
   A('font_3_9.png'),
 ]
 
-const img_Hour_Main_95my = [
+const img_Hour_Main_d5d4 = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -40,7 +40,7 @@ const img_Hour_Main_95my = [
   A('font_2_9.png'),
 ]
 
-const img_Minute_fm1t = [
+const img_Minute_z5so = [
   A('font_7_0.png'),
   A('font_7_1.png'),
   A('font_7_2.png'),
@@ -53,7 +53,7 @@ const img_Minute_fm1t = [
   A('font_7_9.png'),
 ]
 
-const img_Hour_m68d = [
+const img_Hour_zzpa = [
   A('font_8_0.png'),
   A('font_8_1.png'),
   A('font_8_2.png'),
@@ -66,7 +66,7 @@ const img_Hour_m68d = [
   A('font_8_9.png'),
 ]
 
-const img_Weekday_s1om = [
+const img_Weekday_v32h = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -76,7 +76,7 @@ const img_Weekday_s1om = [
   A('week_w7.png'),
 ]
 
-const img_Day_k4d6 = [
+const img_Day_i1xu = [
   A('font_4_0.png'),
   A('font_4_1.png'),
   A('font_4_2.png'),
@@ -89,7 +89,7 @@ const img_Day_k4d6 = [
   A('font_4_9.png'),
 ]
 
-const img_Steps_t69h = [
+const img_Steps_q3sz = [
   A('font_5_0.png'),
   A('font_5_1.png'),
   A('font_5_2.png'),
@@ -102,7 +102,7 @@ const img_Steps_t69h = [
   A('font_5_9.png'),
 ]
 
-const img_Heart_rate_f7jt = [
+const img_Heart_rate_77fe = [
   A('font_6_0.png'),
   A('font_6_1.png'),
   A('font_6_2.png'),
@@ -115,7 +115,7 @@ const img_Heart_rate_f7jt = [
   A('font_6_9.png'),
 ]
 
-const img_Battery_t1nr = [
+const img_Battery_q6ht = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -128,7 +128,7 @@ const img_Battery_t1nr = [
   A('font_1_9.png'),
 ]
 
-const img_Battery_level_u5sl = [
+const img_Battery_level_15vc = [
   A('bat/bt8d93a2_0.png'),
   A('bat/bt8d93a2_1.png'),
   A('bat/bt8d93a2_2.png'),
@@ -175,7 +175,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_95jj,
+      minute_array: img_Minute_Main_deg3,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -195,7 +195,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Main_95my,
+      hour_array: img_Hour_Main_d5d4,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -207,7 +207,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_fm1t,
+      minute_array: img_Minute_z5so,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -227,80 +227,80 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_m68d,
+      hour_array: img_Hour_zzpa,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
 
     // Weekday (IMG_WEEK)
     ui.createWidget(ui.widget.IMG_WEEK, {
-      x: px(97),
-      y: px(33),
-      week_en: img_Weekday_s1om,
-      week_sc: img_Weekday_s1om,
-      week_tc: img_Weekday_s1om,
+      x: px(51),
+      y: px(21),
+      week_en: img_Weekday_v32h,
+      week_sc: img_Weekday_v32h,
+      week_tc: img_Weekday_v32h,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Day (IMG_DATE)
     ui.createWidget(ui.widget.IMG_DATE, {
-      day_startX: px(213),
-      day_startY: px(39),
+      day_startX: px(226),
+      day_startY: px(30),
       day_zero: 0,
       day_space: px(0),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_k4d6,
-      day_sc_array: img_Day_k4d6,
-      day_tc_array: img_Day_k4d6,
+      day_en_array: img_Day_i1xu,
+      day_sc_array: img_Day_i1xu,
+      day_tc_array: img_Day_i1xu,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Steps (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(69),
-      y: px(391),
+      x: px(73),
+      y: px(380),
       type: ui.data_type.STEP,
-      font_array: img_Steps_t69h,
-      h_space: px(-2),
+      font_array: img_Steps_q3sz,
+      h_space: px(-3),
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Steps icon (IMG)
     ui.createWidget(ui.widget.IMG, {
-      x: px(37),
-      y: px(390),
+      x: px(42),
+      y: px(379),
       src: A('ic_steps_8d93a2.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
 
     // Heart rate (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(196),
-      y: px(391),
+      x: px(183),
+      y: px(380),
       type: ui.data_type.HEART,
-      font_array: img_Heart_rate_f7jt,
-      h_space: px(-2),
+      font_array: img_Heart_rate_77fe,
+      h_space: px(-3),
       align_h: ui.align.LEFT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Heart rate icon (IMG)
     ui.createWidget(ui.widget.IMG, {
-      x: px(164),
-      y: px(390),
+      x: px(152),
+      y: px(378),
       src: A('ic_heart_8d93a2.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
 
     // Battery (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(297),
-      y: px(391),
+      x: px(275),
+      y: px(380),
       type: ui.data_type.BATTERY,
-      font_array: img_Battery_t1nr,
-      h_space: px(-2),
+      font_array: img_Battery_q6ht,
+      h_space: px(-3),
       align_h: ui.align.LEFT,
       unit_en: A('percent.png'),
       unit_sc: A('percent.png'),
@@ -310,10 +310,10 @@ WatchFace({
 
     // Battery level (IMG_LEVEL)
     ui.createWidget(ui.widget.IMG_LEVEL, {
-      x: px(259),
-      y: px(394),
-      image_array: img_Battery_level_u5sl,
-      image_length: img_Battery_level_u5sl.length,
+      x: px(229),
+      y: px(382),
+      image_array: img_Battery_level_15vc,
+      image_length: img_Battery_level_15vc.length,
       type: ui.data_type.BATTERY,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -358,8 +358,8 @@ WatchFace({
     // Time bubble (IMG)
     const variants_3 = [A('sp/pill_006.png'), A('sp/pill_007.png')]
     const variant_3 = ui.createWidget(ui.widget.IMG, {
-      x: px(190),
-      y: px(216),
+      x: px(181),
+      y: px(212),
       src: variants_3[variantIdx % variants_3.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -369,8 +369,8 @@ WatchFace({
     // Bubble 0 (IMG)
     const variants_4 = [A('sp/bdig_009.png'), A('sp/bdig_008.png'), A('sp/bdig_010.png'), A('sp/bdig_011.png'), A('sp/bdig_012.png'), A('sp/bdig_013.png'), A('sp/bdig_014.png'), A('sp/bdig_015.png'), A('sp/bdig_016.png'), A('sp/bdig_017.png'), A('sp/bdig_018.png'), A('sp/bdig_019.png')]
     const variant_4 = ui.createWidget(ui.widget.IMG, {
-      x: px(199),
-      y: px(219),
+      x: px(188),
+      y: px(213),
       src: variants_4[variantIdx % variants_4.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -380,8 +380,8 @@ WatchFace({
     // Bubble 1 (IMG)
     const variants_5 = [A('sp/bdig_008.png'), A('sp/bdig_009.png'), A('sp/bdig_010.png'), A('sp/bdig_011.png'), A('sp/bdig_012.png'), A('sp/bdig_013.png'), A('sp/bdig_014.png'), A('sp/bdig_015.png'), A('sp/bdig_016.png'), A('sp/bdig_017.png'), A('sp/bdig_018.png'), A('sp/bdig_019.png')]
     const variant_5 = ui.createWidget(ui.widget.IMG, {
-      x: px(210),
-      y: px(219),
+      x: px(203),
+      y: px(213),
       src: variants_5[variantIdx % variants_5.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -391,8 +391,8 @@ WatchFace({
     // Bubble 2 (IMG)
     const variants_6 = [A('sp/bdig_018.png'), A('sp/bdig_009.png'), A('sp/bdig_010.png'), A('sp/bdig_011.png'), A('sp/bdig_012.png'), A('sp/bdig_013.png'), A('sp/bdig_014.png'), A('sp/bdig_015.png'), A('sp/bdig_016.png'), A('sp/bdig_017.png'), A('sp/bdig_008.png'), A('sp/bdig_019.png')]
     const variant_6 = ui.createWidget(ui.widget.IMG, {
-      x: px(221),
-      y: px(219),
+      x: px(214),
+      y: px(213),
       src: variants_6[variantIdx % variants_6.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -402,8 +402,8 @@ WatchFace({
     // Bubble 3 (IMG)
     const variants_7 = [A('sp/bdig_008.png'), A('sp/bdig_009.png'), A('sp/bdig_010.png'), A('sp/bdig_011.png'), A('sp/bdig_012.png'), A('sp/bdig_013.png'), A('sp/bdig_014.png'), A('sp/bdig_015.png'), A('sp/bdig_016.png'), A('sp/bdig_017.png'), A('sp/bdig_018.png'), A('sp/bdig_019.png')]
     const variant_7 = ui.createWidget(ui.widget.IMG, {
-      x: px(229),
-      y: px(219),
+      x: px(226),
+      y: px(213),
       src: variants_7[variantIdx % variants_7.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -413,8 +413,8 @@ WatchFace({
     // Bubble 4 (IMG)
     const variants_8 = [A('sp/bdig_017.png'), A('sp/bdig_009.png'), A('sp/bdig_010.png'), A('sp/bdig_011.png'), A('sp/bdig_012.png'), A('sp/bdig_013.png'), A('sp/bdig_014.png'), A('sp/bdig_015.png'), A('sp/bdig_016.png'), A('sp/bdig_008.png'), A('sp/bdig_018.png'), A('sp/bdig_019.png')]
     const variant_8 = ui.createWidget(ui.widget.IMG, {
-      x: px(240),
-      y: px(219),
+      x: px(241),
+      y: px(213),
       src: variants_8[variantIdx % variants_8.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -424,8 +424,8 @@ WatchFace({
     // Bubble 5 (IMG)
     const variants_9 = [A('sp/bdig_018.png'), A('sp/bdig_009.png'), A('sp/bdig_010.png'), A('sp/bdig_011.png'), A('sp/bdig_012.png'), A('sp/bdig_013.png'), A('sp/bdig_014.png'), A('sp/bdig_015.png'), A('sp/bdig_016.png'), A('sp/bdig_017.png'), A('sp/bdig_008.png'), A('sp/bdig_019.png')]
     const variant_9 = ui.createWidget(ui.widget.IMG, {
-      x: px(251),
-      y: px(219),
+      x: px(252),
+      y: px(213),
       src: variants_9[variantIdx % variants_9.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -435,8 +435,8 @@ WatchFace({
     // Bubble 6 (IMG)
     const variants_10 = [A('sp/bdig_011.png'), A('sp/bdig_009.png'), A('sp/bdig_010.png'), A('sp/bdig_008.png'), A('sp/bdig_012.png'), A('sp/bdig_013.png'), A('sp/bdig_014.png'), A('sp/bdig_015.png'), A('sp/bdig_016.png'), A('sp/bdig_017.png'), A('sp/bdig_018.png'), A('sp/bdig_019.png')]
     const variant_10 = ui.createWidget(ui.widget.IMG, {
-      x: px(259),
-      y: px(219),
+      x: px(264),
+      y: px(213),
       src: variants_10[variantIdx % variants_10.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -446,8 +446,8 @@ WatchFace({
     // Bubble 7 (IMG)
     const variants_11 = [A('sp/bdig_014.png'), A('sp/bdig_009.png'), A('sp/bdig_010.png'), A('sp/bdig_011.png'), A('sp/bdig_012.png'), A('sp/bdig_013.png'), A('sp/bdig_008.png'), A('sp/bdig_015.png'), A('sp/bdig_016.png'), A('sp/bdig_017.png'), A('sp/bdig_018.png'), A('sp/bdig_019.png')]
     const variant_11 = ui.createWidget(ui.widget.IMG, {
-      x: px(270),
-      y: px(219),
+      x: px(279),
+      y: px(213),
       src: variants_11[variantIdx % variants_11.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -458,7 +458,7 @@ WatchFace({
     const variants_12 = [A('sp/dim_021.png'), A('sp/dim_020.png')]
     const variant_12 = ui.createWidget(ui.widget.IMG, {
       x: px(0),
-      y: px(70),
+      y: px(60),
       src: variants_12[variantIdx % variants_12.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -469,7 +469,7 @@ WatchFace({
     const variants_13 = [A('sp/spin_034.png'), A('sp/spin_023.png'), A('sp/spin_024.png'), A('sp/spin_025.png'), A('sp/spin_026.png'), A('sp/spin_027.png'), A('sp/spin_028.png'), A('sp/spin_029.png'), A('sp/spin_030.png'), A('sp/spin_031.png'), A('sp/spin_032.png'), A('sp/spin_033.png'), A('sp/spin_022.png')]
     const variant_13 = ui.createWidget(ui.widget.IMG, {
       x: px(153),
-      y: px(108),
+      y: px(66),
       src: variants_13[variantIdx % variants_13.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -479,28 +479,17 @@ WatchFace({
     // Loading text (IMG)
     const variants_14 = [A('sp/load_036.png'), A('sp/load_035.png')]
     const variant_14 = ui.createWidget(ui.widget.IMG, {
-      x: px(45),
-      y: px(204),
+      x: px(0),
+      y: px(150),
       src: variants_14[variantIdx % variants_14.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
     W.load = variant_14
     F.load = variants_14
 
-    // Loading percent (IMG)
-    const variants_15 = [A('sp/p99_038.png'), A('sp/p99_037.png')]
-    const variant_15 = ui.createWidget(ui.widget.IMG, {
-      x: px(155),
-      y: px(228),
-      src: variants_15[variantIdx % variants_15.length],
-      show_level: ui.show_level.ONLY_NORMAL
-    })
-    W.p99 = variant_15
-    F.p99 = variants_15
-
     // a Tap zone set to "Cycle variants" calls this
     const cycleVariants = () => {
-      variantIdx = (variantIdx + 1) % Math.max(variants_0.length, variants_1.length, variants_2.length, variants_3.length, variants_4.length, variants_5.length, variants_6.length, variants_7.length, variants_8.length, variants_9.length, variants_10.length, variants_11.length, variants_12.length, variants_13.length, variants_14.length, variants_15.length)
+      variantIdx = (variantIdx + 1) % Math.max(variants_0.length, variants_1.length, variants_2.length, variants_3.length, variants_4.length, variants_5.length, variants_6.length, variants_7.length, variants_8.length, variants_9.length, variants_10.length, variants_11.length, variants_12.length, variants_13.length, variants_14.length)
       try { if (typeof hmFS !== 'undefined') hmFS.SysProSetInt('dialcraft_variant', variantIdx) } catch (e) {}
       variant_0.setProperty(ui.prop.SRC, variants_0[variantIdx % variants_0.length])
       variant_1.setProperty(ui.prop.SRC, variants_1[variantIdx % variants_1.length])
@@ -517,7 +506,6 @@ WatchFace({
       variant_12.setProperty(ui.prop.SRC, variants_12[variantIdx % variants_12.length])
       variant_13.setProperty(ui.prop.SRC, variants_13[variantIdx % variants_13.length])
       variant_14.setProperty(ui.prop.SRC, variants_14[variantIdx % variants_14.length])
-      variant_15.setProperty(ui.prop.SRC, variants_15[variantIdx % variants_15.length])
     }
 
     // ---- user code (project.userCode) ----
@@ -525,24 +513,24 @@ WatchFace({
     const pxv = (n) => Math.round(n * px(1000) / 1000)
     {
       // Buffering: the scrubber follows the seconds of the minute and stalls at 99% before it rolls over
-      const MS = 100, TX0 = 36, TX1 = 354, TY = 268, STALL = 55;
-      const V = {"buf":{"s":0,"__blank":1},"red":{"s":0,"__blank":1},"thumb":{"s":0,"__blank":1},"pill":{"s":0,"__blank":1},"d0":{"0":1,"1":0,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":10,"__blank":11},"d1":{"0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":10,"__blank":11},"d2":{"0":10,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":0,"__blank":11},"d3":{"0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":10,"__blank":11},"d4":{"0":9,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":0,":":10,"__blank":11},"d5":{"0":10,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":0,"__blank":11},"d6":{"0":3,"1":1,"2":2,"3":0,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":10,"__blank":11},"d7":{"0":6,"1":1,"2":2,"3":3,"4":4,"5":5,"6":0,"7":7,"8":8,"9":9,":":10,"__blank":11},"dim":{"__blank":0,"s":1},"spin":{"__blank":0,"s1":1,"s2":2,"s3":3,"s4":4,"s5":5,"s6":6,"s7":7,"s8":8,"s9":9,"s10":10,"s11":11,"s0":12},"load":{"__blank":0,"s":1},"p99":{"__blank":0,"s":1}};
+      const MS = 100, TX0 = 36, TX1 = 354, TY = 268, STALL = 55, WS = [15, 15, 8, 15, 15, 8, 15, 15], CUM = [0, 15, 30, 38, 53, 68, 76, 91];
+      const V = {"buf":{"s":0,"__blank":1},"red":{"s":0,"__blank":1},"thumb":{"s":0,"__blank":1},"pill":{"s":0,"__blank":1},"d0":{"0":1,"1":0,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":10,"__blank":11},"d1":{"0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":10,"__blank":11},"d2":{"0":10,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":0,"__blank":11},"d3":{"0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":10,"__blank":11},"d4":{"0":9,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":0,":":10,"__blank":11},"d5":{"0":10,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":0,"__blank":11},"d6":{"0":3,"1":1,"2":2,"3":0,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,":":10,"__blank":11},"d7":{"0":6,"1":1,"2":2,"3":3,"4":4,"5":5,"6":0,"7":7,"8":8,"9":9,":":10,"__blank":11},"dim":{"__blank":0,"s":1},"spin":{"__blank":0,"s1":1,"s2":2,"s3":3,"s4":4,"s5":5,"s6":6,"s7":7,"s8":8,"s9":9,"s10":10,"s11":11,"s0":12},"load":{"__blank":0,"s":1}};
       const tick = () => {
         const now = Date.now(), d = new Date(now), sec = d.getSeconds() + (now % 1000) / 1000;
         const stall = sec >= STALL, p = stall ? 0.99 : sec / STALL * 0.99, x = TX0 + (TX1 - TX0) * p;
         slot('buf')(TX0, TY - 3, V.buf.s, Math.round((TX1 - TX0) * Math.min(1, p + (stall ? 0 : 0.12))), 6);
         slot('red')(TX0, TY - 3, V.red.s, Math.round(x - TX0), 6);
         slot('thumb')(x - 12, TY - 12, V.thumb.s);
-        const bw = 104, bx = Math.max(36, Math.min(x - bw / 2, 354 - bw));
-        slot('pill')(bx, TY - 52, V.pill.s);
+        const bw = 122, bx = Math.max(36, Math.min(x - bw / 2, 354 - bw));
+        slot('pill')(bx, TY - 56, V.pill.s);
         const pad = (n) => (n < 10 ? '0' : '') + n;
         const str = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(Math.floor(sec));
-        for (let i = 0; i < 8; i++) slot('d' + i)(bx + 9 + i * 11 - (i > 2 ? 3 : 0) - (i > 5 ? 3 : 0), TY - 49, V['d' + i][str[i]]);
+        for (let i = 0; i < 8; i++) slot('d' + i)(bx + 8 + CUM[i] - (18 - WS[i]) / 2, TY - 55, V['d' + i][str[i]]);
         if (stall) {
-          slot('dim')(0, 70, V.dim.s);
-          slot('spin')(195 - 42, 108, V.spin['s' + Math.floor(now / 83) % 12]);
-          slot('load')(45, 204, V.load.s); slot('p99')(155, 228, V.p99.s);
-        } else { slot('dim').hide(); slot('spin').hide(); slot('load').hide(); slot('p99').hide(); }
+          slot('dim')(0, 60, V.dim.s);
+          slot('spin')(195 - 42, 66, V.spin['s' + Math.floor(now / 83) % 12]);
+          slot('load')(0, 150, V.load.s);
+        } else { slot('dim').hide(); slot('spin').hide(); slot('load').hide(); }
       };
         // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----
       const SL = {};

@@ -10,13 +10,11 @@
 // the pixel budget under 10% with a black background and no second hand.
 // ---------------------------------------------------------------------------
 import ui from '@zos/ui'
-import { Time } from '@zos/sensor'
-import * as zosSensors from '@zos/sensor'   // Weather is read from here: a watch without it gives undefined, it never stops the face loading
 
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_Main_04wr = [
+const img_Minute_Main_84k4 = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -29,7 +27,7 @@ const img_Minute_Main_04wr = [
   A('font_3_9.png'),
 ]
 
-const img_Hour_Main_0714 = [
+const img_Hour_Main_84bh = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -42,95 +40,7 @@ const img_Hour_Main_0714 = [
   A('font_2_9.png'),
 ]
 
-const img_Minute_l5rk = [
-  A('font_10_0.png'),
-  A('font_10_1.png'),
-  A('font_10_2.png'),
-  A('font_10_3.png'),
-  A('font_10_4.png'),
-  A('font_10_5.png'),
-  A('font_10_6.png'),
-  A('font_10_7.png'),
-  A('font_10_8.png'),
-  A('font_10_9.png'),
-]
-
-const img_Hour_wllj = [
-  A('font_9_0.png'),
-  A('font_9_1.png'),
-  A('font_9_2.png'),
-  A('font_9_3.png'),
-  A('font_9_4.png'),
-  A('font_9_5.png'),
-  A('font_9_6.png'),
-  A('font_9_7.png'),
-  A('font_9_8.png'),
-  A('font_9_9.png'),
-]
-
-const img_Weekday_g63e = [
-  A('week_w1.png'),
-  A('week_w2.png'),
-  A('week_w3.png'),
-  A('week_w4.png'),
-  A('week_w5.png'),
-  A('week_w6.png'),
-  A('week_w7.png'),
-]
-
-const img_Day_52i8 = [
-  A('font_4_0.png'),
-  A('font_4_1.png'),
-  A('font_4_2.png'),
-  A('font_4_3.png'),
-  A('font_4_4.png'),
-  A('font_4_5.png'),
-  A('font_4_6.png'),
-  A('font_4_7.png'),
-  A('font_4_8.png'),
-  A('font_4_9.png'),
-]
-
-const img_Steps_c1yz = [
-  A('font_5_0.png'),
-  A('font_5_1.png'),
-  A('font_5_2.png'),
-  A('font_5_3.png'),
-  A('font_5_4.png'),
-  A('font_5_5.png'),
-  A('font_5_6.png'),
-  A('font_5_7.png'),
-  A('font_5_8.png'),
-  A('font_5_9.png'),
-]
-
-const img_Heart_rate_o618 = [
-  A('font_6_0.png'),
-  A('font_6_1.png'),
-  A('font_6_2.png'),
-  A('font_6_3.png'),
-  A('font_6_4.png'),
-  A('font_6_5.png'),
-  A('font_6_6.png'),
-  A('font_6_7.png'),
-  A('font_6_8.png'),
-  A('font_6_9.png'),
-]
-
-const img_Battery_6151 = [
-  A('font_7_0.png'),
-  A('font_7_1.png'),
-  A('font_7_2.png'),
-  A('font_7_3.png'),
-  A('font_7_4.png'),
-  A('font_7_5.png'),
-  A('font_7_6.png'),
-  A('font_7_7.png'),
-  A('font_7_8.png'),
-  A('font_7_9.png'),
-]
-
-const img_Sunrise_f149 = [
+const img_Minute_j1r9 = [
   A('font_8_0.png'),
   A('font_8_1.png'),
   A('font_8_2.png'),
@@ -143,7 +53,69 @@ const img_Sunrise_f149 = [
   A('font_8_9.png'),
 ]
 
-const img_Sunset_e1eg = [
+const img_Hour_j7k6 = [
+  A('font_7_0.png'),
+  A('font_7_1.png'),
+  A('font_7_2.png'),
+  A('font_7_3.png'),
+  A('font_7_4.png'),
+  A('font_7_5.png'),
+  A('font_7_6.png'),
+  A('font_7_7.png'),
+  A('font_7_8.png'),
+  A('font_7_9.png'),
+]
+
+const img_Weekday_o42c = [
+  A('week_w1.png'),
+  A('week_w2.png'),
+  A('week_w3.png'),
+  A('week_w4.png'),
+  A('week_w5.png'),
+  A('week_w6.png'),
+  A('week_w7.png'),
+]
+
+const img_Day_92g0 = [
+  A('font_4_0.png'),
+  A('font_4_1.png'),
+  A('font_4_2.png'),
+  A('font_4_3.png'),
+  A('font_4_4.png'),
+  A('font_4_5.png'),
+  A('font_4_6.png'),
+  A('font_4_7.png'),
+  A('font_4_8.png'),
+  A('font_4_9.png'),
+]
+
+const img_Steps_g3dd = [
+  A('font_5_0.png'),
+  A('font_5_1.png'),
+  A('font_5_2.png'),
+  A('font_5_3.png'),
+  A('font_5_4.png'),
+  A('font_5_5.png'),
+  A('font_5_6.png'),
+  A('font_5_7.png'),
+  A('font_5_8.png'),
+  A('font_5_9.png'),
+]
+
+const img_Heart_rate_t6kb = [
+  A('font_6_0.png'),
+  A('font_6_1.png'),
+  A('font_6_2.png'),
+  A('font_6_3.png'),
+  A('font_6_4.png'),
+  A('font_6_5.png'),
+  A('font_6_6.png'),
+  A('font_6_7.png'),
+  A('font_6_8.png'),
+  A('font_6_9.png'),
+]
+
+const img_Battery_e1mi = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -185,51 +157,51 @@ WatchFace({
 
     // Minute Main (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
-      minute_startX: px(185),
-      minute_startY: px(149),
+      minute_startX: px(220),
+      minute_startY: px(114),
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_Main_04wr,
+      minute_array: img_Minute_Main_84k4,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Colon Main (IMG)
     ui.createWidget(ui.widget.IMG, {
-      x: px(173),
-      y: px(151),
+      x: px(200),
+      y: px(127),
       src: A('symbol_u003a.png'),
       show_level: ui.show_level.ONLY_NORMAL
     })
 
     // Hour Main (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
-      hour_startX: px(117),
-      hour_startY: px(149),
+      hour_startX: px(87),
+      hour_startY: px(114),
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_Main_0714,
+      hour_array: img_Hour_Main_84bh,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Minute (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
-      minute_startX: px(209),
-      minute_startY: px(182),
+      minute_startX: px(207),
+      minute_startY: px(175),
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_l5rk,
+      minute_array: img_Minute_j1r9,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
 
     // Colon (IMG)
     ui.createWidget(ui.widget.IMG, {
-      x: px(182),
+      x: px(185),
       y: px(188),
       src: A('symbol_u003a_2.png'),
       show_level: ui.show_level.ONLY_AOD
@@ -237,132 +209,78 @@ WatchFace({
 
     // Hour (IMG_TIME)
     ui.createWidget(ui.widget.IMG_TIME, {
-      hour_startX: px(73),
-      hour_startY: px(182),
+      hour_startX: px(71),
+      hour_startY: px(175),
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.LEFT,
-      hour_array: img_Hour_wllj,
+      hour_array: img_Hour_j7k6,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
 
     // Weekday (IMG_WEEK)
     ui.createWidget(ui.widget.IMG_WEEK, {
-      x: px(127),
-      y: px(409),
-      week_en: img_Weekday_g63e,
-      week_sc: img_Weekday_g63e,
-      week_tc: img_Weekday_g63e,
+      x: px(53),
+      y: px(381),
+      week_en: img_Weekday_o42c,
+      week_sc: img_Weekday_o42c,
+      week_tc: img_Weekday_o42c,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Day (IMG_DATE)
     ui.createWidget(ui.widget.IMG_DATE, {
-      day_startX: px(211),
-      day_startY: px(413),
+      day_startX: px(229),
+      day_startY: px(387),
       day_zero: 0,
       day_space: px(0),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_52i8,
-      day_sc_array: img_Day_52i8,
-      day_tc_array: img_Day_52i8,
+      day_en_array: img_Day_92g0,
+      day_sc_array: img_Day_92g0,
+      day_tc_array: img_Day_92g0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Steps (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(181),
-      y: px(208),
+      x: px(240),
+      y: px(197),
       type: ui.data_type.STEP,
-      font_array: img_Steps_c1yz,
-      align_h: ui.align.LEFT,
+      font_array: img_Steps_g3dd,
+      align_h: ui.align.RIGHT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Heart rate (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(213),
-      y: px(244),
+      x: px(295),
+      y: px(241),
       type: ui.data_type.HEART,
-      font_array: img_Heart_rate_o618,
-      align_h: ui.align.LEFT,
+      font_array: img_Heart_rate_t6kb,
+      align_h: ui.align.RIGHT,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
     // Battery (TEXT_IMG)
     ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(196),
-      y: px(280),
+      x: px(259),
+      y: px(285),
       type: ui.data_type.BATTERY,
-      font_array: img_Battery_6151,
-      align_h: ui.align.LEFT,
+      font_array: img_Battery_e1mi,
+      align_h: ui.align.RIGHT,
       unit_en: A('percent.png'),
       unit_sc: A('percent.png'),
       unit_tc: A('percent.png'),
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
-    // Label sunrise (IMG)
-    const sun_0 = ui.createWidget(ui.widget.IMG, {
-      x: px(54),
-      y: px(349),
-      src: A('t_R_S_RIT.png'),
-      show_level: ui.show_level.ONLY_NORMAL
-    })
-
-    // Label sunset (IMG)
-    const sun_1 = ui.createWidget(ui.widget.IMG, {
-      x: px(54),
-      y: px(349),
-      src: A('t_APUS.png'),
-      show_level: ui.show_level.ONLY_NORMAL
-    })
-
-    // Formula sunrise (IMG)
-    const sun_2 = ui.createWidget(ui.widget.IMG, {
-      x: px(260),
-      y: px(351),
-      src: A('t__R_S_RIT__.png'),
-      show_level: ui.show_level.ONLY_NORMAL
-    })
-
-    // Formula sunset (IMG)
-    const sun_3 = ui.createWidget(ui.widget.IMG, {
-      x: px(260),
-      y: px(351),
-      src: A('t__APUS__.png'),
-      show_level: ui.show_level.ONLY_NORMAL
-    })
-
-    // Sunrise (TEXT_IMG)
-    const sun_4 = ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(171),
-      y: px(352),
-      type: ui.data_type.SUN_RISE,
-      font_array: img_Sunrise_f149,
-      align_h: ui.align.LEFT,
-      dot_image: A('colon_2.png'),
-      show_level: ui.show_level.ONLY_NORMAL,
-    })
-
-    // Sunset (TEXT_IMG)
-    const sun_5 = ui.createWidget(ui.widget.TEXT_IMG, {
-      x: px(171),
-      y: px(352),
-      type: ui.data_type.SUN_SET,
-      font_array: img_Sunset_e1eg,
-      align_h: ui.align.LEFT,
-      dot_image: A('colon_3.png'),
-      show_level: ui.show_level.ONLY_NORMAL,
-    })
-
     // Formula (IMG)
-    const variants_0 = [A('sp/fb_014.png'), A('sp/fb_015.png'), A('sp/fb_016.png'), A('sp/fb_017.png'), A('sp/fb_018.png'), A('sp/fb_019.png'), A('sp/fb_020.png')]
+    const variants_0 = [A('sp/fb_014.png'), A('sp/fb_015.png'), A('sp/fb_016.png'), A('sp/fb_017.png'), A('sp/fb_018.png'), A('sp/fb_019.png')]
     const variant_0 = ui.createWidget(ui.widget.IMG, {
-      x: px(62),
-      y: px(54),
+      x: px(66),
+      y: px(28),
       src: variants_0[variantIdx % variants_0.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -372,9 +290,9 @@ WatchFace({
     // Cursor top (IMG)
     const variants_1 = [A('sp/selT_000.png'), A('sp/selT_001.png')]
     const variant_1 = ui.createWidget(ui.widget.IMG, {
-      x: px(158),
-      y: px(134),
-      w: px(94),
+      x: px(40),
+      y: px(114),
+      w: px(340),
       h: px(2),
       src: variants_1[variantIdx % variants_1.length],
       show_level: ui.show_level.ONLY_NORMAL
@@ -385,9 +303,9 @@ WatchFace({
     // Cursor bottom (IMG)
     const variants_2 = [A('sp/selB_002.png'), A('sp/selB_003.png')]
     const variant_2 = ui.createWidget(ui.widget.IMG, {
-      x: px(158),
-      y: px(198),
-      w: px(94),
+      x: px(40),
+      y: px(192),
+      w: px(340),
       h: px(2),
       src: variants_2[variantIdx % variants_2.length],
       show_level: ui.show_level.ONLY_NORMAL
@@ -398,10 +316,10 @@ WatchFace({
     // Cursor left (IMG)
     const variants_3 = [A('sp/selL_004.png'), A('sp/selL_005.png')]
     const variant_3 = ui.createWidget(ui.widget.IMG, {
-      x: px(158),
-      y: px(134),
+      x: px(40),
+      y: px(114),
       w: px(2),
-      h: px(66),
+      h: px(80),
       src: variants_3[variantIdx % variants_3.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -411,10 +329,10 @@ WatchFace({
     // Cursor right (IMG)
     const variants_4 = [A('sp/selR_006.png'), A('sp/selR_007.png')]
     const variant_4 = ui.createWidget(ui.widget.IMG, {
-      x: px(250),
-      y: px(134),
+      x: px(378),
+      y: px(114),
       w: px(2),
-      h: px(66),
+      h: px(80),
       src: variants_4[variantIdx % variants_4.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -424,8 +342,8 @@ WatchFace({
     // Cursor handle (IMG)
     const variants_5 = [A('sp/selH_008.png'), A('sp/selH_009.png')]
     const variant_5 = ui.createWidget(ui.widget.IMG, {
-      x: px(246),
-      y: px(194),
+      x: px(374),
+      y: px(188),
       src: variants_5[variantIdx % variants_5.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -435,10 +353,10 @@ WatchFace({
     // Highlight column (IMG)
     const variants_6 = [A('sp/hlC_010.png'), A('sp/hlC_011.png')]
     const variant_6 = ui.createWidget(ui.widget.IMG, {
-      x: px(158),
-      y: px(112),
-      w: px(94),
-      h: px(22),
+      x: px(40),
+      y: px(76),
+      w: px(340),
+      h: px(38),
       src: variants_6[variantIdx % variants_6.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -448,10 +366,10 @@ WatchFace({
     // Highlight row (IMG)
     const variants_7 = [A('sp/hlR_012.png'), A('sp/hlR_013.png')]
     const variant_7 = ui.createWidget(ui.widget.IMG, {
-      x: px(24),
-      y: px(134),
-      w: px(22),
-      h: px(66),
+      x: px(10),
+      y: px(114),
+      w: px(30),
+      h: px(80),
       src: variants_7[variantIdx % variants_7.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -459,10 +377,10 @@ WatchFace({
     F.hlR = variants_7
 
     // Tooltip (IMG)
-    const variants_8 = [A('sp/tip_022.png'), A('sp/tip_021.png')]
+    const variants_8 = [A('sp/tip_021.png'), A('sp/tip_020.png')]
     const variant_8 = ui.createWidget(ui.widget.IMG, {
-      x: px(70),
-      y: px(266),
+      x: px(25),
+      y: px(276),
       src: variants_8[variantIdx % variants_8.length],
       show_level: ui.show_level.ONLY_NORMAL
     })
@@ -483,54 +401,26 @@ WatchFace({
       variant_7.setProperty(ui.prop.SRC, variants_7[variantIdx % variants_7.length])
       variant_8.setProperty(ui.prop.SRC, variants_8[variantIdx % variants_8.length])
     }
-    // Sunrise / sunset swap. The watch has no "next sunrise" reading: SUN_CURRENT stays on today's sunset once it has passed.
-    // So the plain SUN_RISE and SUN_SET readings sit in the same place and this shows the one that comes next:
-    // the sunset from sunrise until sunset, the sunrise otherwise (after sunset it is today's sunrise time, within a minute or two of tomorrow's).
-    const sunClock = new Time()
-    const sunTimes = () => {   // today's [sunrise, sunset] in minutes since midnight, from the weather data; null when the watch has none
-      try {
-        const WeatherCls = zosSensors && zosSensors.Weather
-        const wx = WeatherCls ? new WeatherCls() : null
-        const f = wx ? (wx.getForecastWeather ? wx.getForecastWeather() : wx.getForecast()) : null
-        const t = f && f.tideData && f.tideData.data && f.tideData.data[0]
-        if (t && t.sunrise && t.sunset) return [t.sunrise.hour * 60 + t.sunrise.minute, t.sunset.hour * 60 + t.sunset.minute]
-      } catch (e) {}
-      return null
-    }
-    const updateSun = () => {
-      const m = sunClock.getHours() * 60 + sunClock.getMinutes()
-      const t = sunTimes() || [360, 1080]   // without weather data: 06:00 to 18:00 counts as day
-      const nextIsSunset = m >= t[0] && m < t[1]
-      sun_0.setProperty(ui.prop.VISIBLE, !nextIsSunset)
-      sun_1.setProperty(ui.prop.VISIBLE, nextIsSunset)
-      sun_2.setProperty(ui.prop.VISIBLE, !nextIsSunset)
-      sun_3.setProperty(ui.prop.VISIBLE, nextIsSunset)
-      sun_4.setProperty(ui.prop.VISIBLE, !nextIsSunset)
-      sun_5.setProperty(ui.prop.VISIBLE, nextIsSunset)
-    }
-    updateSun()
-    sunClock.onPerMinute(updateSun)
-    ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: updateSun })
 
     // ---- user code (project.userCode) ----
     // px() only takes a literal number (the build replaces it, there is no px at run time); pxv() scales a computed one
     const pxv = (n) => Math.round(n * px(1000) / 1000)
     {
       // Foaie de calcul: the cursor walks the sheet, the formula bar follows it, the motivation cell complains
-      const MS = 100, GX = 46, GY = 112;
-      const COLX = [46, 158, 252, 370], RY = [134, 200, 236, 272, 308, 344, 380], RHS = [66, 36, 36, 36, 36, 36];
-      const SEL = [[0, 1, 0.3, 1.8], [1, 1, 1.9, 3.2], [3, 1, 3.3, 4.6], [4, 1, 4.7, 6.6], [4, 2, 6.8, 7.9], [0, 1, 8.1, 9.0]];
-      const FORM = ['=ACUM()', '=SUM(pași)', '=VIAȚĂ()', '=OPTIMISM()', '=PAȘI/0', '=APUS()'];
-      const V = {"selT":{"s":0,"__blank":1},"selB":{"s":0,"__blank":1},"selL":{"s":0,"__blank":1},"selR":{"s":0,"__blank":1},"selH":{"s":0,"__blank":1},"hlC":{"s":0,"__blank":1},"hlR":{"s":0,"__blank":1},"fb":{"=ACUM()":0,"=SUM(pași)":1,"=VIAȚĂ()":2,"=OPTIMISM()":3,"=PAȘI/0":4,"=APUS()":5,"__blank":6},"tip":{"__blank":0,"s":1}};
+      const MS = 100, GX = 40, GY = 76, HH = 38;
+      const COLX = [40, 196, 380], RY = [114, 194, 238, 282, 326], RHS = [80, 44, 44, 44, 44];
+      const SEL = [[0, 0, 0.3, 1.8], [1, 1, 1.9, 3.2], [2, 1, 3.3, 4.6], [3, 1, 4.7, 5.9], [4, 1, 6.0, 8.0], [0, 0, 8.1, 9.0]];
+      const FORM = ['=ACUM()', '=SUM(pași)', '=VIAȚĂ()', '=OPTIMISM()', '=PAȘI/0'];
+      const V = {"selT":{"s":0,"__blank":1},"selB":{"s":0,"__blank":1},"selL":{"s":0,"__blank":1},"selR":{"s":0,"__blank":1},"selH":{"s":0,"__blank":1},"hlC":{"s":0,"__blank":1},"hlR":{"s":0,"__blank":1},"fb":{"=ACUM()":0,"=SUM(pași)":1,"=VIAȚĂ()":2,"=OPTIMISM()":3,"=PAȘI/0":4,"__blank":5},"tip":{"__blank":0,"s":1}};
       const tick = () => {
         const t = (Date.now() / 1000) % 9; let cur = SEL[0];
         for (let i = 0; i < SEL.length; i++) if (t >= SEL[i][2]) cur = SEL[i];
-        const r = cur[0], c = cur[1], x = COLX[c], y = RY[r], w = COLX[c + 1] - COLX[c], h = RHS[r];
-        slot('hlC')(x, GY, V.hlC.s, w, 22); slot('hlR')(GX - 22, y, V.hlR.s, 22, h);
+        const r = cur[0], c = cur[1], x = r === 0 ? COLX[0] : COLX[c], y = RY[r], w = (r === 0 ? COLX[2] : COLX[c + 1]) - x, h = RHS[r];
+        slot('hlC')(x, GY, V.hlC.s, w, HH); slot('hlR')(GX - 30, y, V.hlR.s, 30, h);
         slot('selT')(x, y, V.selT.s, w, 2); slot('selB')(x, y + h - 2, V.selB.s, w, 2);
         slot('selL')(x, y, V.selL.s, 2, h); slot('selR')(x + w - 2, y, V.selR.s, 2, h); slot('selH')(x + w - 6, y + h - 6, V.selH.s);
-        slot('fb')(62, 54, V.fb[FORM[r]]);
-        if (r === 4 && c === 1 && t > 5.1 && t < 6.5) slot('tip')(70, y - 42, V.tip.s); else slot('tip').hide();
+        slot('fb')(66, 28, V.fb[FORM[r]]);
+        if (r === 4 && t > 6.3 && t < 7.7) slot('tip')(25, y - 50, V.tip.s); else slot('tip').hide();
       };
         // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----
       const SL = {};

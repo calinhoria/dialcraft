@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bip 6 — Minimal Watchface Design</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    background: #0a0a0f;
+    font-family: -apple-system, sans-serif;
+    color: #555;
+  }
+
+  /* ---- device frame 410x502 scaled down ---- */
+  .device {
+    position: relative;
+    width: 274px;   /* 410 * 0.667 */
+    height: 335px;  /* 502 * 0.667 */
+    border-radius: 40px;
+    padding: 8px;
+    background: #1a1a1e;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,.08),
+      0 0 0 3px #26262b,
+      0 30px 60px rgba(0,0,0,.6);
+  }
+
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 33px;
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* ---- aod (always-on) dim layer, toggled by tap ---- */
+  /* .face must fill screen: filter makes it a containing block for absolute children */
+  .face {
+    position: absolute;
+    inset: 0;
+    filter: brightness(1);
+    transition: filter .5s;
+  }
+  .screen.aod .face { filter: brightness(.4); }
+
+  /* ---- design: minimal, centered clock ---- */
+
+  /* seconds progress ring behind time — thin SVG circle */
+  .ring {
+    position: absolute;
+    inset: 28px;
+  }
+  .ring svg { width: 100%; height: 100%; display: block; }
+  .ring circle { fill: none; stroke-width: 2; }
+  .ring .track { stroke: rgba(255,255,255,.07); }
+  .ring .prog {
+    stroke: var(--accent, #4fd1c5);
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+
+  .time {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "SF Mono", ui-monospace, monospace;
+    font-size: 64px;
+    font-weight: 200;
+    letter-spacing: -2px;
+    color: #fafafa;
+  }
+  .time small {
+    /* digital seconds removed: ring already carries seconds */
+    display: none;
+  }
+
+  /* date line */
+  .date {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, 54px);
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #888;
+  }
+
+  /* notification dots / battery */
+  .status {
+    position: absolute;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: #333; }
+  .dot.on { background: var(--accent, #4fd1c5); }
+  .battery {
+    width: 34px; height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .battery::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: calc(var(--batt) * 1%);
+    background: #fff;
+    border-radius: 2px;
+  }
+
+  /* heartbeat pulse line — subtle accent motion */
+  .bpm {
+    position: absolute;
+    bottom: 78px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 14px;
+    opacity: .5;
+  }
+  .bpm polyline {
+    fill: none;
+    stroke: var(--accent, #4fd1c5);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    /* polyline length ≈ 69 — dasharray must match for clean draw */
+    stroke-dasharray: 70;
+    animation: pulse 1.6s linear infinite;
+  }
+  @keyframes pulse {
+    0%   { stroke-dashoffset: 70; opacity: .2; }
+    45%  { stroke-dashoffset: 0;  opacity: 1; }
+    100% { stroke-dashoffset: -70; opacity: .2; }
+  }
+
+  /* accent swap + info under design */
+  .info { max-width: 460px; text-align: center; font-size: 13px; line-height: 1.6; }
+  kbd {
+    background: #1c1c22; border: 1px solid #2c2c32;
+    border-radius: 4px; padding: 1px 6px; font-size: 11px;
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="screen" id="screen">
+    <div class="face">
+      <div class="ring">
+        <svg viewBox="0 0 100 100">
+          <circle class="track" cx="50" cy="50" r="46"/>
+          <circle class="prog" id="prog" cx="50" cy="50" r="46"
+                  stroke-dasharray="289.03" stroke-dashoffset="289.03"/>
+        </svg>
+      </div>
+      <svg class="bpm" viewBox="0 0 60 14">
+        <polyline points="0,8 12,8 17,3 23,12 28,8 60,8"
+          style="animation: pulse 1.6s linear infinite; stroke-dasharray:70;"/>
+      </svg>
+      <div class="time" id="time">10:08<small>42</small></div>
+      <div class="date" id="date">SAT · OCT 25</div>
+      <div class="status">
+        <span class="dot on"></span>
+        <span class="dot"></span>
+        <span class="battery" style="--batt:72"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="info">
+  Design preview — <b>minimal AMOLED clock</b>: thin mono digits, smooth seconds ring, pulse ECG line.<br>
+  Tap = AOD dim · <kbd>Space</kbd> = color accent · time updates live.<br>
+  Target: Amazfit Bip 6 · 410×502 · pure CSS animations, no PNGs.
+</div>
+
+<script>
+  const hrs = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const dys = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+  const scr = document.getElementById("screen");
+  const prog = document.getElementById("prog");
+  const C = 2 * Math.PI * 46; // circumference of r=46
+
+  let shown = "";
+  function frame() {
+    const n = new Date();
+    const sec = n.getSeconds() + n.getMilliseconds() / 1000;
+
+    // smooth sweep, starts at 12 o'clock
+    prog.setAttribute("stroke-dashoffset", (C * (1 - sec / 60)).toFixed(2));
+
+    const hh = String(n.getHours()).padStart(2, "0");
+    const mm = String(n.getMinutes()).padStart(2, "0");
+    const ss = String(n.getSeconds()).padStart(2, "0");
+    const key = hh + mm + ss;
+    if (key !== shown) { // touch text only on real change
+      shown = key;
+      document.getElementById("time").textContent = `${hh}:${mm}`;
+      document.getElementById("date").textContent =
+        `${dys[n.getDay()]} · ${hrs[n.getMonth()]} ${n.getDate()}`;
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+
+  // AOD dim on tap
+  scr.addEventListener("click", () => scr.classList.toggle("aod"));
+
+  // spacebar cycles accents
+  const accents = ["#4fd1c5", "#f6ad55", "#fc8181", "#90cdf4", "#fafafa"];
+  let accentIdx = 0;
+  document.addEventListener("keydown", e => {
+    if (e.code !== "Space") return;
+    e.preventDefault();
+    accentIdx = (accentIdx + 1) % accents.length;
+    document.documentElement.style.setProperty("--accent", accents[accentIdx]);
+  });
+
+  // start with accent set
+  document.documentElement.style.setProperty("--accent", accents[0]);
+</script>
+</body>
+</html>
