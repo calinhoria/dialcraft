@@ -1,0 +1,3038 @@
+{
+  "version": 1,
+  "name": "Rainbowbee",
+  "device": "bip-6",
+  "appId": "2890411",
+  "vender": "zepp",
+  "description": "Rainbowbee: a bee-style digital face with two editable complications (steps or sunrise/sunset, calories or temperature)",
+  "font": "Orbitron",
+  "language": "en-US",
+  "groups": {},
+  "elements": [
+    {
+      "id": "elmvfb4nkm5co",
+      "kind": "IMG",
+      "name": "Image",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/bg.png"
+    },
+    {
+      "id": "elmvfb4nky56e",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 47,
+      "y": 21,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 15,
+      "images": [
+        "img/hour_0.png",
+        "img/hour_1.png",
+        "img/hour_2.png",
+        "img/hour_3.png",
+        "img/hour_4.png",
+        "img/hour_5.png",
+        "img/hour_6.png",
+        "img/hour_7.png",
+        "img/hour_8.png",
+        "img/hour_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvfb4nl57k1",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 46,
+      "y": 145,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 11,
+      "images": [
+        "img/min_0.png",
+        "img/min_1.png",
+        "img/min_2.png",
+        "img/min_3.png",
+        "img/min_4.png",
+        "img/min_5.png",
+        "img/min_6.png",
+        "img/min_7.png",
+        "img/min_8.png",
+        "img/min_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvfb4nl843w",
+      "kind": "IMG_TIME",
+      "name": "Second",
+      "x": 135,
+      "y": 264,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "second",
+      "zero": 1,
+      "follow": 0,
+      "space": 2,
+      "images": [
+        "img/sec_0.png",
+        "img/sec_1.png",
+        "img/sec_2.png",
+        "img/sec_3.png",
+        "img/sec_4.png",
+        "img/sec_5.png",
+        "img/sec_6.png",
+        "img/sec_7.png",
+        "img/sec_8.png",
+        "img/sec_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvfb4nl86h8",
+      "kind": "IMG",
+      "name": "Image 2",
+      "x": 57,
+      "y": 278,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/am_off.png"
+    },
+    {
+      "id": "elmvfb4nl83jx",
+      "kind": "IMG",
+      "name": "Image 3",
+      "x": 58,
+      "y": 302,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/pm_off.png"
+    },
+    {
+      "id": "elmvfb4nl93iw",
+      "kind": "IMG",
+      "name": "Image 4",
+      "x": 57,
+      "y": 278,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/am_on.png",
+      "showWhen": "am"
+    },
+    {
+      "id": "elmvfb4nl92is",
+      "kind": "IMG",
+      "name": "Image 5",
+      "x": 58,
+      "y": 302,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/pm_on.png",
+      "showWhen": "pm"
+    },
+    {
+      "id": "elmvfb4nlb75h",
+      "kind": "IMG_DATE",
+      "name": "Month",
+      "x": 57,
+      "y": 401,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "img/date_0.png",
+        "img/date_1.png",
+        "img/date_2.png",
+        "img/date_3.png",
+        "img/date_4.png",
+        "img/date_5.png",
+        "img/date_6.png",
+        "img/date_7.png",
+        "img/date_8.png",
+        "img/date_9.png"
+      ],
+      "part": "month",
+      "zero": 1,
+      "follow": 0,
+      "space": -2,
+      "unit": "",
+      "isCharacter": false,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvfb4nlb1bi",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 99,
+      "y": 401,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "img/date_0.png",
+        "img/date_1.png",
+        "img/date_2.png",
+        "img/date_3.png",
+        "img/date_4.png",
+        "img/date_5.png",
+        "img/date_6.png",
+        "img/date_7.png",
+        "img/date_8.png",
+        "img/date_9.png"
+      ],
+      "part": "day",
+      "zero": 1,
+      "follow": 0,
+      "space": -2,
+      "unit": "",
+      "isCharacter": false,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvfb4nlb2f1",
+      "kind": "IMG",
+      "name": "Image 6",
+      "x": 85,
+      "y": 401,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/dash.png"
+    },
+    {
+      "id": "elmvfb4nldz8",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 134,
+      "y": 401,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "img/wk_0.png",
+        "img/wk_1.png",
+        "img/wk_2.png",
+        "img/wk_3.png",
+        "img/wk_4.png",
+        "img/wk_5.png",
+        "img/wk_6.png"
+      ]
+    },
+    {
+      "id": "elmw7hewpqly96",
+      "kind": "EDIT_SLOT",
+      "name": "Complication 1 (steps / sunrise-sunset)",
+      "x": 236,
+      "y": 16,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "editId": 1,
+      "w": 120,
+      "h": 137,
+      "defaultType": "STEP",
+      "optionalTypes": [
+        {
+          "type": "STEP",
+          "preview": "img/prev_steps.png"
+        },
+        {
+          "type": "SUN",
+          "preview": "img/prev_sun.png"
+        }
+      ],
+      "selectImage": "img/sel_slot.png",
+      "unSelectImage": "img/unsel_slot.png",
+      "tipsBg": "",
+      "tipsX": 0,
+      "tipsY": 0,
+      "tipsWidth": 0,
+      "tipsMargin": 10
+    },
+    {
+      "id": "elmvfb4nlitb",
+      "kind": "IMG_LEVEL",
+      "name": "Steps ring",
+      "x": 250,
+      "y": 21,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "img/ring_0.png",
+        "img/ring_1.png",
+        "img/ring_2.png",
+        "img/ring_3.png",
+        "img/ring_4.png",
+        "img/ring_5.png",
+        "img/ring_6.png",
+        "img/ring_7.png",
+        "img/ring_8.png",
+        "img/ring_9.png",
+        "img/ring_10.png"
+      ],
+      "w": 91,
+      "h": 91,
+      "dataType": "STEP",
+      "level": 0,
+      "editSlot": 1,
+      "editType": "STEP"
+    },
+    {
+      "id": "elmvfb4nlj698",
+      "kind": "IMG",
+      "name": "Steps icon",
+      "x": 278,
+      "y": 49,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/steps_icon.png",
+      "editSlot": 1,
+      "editType": "STEP"
+    },
+    {
+      "id": "elmvfb4nllst",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 236,
+      "y": 116,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "img/big_0.png",
+        "img/big_1.png",
+        "img/big_2.png",
+        "img/big_3.png",
+        "img/big_4.png",
+        "img/big_5.png",
+        "img/big_6.png",
+        "img/big_7.png",
+        "img/big_8.png",
+        "img/big_9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "w": 120,
+      "h": 35,
+      "editSlot": 1,
+      "editType": "STEP"
+    },
+    {
+      "id": "elmcl7b909v2qn",
+      "kind": "IMG",
+      "name": "Sun disc",
+      "x": 251,
+      "y": 22,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/disc.png",
+      "editSlot": 1,
+      "editType": "SUN"
+    },
+    {
+      "id": "elmjmd6n4atqj6",
+      "kind": "IMG",
+      "name": "Sunrise icon",
+      "x": 278,
+      "y": 49,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/sunrise_icon.png",
+      "showWhen": "sunrise",
+      "editSlot": 1,
+      "editType": "SUN"
+    },
+    {
+      "id": "elmzw70qbughep",
+      "kind": "IMG",
+      "name": "Sunset icon",
+      "x": 278,
+      "y": 49,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/sunset_icon.png",
+      "showWhen": "sunset",
+      "editSlot": 1,
+      "editType": "SUN"
+    },
+    {
+      "id": "elmk5yynij7db4",
+      "kind": "TEXT_IMG",
+      "name": "Sunrise time",
+      "x": 236,
+      "y": 116,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "SUN_RISE",
+      "images": [
+        "img/big_0.png",
+        "img/big_1.png",
+        "img/big_2.png",
+        "img/big_3.png",
+        "img/big_4.png",
+        "img/big_5.png",
+        "img/big_6.png",
+        "img/big_7.png",
+        "img/big_8.png",
+        "img/big_9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "img/colon.png",
+      "negative": "",
+      "w": 120,
+      "h": 35,
+      "showWhen": "sunrise",
+      "editSlot": 1,
+      "editType": "SUN"
+    },
+    {
+      "id": "elmkpsarn50b05",
+      "kind": "TEXT_IMG",
+      "name": "Sunset time",
+      "x": 236,
+      "y": 116,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "SUN_SET",
+      "images": [
+        "img/big_0.png",
+        "img/big_1.png",
+        "img/big_2.png",
+        "img/big_3.png",
+        "img/big_4.png",
+        "img/big_5.png",
+        "img/big_6.png",
+        "img/big_7.png",
+        "img/big_8.png",
+        "img/big_9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "img/colon.png",
+      "negative": "",
+      "w": 120,
+      "h": 35,
+      "showWhen": "sunset",
+      "editSlot": 1,
+      "editType": "SUN"
+    },
+    {
+      "id": "elmi1ggz3ug4cp",
+      "kind": "EDIT_SLOT",
+      "name": "Complication 2 (calories / temperature)",
+      "x": 236,
+      "y": 163,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "editId": 2,
+      "w": 120,
+      "h": 137,
+      "defaultType": "CAL",
+      "optionalTypes": [
+        {
+          "type": "CAL",
+          "preview": "img/prev_cal.png"
+        },
+        {
+          "type": "TEMPERATURE",
+          "preview": "img/prev_temp.png"
+        }
+      ],
+      "selectImage": "img/sel_slot.png",
+      "unSelectImage": "img/unsel_slot.png",
+      "tipsBg": "",
+      "tipsX": 0,
+      "tipsY": 0,
+      "tipsWidth": 0,
+      "tipsMargin": 10
+    },
+    {
+      "id": "elmvfb4nlj6no",
+      "kind": "IMG_LEVEL",
+      "name": "Calories ring",
+      "x": 250,
+      "y": 168,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "img/ring_0.png",
+        "img/ring_1.png",
+        "img/ring_2.png",
+        "img/ring_3.png",
+        "img/ring_4.png",
+        "img/ring_5.png",
+        "img/ring_6.png",
+        "img/ring_7.png",
+        "img/ring_8.png",
+        "img/ring_9.png",
+        "img/ring_10.png"
+      ],
+      "w": 91,
+      "h": 91,
+      "dataType": "CAL",
+      "level": 0,
+      "editSlot": 2,
+      "editType": "CAL"
+    },
+    {
+      "id": "elmvfb4nll1wz",
+      "kind": "IMG",
+      "name": "Calories icon",
+      "x": 278,
+      "y": 196,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/cal_icon.png",
+      "editSlot": 2,
+      "editType": "CAL"
+    },
+    {
+      "id": "elmvfb4nllqn",
+      "kind": "TEXT_IMG",
+      "name": "Calories",
+      "x": 236,
+      "y": 263,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "CAL",
+      "images": [
+        "img/big_0.png",
+        "img/big_1.png",
+        "img/big_2.png",
+        "img/big_3.png",
+        "img/big_4.png",
+        "img/big_5.png",
+        "img/big_6.png",
+        "img/big_7.png",
+        "img/big_8.png",
+        "img/big_9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "w": 120,
+      "h": 35,
+      "editSlot": 2,
+      "editType": "CAL"
+    },
+    {
+      "id": "elm94f77qrypyk",
+      "kind": "IMG",
+      "name": "Temp disc",
+      "x": 251,
+      "y": 169,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/disc.png",
+      "editSlot": 2,
+      "editType": "TEMPERATURE"
+    },
+    {
+      "id": "elmya5yba5d03f",
+      "kind": "IMG",
+      "name": "Temperature icon",
+      "x": 278,
+      "y": 196,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/temp_icon.png",
+      "editSlot": 2,
+      "editType": "TEMPERATURE"
+    },
+    {
+      "id": "elmym6gxl94g7m",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 236,
+      "y": 263,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "img/big_0.png",
+        "img/big_1.png",
+        "img/big_2.png",
+        "img/big_3.png",
+        "img/big_4.png",
+        "img/big_5.png",
+        "img/big_6.png",
+        "img/big_7.png",
+        "img/big_8.png",
+        "img/big_9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "img/deg.png",
+      "dot": "",
+      "negative": "img/minus.png",
+      "w": 120,
+      "h": 35,
+      "editSlot": 2,
+      "editType": "TEMPERATURE"
+    },
+    {
+      "id": "elmvfb4nll1vw",
+      "kind": "IMG",
+      "name": "Image 9",
+      "x": 250,
+      "y": 315,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "img/heart_btn.png"
+    },
+    {
+      "id": "elmvfb4nll6dj",
+      "kind": "IMG_CLICK",
+      "name": "Heart rate",
+      "x": 250,
+      "y": 315,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "HEART",
+      "w": 89,
+      "h": 89,
+      "src": "img/heart_btn.png"
+    },
+    {
+      "id": "elmvfb4nlndv",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate 2",
+      "x": 256,
+      "y": 408,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "img/hr_0.png",
+        "img/hr_1.png",
+        "img/hr_2.png",
+        "img/hr_3.png",
+        "img/hr_4.png",
+        "img/hr_5.png",
+        "img/hr_6.png",
+        "img/hr_7.png",
+        "img/hr_8.png",
+        "img/hr_9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "w": 80,
+      "h": 35
+    },
+    {
+      "id": "elmvfb4nlp4vv",
+      "kind": "IMG_LEVEL",
+      "name": "Level 3",
+      "x": 63,
+      "y": 360,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "img/dots_0.png",
+        "img/dots_1.png",
+        "img/dots_2.png",
+        "img/dots_3.png",
+        "img/dots_4.png",
+        "img/dots_5.png",
+        "img/dots_6.png",
+        "img/dots_7.png",
+        "img/dots_8.png",
+        "img/dots_9.png",
+        "img/dots_10.png"
+      ],
+      "w": 60,
+      "h": 12,
+      "dataType": "BATTERY",
+      "level": 0
+    },
+    {
+      "id": "elmvfb4nlq2ha",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 141,
+      "y": 347,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "img/batt_0.png",
+        "img/batt_1.png",
+        "img/batt_2.png",
+        "img/batt_3.png",
+        "img/batt_4.png",
+        "img/batt_5.png",
+        "img/batt_6.png",
+        "img/batt_7.png",
+        "img/batt_8.png",
+        "img/batt_9.png"
+      ],
+      "hSpace": -6,
+      "alignH": "RIGHT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "w": 56,
+      "h": 35
+    },
+    {
+      "id": "elmvfb9r8q492",
+      "kind": "IMG_TIME",
+      "name": "Minute AOD",
+      "x": 113,
+      "y": 236,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 11,
+      "images": [
+        "img/min_0.png",
+        "img/min_1.png",
+        "img/min_2.png",
+        "img/min_3.png",
+        "img/min_4.png",
+        "img/min_5.png",
+        "img/min_6.png",
+        "img/min_7.png",
+        "img/min_8.png",
+        "img/min_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvfbnm3m3uh",
+      "kind": "IMG_TIME",
+      "name": "Hour AOD",
+      "x": 113,
+      "y": 99,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 11,
+      "images": [
+        "img/min_0.png",
+        "img/min_1.png",
+        "img/min_2.png",
+        "img/min_3.png",
+        "img/min_4.png",
+        "img/min_5.png",
+        "img/min_6.png",
+        "img/min_7.png",
+        "img/min_8.png",
+        "img/min_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvfs620y5ka",
+      "kind": "TAP",
+      "name": "Tap: next colour theme",
+      "x": 42,
+      "y": 12,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 171,
+      "h": 118,
+      "action": "theme",
+      "appUrl": "",
+      "note": ""
+    }
+  ],
+  "images": [
+    {
+      "name": "img/am_off.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/am_on.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/am_on__t1.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/am_on__t2.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/am_on__t3.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/am_on__t4.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/am_on__t5.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/am_on__t6.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/batt_0.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_1.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_2.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_3.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_4.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_5.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_6.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_7.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_8.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/batt_9.png",
+      "width": 23,
+      "height": 35
+    },
+    {
+      "name": "img/bg.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "img/big_0.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_1.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_2.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_3.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_4.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_5.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_6.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_7.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_8.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/big_9.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/cal_icon.png",
+      "width": 35,
+      "height": 35
+    },
+    {
+      "name": "img/colon.png",
+      "width": 10,
+      "height": 35
+    },
+    {
+      "name": "img/dash.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_0.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_1.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_2.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_3.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_4.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_5.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_6.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_7.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_8.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/date_9.png",
+      "width": 16,
+      "height": 33
+    },
+    {
+      "name": "img/deg.png",
+      "width": 12,
+      "height": 35
+    },
+    {
+      "name": "img/disc.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/disc__t1.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/disc__t2.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/disc__t3.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/disc__t4.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/disc__t5.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/disc__t6.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/dots_0.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_0__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_0__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_0__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_0__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_0__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_0__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_10.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_10__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_10__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_10__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_10__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_10__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_10__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_1__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_1__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_1__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_1__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_1__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_1__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_2__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_2__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_2__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_2__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_2__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_2__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_3__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_3__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_3__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_3__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_3__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_3__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_4__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_4__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_4__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_4__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_4__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_4__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_5__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_5__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_5__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_5__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_5__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_5__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_6__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_6__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_6__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_6__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_6__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_6__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_7.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_7__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_7__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_7__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_7__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_7__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_7__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_8.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_8__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_8__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_8__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_8__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_8__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_8__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_9.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_9__t1.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_9__t2.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_9__t3.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_9__t4.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_9__t5.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/dots_9__t6.png",
+      "width": 60,
+      "height": 12
+    },
+    {
+      "name": "img/heart_btn.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/heart_btn__t1.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/heart_btn__t2.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/heart_btn__t3.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/heart_btn__t4.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/heart_btn__t5.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/heart_btn__t6.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/hour_0.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_0__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_0__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_0__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_0__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_0__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_0__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_1__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_1__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_1__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_1__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_1__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_1__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_2__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_2__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_2__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_2__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_2__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_2__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_3__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_3__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_3__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_3__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_3__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_3__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_4__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_4__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_4__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_4__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_4__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_4__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_5__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_5__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_5__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_5__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_5__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_5__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_6__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_6__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_6__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_6__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_6__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_6__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_7.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_7__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_7__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_7__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_7__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_7__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_7__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_8.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_8__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_8__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_8__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_8__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_8__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_8__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_9.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_9__t1.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_9__t2.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_9__t3.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_9__t4.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_9__t5.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hour_9__t6.png",
+      "width": 74,
+      "height": 103
+    },
+    {
+      "name": "img/hr_0.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_1.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_2.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_3.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_4.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_5.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_6.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_7.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_8.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/hr_9.png",
+      "width": 18,
+      "height": 35
+    },
+    {
+      "name": "img/min_0.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_0__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_0__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_0__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_0__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_0__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_0__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_1__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_1__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_1__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_1__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_1__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_1__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_2__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_2__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_2__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_2__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_2__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_2__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_3__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_3__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_3__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_3__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_3__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_3__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_4__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_4__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_4__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_4__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_4__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_4__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_5__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_5__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_5__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_5__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_5__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_5__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_6__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_6__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_6__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_6__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_6__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_6__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_7.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_7__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_7__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_7__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_7__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_7__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_7__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_8.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_8__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_8__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_8__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_8__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_8__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_8__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_9.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_9__t1.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_9__t2.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_9__t3.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_9__t4.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_9__t5.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/min_9__t6.png",
+      "width": 75,
+      "height": 105
+    },
+    {
+      "name": "img/minus.png",
+      "width": 14,
+      "height": 35
+    },
+    {
+      "name": "img/pm_off.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/pm_on.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/pm_on__t1.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/pm_on__t2.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/pm_on__t3.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/pm_on__t4.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/pm_on__t5.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/pm_on__t6.png",
+      "width": 40,
+      "height": 33
+    },
+    {
+      "name": "img/prev_cal.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/prev_steps.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/prev_sun.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/prev_temp.png",
+      "width": 89,
+      "height": 89
+    },
+    {
+      "name": "img/ring_0.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_0__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_0__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_0__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_0__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_0__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_0__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_10.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_10__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_10__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_10__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_10__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_10__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_10__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_1__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_1__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_1__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_1__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_1__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_1__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_2__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_2__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_2__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_2__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_2__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_2__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_3__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_3__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_3__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_3__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_3__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_3__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_4__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_4__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_4__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_4__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_4__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_4__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_5__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_5__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_5__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_5__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_5__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_5__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_6__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_6__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_6__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_6__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_6__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_6__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_7.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_7__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_7__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_7__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_7__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_7__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_7__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_8.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_8__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_8__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_8__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_8__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_8__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_8__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_9.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_9__t1.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_9__t2.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_9__t3.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_9__t4.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_9__t5.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/ring_9__t6.png",
+      "width": 91,
+      "height": 91
+    },
+    {
+      "name": "img/sec_0.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_1.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_2.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_3.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_4.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_5.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_6.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_7.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_8.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sec_9.png",
+      "width": 35,
+      "height": 77
+    },
+    {
+      "name": "img/sel_slot.png",
+      "width": 120,
+      "height": 137
+    },
+    {
+      "name": "img/steps_icon.png",
+      "width": 35,
+      "height": 35
+    },
+    {
+      "name": "img/sunrise_icon.png",
+      "width": 35,
+      "height": 35
+    },
+    {
+      "name": "img/sunset_icon.png",
+      "width": 35,
+      "height": 35
+    },
+    {
+      "name": "img/temp_icon.png",
+      "width": 35,
+      "height": 35
+    },
+    {
+      "name": "img/unsel_slot.png",
+      "width": 120,
+      "height": 137
+    },
+    {
+      "name": "img/wk_0.png",
+      "width": 72,
+      "height": 33
+    },
+    {
+      "name": "img/wk_1.png",
+      "width": 72,
+      "height": 33
+    },
+    {
+      "name": "img/wk_2.png",
+      "width": 72,
+      "height": 33
+    },
+    {
+      "name": "img/wk_3.png",
+      "width": 72,
+      "height": 33
+    },
+    {
+      "name": "img/wk_4.png",
+      "width": 72,
+      "height": 33
+    },
+    {
+      "name": "img/wk_5.png",
+      "width": 72,
+      "height": 33
+    },
+    {
+      "name": "img/wk_6.png",
+      "width": 72,
+      "height": 33
+    }
+  ],
+  "savePath": null,
+  "fonts": [],
+  "themes": {
+    "accent": "#f1dd02",
+    "list": [
+      {
+        "name": "Orange",
+        "color": "#ff4a1c"
+      },
+      {
+        "name": "Yellow",
+        "color": "#ffc700"
+      },
+      {
+        "name": "Blue",
+        "color": "#5ab0ff"
+      },
+      {
+        "name": "Green",
+        "color": "#3ddc84"
+      },
+      {
+        "name": "Pink",
+        "color": "#ff7aa8"
+      },
+      {
+        "name": "Grey",
+        "color": "#a6a6a6"
+      }
+    ],
+    "recolored": [
+      "img/am_on.png",
+      "img/dots_0.png",
+      "img/dots_1.png",
+      "img/dots_10.png",
+      "img/dots_2.png",
+      "img/dots_3.png",
+      "img/dots_4.png",
+      "img/dots_5.png",
+      "img/dots_6.png",
+      "img/dots_7.png",
+      "img/dots_8.png",
+      "img/dots_9.png",
+      "img/heart_btn.png",
+      "img/hour_0.png",
+      "img/hour_1.png",
+      "img/hour_2.png",
+      "img/hour_3.png",
+      "img/hour_4.png",
+      "img/hour_5.png",
+      "img/hour_6.png",
+      "img/hour_7.png",
+      "img/hour_8.png",
+      "img/hour_9.png",
+      "img/min_0.png",
+      "img/min_1.png",
+      "img/min_2.png",
+      "img/min_3.png",
+      "img/min_4.png",
+      "img/min_5.png",
+      "img/min_6.png",
+      "img/min_7.png",
+      "img/min_8.png",
+      "img/min_9.png",
+      "img/pm_on.png",
+      "img/ring_0.png",
+      "img/ring_1.png",
+      "img/ring_10.png",
+      "img/ring_2.png",
+      "img/ring_3.png",
+      "img/ring_4.png",
+      "img/ring_5.png",
+      "img/ring_6.png",
+      "img/ring_7.png",
+      "img/ring_8.png",
+      "img/ring_9.png",
+      "img/disc.png"
+    ]
+  }
+}

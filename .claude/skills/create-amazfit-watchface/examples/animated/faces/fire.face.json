@@ -1,0 +1,9 @@
+{
+  "name": "Fire Clock",
+  "slug": "fire",
+  "language": "en-US",
+  "fonts": [["dseg7-classic-bold.ttf", "DSEG7 Fire"]],
+  "presets": ["bg", "clock", "temp"],
+  "bg": "#000000",
+  "styles": []
+}

@@ -408,6 +408,11 @@ shares those files between layers:
   up to date.
 - **A blinking colon** is a frame list: the `…_off` frames are re-rendered blank
   at the same cell size, so the blink keeps working with the new look.
+  The **Blinking colon** preset (Presets → Time) makes one: a colon picture and a blank of the
+  same cell, played at 2 fps (500 ms on, 500 ms off). It is a glyph layer, so it has every font
+  property (font, size, weight, fill, colour, border, shadow …), changing any of them re-renders the
+  colon at once, and it always draws a colon. **Blink** in Properties switches the flashing off: the
+  export then plays only the first frame (`anim_size: 1`), so the colon stays lit.
 - **Imported image sets.** A set that came from another watchface is editable when
   the widget itself says what the images are: a time / date / reading part is the
   digits 0-9 in order, `IMG_WEEK` is the seven weekdays, a month-name layer is the

@@ -69,6 +69,7 @@ glyph size at its default. (`%`, `°` and the colon follow the digits.)
 |---|---|
 | `bg` | black full-screen background (locked) |
 | `clock` / `clocksec` | digital time `hh : mm` / `hh:mm:ss` (hour, colon, minute[, second] layers), grouped as `Clock`; the layer order is minute, colon, hour so the Layers panel reads hour, colon, minute |
+| `blinkcolon` | a colon that flashes every 500 ms (an `IMG_ANIM` of a colon and a blank, 2 fps), named `Blinking colon`; it takes the glyph options (font, size, weight, colour …) and always draws a colon; `"set": { "blink": false }` keeps it lit |
 | `analog` | analog clock: hour / minute / second hands + dial cap |
 | `weekday` / `day` / `month` | weekday names / day of month / month as images |
 | `steps` `hr` `cal` `battery` `temp` `distance` `spo2` `stress` | a reading as digit images with its unit |

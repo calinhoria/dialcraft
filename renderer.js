@@ -4787,6 +4787,12 @@ function propsKind(e) {
       add('Repeat', ctlNum(e, 'repeat', { min: 0 }), '0 = forever');
       add('Step', ctlNum(e, 'step', { min: 1 }));
       add('Restart', ctlCheck(e, 'displayOnRestart'), 'display_on_restart: play again when the watchface comes back to the screen');
+      if ((e.frames || []).some((n) => /(_off|_empty|_blank)\.png$/i.test(n))) {
+        const cb = document.createElement('input');
+        cb.type = 'checkbox'; cb.checked = e.blink !== false;
+        cb.onchange = () => { pushHistory(); e.blink = cb.checked; if (cb.checked) e.fps = 2; refreshPanels(); render(); scheduleCode(); };
+        add('Blink', cb, 'On: flashes every 500 ms (2 frames per second, on / off). Off: stays lit — the first frame only');
+      }
       add('Still frame', ctlNum(e, 'defaultFrame', { min: 0 }), 'default_frame_index: the frame shown in power-saving mode, and in the preview pictures');
       // a run of PNGs, or an animated GIF/WebP that is split for you
       set('Frames', 'Frames', { buttons: [ctlButton('Import…',
@@ -5635,6 +5641,7 @@ const PRESETS = [
   { group: 'Time' },
   { id: 'clock', label: 'Digital clock', sub: 'hour : minute' },
   { id: 'clocksec', label: 'Digital clock + seconds', sub: 'hh:mm:ss' },
+  { id: 'blinkcolon', label: 'Blinking colon', sub: 'flashes every 500 ms · Blink on / off' },
   { id: 'analog', label: 'Analog clock', sub: 'dial + hands' },
   { id: 'weekday', label: 'Weekday', sub: 'MON…SUN images' },
   { id: 'day', label: 'Day of month', sub: 'IMG_DATE' },
@@ -5710,6 +5717,7 @@ async function applyPreset(id) {
     }
     case 'clock': return clockPreset(false);
     case 'clocksec': return clockPreset(true);
+    case 'blinkcolon': return blinkColonPreset();
     case 'analog': return analogPreset();
     case 'weekday': return weekdayPreset();
     case 'day':
@@ -5901,6 +5909,26 @@ async function clockPreset(withSeconds) {
   groupElements(els, 'Clock');
   selectedId = els[0].id; multiSel = new Set(els.map((e) => e.id));
   status(`Added a digital clock from ${glyphFont} glyphs.`);
+  refreshPanels(); render(); scheduleCode();
+}
+// A colon that flashes: an IMG_ANIM of two separator glyphs (the colon, then a blank of the same cell), played at 2 fps = 500 ms on, 500 ms off.
+// It is a glyph layer, so it carries every font property (font, size, weight, fill, colour, border, shadow …) and always draws a colon;
+// `blink` switches the flashing off (the export then plays only the first frame, so the colon just stays lit).
+async function blinkColonPreset() {
+  pushHistory();
+  const d = dev();
+  const digits = await ensureDigitNames();
+  const style = digitStyleOf(digits);
+  const on = await genUnit('colon_1', ':', { style });
+  const off = await genUnit('colon_off', ' ', { style });
+  const m = imgMeta(on);
+  const e = newElement('IMG_ANIM', {
+    frames: [on, off], fps: 2, repeat: 0, step: 1, animPrefix: 'blink_colon', blink: true,
+    show: 'normal', glyph: glyphSpecFrom(style), name: 'Blinking colon',
+    x: Math.round((d.w - (m ? m.width : 20)) / 2), y: Math.round((d.h - (m ? m.height : 60)) / 2),
+  });
+  project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+  status(`Added a blinking colon (${style.font}): flashes every 500 ms; turn Blink off in Properties to keep it lit.`);
   refreshPanels(); render(); scheduleCode();
 }
 async function analogPreset() {

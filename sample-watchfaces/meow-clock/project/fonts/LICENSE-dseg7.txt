@@ -1,0 +1,1 @@
+DSEG7 Fire (dseg7-classic-bold.ttf) - SIL Open Font License 1.1, from Fontsource (fonts.google.com); latin and latin-ext merged. Used only to draw digit, weekday and text images; no font is shipped in the watchface.

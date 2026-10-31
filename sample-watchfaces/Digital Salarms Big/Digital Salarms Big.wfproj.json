@@ -1,0 +1,1074 @@
+{
+  "version": 1,
+  "name": "Digital Salarms Big",
+  "device": "bip-6",
+  "appId": 2348825,
+  "vender": "belut",
+  "description": "Orange digital LCD watchface",
+  "font": "",
+  "language": "en-US",
+  "groups": {
+    "gDate": "Date",
+    "gBatt": "Battery",
+    "gClock": "Clock Main",
+    "gmvvmbgjx7z": "Clock",
+    "gClock2": "Clock AOD"
+  },
+  "elements": [
+    {
+      "id": "elmvvlup6i3xu",
+      "kind": "IMG",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "bg.png"
+    },
+    {
+      "id": "elmvvlup6l7i6",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 70,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_0.png",
+        "week_1.png",
+        "week_2.png",
+        "week_3.png",
+        "week_4.png",
+        "week_5.png",
+        "week_6.png"
+      ]
+    },
+    {
+      "id": "elmvvlup6p3v5",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 155,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "dt_0.png",
+        "dt_1.png",
+        "dt_2.png",
+        "dt_3.png",
+        "dt_4.png",
+        "dt_5.png",
+        "dt_6.png",
+        "dt_7.png",
+        "dt_8.png",
+        "dt_9.png"
+      ],
+      "part": "day",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false
+    },
+    {
+      "id": "elmvvlup6o32x",
+      "kind": "IMG_DATE",
+      "name": "Month",
+      "x": 236,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "mon_0.png",
+        "mon_1.png",
+        "mon_2.png",
+        "mon_3.png",
+        "mon_4.png",
+        "mon_5.png",
+        "mon_6.png",
+        "mon_7.png",
+        "mon_8.png",
+        "mon_9.png",
+        "mon_10.png",
+        "mon_11.png"
+      ],
+      "part": "month",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": true
+    },
+    {
+      "id": "elmvvlup6q3s5",
+      "kind": "IMG_LEVEL",
+      "name": "Battery icon",
+      "x": 28,
+      "y": 92,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBatt",
+      "alpha": 255,
+      "images": [
+        "bat_0.png",
+        "bat_1.png",
+        "bat_2.png",
+        "bat_3.png",
+        "bat_4.png",
+        "bat_5.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "BATTERY",
+      "level": 0
+    },
+    {
+      "id": "elmvvlup6q42z",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 75,
+      "y": 89,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBatt",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "sm_0.png",
+        "sm_1.png",
+        "sm_2.png",
+        "sm_3.png",
+        "sm_4.png",
+        "sm_5.png",
+        "sm_6.png",
+        "sm_7.png",
+        "sm_8.png",
+        "sm_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "CENTER_H",
+      "unit": "sm_pct.png",
+      "dot": "",
+      "negative": "",
+      "w": 120,
+      "h": 34,
+      "unitImperial": "",
+      "invalid": "sm_dash.png"
+    },
+    {
+      "id": "elmvvlup6q2ce",
+      "kind": "TEXT_IMG",
+      "name": "Calories",
+      "x": 75,
+      "y": 143,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "CAL",
+      "images": [
+        "sm_0.png",
+        "sm_1.png",
+        "sm_2.png",
+        "sm_3.png",
+        "sm_4.png",
+        "sm_5.png",
+        "sm_6.png",
+        "sm_7.png",
+        "sm_8.png",
+        "sm_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "w": 120,
+      "h": 34,
+      "unitImperial": "",
+      "invalid": "sm_dash.png"
+    },
+    {
+      "id": "elmvvlup6w382",
+      "kind": "IMG_TIME",
+      "name": "Second Main",
+      "x": 297,
+      "y": 259,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "second",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "med_0.png",
+        "med_1.png",
+        "med_2.png",
+        "med_3.png",
+        "med_4.png",
+        "med_5.png",
+        "med_6.png",
+        "med_7.png",
+        "med_8.png",
+        "med_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmvvlup6u72b",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 169,
+      "y": 213,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "big_0.png",
+        "big_1.png",
+        "big_2.png",
+        "big_3.png",
+        "big_4.png",
+        "big_5.png",
+        "big_6.png",
+        "big_7.png",
+        "big_8.png",
+        "big_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmvvlup6u1ys",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 33,
+      "y": 213,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "big_0.png",
+        "big_1.png",
+        "big_2.png",
+        "big_3.png",
+        "big_4.png",
+        "big_5.png",
+        "big_6.png",
+        "big_7.png",
+        "big_8.png",
+        "big_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmvvlup6w51w",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 28,
+      "y": 369,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "sm_0.png",
+        "sm_1.png",
+        "sm_2.png",
+        "sm_3.png",
+        "sm_4.png",
+        "sm_5.png",
+        "sm_6.png",
+        "sm_7.png",
+        "sm_8.png",
+        "sm_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "w": 160,
+      "h": 34,
+      "unitImperial": "",
+      "invalid": "sm_dash.png"
+    },
+    {
+      "id": "elmvvlup6w4fn",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 202,
+      "y": 369,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "sm_0.png",
+        "sm_1.png",
+        "sm_2.png",
+        "sm_3.png",
+        "sm_4.png",
+        "sm_5.png",
+        "sm_6.png",
+        "sm_7.png",
+        "sm_8.png",
+        "sm_9.png"
+      ],
+      "hSpace": 0,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "w": 160,
+      "h": 34,
+      "unitImperial": "",
+      "invalid": "sm_dash.png"
+    },
+    {
+      "id": "elmvvlup6w4m6",
+      "kind": "TIME_POINTER",
+      "name": "Analog clock",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "centerX": 322,
+      "centerY": 133,
+      "hour": "",
+      "hourPivotX": 0,
+      "hourPivotY": 0,
+      "minute": "",
+      "minutePivotX": 0,
+      "minutePivotY": 0,
+      "second": "needle.png",
+      "secondPivotX": 4,
+      "secondPivotY": 40,
+      "cover": "",
+      "minuteCover": "",
+      "secondCover": ""
+    },
+    {
+      "id": "elmvvlup6w5xf",
+      "kind": "IMG",
+      "name": "Gauge hub",
+      "x": 314,
+      "y": 125,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "hub.png"
+    },
+    {
+      "id": "elmvvlup711f3",
+      "kind": "IMG",
+      "name": "Glass glare",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "glare.png"
+    },
+    {
+      "id": "elmvvmbgjx1h9",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 214,
+      "y": 166,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClock2",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DSEG7 Classic",
+        "size": 110,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#9a4300",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmvvmbgjx25w",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 184,
+      "y": 191,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClock2",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "DSEG7 Classic",
+        "size": 110,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#9a4300",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmvvmbgjx1jh",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 25,
+      "y": 166,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClock2",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "DSEG7 Classic",
+        "size": 110,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#9a4300",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    }
+  ],
+  "images": [
+    {
+      "name": "bat_0.png",
+      "width": 46,
+      "height": 28
+    },
+    {
+      "name": "bat_1.png",
+      "width": 46,
+      "height": 28
+    },
+    {
+      "name": "bat_2.png",
+      "width": 46,
+      "height": 28
+    },
+    {
+      "name": "bat_3.png",
+      "width": 46,
+      "height": 28
+    },
+    {
+      "name": "bat_4.png",
+      "width": 46,
+      "height": 28
+    },
+    {
+      "name": "bat_5.png",
+      "width": 46,
+      "height": 28
+    },
+    {
+      "name": "bg.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "big_0.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_1.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_2.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_3.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_4.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_5.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_6.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_7.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_8.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "big_9.png",
+      "width": 58,
+      "height": 92
+    },
+    {
+      "name": "dt_0.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_1.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_2.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_3.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_4.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_5.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_6.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_7.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_8.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "dt_9.png",
+      "width": 24,
+      "height": 38
+    },
+    {
+      "name": "glare.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "hub.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "med_0.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_1.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_2.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_3.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_4.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_5.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_6.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_7.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_8.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "med_9.png",
+      "width": 32,
+      "height": 46
+    },
+    {
+      "name": "mon_0.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_1.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_10.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_11.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_2.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_3.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_4.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_5.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_6.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_7.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_8.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "mon_9.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "needle.png",
+      "width": 8,
+      "height": 80
+    },
+    {
+      "name": "sm_0.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_1.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_2.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_3.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_4.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_5.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_6.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_7.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_8.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_9.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_dash.png",
+      "width": 22,
+      "height": 34
+    },
+    {
+      "name": "sm_pct.png",
+      "width": 30,
+      "height": 34
+    },
+    {
+      "name": "week_0.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "week_1.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "week_2.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "week_3.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "week_4.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "week_5.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "week_6.png",
+      "width": 84,
+      "height": 38
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "colon.png",
+      "width": 13,
+      "height": 41
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 76,
+      "height": 118
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 22,
+      "height": 91
+    }
+  ],
+  "savePath": null,
+  "fonts": []
+}

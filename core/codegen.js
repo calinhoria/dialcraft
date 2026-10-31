@@ -570,7 +570,8 @@ function emitElement(el, ctx, out) {
       kv(L, 'anim_prefix', `'${prefix}'`);
       kv(L, 'anim_ext', `'png'`);
       kv(L, 'anim_fps', num(el.fps || 30));
-      kv(L, 'anim_size', frames.length);
+      // Blink off on a blink frame list (a blank …_off frame): play the first frame only, so the picture just stays lit
+      kv(L, 'anim_size', el.blink === false ? 1 : frames.length);
       kv(L, 'repeat_count', num(el.repeat != null ? el.repeat : 0));
       kv(L, 'step', num(el.step || 1));
       kv(L, 'anim_status', 'ui.anim_status.START');

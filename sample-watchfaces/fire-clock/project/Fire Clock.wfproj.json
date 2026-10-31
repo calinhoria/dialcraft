@@ -1,0 +1,1133 @@
+{
+  "version": 1,
+  "name": "Fire Clock",
+  "device": "bip-6",
+  "appId": 2878543,
+  "vender": "dialcraft",
+  "description": "A pixel-art LED fire clock: a 32-column dot grid with flickering flames, rising embers, a pulsing glow on the digits, a blinking colon and the temperature centred under the time.",
+  "font": "DSEG7 Fire",
+  "language": "en-US",
+  "fonts": [
+    {
+      "name": "dseg7-classic-bold.ttf",
+      "family": "DSEG7 Fire"
+    }
+  ],
+  "groups": {
+    "gmvvjvydfjy": "Clock",
+    "gmvvjvyl67h": "Clock AOD",
+    "gTemperature": "Temperature",
+    "gPulse": "Pulse",
+    "gFlames": "Flames",
+    "gEmbers": "Embers"
+  },
+  "elements": [
+    {
+      "id": "elmvvjvyby378",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmvvjvyez35y",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_fire.png"
+    },
+    {
+      "id": "elmvvjvydf2yg",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 231,
+      "y": 147,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvvjvydfjy",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "px/h_0.png",
+        "px/h_1.png",
+        "px/h_2.png",
+        "px/h_3.png",
+        "px/h_4.png",
+        "px/h_5.png",
+        "px/h_6.png",
+        "px/h_7.png",
+        "px/h_8.png",
+        "px/h_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvvjvygw50m",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 183,
+      "y": 171,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvvjvydfjy",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/colon_006.png",
+      "images": [
+        "sp/colon_006.png",
+        "sp/colon_007.png"
+      ],
+      "handle": "colon"
+    },
+    {
+      "id": "elmvvjvydfrs",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 39,
+      "y": 147,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmvvjvydfjy",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "px/h_0.png",
+        "px/h_1.png",
+        "px/h_2.png",
+        "px/h_3.png",
+        "px/h_4.png",
+        "px/h_5.png",
+        "px/h_6.png",
+        "px/h_7.png",
+        "px/h_8.png",
+        "px/h_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvvjvyl62iq",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 231,
+      "y": 147,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvvjvyl67h",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "px/a_0.png",
+        "px/a_1.png",
+        "px/a_2.png",
+        "px/a_3.png",
+        "px/a_4.png",
+        "px/a_5.png",
+        "px/a_6.png",
+        "px/a_7.png",
+        "px/a_8.png",
+        "px/a_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvvjvylk55j",
+      "kind": "IMG",
+      "name": "Colon AOD",
+      "x": 183,
+      "y": 171,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvvjvyl67h",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "a_colon.png"
+    },
+    {
+      "id": "elmvvjvyl66i2",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 39,
+      "y": 147,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmvvjvyl67h",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "px/a_0.png",
+        "px/a_1.png",
+        "px/a_2.png",
+        "px/a_3.png",
+        "px/a_4.png",
+        "px/a_5.png",
+        "px/a_6.png",
+        "px/a_7.png",
+        "px/a_8.png",
+        "px/a_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmvvjvyee413",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 87,
+      "y": 267,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "px/t_0.png",
+        "px/t_1.png",
+        "px/t_2.png",
+        "px/t_3.png",
+        "px/t_4.png",
+        "px/t_5.png",
+        "px/t_6.png",
+        "px/t_7.png",
+        "px/t_8.png",
+        "px/t_9.png"
+      ],
+      "hSpace": 12,
+      "alignH": "CENTER_H",
+      "unit": "px/unit.png",
+      "dot": "",
+      "negative": "px/minus.png",
+      "glyph": null,
+      "w": 192
+    },
+    {
+      "id": "elmvvjvygdxv",
+      "kind": "IMG",
+      "name": "Pulse 1",
+      "x": 39,
+      "y": 147,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPulse",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/veilL_000.png",
+      "images": [
+        "sp/veilL_000.png",
+        "sp/veilL_001.png",
+        "sp/veilL_002.png"
+      ],
+      "handle": "vl"
+    },
+    {
+      "id": "elmvvjvygn25",
+      "kind": "IMG",
+      "name": "Pulse 2",
+      "x": 207,
+      "y": 147,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPulse",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/veilR_003.png",
+      "images": [
+        "sp/veilR_003.png",
+        "sp/veilR_004.png",
+        "sp/veilR_005.png"
+      ],
+      "handle": "vr"
+    },
+    {
+      "id": "elmvvjvyhh1di",
+      "kind": "IMG",
+      "name": "Flame 1",
+      "x": 3,
+      "y": 327,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFlames",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/fl0_008.png",
+      "images": [
+        "sp/fl0_008.png",
+        "sp/fl0_009.png",
+        "sp/fl0_010.png",
+        "sp/fl0_011.png",
+        "sp/fl0_012.png",
+        "sp/fl0_013.png",
+        "sp/fl0_014.png",
+        "sp/fl0_015.png",
+        "sp/fl0_016.png",
+        "sp/fl0_017.png",
+        "sp/fl0_018.png",
+        "sp/fl0_019.png",
+        "sp/fl0_020.png"
+      ],
+      "handle": "fl0"
+    },
+    {
+      "id": "elmvvjvyi36qt",
+      "kind": "IMG",
+      "name": "Flame 2",
+      "x": 135,
+      "y": 327,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFlames",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/fl1_021.png",
+      "images": [
+        "sp/fl1_021.png",
+        "sp/fl1_022.png",
+        "sp/fl1_023.png",
+        "sp/fl1_024.png",
+        "sp/fl1_025.png",
+        "sp/fl1_026.png",
+        "sp/fl1_027.png",
+        "sp/fl1_028.png",
+        "sp/fl1_029.png",
+        "sp/fl1_030.png",
+        "sp/fl1_031.png",
+        "sp/fl1_032.png",
+        "sp/fl1_033.png"
+      ],
+      "handle": "fl1"
+    },
+    {
+      "id": "elmvvjvyio2qa",
+      "kind": "IMG",
+      "name": "Flame 3",
+      "x": 267,
+      "y": 327,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFlames",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/fl2_034.png",
+      "images": [
+        "sp/fl2_034.png",
+        "sp/fl2_035.png",
+        "sp/fl2_036.png",
+        "sp/fl2_037.png",
+        "sp/fl2_038.png",
+        "sp/fl2_039.png",
+        "sp/fl2_040.png",
+        "sp/fl2_041.png",
+        "sp/fl2_042.png",
+        "sp/fl2_043.png",
+        "sp/fl2_044.png",
+        "sp/fl2_045.png",
+        "sp/fl2_046.png"
+      ],
+      "handle": "fl2"
+    },
+    {
+      "id": "elmvvjvyj0rg",
+      "kind": "IMG",
+      "name": "Ember 1",
+      "x": 3,
+      "y": 75,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gEmbers",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ember_047.png",
+      "images": [
+        "sp/ember_047.png",
+        "sp/ember_048.png",
+        "sp/ember_049.png",
+        "sp/ember_050.png"
+      ],
+      "handle": "em0"
+    },
+    {
+      "id": "elmvvjvyj81aq",
+      "kind": "IMG",
+      "name": "Ember 2",
+      "x": 63,
+      "y": 207,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gEmbers",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ember_049.png",
+      "images": [
+        "sp/ember_049.png",
+        "sp/ember_048.png",
+        "sp/ember_047.png",
+        "sp/ember_050.png"
+      ],
+      "handle": "em1"
+    },
+    {
+      "id": "elmvvjvyjglv",
+      "kind": "IMG",
+      "name": "Ember 3",
+      "x": 75,
+      "y": 243,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gEmbers",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ember_048.png",
+      "images": [
+        "sp/ember_048.png",
+        "sp/ember_047.png",
+        "sp/ember_049.png",
+        "sp/ember_050.png"
+      ],
+      "handle": "em2"
+    },
+    {
+      "id": "elmvvjvyjn6ja",
+      "kind": "IMG",
+      "name": "Ember 4",
+      "x": 39,
+      "y": 255,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gEmbers",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ember_048.png",
+      "images": [
+        "sp/ember_048.png",
+        "sp/ember_047.png",
+        "sp/ember_049.png",
+        "sp/ember_050.png"
+      ],
+      "handle": "em3"
+    },
+    {
+      "id": "elmvvjvyju16d",
+      "kind": "IMG",
+      "name": "Ember 5",
+      "x": 27,
+      "y": 279,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gEmbers",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ember_048.png",
+      "images": [
+        "sp/ember_048.png",
+        "sp/ember_047.png",
+        "sp/ember_049.png",
+        "sp/ember_050.png"
+      ],
+      "handle": "em4"
+    },
+    {
+      "id": "elmvvjvyk25vm",
+      "kind": "IMG",
+      "name": "Ember 6",
+      "x": 39,
+      "y": 279,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gEmbers",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ember_048.png",
+      "images": [
+        "sp/ember_048.png",
+        "sp/ember_047.png",
+        "sp/ember_049.png",
+        "sp/ember_050.png"
+      ],
+      "handle": "em5"
+    },
+    {
+      "id": "elmvvjvyk9396",
+      "kind": "IMG",
+      "name": "Ember 7",
+      "x": 315,
+      "y": 315,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gEmbers",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ember_048.png",
+      "images": [
+        "sp/ember_048.png",
+        "sp/ember_047.png",
+        "sp/ember_049.png",
+        "sp/ember_050.png"
+      ],
+      "handle": "em6"
+    },
+    {
+      "id": "elmvvjvykh46d",
+      "kind": "IMG",
+      "name": "Ember 8",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gEmbers",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ember_050.png",
+      "images": [
+        "sp/ember_050.png",
+        "sp/ember_048.png",
+        "sp/ember_049.png",
+        "sp/ember_047.png"
+      ],
+      "handle": "em7"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "colon.png",
+      "width": 9,
+      "height": 24
+    },
+    {
+      "name": "degree.png",
+      "width": 18,
+      "height": 24
+    },
+    {
+      "name": "negative.png",
+      "width": 15,
+      "height": 24
+    },
+    {
+      "name": "scene_fire.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "px/h_0.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_0.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_0.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_1.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_1.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/t_1.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_2.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_2.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_2.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_3.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_3.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_3.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_4.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_4.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_4.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_5.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_5.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_5.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_6.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_6.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_6.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_7.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_7.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_7.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_8.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_8.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_8.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/h_9.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/a_9.png",
+      "width": 72,
+      "height": 84
+    },
+    {
+      "name": "px/t_9.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/unit.png",
+      "width": 72,
+      "height": 60
+    },
+    {
+      "name": "px/minus.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "sp/veilL_000.png",
+      "width": 144,
+      "height": 84
+    },
+    {
+      "name": "sp/veilL_001.png",
+      "width": 144,
+      "height": 84
+    },
+    {
+      "name": "sp/veilL_002.png",
+      "width": 144,
+      "height": 84
+    },
+    {
+      "name": "sp/veilR_003.png",
+      "width": 156,
+      "height": 84
+    },
+    {
+      "name": "sp/veilR_004.png",
+      "width": 156,
+      "height": 84
+    },
+    {
+      "name": "sp/veilR_005.png",
+      "width": 156,
+      "height": 84
+    },
+    {
+      "name": "sp/colon_006.png",
+      "width": 24,
+      "height": 36
+    },
+    {
+      "name": "sp/colon_007.png",
+      "width": 24,
+      "height": 36
+    },
+    {
+      "name": "sp/fl0_008.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_009.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_010.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_011.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_012.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_013.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_014.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_015.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_016.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_017.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_018.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_019.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl0_020.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_021.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_022.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_023.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_024.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_025.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_026.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_027.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_028.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_029.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_030.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_031.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_032.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl1_033.png",
+      "width": 132,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_034.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_035.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_036.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_037.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_038.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_039.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_040.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_041.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_042.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_043.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_044.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_045.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/fl2_046.png",
+      "width": 120,
+      "height": 120
+    },
+    {
+      "name": "sp/ember_047.png",
+      "width": 12,
+      "height": 12
+    },
+    {
+      "name": "sp/ember_048.png",
+      "width": 12,
+      "height": 12
+    },
+    {
+      "name": "sp/ember_049.png",
+      "width": 12,
+      "height": 12
+    },
+    {
+      "name": "sp/ember_050.png",
+      "width": 12,
+      "height": 12
+    },
+    {
+      "name": "colon_2.png",
+      "width": 9,
+      "height": 24
+    },
+    {
+      "name": "a_colon.png",
+      "width": 24,
+      "height": 36
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // Fire clock: 12 frames of 100 ms, as in the reference: flames flicker, embers rise, the colon blinks\n  const MS = 40;\n  const D = {\"v\":[[39,147],[207,147]],\"e\":[[[3,75,\"ffc850\"],[63,207,\"8c320f\"],[75,243,\"ff8c1e\"],[39,255,\"ff8c1e\"],[27,279,\"ff8c1e\"],[39,279,\"ff8c1e\"],[315,315,\"ff8c1e\"]],[[39,75,\"ffc850\"],[63,183,\"8c320f\"],[75,231,\"8c320f\"],[39,243,\"ff8c1e\"],[39,255,\"ff8c1e\"],[27,267,\"ff8c1e\"],[315,303,\"ff8c1e\"]],[[75,75,\"ffc850\"],[63,159,\"8c320f\"],[75,219,\"8c320f\"],[27,255,\"ff8c1e\"],[315,291,\"ff8c1e\"]],[[111,75,\"ffc850\"],[63,135,\"8c320f\"],[39,207,\"8c320f\"],[75,207,\"8c320f\"],[27,243,\"ff8c1e\"],[315,279,\"ff8c1e\"]],[[147,75,\"ffc850\"],[63,111,\"8c320f\"],[39,183,\"8c320f\"],[75,195,\"8c320f\"],[39,207,\"8c320f\"],[27,231,\"8c320f\"],[315,267,\"ff8c1e\"]],[[183,75,\"ffc850\"],[63,87,\"8c320f\"],[75,183,\"8c320f\"],[39,195,\"8c320f\"],[27,219,\"8c320f\"],[315,255,\"ff8c1e\"]],[[63,63,\"8c320f\"],[219,75,\"ffc850\"],[39,135,\"8c320f\"],[75,171,\"8c320f\"],[39,183,\"8c320f\"],[27,207,\"8c320f\"],[243,207,\"8c320f\"],[315,243,\"ff8c1e\"]],[[255,75,\"ffc850\"],[39,111,\"8c320f\"],[75,159,\"8c320f\"],[39,171,\"8c320f\"],[27,195,\"8c320f\"],[243,195,\"8c320f\"],[315,231,\"8c320f\"]],[[291,75,\"ffc850\"],[39,87,\"8c320f\"],[75,147,\"8c320f\"],[27,183,\"8c320f\"],[315,219,\"8c320f\"]],[[39,63,\"8c320f\"],[327,75,\"ffc850\"],[75,135,\"8c320f\"],[39,147,\"8c320f\"],[27,171,\"8c320f\"],[243,171,\"8c320f\"],[315,207,\"8c320f\"],[63,303,\"ff8c1e\"]],[[363,75,\"ffc850\"],[75,123,\"8c320f\"],[39,135,\"8c320f\"],[27,159,\"8c320f\"],[243,159,\"8c320f\"],[63,279,\"ff8c1e\"]],[[15,75,\"ffc850\"],[75,111,\"8c320f\"],[39,123,\"8c320f\"],[27,147,\"8c320f\"],[315,183,\"8c320f\"],[63,255,\"ff8c1e\"]]],\"fl\":[[3,327],[135,327],[267,327]],\"k\":[183,171]};\n  const V = {\"vl\":{\"m\":0,\"d\":1,\"__blank\":2},\"vr\":{\"m\":0,\"d\":1,\"__blank\":2},\"colon\":{\"on\":0,\"__blank\":1},\"fl0\":{\"f0\":0,\"f1\":1,\"f2\":2,\"f3\":3,\"f4\":4,\"f5\":5,\"f6\":6,\"f7\":7,\"f8\":8,\"f9\":9,\"f10\":10,\"f11\":11,\"__blank\":12},\"fl1\":{\"f0\":0,\"f1\":1,\"f2\":2,\"f3\":3,\"f4\":4,\"f5\":5,\"f6\":6,\"f7\":7,\"f8\":8,\"f9\":9,\"f10\":10,\"f11\":11,\"__blank\":12},\"fl2\":{\"f0\":0,\"f1\":1,\"f2\":2,\"f3\":3,\"f4\":4,\"f5\":5,\"f6\":6,\"f7\":7,\"f8\":8,\"f9\":9,\"f10\":10,\"f11\":11,\"__blank\":12},\"em0\":{\"ffc850\":0,\"ff8c1e\":1,\"8c320f\":2,\"__blank\":3},\"em1\":{\"8c320f\":0,\"ff8c1e\":1,\"ffc850\":2,\"__blank\":3},\"em2\":{\"ff8c1e\":0,\"ffc850\":1,\"8c320f\":2,\"__blank\":3},\"em3\":{\"ff8c1e\":0,\"ffc850\":1,\"8c320f\":2,\"__blank\":3},\"em4\":{\"ff8c1e\":0,\"ffc850\":1,\"8c320f\":2,\"__blank\":3},\"em5\":{\"ff8c1e\":0,\"ffc850\":1,\"8c320f\":2,\"__blank\":3},\"em6\":{\"ff8c1e\":0,\"ffc850\":1,\"8c320f\":2,\"__blank\":3},\"em7\":{\"__blank\":0,\"ff8c1e\":1,\"8c320f\":2,\"ffc850\":3}};\n  const tick = () => {\n    const f = Math.floor(Date.now() / 100) % 12;\n    const L = ['m', '', '', 'm', 'd', 'd'][f % 6];\n    if (L) { slot('vl')(D.v[0][0], D.v[0][1], V.vl[L]); slot('vr')(D.v[1][0], D.v[1][1], V.vr[L]); } else { slot('vl').hide(); slot('vr').hide(); }\n    for (let i = 0; i < 3; i++) slot('fl' + i)(D.fl[i][0], D.fl[i][1], V['fl' + i]['f' + f]);\n    const em = D.e[f];\n    for (let i = 0; i < 8; i++) { if (em[i]) slot('em' + i)(em[i][0], em[i][1], V['em' + i][em[i][2]]); else slot('em' + i).hide(); }\n    if (f < 6) slot('colon')(D.k[0], D.k[1], V.colon.on); else slot('colon').hide();\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}
