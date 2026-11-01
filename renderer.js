@@ -1293,10 +1293,17 @@ function syncVariantSel() {
 }
 // the editor has no weather data: the preview takes a sunrise at 06:30 and a sunset at 18:30 (the watch reads today's real times)
 const SUN_PREVIEW = { rise: 6 * 60 + 30, set: 18 * 60 + 30 };
+// "HH:MM" from Test data -> minutes since midnight (null when it is not a time)
+function clockMinutes(v) {
+  const m = /^\s*(\d{1,2})\s*:\s*(\d{2})/.exec(String(v == null ? '' : v));
+  return m && +m[1] < 24 && +m[2] < 60 ? +m[1] * 60 + +m[2] : null;
+}
 function whenAllows(e, h = clock.h) {
   if (!e.showWhen) return true;
   if (e.showWhen === 'sunset' || e.showWhen === 'sunrise') {
-    const m = h * 60 + (+clock.m || 0), day = m >= SUN_PREVIEW.rise && m < SUN_PREVIEW.set;
+    const rise = clockMinutes(testData.SUN_RISE), set = clockMinutes(testData.SUN_SET);
+    const sr = rise == null ? SUN_PREVIEW.rise : rise, ss = set == null ? SUN_PREVIEW.set : set;
+    const m = h * 60 + (+clock.m || 0), day = m >= sr && m < ss;
     return (e.showWhen === 'sunset') === day;
   }
   return (e.showWhen === 'pm') === (h >= 12);
@@ -5043,6 +5050,85 @@ function renderTestData() {
   const host = $('testData');
   if (!host) return;
   host.innerHTML = '';
+  const tg = document.createElement('div');
+  tg.className = 'td-group'; tg.textContent = 'Time and date';
+  host.appendChild(tg);
+  const pad = (n) => String(n).padStart(2, '0');
+  const trow = mkRow('Time', 'The time the preview shows (off while Live clock is on)');
+  const ti = document.createElement('input');
+  ti.type = 'time'; ti.step = 1; ti.id = 'tdTime'; ti.value = `${pad(clock.h)}:${pad(clock.m)}:${pad(clock.s)}`;
+  ti.oninput = () => {
+    const m = /^(\d{2}):(\d{2})(?::(\d{2}))?$/.exec(ti.value);
+    if (!m) return;
+    clock = { h: +m[1], m: +m[2], s: +(m[3] || 0) };
+    renderProps(); render();
+  };
+  trow.appendChild(ti); host.appendChild(trow);
+  const drow = mkRow('Date', 'The date the preview shows (off while Live clock is on)');
+  const di = document.createElement('input');
+  di.type = 'date'; di.id = 'tdDate'; di.value = `${dateParts.year}-${pad(dateParts.month)}-${pad(dateParts.day)}`;
+  di.oninput = () => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(di.value);
+    if (!m) return;
+    const d = new Date(+m[1], +m[2] - 1, +m[3]);
+    dateParts = { day: d.getDate(), month: d.getMonth() + 1, year: d.getFullYear(), weekday: ((d.getDay() + 6) % 7) + 1 };
+    render();
+  };
+  drow.appendChild(di); host.appendChild(drow);
+  ti.disabled = di.disabled = liveClock;
+  for (const [key, label, lim] of [['lat', 'Latitude', 90], ['lon', 'Longitude', 180]]) {
+    const r = mkRow(label, 'Where the Live clock takes real sunrise and sunset from (the watch uses its weather location)');
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.id = 'tdPlace_' + key; inp.value = (+sunPlace[key]).toFixed(2);
+    inp.oninput = () => {
+      const v = parseFloat(inp.value.replace(',', '.'));
+      if (!isFinite(v) || Math.abs(v) > lim) return;
+      sunPlace[key] = v; sunPlace.guessed = false; saveSunPlace();
+      if (liveClock) { applyLiveSun(); syncTestDataInputs(); render(); clearTimeout(inp._wx); inp._wx = setTimeout(fetchLiveWeather, 800); }
+    };
+    r.appendChild(inp); host.appendChild(r);
+  }
+  const applyPlace = (lat, lon, name) => {
+    sunPlace = { lat, lon }; saveSunPlace();
+    for (const k of ['lat', 'lon']) { const i = $('tdPlace_' + k); if (i) i.value = sunPlace[k].toFixed(2); }
+    if (liveClock) { applyLiveSun(); syncTestDataInputs(); render(); fetchLiveWeather(); }
+    status(`Location set to ${name} (${lat.toFixed(2)}, ${lon.toFixed(2)}).`);
+  };
+  const crow = mkRow('Set location', 'Type a city and press Enter or Set: its coordinates are looked up once (open-meteo.com geocoding) and used for sunrise / sunset');
+  const ci = document.createElement('input');
+  ci.type = 'text'; ci.placeholder = 'City, e.g. Cluj-Napoca';
+  const cb = document.createElement('button');
+  cb.textContent = 'Set';
+  const findCity = async () => {
+    const q = ci.value.trim();
+    if (!q) return;
+    cb.disabled = true;
+    try {
+      const j = await (await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=' + encodeURIComponent(q))).json();
+      const r = j && j.results && j.results[0];
+      if (!r) throw new Error(`no place called "${q}"`);
+      applyPlace(r.latitude, r.longitude, [r.name, r.admin1, r.country].filter(Boolean).join(', '));
+    } catch (e) { status('Could not set the location: ' + (e.message || e), true); }
+    cb.disabled = false;
+  };
+  cb.onclick = findCity;
+  ci.onkeydown = (ev) => { if (ev.key === 'Enter') findCity(); };
+  const cw = document.createElement('div');
+  cw.className = 'rowctl'; cw.append(ci, cb);
+  crow.appendChild(cw); host.appendChild(crow);
+  const lrow = mkRow('Location', 'Looks up your approximate position from your IP address (one request to ipwho.is, only when you click)');
+  const lb = document.createElement('button');
+  lb.textContent = 'Find my location';
+  lb.onclick = async () => {
+    lb.disabled = true; lb.textContent = 'Looking…';
+    try {
+      const j = await (await fetch('https://ipwho.is/')).json();
+      if (!j || !isFinite(j.latitude) || !isFinite(j.longitude)) throw new Error('no position returned');
+      applyPlace(j.latitude, j.longitude, [j.city, j.country].filter(Boolean).join(', '));
+    } catch (e) { status('Could not find the location: ' + (e.message || e) + ' — type the latitude and longitude instead.', true); }
+    lb.disabled = false; lb.textContent = 'Find my location';
+  };
+  lrow.appendChild(lb); host.appendChild(lrow);
   const sg = document.createElement('div');
   sg.className = 'td-group'; sg.textContent = 'System status';
   host.appendChild(sg);
@@ -5079,27 +5165,93 @@ function renderTestData() {
   }
 }
 function syncTestDataInputs() {
+  const pad = (n) => String(n).padStart(2, '0');
+  const ti = $('tdTime'), di = $('tdDate');
+  if (ti) { ti.disabled = liveClock; if (document.activeElement !== ti) ti.value = `${pad(clock.h)}:${pad(clock.m)}:${pad(clock.s)}`; }
+  if (di) { di.disabled = liveClock; if (document.activeElement !== di) di.value = `${dateParts.year}-${pad(dateParts.month)}-${pad(dateParts.day)}`; }
   document.querySelectorAll('#testData input[data-td]').forEach((inp) => {
     const k = inp.dataset.td;
     const v = testData[k] == null ? '' : String(testData[k]);
     if (document.activeElement !== inp && inp.value !== v) inp.value = v;
   });
 }
+// Real sunrise / sunset (NOAA solar equations) for the Live clock. The editor has no weather data, so it needs a place:
+// the Test data panel keeps a latitude / longitude, first guessed from the computer's time zone, then from the system location.
+let sunPlace = (() => {
+  try { const v = JSON.parse(localStorage.getItem('dialcraft.sunPlace')); if (v && isFinite(v.lat) && isFinite(v.lon)) return v; } catch (e) {}
+  return { lat: 45, lon: -new Date().getTimezoneOffset() / 4, guessed: true };
+})();
+function saveSunPlace() { try { localStorage.setItem('dialcraft.sunPlace', JSON.stringify({ lat: sunPlace.lat, lon: sunPlace.lon })); } catch (e) {} }
+// -> { rise, set } in local minutes since midnight; null on a polar day or night
+function solarTimes(date, lat, lon) {
+  const rad = Math.PI / 180;
+  const n = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 864e5);
+  const g = (2 * Math.PI / 365) * (n - 1 + 0.5);
+  const eqt = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+  const decl = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+  const c = (Math.cos(90.833 * rad) - Math.sin(lat * rad) * Math.sin(decl)) / (Math.cos(lat * rad) * Math.cos(decl));
+  if (c < -1 || c > 1) return null;
+  const ha = Math.acos(c) / rad, tz = -date.getTimezoneOffset();
+  const at = (sign) => Math.round((((720 - 4 * (lon + sign * ha) - eqt + tz) % 1440) + 1440) % 1440);
+  return { rise: at(1), set: at(-1) };
+}
+// Live clock: today's real times go into the Sunrise / Sunset / Next readings the preview shows
+function applyLiveSun() {
+  const t = solarTimes(new Date(), sunPlace.lat, sunPlace.lon);
+  if (!t) return;
+  const fmt = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  const now = clock.h * 60 + clock.m;
+  testData.SUN_RISE = fmt(t.rise);
+  testData.SUN_SET = fmt(t.set);
+  testData.SUN_CURRENT = now >= t.rise && now < t.set ? fmt(t.set) : fmt(t.rise);
+}
+// Live weather for the location (open-meteo.com, no key): the real readings replace the sample ones while Live clock is on
+let wxTimer = null, wxSeq = 0;
+async function fetchLiveWeather() {
+  if (!liveClock) return;
+  const seq = ++wxSeq;
+  try {
+    const u = `https://api.open-meteo.com/v1/forecast?latitude=${sunPlace.lat.toFixed(3)}&longitude=${sunPlace.lon.toFixed(3)}`
+      + '&current=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1';
+    const j = await (await fetch(u)).json();
+    if (seq !== wxSeq || !liveClock || !j || !j.current) return;
+    testData.WEATHER_CURRENT = Math.round(j.current.temperature_2m);
+    testData.HUMIDITY = Math.round(j.current.relative_humidity_2m);
+    if (j.daily) {
+      testData.WEATHER_HIGH = Math.round(j.daily.temperature_2m_max[0]);
+      testData.WEATHER_LOW = Math.round(j.daily.temperature_2m_min[0]);
+    }
+    syncTestDataInputs(); render();
+  } catch (e) { status('Could not load the live temperature: ' + (e.message || e), true); }
+}
 function tickClock() {
   const now = new Date();
   clock = { h: now.getHours(), m: now.getMinutes(), s: now.getSeconds() };
   dateParts = { day: now.getDate(), month: now.getMonth() + 1, year: now.getFullYear(), weekday: ((now.getDay() + 6) % 7) + 1 };
+  applyLiveSun();
 }
 function setLiveClock(on) {
   liveClock = !!on;
   $('tdCurrent').checked = liveClock;
   $('btnPreviewLive').classList.toggle('on', liveClock);
   if (liveClock) {
+    if (sunPlace.guessed && !sunPlace.asked && navigator.geolocation) {
+      sunPlace.asked = true;
+      navigator.geolocation.getCurrentPosition((pos) => {
+        sunPlace = { lat: pos.coords.latitude, lon: pos.coords.longitude }; saveSunPlace();
+        for (const k of ['lat', 'lon']) { const i = $('tdPlace_' + k); if (i) i.value = sunPlace[k].toFixed(2); }
+        if (liveClock) { applyLiveSun(); syncTestDataInputs(); render(); fetchLiveWeather(); }
+      }, () => {}, { timeout: 8000 });
+    }
     tickClock();
-    if (!clockTimer) clockTimer = setInterval(() => { tickClock(); render(); }, 1000);
+    fetchLiveWeather();
+    if (!wxTimer) wxTimer = setInterval(fetchLiveWeather, 10 * 60 * 1000);
+    if (!clockTimer) clockTimer = setInterval(() => { tickClock(); syncTestDataInputs(); render(); }, 1000);
   } else if (clockTimer) {
+    clearInterval(wxTimer); wxTimer = null; wxSeq++;
     clearInterval(clockTimer); clockTimer = null;
   }
+  syncTestDataInputs();
   if (project) renderProps();     // the digit notes say "the live time" or quote the sample
   render();
 }
