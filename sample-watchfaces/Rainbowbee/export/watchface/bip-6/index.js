@@ -300,7 +300,7 @@ WatchFace({
         show_level: ui.show_level.ONLY_NORMAL,
       })
 
-      // Complication 1 (steps / sunrise-sunset) (the wearer picks what it shows)
+      // Complication 1 (top) (the wearer picks what it shows)
       try {
         // the edit API lives on the legacy global in every shipping face; fall back to the import
         const H = (typeof hmUI !== 'undefined' && hmUI.edit_type) ? hmUI : ui
@@ -313,8 +313,8 @@ WatchFace({
           select_image: A('img/sel_slot.png'),
           un_select_image: A('img/unsel_slot.png'),
           default_type: H.edit_type.STEP,
-          optional_types: [{ type: H.edit_type.STEP, preview: A('img/prev_steps.png') }, { type: H.edit_type.SUN, preview: A('img/prev_sun.png') }],
-          count: 2,
+          optional_types: [{ type: H.edit_type.STEP, preview: A('img/prev_steps.png') }, { type: H.edit_type.SUN, preview: A('img/prev_sun.png') }, { type: H.edit_type.TEMPERATURE, preview: A('img/prev_temp.png') }, { type: H.edit_type.CAL, preview: A('img/prev_cal.png') }],
+          count: 4,
           select_list: { title_font_size: px(34), title_align_h: H.align.CENTER_H, list_item_vspace: px(8), list_tips_text_font_size: px(32), list_tips_text_align_h: H.align.LEFT },
         })
         switch (slot_1.getProperty(H.prop.CURRENT_TYPE)) {
@@ -406,12 +406,82 @@ WatchFace({
 
             break
           }
+          case H.edit_type.TEMPERATURE: {
+              // Temp disc (slot 1) (IMG)
+              mk(ui.widget.IMG, {
+                x: px(251),
+                y: px(22),
+                src: A('img/disc.png'),
+                show_level: ui.show_level.ONLY_NORMAL
+              })
+
+              // Temperature icon (slot 1) (IMG)
+              mk(ui.widget.IMG, {
+                x: px(278),
+                y: px(49),
+                src: A('img/temp_icon.png'),
+                show_level: ui.show_level.ONLY_NORMAL
+              })
+
+              // Temperature (slot 1) (TEXT_IMG)
+              mk(ui.widget.TEXT_IMG, {
+                x: px(236),
+                y: px(116),
+                w: px(120),
+                type: ui.data_type.WEATHER_CURRENT,
+                font_array: img_Steps_llst,
+                h_space: px(-2),
+                align_h: ui.align.CENTER_H,
+                unit_en: A('img/deg.png'),
+                unit_sc: A('img/deg.png'),
+                unit_tc: A('img/deg.png'),
+                negative_image: A('img/minus.png'),
+                show_level: ui.show_level.ONLY_NORMAL,
+              })
+
+            break
+          }
+          case H.edit_type.CAL: {
+              // Calories ring (slot 1) (IMG_LEVEL)
+              mk(ui.widget.IMG_LEVEL, {
+                x: px(250),
+                y: px(21),
+                w: px(91),
+                h: px(91),
+                image_array: img_Steps_ring_litb,
+                image_length: img_Steps_ring_litb.length,
+                type: ui.data_type.CAL,
+                show_level: ui.show_level.ONLY_NORMAL,
+              })
+
+              // Calories icon (slot 1) (IMG)
+              mk(ui.widget.IMG, {
+                x: px(278),
+                y: px(49),
+                src: A('img/cal_icon.png'),
+                show_level: ui.show_level.ONLY_NORMAL
+              })
+
+              // Calories (slot 1) (TEXT_IMG)
+              mk(ui.widget.TEXT_IMG, {
+                x: px(236),
+                y: px(116),
+                w: px(120),
+                type: ui.data_type.CAL,
+                font_array: img_Steps_llst,
+                h_space: px(-2),
+                align_h: ui.align.CENTER_H,
+                show_level: ui.show_level.ONLY_NORMAL,
+              })
+
+            break
+          }
         }
       } catch (e) {
         try { mk(ui.widget.TEXT, { x: 0, y: px(150), w: px(390), h: px(150), text: 'Edit slot: ' + (e && e.message ? e.message : e), text_size: px(22), color: 0xff5555, align_h: ui.align.CENTER_H, text_style: ui.text_style.WRAP }) } catch (e2) {}
       }
 
-      // Complication 2 (calories / temperature) (the wearer picks what it shows)
+      // Complication 2 (middle) (the wearer picks what it shows)
       try {
         // the edit API lives on the legacy global in every shipping face; fall back to the import
         const H = (typeof hmUI !== 'undefined' && hmUI.edit_type) ? hmUI : ui
@@ -424,8 +494,8 @@ WatchFace({
           select_image: A('img/sel_slot.png'),
           un_select_image: A('img/unsel_slot.png'),
           default_type: H.edit_type.CAL,
-          optional_types: [{ type: H.edit_type.CAL, preview: A('img/prev_cal.png') }, { type: H.edit_type.TEMPERATURE, preview: A('img/prev_temp.png') }],
-          count: 2,
+          optional_types: [{ type: H.edit_type.CAL, preview: A('img/prev_cal.png') }, { type: H.edit_type.TEMPERATURE, preview: A('img/prev_temp.png') }, { type: H.edit_type.SUN, preview: A('img/prev_sun.png') }, { type: H.edit_type.STEP, preview: A('img/prev_steps.png') }],
+          count: 4,
           select_list: { title_font_size: px(34), title_align_h: H.align.CENTER_H, list_item_vspace: px(8), list_tips_text_font_size: px(32), list_tips_text_align_h: H.align.LEFT },
         })
         switch (slot_2.getProperty(H.prop.CURRENT_TYPE)) {
@@ -494,6 +564,94 @@ WatchFace({
                 unit_sc: A('img/deg.png'),
                 unit_tc: A('img/deg.png'),
                 negative_image: A('img/minus.png'),
+                show_level: ui.show_level.ONLY_NORMAL,
+              })
+
+            break
+          }
+          case H.edit_type.SUN: {
+              // Sun disc (slot 2) (IMG)
+              mk(ui.widget.IMG, {
+                x: px(251),
+                y: px(169),
+                src: A('img/disc.png'),
+                show_level: ui.show_level.ONLY_NORMAL
+              })
+
+              // Sunrise icon (slot 2) (IMG)
+              const sun_4 = mk(ui.widget.IMG, {
+                x: px(278),
+                y: px(196),
+                src: A('img/sunrise_icon.png'),
+                show_level: ui.show_level.ONLY_NORMAL
+              })
+
+              // Sunset icon (slot 2) (IMG)
+              const sun_5 = mk(ui.widget.IMG, {
+                x: px(278),
+                y: px(196),
+                src: A('img/sunset_icon.png'),
+                show_level: ui.show_level.ONLY_NORMAL
+              })
+
+              // Sunrise time (slot 2) (TEXT_IMG)
+              const sun_6 = mk(ui.widget.TEXT_IMG, {
+                x: px(236),
+                y: px(263),
+                w: px(120),
+                type: ui.data_type.SUN_RISE,
+                font_array: img_Steps_llst,
+                h_space: px(-2),
+                align_h: ui.align.CENTER_H,
+                dot_image: A('img/colon.png'),
+                show_level: ui.show_level.ONLY_NORMAL,
+              })
+
+              // Sunset time (slot 2) (TEXT_IMG)
+              const sun_7 = mk(ui.widget.TEXT_IMG, {
+                x: px(236),
+                y: px(263),
+                w: px(120),
+                type: ui.data_type.SUN_SET,
+                font_array: img_Steps_llst,
+                h_space: px(-2),
+                align_h: ui.align.CENTER_H,
+                dot_image: A('img/colon.png'),
+                show_level: ui.show_level.ONLY_NORMAL,
+              })
+
+            break
+          }
+          case H.edit_type.STEP: {
+              // Steps ring (slot 2) (IMG_LEVEL)
+              mk(ui.widget.IMG_LEVEL, {
+                x: px(250),
+                y: px(168),
+                w: px(91),
+                h: px(91),
+                image_array: img_Steps_ring_litb,
+                image_length: img_Steps_ring_litb.length,
+                type: ui.data_type.STEP,
+                show_level: ui.show_level.ONLY_NORMAL,
+              })
+
+              // Steps icon (slot 2) (IMG)
+              mk(ui.widget.IMG, {
+                x: px(278),
+                y: px(196),
+                src: A('img/steps_icon.png'),
+                show_level: ui.show_level.ONLY_NORMAL
+              })
+
+              // Steps (slot 2) (TEXT_IMG)
+              mk(ui.widget.TEXT_IMG, {
+                x: px(236),
+                y: px(263),
+                w: px(120),
+                type: ui.data_type.STEP,
+                font_array: img_Steps_llst,
+                h_space: px(-2),
+                align_h: ui.align.CENTER_H,
                 show_level: ui.show_level.ONLY_NORMAL,
               })
 
@@ -625,6 +783,10 @@ WatchFace({
         sun_1.setProperty(ui.prop.VISIBLE, nextIsSunset)
         sun_2.setProperty(ui.prop.VISIBLE, !nextIsSunset)
         sun_3.setProperty(ui.prop.VISIBLE, nextIsSunset)
+        sun_4.setProperty(ui.prop.VISIBLE, !nextIsSunset)
+        sun_5.setProperty(ui.prop.VISIBLE, nextIsSunset)
+        sun_6.setProperty(ui.prop.VISIBLE, !nextIsSunset)
+        sun_7.setProperty(ui.prop.VISIBLE, nextIsSunset)
       }
       updateSun()
       sunClock.onPerMinute(guard(updateSun, g))

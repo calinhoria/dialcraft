@@ -1302,7 +1302,7 @@ function whenAllows(e, h = clock.h) {
   return (e.showWhen === 'pm') === (h >= 12);
 }
 function showAllowed(show, mode) {
-  // the customise screen draws the normal face plus the edit-only pictures (masks)
+  // the customise screen draws the normal rules; the draw loop then keeps only edit-related layers
   if (mode === 'edit') return show === 'edit' || show === 'normal' || show === 'both' || show == null;
   if (show === 'edit') return false;
   if (mode === 'aod') return show === 'aod' || show === 'both';
@@ -2198,7 +2198,7 @@ function drawScene(c, W, H, mode, overlay) {
   c.fillRect(0, 0, W, H);
   for (const e of elements()) {
     if (e.visible === false) continue;
-    if (!showAllowed(e.show, mode) || !whenAllows(e) || !editAllows(e)) continue;
+    if (!showAllowed(e.show, mode) || (mode === 'edit' && !editRelated(e)) || !whenAllows(e) || !editAllows(e)) continue;
     c.save();
     if (e.alpha != null && e.alpha < 255) c.globalAlpha = Math.max(0, e.alpha / 255);
     try { drawElement(c, e); } catch (err) { /* never let one widget break the preview */ }
