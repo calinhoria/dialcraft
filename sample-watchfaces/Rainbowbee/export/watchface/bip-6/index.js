@@ -176,6 +176,7 @@ WatchFace({
     const buildFace = () => {
       const g = ++gen
       initArrays()
+      let when_0, when_1, sun_0, sun_1, sun_2, sun_3, sun_4, sun_5, sun_6, sun_7   // layers shown by the hour or the sun; unset when their choice is not on screen
       // Image (IMG)
       mk(ui.widget.IMG, {
         x: px(0),
@@ -239,7 +240,7 @@ WatchFace({
       })
 
       // Image 4 (IMG)
-      const when_0 = mk(ui.widget.IMG, {
+      when_0 = mk(ui.widget.IMG, {
         x: px(57),
         y: px(278),
         src: A('img/am_on.png'),
@@ -247,7 +248,7 @@ WatchFace({
       })
 
       // Image 5 (IMG)
-      const when_1 = mk(ui.widget.IMG, {
+      when_1 = mk(ui.widget.IMG, {
         x: px(58),
         y: px(302),
         src: A('img/pm_on.png'),
@@ -363,7 +364,7 @@ WatchFace({
               })
 
               // Sunrise icon (IMG)
-              const sun_0 = mk(ui.widget.IMG, {
+              sun_0 = mk(ui.widget.IMG, {
                 x: px(278),
                 y: px(49),
                 src: A('img/sunrise_icon.png'),
@@ -371,7 +372,7 @@ WatchFace({
               })
 
               // Sunset icon (IMG)
-              const sun_1 = mk(ui.widget.IMG, {
+              sun_1 = mk(ui.widget.IMG, {
                 x: px(278),
                 y: px(49),
                 src: A('img/sunset_icon.png'),
@@ -379,7 +380,7 @@ WatchFace({
               })
 
               // Sunrise time (TEXT_IMG)
-              const sun_2 = mk(ui.widget.TEXT_IMG, {
+              sun_2 = mk(ui.widget.TEXT_IMG, {
                 x: px(236),
                 y: px(116),
                 w: px(120),
@@ -392,7 +393,7 @@ WatchFace({
               })
 
               // Sunset time (TEXT_IMG)
-              const sun_3 = mk(ui.widget.TEXT_IMG, {
+              sun_3 = mk(ui.widget.TEXT_IMG, {
                 x: px(236),
                 y: px(116),
                 w: px(120),
@@ -579,7 +580,7 @@ WatchFace({
               })
 
               // Sunrise icon (slot 2) (IMG)
-              const sun_4 = mk(ui.widget.IMG, {
+              sun_4 = mk(ui.widget.IMG, {
                 x: px(278),
                 y: px(196),
                 src: A('img/sunrise_icon.png'),
@@ -587,7 +588,7 @@ WatchFace({
               })
 
               // Sunset icon (slot 2) (IMG)
-              const sun_5 = mk(ui.widget.IMG, {
+              sun_5 = mk(ui.widget.IMG, {
                 x: px(278),
                 y: px(196),
                 src: A('img/sunset_icon.png'),
@@ -595,7 +596,7 @@ WatchFace({
               })
 
               // Sunrise time (slot 2) (TEXT_IMG)
-              const sun_6 = mk(ui.widget.TEXT_IMG, {
+              sun_6 = mk(ui.widget.TEXT_IMG, {
                 x: px(236),
                 y: px(263),
                 w: px(120),
@@ -608,7 +609,7 @@ WatchFace({
               })
 
               // Sunset time (slot 2) (TEXT_IMG)
-              const sun_7 = mk(ui.widget.TEXT_IMG, {
+              sun_7 = mk(ui.widget.TEXT_IMG, {
                 x: px(236),
                 y: px(263),
                 w: px(120),
@@ -755,8 +756,8 @@ WatchFace({
       const clockNow = new Time()
       const updateWhen = () => {
         const pm = clockNow.getHours() >= 12
-        when_0.setProperty(ui.prop.VISIBLE, !pm)
-        when_1.setProperty(ui.prop.VISIBLE, pm)
+        if (when_0) when_0.setProperty(ui.prop.VISIBLE, !pm)
+        if (when_1) when_1.setProperty(ui.prop.VISIBLE, pm)
       }
       updateWhen()
       clockNow.onPerMinute(guard(updateWhen, g))
@@ -779,14 +780,14 @@ WatchFace({
         const m = sunClock.getHours() * 60 + sunClock.getMinutes()
         const t = sunTimes() || [360, 1080]   // without weather data: 06:00 to 18:00 counts as day
         const nextIsSunset = m >= t[0] && m < t[1]
-        sun_0.setProperty(ui.prop.VISIBLE, !nextIsSunset)
-        sun_1.setProperty(ui.prop.VISIBLE, nextIsSunset)
-        sun_2.setProperty(ui.prop.VISIBLE, !nextIsSunset)
-        sun_3.setProperty(ui.prop.VISIBLE, nextIsSunset)
-        sun_4.setProperty(ui.prop.VISIBLE, !nextIsSunset)
-        sun_5.setProperty(ui.prop.VISIBLE, nextIsSunset)
-        sun_6.setProperty(ui.prop.VISIBLE, !nextIsSunset)
-        sun_7.setProperty(ui.prop.VISIBLE, nextIsSunset)
+        if (sun_0) sun_0.setProperty(ui.prop.VISIBLE, !nextIsSunset)
+        if (sun_1) sun_1.setProperty(ui.prop.VISIBLE, nextIsSunset)
+        if (sun_2) sun_2.setProperty(ui.prop.VISIBLE, !nextIsSunset)
+        if (sun_3) sun_3.setProperty(ui.prop.VISIBLE, nextIsSunset)
+        if (sun_4) sun_4.setProperty(ui.prop.VISIBLE, !nextIsSunset)
+        if (sun_5) sun_5.setProperty(ui.prop.VISIBLE, nextIsSunset)
+        if (sun_6) sun_6.setProperty(ui.prop.VISIBLE, !nextIsSunset)
+        if (sun_7) sun_7.setProperty(ui.prop.VISIBLE, nextIsSunset)
       }
       updateSun()
       sunClock.onPerMinute(guard(updateSun, g))

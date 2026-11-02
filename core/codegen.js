@@ -755,11 +755,11 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
       // a layer tied to AM / PM keeps a handle so the hour can show or hide it
       if ((el.showWhen === 'sunrise' || el.showWhen === 'sunset') && chunk.length && /ui\.createWidget\(/.test(chunk[chunk.length - 1])) {
         const v = `sun_${sunVars.length}`;
-        chunk[chunk.length - 1] = chunk[chunk.length - 1].replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2const ${v} = ui.createWidget(`);
+        chunk[chunk.length - 1] = chunk[chunk.length - 1].replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2${v} = ui.createWidget(`);
         sunVars.push({ v, set: el.showWhen === 'sunset' });
       } else if (el.showWhen && chunk.length && /ui\.createWidget\(/.test(chunk[chunk.length - 1])) {
         const v = `when_${whenVars.length}`;
-        chunk[chunk.length - 1] = chunk[chunk.length - 1].replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2const ${v} = ui.createWidget(`);
+        chunk[chunk.length - 1] = chunk[chunk.length - 1].replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2${v} = ui.createWidget(`);
         whenVars.push({ v, pm: el.showWhen === 'pm' });
       }
       // a layer with a code handle is reachable from user code as W.<handle> (and F.<handle> for its picture list)
@@ -846,12 +846,14 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   } else if (ctx.usesTap && els.some((e) => e.kind === 'TAP' && e.action === 'variant')) {
     out.push('    const cycleVariants = () => {}');
   }
+  // the handles are declared up front: a layer can be built inside a branch (a complication choice), and the updates below sit outside it
+  if (whenVars.length || sunVars.length) out.splice(bodyStart, 0, `    let ${[...whenVars, ...sunVars].map((w) => w.v).join(', ')}   // layers shown by the hour or the sun; unset when their choice is not on screen`);
   if (whenVars.length) {
     out.push('    // lit AM / PM layers follow the hour');
     out.push('    const clockNow = new Time()');
     out.push('    const updateWhen = () => {');
     out.push('      const pm = clockNow.getHours() >= 12');
-    for (const w of whenVars) out.push(`      ${w.v}.setProperty(ui.prop.VISIBLE, ${w.pm ? 'pm' : '!pm'})`);
+    for (const w of whenVars) out.push(`      if (${w.v}) ${w.v}.setProperty(ui.prop.VISIBLE, ${w.pm ? 'pm' : '!pm'})`);
     out.push('    }');
     out.push('    updateWhen()');
     out.push('    clockNow.onPerMinute(updateWhen)');
@@ -876,7 +878,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('      const m = sunClock.getHours() * 60 + sunClock.getMinutes()');
     out.push('      const t = sunTimes() || [360, 1080]   // without weather data: 06:00 to 18:00 counts as day');
     out.push('      const nextIsSunset = m >= t[0] && m < t[1]');
-    for (const w of sunVars) out.push(`      ${w.v}.setProperty(ui.prop.VISIBLE, ${w.set ? 'nextIsSunset' : '!nextIsSunset'})`);
+    for (const w of sunVars) out.push(`      if (${w.v}) ${w.v}.setProperty(ui.prop.VISIBLE, ${w.set ? 'nextIsSunset' : '!nextIsSunset'})`);
     out.push('    }');
     out.push('    updateSun()');
     out.push('    sunClock.onPerMinute(updateSun)');
