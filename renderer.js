@@ -830,6 +830,11 @@ function valueString(key) {
   const v = dtValue(key);
   const d = dtByKey(key);
   if (typeof v === 'number' && d && d.dot) return v.toFixed(2);
+  // the watch draws the alarm as H:M, without leading zeros (07:03 shows as 7:3)
+  if (key === 'ALARM_CLOCK') {
+    const m = /^\s*(\d{1,2})\s*:\s*(\d{1,2})\s*$/.exec(String(v));
+    if (m) return `${+m[1]}:${+m[2]}`;
+  }
   return String(v);
 }
 function levelFraction(key, staticLevel) {
