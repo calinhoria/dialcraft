@@ -20,7 +20,7 @@ const DATA_TYPES = [
   { key: 'DATE', label: 'Date', group: 'Time', digits: 4, preview: null, note: 'Use IMG_DATE for month/day' },
   { key: 'WEEK', label: 'Weekday', group: 'Time', digits: 1, preview: null, note: 'Use IMG_WEEK for the weekday set' },
   { key: 'ALARM_CLOCK', label: 'Alarm', group: 'Time', digits: 5, preview: '07:30', colon: true, bound: true, note: 'The watch itself draws the alarm without leading zeros, as text and as pictures (07:03 shows as 7:3), and a watchface cannot change that. The preview does the same' },
-  { key: 'COUNT_DOWN', label: 'Countdown (min/sec)', group: 'Time', digits: 2, preview: 25, bound: true },
+  { key: 'COUNT_DOWN', label: 'Countdown (min/sec)', group: 'Time', digits: 2, preview: 25, bound: true, note: 'The watch draws the countdown itself: the minutes left, then the seconds in the last minute, with no colon and no leading zero. A watchface cannot show it as MM:SS (checked on a Bip 6: there is no countdown sensor to read the remaining time from)' },
   { key: 'STOP_WATCH', label: 'Stopwatch (min/sec)', group: 'Time', digits: 2, preview: 12, bound: true },
   { key: 'SLEEP', label: 'Sleep time', group: 'Time', digits: 5, preview: '07:24', bound: true, unit: '' },
   { key: 'SUN_CURRENT', label: 'Next sunrise / sunset (time)', group: 'Weather', digits: 5, preview: '18:42', colon: true, bound: true },

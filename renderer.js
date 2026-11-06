@@ -235,6 +235,14 @@ window.addEventListener('keydown', (e) => {
   // deselect layers
   const typing = document.activeElement && /input|select|textarea/i.test(document.activeElement.tagName);
   if (typing) return;
+  // Enter (or F2) renames the selected layer, the same as a double-click on its name
+  if (!mod && !e.altKey && (e.key === 'Enter' || e.key === 'F2') && !(document.activeElement && document.activeElement.tagName === 'BUTTON')) {
+    const sel = selection();
+    if (sel.length === 1) {
+      const span = document.querySelector(`#layers .layer[data-id="${sel[0].id}"] .nname`);
+      if (span) { e.preventDefault(); startLayerRename(sel[0], span); return; }
+    }
+  }
   if (mod && !e.shiftKey && e.key.toLowerCase() === 'a') {
     e.preventDefault();
     const all = elements().filter((x) => !x.locked && !offView(x));
@@ -883,7 +891,6 @@ function tightSpace(e) {
 // where the drag handle between the first two digits sits (device px), or null
 function spaceHandlePos(e) {
   if (!digitKinds(e) || e.isCharacter || followSource(e)) return null;
-  if ((e.kind === 'IMG_TIME') && (e.part || 'hour') === 'hour12') return null;
   const text = digitTextFor(e).replace('-', '');
   if (text.length < 2) return null;
   const b = digitBox(e);
@@ -932,12 +939,9 @@ function digitPreviewNote(e) {
   const sample = isDate ? `${dateParts.year}-${pad2(dateParts.month)}-${pad2(dateParts.day)}`
       : `${pad2(clock.h)}:${pad2(clock.m)}:${pad2(clock.s)}`;
   const what = liveClock ? 'the live time' : `“${t}” at ${sample}`;
-  const hour12 = e.kind === 'IMG_TIME' && (e.part || 'hour') === 'hour12';
   const key = `${isDate ? (e.part === 'month' || e.part === 'year' ? e.part : 'day') : (e.part || 'hour')}_zero`;
   const zero = !!+e.zero;
-  const zeroTxt = hour12
-    ? 'the 12-hour form carries no leading-zero or align switch'
-    : `leading zero ${zero ? 'on' : 'off'} (${key}: ${zero ? 1 : 0})`;
+  const zeroTxt = `leading zero ${zero ? 'on' : 'off'} (${key}: ${zero ? 1 : 0})`;
   const b = digitBox(e);
   const cap = digitCapacity(e);
   const src = followSource(e);
@@ -945,8 +949,7 @@ function digitPreviewNote(e) {
     return `Preview draws ${what} right after “${src.name || src.part}” (Follow) — ${zeroTxt}, with that layer's spacing and alignment.`;
   }
   const boxTxt = cap ? `a ${cap}-digit box ${Math.round(b.w)}×${Math.round(b.h)}` : `its ${Math.round(b.w)}px run`;
-  const alignTxt = hour12 ? 'the run starts at the box'
-    : b.run >= b.w ? 'the value fills the box, so Align has nothing to shift'
+  const alignTxt = b.run >= b.w ? 'the value fills the box, so Align has nothing to shift'
       : e.alignH === 'RIGHT' ? 'Align Right puts the run at the box\'s right edge'
         : e.alignH === 'CENTER_H' ? 'Align Center centres the run in the box'
           : 'Align Left puts the run at the box\'s left edge';
@@ -965,8 +968,7 @@ function digitTextFor(e) {
       const p = e.part || 'hour';
       if (p === 'minute') return padDigits(clock.m, zero);
       if (p === 'second') return padDigits(clock.s, zero);
-      // hour12 carries no zero switch in the export, so it keeps its own form
-      if (p === 'hour12') { const h = clock.h % 12; return String(h === 0 ? 12 : h); }
+      if (p === 'hour12') { const h = clock.h % 12; return padDigits(h === 0 ? 12 : h, zero); }
       return padDigits(clock.h, zero);
     }
     case 'IMG_DATE': {
@@ -1111,8 +1113,7 @@ function digitBox(e) {
 function digitRunX(e, b) {
   const run = b.run == null ? b.w : b.run;
   if (run >= b.w) return b.x;
-  // the 12-hour form exports no *_align, so it always starts at the box
-  const mode = (e.kind === 'IMG_TIME' && (e.part || 'hour') === 'hour12') ? 'LEFT' : effAlign(e);
+  const mode = effAlign(e);
   if (mode === 'RIGHT') return b.x + b.w - run;
   if (mode === 'CENTER_H') return b.x + (b.w - run) / 2;
   return b.x;
@@ -2503,6 +2504,32 @@ function layerLabel(e) {
 // the Edit view lists what belongs to customising: masks, complication slots and their choice layers
 const editRelated = (e) => e.show === 'edit' || e.kind === 'EDIT_SLOT' || (e.editSlot != null && e.editSlot !== '');
 const offView = (e) => layerFocus && (previewMode === 'edit' ? !editRelated(e) : !showAllowed(e.show, previewMode));
+// double-click a layer's name in the Layers panel to rename it in place (Enter saves, Escape cancels)
+function startLayerRename(e, span) {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'gname-edit';
+  inp.value = layerLabel(e);
+  span.replaceWith(inp);
+  inp.focus();
+  inp.select();
+  let closed = false;
+  const done = (save) => {
+    if (closed) return;
+    closed = true;
+    const v = inp.value.trim();
+    if (inp.parentNode) inp.replaceWith(span);
+    if (save && v && v !== layerLabel(e)) { pushHistory(); e.name = v; refreshPanels(); scheduleCode(); }
+  };
+  inp.onkeydown = (ev) => {
+    ev.stopPropagation();
+    if (ev.key === 'Enter') done(true);
+    else if (ev.key === 'Escape') done(false);
+  };
+  inp.onblur = () => done(true);
+  inp.onclick = (ev) => ev.stopPropagation();
+  inp.ondblclick = (ev) => ev.stopPropagation();
+}
 function layerRow(e) {
   const row = document.createElement('div');
   row.className = 'layer' + (e.id === selectedId ? ' sel' : '') + (multiSel.has(e.id) && e.id !== selectedId ? ' multi' : '')
@@ -2527,6 +2554,7 @@ function layerRow(e) {
   }
   if (badge) { const b = document.createElement('span'); b.className = 'grp ' + badge.toLowerCase(); b.textContent = badge; b.title = 'Shown in: ' + badge.toLowerCase(); left.appendChild(b); }
   left.appendChild(nm);
+  nm.title = 'Double-click to rename this layer';
   const right = document.createElement('span');
   right.className = 'lrow-r';
   const mk = (cls, html, title, fn) => {
@@ -2711,6 +2739,22 @@ function reorderSelection(how) {
     return;
   }
   refreshPanels(); render(); scheduleCode();
+}
+// Double-click on a layer's name renames it. A click selects the layer and rebuilds the panel, so the browser never sends
+// a dblclick for it; the panel listens for the second click (detail 2) instead.
+{
+  const host = document.getElementById('layers');
+  if (host) host.addEventListener('click', (ev) => {
+    if (ev.detail !== 2) return;   // the second click of a double-click: the browser sends no dblclick once the panel was rebuilt between the clicks
+    const span = ev.target.closest && ev.target.closest('.layer .nname');
+    if (!span) return;
+    const row = span.closest('.layer');
+    const e = row && elements().find((x) => x.id === row.dataset.id || String(x.id) === row.dataset.id);
+    if (!e) return;
+    ev.preventDefault();
+    ev.stopPropagation();   // the row's own click would rebuild the panel and detach the name being edited
+    startLayerRename(e, span);
+  }, true);
 }
 function renderLayers() {
   const host = $('layers');
@@ -4839,12 +4883,10 @@ function propsKind(e) {
         { value: 'minute', label: 'Minute' }, { value: 'second', label: 'Second' },
       ], (v) => { e.part = v; }));
       const src = followSource(e);
-      if ((e.part || 'hour') !== 'hour12') {
-        add('Leading 0', ctlCheck(e, 'zero'));
-        if (!src) {
-          add('Space', ctlSpace(e));
-          add('Align', ctlAlignSeg(e, 'Where the value sits inside the widget box (hour/minute/second/day/month are 2 digits, a reading is as wide as its data type): Left, centred, or Right — the box stays put, the value moves inside it'));
-        }
+      add('Leading 0', ctlCheck(e, 'zero'));
+      if (!src) {
+        add('Space', ctlSpace(e));
+        add('Align', ctlAlignSeg(e, 'Where the value sits inside the widget box (hour/minute/second/day/month are 2 digits, a reading is as wide as its data type): Left, centred, or Right — the box stays put, the value moves inside it'));
       }
       add('Follow', ctlCheck(e, 'follow'),
         'Follow the previous time part: the watch draws this value directly after it, with its spacing and alignment — so the export sends no startX, space or align for this layer');

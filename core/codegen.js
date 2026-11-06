@@ -679,6 +679,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   const hasVariants = els.some((e) => variantsOf(e) && e.show !== 'aod');
   const hasSunWhen = els.some((e) => (e.showWhen === 'sunrise' || e.showWhen === 'sunset') && !missingPicture(e));
   out.push("import ui from '@zos/ui'");
+  if ((themed || hasVariants) && ctx.api >= 3) out.push("import * as zosFs from '@zos/fs'");
 
   if (ctx.sensors.size) {
     out.push(`import { ${[...ctx.sensors].sort().join(', ')} } from '@zos/sensor'`);
@@ -708,6 +709,21 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('');
     if (themed) { out.push('const initArrays = () => {'); out.push(fills.join('\n')); out.push('}'); out.push(''); }
   }
+  if (themed || hasVariants) {
+    // hmFS is no global on newer watches, so a saved choice was lost and every start (the always-on screen too) began on the default.
+    // @zos/fs works there (checked on a Bip 6, API 4): the choice is a small file. hmFS stays as the fallback. Every call is guarded.
+    out.push('// ---- saved choices (theme / variant): survive a restart and reach the always-on screen ----');
+    out.push('const dcGet = (k) => {');
+    if (ctx.api >= 3) out.push("  try { const v = Number(zosFs.readFileSync({ path: 'dc_' + k + '.txt', options: { encoding: 'utf8' } })); if (v) return v } catch (e) {}");
+    out.push("  try { if (typeof hmFS !== 'undefined') return Number(hmFS.SysProGetInt(k)) || 0 } catch (e) {}");
+    out.push('  return 0');
+    out.push('}');
+    out.push('const dcSet = (k, v) => {');
+    if (ctx.api >= 3) out.push("  try { zosFs.writeFileSync({ path: 'dc_' + k + '.txt', data: String(v), options: { encoding: 'utf8' } }) } catch (e) {}");
+    out.push("  try { if (typeof hmFS !== 'undefined') hmFS.SysProSetInt(k, v) } catch (e) {}");
+    out.push('}');
+    out.push('');
+  }
   out.push('WatchFace({');
   out.push('  initView() {');
   const whenVars = [];
@@ -719,12 +735,12 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     // Guarded on purpose: a missing API must never stop the face from drawing.
     out.push('    // the picked variant survives a restart (when the watch offers storage)');
     out.push('    let variantIdx = 0');
-    out.push("    try { if (typeof hmFS !== 'undefined') variantIdx = Number(hmFS.SysProGetInt('dialcraft_variant')) || 0 } catch (e) {}");
+    out.push("    variantIdx = dcGet('dialcraft_variant')");
     out.push('');
   }
   if (themed) {
     out.push('    // the picked colour theme survives a restart (when the watch offers storage)');
-    out.push("    try { if (typeof hmFS !== 'undefined') themeIdx = (Number(hmFS.SysProGetInt('dialcraft_theme')) || 0) % THEME_NAMES.length } catch (e) {}");
+    out.push("    themeIdx = dcGet('dialcraft_theme') % THEME_NAMES.length");
     out.push('');
   }
   if (els.some((e) => validHandle(e.handle) && !missingPicture(e))) {
@@ -829,7 +845,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('    const cycleVariants = () => {');
     const total = ctx.variants.map((v) => `${v.list}.length`).join(', ');
     out.push(`      variantIdx = (variantIdx + 1) % Math.max(${total})`);
-    out.push("      try { if (typeof hmFS !== 'undefined') hmFS.SysProSetInt('dialcraft_variant', variantIdx) } catch (e) {}");
+    out.push("      dcSet('dialcraft_variant', variantIdx)");
     if (names.length) out.push("      try { if (variantNames[variantIdx] && typeof hmUI !== 'undefined') hmUI.showToast({ text: variantNames[variantIdx] }) } catch (e) {}");
     for (const v of ctx.variants) if (!v.tod) out.push(`      ${v.widget}.setProperty(ui.prop.SRC, ${v.list}[variantIdx % ${v.list}.length])`);
     out.push('    }');
@@ -910,7 +926,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('    // a Tap zone calls this; the rebuild runs after the tap handler returns (it deletes the tap zone itself)');
     out.push('    const cycleTheme = () => {');
     out.push('      themeIdx = (themeIdx + 1) % THEME_NAMES.length');
-    out.push("      try { if (typeof hmFS !== 'undefined') hmFS.SysProSetInt('dialcraft_theme', themeIdx) } catch (e) {}");
+    out.push("      dcSet('dialcraft_theme', themeIdx)");
     out.push("      try { if (typeof hmUI !== 'undefined' && hmUI.showToast) hmUI.showToast({ text: THEME_NAMES[themeIdx] }) } catch (e) {}");
     out.push("      if (typeof setTimeout === 'function') setTimeout(rebuild, 0); else rebuild()");
     out.push('    }');
