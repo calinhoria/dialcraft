@@ -235,9 +235,16 @@ window.addEventListener('keydown', (e) => {
   // deselect layers
   const typing = document.activeElement && /input|select|textarea/i.test(document.activeElement.tagName);
   if (typing) return;
-  // Enter (or F2) renames the selected layer, the same as a double-click on its name
+  // Enter (or F2) renames the selected layer, or the selected group, the same as a double-click on its name
   if (!mod && !e.altKey && (e.key === 'Enter' || e.key === 'F2') && !(document.activeElement && document.activeElement.tagName === 'BUTTON')) {
     const sel = selection();
+    // a whole group selected (its header was clicked): rename the group
+    const g = sel.length > 1 && sel[0].group && sel.every((x) => x.group === sel[0].group) ? sel[0].group : null;
+    if (g && elements().filter((x) => x.group === g).length === sel.length) {
+      const head = [...document.querySelectorAll('#layers .group-row')].find((h) => h.dataset.gid === String(g));
+      const gspan = head && head.querySelector('.gname');
+      if (gspan) { e.preventDefault(); startGroupRename(g, gspan); return; }
+    }
     if (sel.length === 1) {
       const span = document.querySelector(`#layers .layer[data-id="${sel[0].id}"] .nname`);
       if (span) { e.preventDefault(); startLayerRename(sel[0], span); return; }
@@ -2606,6 +2613,7 @@ function groupBlock(gid, members) {
   const nm = mkEl('span', 'gname', groupName(gid));
   nm.title = 'Double-click to rename this group';
   nm.ondblclick = (ev) => { ev.stopPropagation(); startGroupRename(gid, nm); };
+  head.dataset.gid = gid;
   const cnt = mkEl('span', 'gcount', String(members.length));
   cnt.title = `${members.length} layer${members.length === 1 ? '' : 's'}`;
   const right = mkEl('span', 'lrow-r');
@@ -2746,6 +2754,16 @@ function reorderSelection(how) {
   const host = document.getElementById('layers');
   if (host) host.addEventListener('click', (ev) => {
     if (ev.detail !== 2) return;   // the second click of a double-click: the browser sends no dblclick once the panel was rebuilt between the clicks
+    const gspan = ev.target.closest && ev.target.closest('.group-row .gname');
+    if (gspan) {
+      // a group's name: its header click selects the members and rebuilds the panel too
+      const gid = gspan.closest('.group-row').dataset.gid;
+      if (!gid) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      startGroupRename(gid, gspan);
+      return;
+    }
     const span = ev.target.closest && ev.target.closest('.layer .nname');
     if (!span) return;
     const row = span.closest('.layer');
