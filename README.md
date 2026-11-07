@@ -159,6 +159,7 @@ property does on the watch.
 | Face variant of the selection | `⇧N` Normal · `⇧A` AOD · `⇧B` Both |
 | Number fields | wheel or `↑`/`↓` on a focused field, or drag its label to scrub (`⇧` for ×10) |
 | Delete | `Delete` / `Backspace` |
+| Rename a layer or group | `Enter` or `F2` on the selected layer / group, or double-click its name in the Layers panel; `Enter` saves, `Esc` cancels |
 
 ## Documentation
 

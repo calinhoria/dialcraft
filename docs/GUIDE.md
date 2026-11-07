@@ -86,9 +86,10 @@ Other scripts:
   shared by every layer that points at them and a copy that kept sharing them
   could not be restyled on its own (digit sets stay shared and fork only when you
   restyle them, see *Glyph size, colour and fill*). A group is named when it is
-  created (`Group 1`, …) and can be **renamed** by double-clicking its name in the
-  panel (Enter saves, Esc cancels) or from the *Group name* row in Properties when
-  the whole group is selected.
+  created (`Group 1`, …). A layer or a group is **renamed** in the panel by
+  double-clicking its name, or by selecting it and pressing Enter (or F2); Enter
+  saves, Esc cancels. A group can also be renamed from the *Group name* row in
+  Properties when the whole group is selected.
 - **Add ▾ and Presets ▾** open a menu with a search box (focused on open; Enter picks the first match,
   Esc closes). Under the face: **Normal · AOD · Edit · Live clock**, and selectors for a colour theme,
   a background variant and each complication slot when the face has them.
@@ -138,7 +139,7 @@ Other scripts:
 
 Keyboard: `Ctrl/Cmd+Z` / `Ctrl/Cmd+Shift+Z` undo/redo, `Ctrl/Cmd+S` save,
 `Ctrl/Cmd+D` duplicate, `Ctrl/Cmd+G` group, arrows nudge (`Shift` = 10px),
-`Delete` remove, `Esc` deselect. Files can be dropped on the window to import.
+`Delete` remove, `Enter` / `F2` rename the selected layer or group, `Esc` deselect. Files can be dropped on the window to import.
 
 ## Widgets (what you can place)
 
