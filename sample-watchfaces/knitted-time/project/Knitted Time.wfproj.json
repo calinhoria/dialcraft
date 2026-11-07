@@ -1,0 +1,1390 @@
+{
+  "version": 1,
+  "name": "Knitted Time",
+  "device": "bip-6",
+  "appId": 2854310,
+  "vender": "dialcraft",
+  "description": "A knitted blanket with the time in yarn digits and felt patches for the readings; a ball of yarn rocks, the needles click and one minute of scarf grows every minute.",
+  "font": "Cherry Bomb One",
+  "language": "en-US",
+  "fonts": [
+    {
+      "name": "cherry-bomb-one-400.ttf",
+      "family": "Cherry Bomb One"
+    },
+    {
+      "name": "grandstander-800.ttf",
+      "family": "Grandstander"
+    }
+  ],
+  "groups": {
+    "gmw71b6cggk": "Clock",
+    "gmw71b74uku": "Clock AOD",
+    "gDate": "Date",
+    "gSteps": "Steps",
+    "gHeartrate": "Heart rate",
+    "gBattery": "Battery",
+    "gYarn": "Yarn"
+  },
+  "elements": [
+    {
+      "id": "elmw71b6au1f",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmw71b6n03jm",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_knit.png"
+    },
+    {
+      "id": "elmw71b6cg36v",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 210,
+      "y": 59,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw71b6cggk",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 2,
+      "images": [
+        "knit/d_0.png",
+        "knit/d_1.png",
+        "knit/d_2.png",
+        "knit/d_3.png",
+        "knit/d_4.png",
+        "knit/d_5.png",
+        "knit/d_6.png",
+        "knit/d_7.png",
+        "knit/d_8.png",
+        "knit/d_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmw71b6cg73x",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 180,
+      "y": 63,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw71b6cggk",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "knit/colon.png",
+      "glyph": null,
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmw71b6cg75l",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 18,
+      "y": 59,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw71b6cggk",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 2,
+      "images": [
+        "knit/d_0.png",
+        "knit/d_1.png",
+        "knit/d_2.png",
+        "knit/d_3.png",
+        "knit/d_4.png",
+        "knit/d_5.png",
+        "knit/d_6.png",
+        "knit/d_7.png",
+        "knit/d_8.png",
+        "knit/d_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmw71b74u9x",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 211,
+      "y": 186,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw71b74uku",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Cherry Bomb One",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#9ab8ae",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#9ab8ae",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw71b74u34i",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 181,
+      "y": 196,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw71b74uku",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Cherry Bomb One",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#9ab8ae",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#9ab8ae",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmw71b74u1yj",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 39,
+      "y": 186,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw71b74uku",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Cherry Bomb One",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#9ab8ae",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#9ab8ae",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw71b6d02ru",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 118,
+      "y": 18,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Grandstander",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5b3413",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmw71b6dr45f",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 204,
+      "y": 26,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Grandstander",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5b3413",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw71b6vu1uz",
+      "kind": "IMG",
+      "name": "Steps icon",
+      "x": 118,
+      "y": 188,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_steps_e2563f.png"
+    },
+    {
+      "id": "elmw71b6e15qv",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 156,
+      "y": 186,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Grandstander",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5b3413",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw71b6xc45w",
+      "kind": "IMG",
+      "name": "Heart rate icon",
+      "x": 68,
+      "y": 246,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_heart_e2563f.png"
+    },
+    {
+      "id": "elmw71b6eg5kb",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 106,
+      "y": 244,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Grandstander",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5b3413",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw71b70n1bd",
+      "kind": "IMG_LEVEL",
+      "name": "Battery level",
+      "x": 207,
+      "y": 249,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "images": [
+        "bat/bt5b3413_0.png",
+        "bat/bt5b3413_1.png",
+        "bat/bt5b3413_2.png",
+        "bat/bt5b3413_3.png",
+        "bat/bt5b3413_4.png",
+        "bat/bt5b3413_5.png",
+        "bat/bt5b3413_6.png",
+        "bat/bt5b3413_7.png",
+        "bat/bt5b3413_8.png",
+        "bat/bt5b3413_9.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "BATTERY",
+      "level": 0,
+      "glyph": {
+        "font": "Cherry Bomb One",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      }
+    },
+    {
+      "id": "elmw71b6f3xw",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 255,
+      "y": 244,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Grandstander",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5b3413",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw71b72x25w",
+      "kind": "IMG",
+      "name": "Ball of yarn",
+      "x": 32,
+      "y": 372,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gYarn",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ball_001.png",
+      "images": [
+        "sp/ball_001.png",
+        "sp/ball_000.png",
+        "sp/ball_002.png",
+        "sp/ball_003.png",
+        "sp/ball_004.png",
+        "sp/ball_005.png",
+        "sp/ball_006.png",
+        "sp/ball_007.png",
+        "sp/ball_008.png"
+      ],
+      "handle": "ball"
+    },
+    {
+      "id": "elmw71b73d2kr",
+      "kind": "IMG",
+      "name": "Needles",
+      "x": 232,
+      "y": 292,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gYarn",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/needles_010.png",
+      "images": [
+        "sp/needles_010.png",
+        "sp/needles_009.png",
+        "sp/needles_011.png"
+      ],
+      "handle": "needles"
+    },
+    {
+      "id": "elmw71b7402x4",
+      "kind": "IMG",
+      "name": "Scarf",
+      "x": 248,
+      "y": 322,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gYarn",
+      "alpha": 255,
+      "w": 44,
+      "h": 48,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/swatch_012.png",
+      "images": [
+        "sp/swatch_012.png",
+        "sp/swatch_013.png"
+      ],
+      "handle": "swatch"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "colon.png",
+      "width": 10,
+      "height": 20
+    },
+    {
+      "name": "week_w1.png",
+      "width": 85,
+      "height": 53
+    },
+    {
+      "name": "week_w2.png",
+      "width": 85,
+      "height": 53
+    },
+    {
+      "name": "week_w3.png",
+      "width": 85,
+      "height": 53
+    },
+    {
+      "name": "week_w4.png",
+      "width": 85,
+      "height": 53
+    },
+    {
+      "name": "week_w5.png",
+      "width": 85,
+      "height": 53
+    },
+    {
+      "name": "week_w6.png",
+      "width": 85,
+      "height": 53
+    },
+    {
+      "name": "week_w7.png",
+      "width": 85,
+      "height": 53
+    },
+    {
+      "name": "bpm.png",
+      "width": 39,
+      "height": 22
+    },
+    {
+      "name": "percent.png",
+      "width": 33,
+      "height": 36
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 28,
+      "height": 63
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 28,
+      "height": 35
+    },
+    {
+      "name": "scene_knit.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "knit/d_0.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_1.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_2.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_3.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_4.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_5.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_6.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_7.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_8.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/d_9.png",
+      "width": 80,
+      "height": 118
+    },
+    {
+      "name": "knit/colon.png",
+      "width": 30,
+      "height": 118
+    },
+    {
+      "name": "ic_steps_e2563f.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "ic_heart_e2563f.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "ic_bolt_e2563f.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "bat/bt5b3413_0.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_1.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_2.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_3.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_4.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_5.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_6.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_7.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_8.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/bt5b3413_9.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "sp/ball_000.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/ball_001.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/ball_002.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/ball_003.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/ball_004.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/ball_005.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/ball_006.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/ball_007.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/ball_008.png",
+      "width": 56,
+      "height": 56
+    },
+    {
+      "name": "sp/needles_009.png",
+      "width": 76,
+      "height": 56
+    },
+    {
+      "name": "sp/needles_010.png",
+      "width": 76,
+      "height": 56
+    },
+    {
+      "name": "sp/needles_011.png",
+      "width": 76,
+      "height": 56
+    },
+    {
+      "name": "sp/swatch_012.png",
+      "width": 44,
+      "height": 80
+    },
+    {
+      "name": "sp/swatch_013.png",
+      "width": 44,
+      "height": 80
+    },
+    {
+      "name": "colon_2.png",
+      "width": 10,
+      "height": 20
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 70,
+      "height": 80
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 28,
+      "height": 63
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // Knitted Time: the needles click, the ball of yarn rocks, and one minute of scarf grows from the needles (it restarts every minute)\n  const MS = 130;\n  const V = {\"ball\":{\"f1\":0,\"f0\":1,\"f2\":2,\"f3\":3,\"f4\":4,\"f5\":5,\"f6\":6,\"f7\":7,\"__blank\":8},\"needles\":{\"b\":0,\"a\":1,\"__blank\":2},\"swatch\":{\"s\":0,\"__blank\":1}};\n  const tick = () => {\n    const now = Date.now(), sec = (now % 60000) / 1000;\n    slot('ball')(34 + Math.round(2 * Math.sin(now / 650)), 372, V.ball['f' + (Math.floor(now / 260) % 8)]);\n    slot('needles')(232, 292, Math.floor(now / 500) % 2 ? V.needles.a : V.needles.b);\n    const h = Math.round(80 * sec / 60);\n    if (h >= 3) slot('swatch')(248, 322, V.swatch.s, 44, h); else slot('swatch').hide();\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}

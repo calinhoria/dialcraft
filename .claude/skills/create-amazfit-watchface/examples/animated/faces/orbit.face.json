@@ -1,0 +1,18 @@
+{
+  "name": "Orbit",
+  "slug": "orbit",
+  "language": "en-US",
+  "fonts": [["orbitron-700.ttf", "Orbitron"], ["rajdhani-600.ttf", "Rajdhani"]],
+  "presets": ["bg", "clock", "weekday", "day", "steps", "hr", "battery"],
+  "bg": "#000000",
+  "styles": [
+    ["Hour", {"size": 92, "color": "#eaf6ff", "shadowColor": "#2a8fe0", "shadowX": 0, "shadowY": 0, "shadowBlur": 10}, {"zero": 1}],
+    ["Minute", {"size": 92, "color": "#eaf6ff", "shadowColor": "#2a8fe0", "shadowX": 0, "shadowY": 0, "shadowBlur": 10}, {"zero": 1}],
+    ["Colon", {"size": 92, "color": "#eaf6ff", "shadowColor": "#2a8fe0", "shadowX": 0, "shadowY": 0, "shadowBlur": 10}],
+    ["Weekday", {"font": "Rajdhani", "size": 40, "color": "#9fd8ff"}, {"labelForm": "short", "labelCase": "upper", "labelAlign": "right"}],
+    ["Day", {"font": "Rajdhani", "size": 40, "color": "#9fd8ff"}],
+    ["Steps", {"font": "Rajdhani", "size": 40, "color": "#eaf6ff"}, {"alignH": "LEFT", "hSpace": 1}],
+    ["Heart rate", {"font": "Rajdhani", "size": 40, "color": "#eaf6ff"}, {"alignH": "LEFT", "hSpace": 1, "unit": ""}],
+    ["Battery", {"font": "Rajdhani", "size": 40, "color": "#eaf6ff"}, {"alignH": "LEFT", "hSpace": 1}]
+  ]
+}

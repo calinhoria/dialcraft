@@ -1,0 +1,18 @@
+{
+  "name": "Knitted Time",
+  "slug": "knit",
+  "language": "en-US",
+  "fonts": [["cherry-bomb-one-400.ttf", "Cherry Bomb One"], ["grandstander-800.ttf", "Grandstander"]],
+  "presets": ["bg", "clock", "weekday", "day", "steps", "hr", "battery"],
+  "bg": "#000000",
+  "styles": [
+    ["Hour", {"size": 100, "color": "#ffe08a"}, {"zero": 1}],
+    ["Minute", {"size": 100, "color": "#ffe08a"}, {"zero": 1}],
+    ["Colon", {"size": 100, "color": "#ffe08a"}],
+    ["Weekday", {"font": "Grandstander", "size": 40, "color": "#5b3413"}, {"labelForm": "short", "labelCase": "upper", "labelAlign": "right"}],
+    ["Day", {"font": "Grandstander", "size": 40, "color": "#5b3413"}],
+    ["Steps", {"font": "Grandstander", "size": 40, "color": "#5b3413"}, {"alignH": "LEFT", "hSpace": 1}],
+    ["Heart rate", {"font": "Grandstander", "size": 40, "color": "#5b3413"}, {"alignH": "LEFT", "hSpace": 1, "unit": ""}],
+    ["Battery", {"font": "Grandstander", "size": 40, "color": "#5b3413"}, {"alignH": "LEFT", "hSpace": 1}]
+  ]
+}

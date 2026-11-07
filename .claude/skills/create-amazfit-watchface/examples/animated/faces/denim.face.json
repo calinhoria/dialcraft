@@ -1,0 +1,123 @@
+{
+ "name": "Worn Denim",
+ "slug": "denim",
+ "language": "en-US",
+ "fonts": [
+  [
+   "alfa-slab-one-400.ttf",
+   "Alfa Slab One"
+  ]
+ ],
+ "presets": [
+  "bg",
+  "clock",
+  "weekday",
+  "day",
+  "steps",
+  "hr",
+  "battery"
+ ],
+ "bg": "#000000",
+ "styles": [
+  [
+   "Hour",
+   {
+    "size": 100,
+    "color": "#e8a935"
+   },
+   {
+    "zero": 1
+   }
+  ],
+  [
+   "Minute",
+   {
+    "size": 100,
+    "color": "#e8a935"
+   },
+   {
+    "zero": 1
+   }
+  ],
+  [
+   "Colon",
+   {
+    "size": 100,
+    "color": "#e8a935"
+   }
+  ],
+  [
+   "Weekday",
+   {
+    "size": 38,
+    "color": "#3a2211",
+    "shadowColor": "#dcbb8c",
+    "shadowX": 0,
+    "shadowY": 1,
+    "shadowBlur": 0
+   },
+   {
+    "labelForm": "short",
+    "labelCase": "upper",
+    "labelAlign": "right"
+   }
+  ],
+  [
+   "Day",
+   {
+    "size": 38,
+    "color": "#3a2211",
+    "shadowColor": "#dcbb8c",
+    "shadowX": 0,
+    "shadowY": 1,
+    "shadowBlur": 0
+   }
+  ],
+  [
+   "Steps",
+   {
+    "size": 36,
+    "color": "#f6e4bd",
+    "shadowColor": "#0a1530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 2
+   },
+   {
+    "alignH": "LEFT",
+    "hSpace": 1
+   }
+  ],
+  [
+   "Heart rate",
+   {
+    "size": 36,
+    "color": "#f6e4bd",
+    "shadowColor": "#0a1530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 2
+   },
+   {
+    "alignH": "LEFT",
+    "hSpace": 1,
+    "unit": ""
+   }
+  ],
+  [
+   "Battery",
+   {
+    "size": 36,
+    "color": "#f6e4bd",
+    "shadowColor": "#0a1530",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 2
+   },
+   {
+    "alignH": "LEFT",
+    "hSpace": 1
+   }
+  ]
+ ]
+}

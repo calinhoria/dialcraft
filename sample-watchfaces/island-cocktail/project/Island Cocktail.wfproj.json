@@ -1,0 +1,1506 @@
+{
+  "version": 1,
+  "name": "Island Cocktail",
+  "device": "bip-6",
+  "appId": 2172500,
+  "vender": "dialcraft",
+  "description": "The view from a beach chair at sunset: a tequila sunrise in the sand, a palm island on the horizon, sailboats and a speedboat crossing, a surfer riding in every 30 s, gulls and sun glitter.",
+  "font": "Lilita One",
+  "language": "en-US",
+  "fonts": [
+    {
+      "name": "lilita-one-400.ttf",
+      "family": "Lilita One"
+    },
+    {
+      "name": "pacifico-400.ttf",
+      "family": "Pacifico"
+    }
+  ],
+  "groups": {
+    "gmw70ilxlas": "Clock",
+    "gmw70imm06s": "Clock AOD",
+    "gDate": "Date",
+    "gSteps": "Steps",
+    "gHeartrate": "Heart rate",
+    "gBattery": "Battery",
+    "gSea": "Sea"
+  },
+  "elements": [
+    {
+      "id": "elmw70ilvu3fe",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmw70im7z3be",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_island.png"
+    },
+    {
+      "id": "elmw70ilxl3x8",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 203,
+      "y": 19,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70ilxlas",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -18,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Lilita One",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2c4d",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmw70ilxl206",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 171,
+      "y": 28,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70ilxlas",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Lilita One",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2c4d",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmw70ilxl6o1",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 45,
+      "y": 19,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70ilxlas",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -18,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Lilita One",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2c4d",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 6
+      },
+      "aidPad": 9
+    },
+    {
+      "id": "elmw70imm0672",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 209,
+      "y": 165,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70imm06s",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Lilita One",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6fa3b8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6fa3b8",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70imm03k3",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 178,
+      "y": 176,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70imm06s",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Lilita One",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6fa3b8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6fa3b8",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmw70imlz3ra",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 44,
+      "y": 165,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70imm06s",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Lilita One",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6fa3b8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6fa3b8",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70ily41ll",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 103,
+      "y": 99,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Pacifico",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff4dc",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2c4d",
+        "shadowX": 0,
+        "shadowY": 1,
+        "shadowBlur": 4
+      },
+      "labelForm": "short",
+      "labelCase": "none",
+      "labelAlign": "right",
+      "aidPad": 5
+    },
+    {
+      "id": "elmw70ilysy1",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 205,
+      "y": 119,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -10,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Pacifico",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fff4dc",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2c4d",
+        "shadowX": 0,
+        "shadowY": 1,
+        "shadowBlur": 4
+      },
+      "aidPad": 5
+    },
+    {
+      "id": "elmw70imem6iz",
+      "kind": "IMG",
+      "name": "Steps icon",
+      "x": 195,
+      "y": 335,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_steps.png"
+    },
+    {
+      "id": "elmw70ilz05vs",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 238,
+      "y": 335,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Lilita One",
+        "size": 37,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5b3413",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70imfz5nj",
+      "kind": "IMG",
+      "name": "Heart rate icon",
+      "x": 195,
+      "y": 371,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_heart.png"
+    },
+    {
+      "id": "elmw70ilzg3wz",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 238,
+      "y": 371,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Lilita One",
+        "size": 37,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5b3413",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70imhf5cu",
+      "kind": "IMG_LEVEL",
+      "name": "Battery level",
+      "x": 190,
+      "y": 411,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "images": [
+        "bat/island_0.png",
+        "bat/island_1.png",
+        "bat/island_2.png",
+        "bat/island_3.png",
+        "bat/island_4.png",
+        "bat/island_5.png",
+        "bat/island_6.png",
+        "bat/island_7.png",
+        "bat/island_8.png",
+        "bat/island_9.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "BATTERY",
+      "level": 0,
+      "glyph": {
+        "font": "Lilita One",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      }
+    },
+    {
+      "id": "elmw70im01ck",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 237,
+      "y": 407,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Lilita One",
+        "size": 37,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#5b3413",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70imkp1wt",
+      "kind": "IMG",
+      "name": "Sun glitter",
+      "x": 84,
+      "y": 212,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSea",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/glit_013.png",
+      "images": [
+        "sp/glit_013.png",
+        "sp/glit_012.png",
+        "sp/glit_011.png",
+        "sp/glit_014.png"
+      ],
+      "handle": "glit"
+    },
+    {
+      "id": "elmw70imje45h",
+      "kind": "IMG",
+      "name": "Sailboat far",
+      "x": 76,
+      "y": 195,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSea",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/boatB_002.png",
+      "images": [
+        "sp/boatB_002.png",
+        "sp/boatB_003.png"
+      ],
+      "handle": "boatB"
+    },
+    {
+      "id": "elmw70imj115t",
+      "kind": "IMG",
+      "name": "Sailboat",
+      "x": 125,
+      "y": 190,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSea",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/boatA_000.png",
+      "images": [
+        "sp/boatA_000.png",
+        "sp/boatA_001.png"
+      ],
+      "handle": "boatA"
+    },
+    {
+      "id": "elmw70imjr5zc",
+      "kind": "IMG",
+      "name": "Motorboat",
+      "x": 175,
+      "y": 238,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSea",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/motor_005.png",
+      "images": [
+        "sp/motor_005.png",
+        "sp/motor_004.png",
+        "sp/motor_006.png"
+      ],
+      "handle": "motor"
+    },
+    {
+      "id": "elmw70imk91cp",
+      "kind": "IMG",
+      "name": "Surfer",
+      "x": 237,
+      "y": 273,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSea",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/surf_009.png",
+      "images": [
+        "sp/surf_009.png",
+        "sp/surf_008.png",
+        "sp/surf_007.png",
+        "sp/surf_010.png"
+      ],
+      "handle": "surf"
+    },
+    {
+      "id": "elmw70iml375u",
+      "kind": "IMG",
+      "name": "Gulls",
+      "x": 250,
+      "y": 150,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSea",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/gull_017.png",
+      "images": [
+        "sp/gull_017.png",
+        "sp/gull_016.png",
+        "sp/gull_015.png"
+      ],
+      "handle": "gull"
+    },
+    {
+      "id": "elmw70im9d6e8",
+      "kind": "IMG",
+      "name": "Foreground",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "island_fg.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "colon.png",
+      "width": 10,
+      "height": 20
+    },
+    {
+      "name": "week_w1.png",
+      "width": 109,
+      "height": 78
+    },
+    {
+      "name": "week_w2.png",
+      "width": 109,
+      "height": 78
+    },
+    {
+      "name": "week_w3.png",
+      "width": 109,
+      "height": 78
+    },
+    {
+      "name": "week_w4.png",
+      "width": 109,
+      "height": 78
+    },
+    {
+      "name": "week_w5.png",
+      "width": 109,
+      "height": 78
+    },
+    {
+      "name": "week_w6.png",
+      "width": 109,
+      "height": 78
+    },
+    {
+      "name": "week_w7.png",
+      "width": 109,
+      "height": 78
+    },
+    {
+      "name": "bpm.png",
+      "width": 38,
+      "height": 23
+    },
+    {
+      "name": "percent.png",
+      "width": 33,
+      "height": 34
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 77,
+      "height": 92
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 42,
+      "height": 72
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 37,
+      "height": 41
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 28,
+      "height": 34
+    },
+    {
+      "name": "scene_island.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "island_fg.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "ic_steps.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "ic_heart.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "bat/island_0.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_1.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_2.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_3.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_4.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_5.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_6.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_7.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_8.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "bat/island_9.png",
+      "width": 42,
+      "height": 26
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "sp/boatA_000.png",
+      "width": 24,
+      "height": 22
+    },
+    {
+      "name": "sp/boatA_001.png",
+      "width": 24,
+      "height": 22
+    },
+    {
+      "name": "sp/boatB_002.png",
+      "width": 17,
+      "height": 16
+    },
+    {
+      "name": "sp/boatB_003.png",
+      "width": 17,
+      "height": 16
+    },
+    {
+      "name": "sp/motor_004.png",
+      "width": 50,
+      "height": 16
+    },
+    {
+      "name": "sp/motor_005.png",
+      "width": 50,
+      "height": 16
+    },
+    {
+      "name": "sp/motor_006.png",
+      "width": 50,
+      "height": 16
+    },
+    {
+      "name": "sp/surf_007.png",
+      "width": 96,
+      "height": 46
+    },
+    {
+      "name": "sp/surf_008.png",
+      "width": 96,
+      "height": 46
+    },
+    {
+      "name": "sp/surf_009.png",
+      "width": 96,
+      "height": 46
+    },
+    {
+      "name": "sp/surf_010.png",
+      "width": 96,
+      "height": 46
+    },
+    {
+      "name": "sp/glit_011.png",
+      "width": 68,
+      "height": 84
+    },
+    {
+      "name": "sp/glit_012.png",
+      "width": 68,
+      "height": 84
+    },
+    {
+      "name": "sp/glit_013.png",
+      "width": 68,
+      "height": 84
+    },
+    {
+      "name": "sp/glit_014.png",
+      "width": 68,
+      "height": 84
+    },
+    {
+      "name": "sp/gull_015.png",
+      "width": 40,
+      "height": 16
+    },
+    {
+      "name": "sp/gull_016.png",
+      "width": 40,
+      "height": 16
+    },
+    {
+      "name": "sp/gull_017.png",
+      "width": 40,
+      "height": 16
+    },
+    {
+      "name": "colon_2.png",
+      "width": 10,
+      "height": 20
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 65,
+      "height": 82
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 27,
+      "height": 60
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // Island Cocktail: everything follows the real clock (Date.now), so the scene is the same whenever you look\n  const MS = 120, GX = 84, GY = 212, HOR = 208;\n  const V = {\"boatA\":{\"s\":0,\"__blank\":1},\"boatB\":{\"s\":0,\"__blank\":1},\"motor\":{\"b\":0,\"a\":1,\"__blank\":2},\"surf\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"glit\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"gull\":{\"__blank\":0,\"d\":1,\"u\":2}};\n  const tick = () => {\n    const now = Date.now();\n    // two sailboats drift along the horizon, in opposite directions and at different speeds\n    // (hidden at the very edges, so a boat never sits half off the screen)\n    const xa = Math.round(-30 + ((now % 110000) / 110000) * 450); if (xa > 1 && xa < 364) slot('boatA')(xa, HOR - 18, V.boatA.s); else slot('boatA').hide();\n    const xb = Math.round(400 - ((now % 170000) / 170000) * 430); if (xb > 1 && xb < 371) slot('boatB')(xb, HOR - 13, V.boatB.s); else slot('boatB').hide();\n    // a speedboat crosses the middle of the bay every 50 s (16 s pass)\n    const pm = (now % 50000) / 1000;\n    if (pm < 16) slot('motor')(Math.round(410 - (pm / 16) * 470), 238, Math.floor(now / 250) % 2 ? V.motor.a : V.motor.b);\n    else slot('motor').hide();\n    // a surfer rides a swell in every 30 s (9 s ride, left to right, closer as it goes)\n    const ps = (now % 30000) / 1000;\n    if (ps >= 12 && ps < 21) { const t = (ps - 12) / 9; slot('surf')(Math.round(-96 + t * 500), Math.round(258 + t * 22), [V.surf.a, V.surf.b, V.surf.c][Math.floor(now / 220) % 3]); }\n    else slot('surf').hide();\n    // the sun glitters on the water\n    slot('glit')(GX, GY, [V.glit.a, V.glit.b, V.glit.c][Math.floor(now / 420) % 3]);\n    // two gulls glide across now and then (75 s loop, 20 s in view)\n    const pg = (now % 75000) / 1000;\n    if (pg < 20) { const t = pg / 20; slot('gull')(Math.round(400 - t * 450), Math.round(150 + 8 * Math.sin(t * 9)), Math.floor(now / 380) % 2 ? V.gull.u : V.gull.d); }\n    else slot('gull').hide();\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}

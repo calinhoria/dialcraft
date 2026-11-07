@@ -1,0 +1,129 @@
+{
+ "name": "Island Cocktail",
+ "slug": "island",
+ "language": "en-US",
+ "fonts": [
+  [
+   "lilita-one-400.ttf",
+   "Lilita One"
+  ],
+  [
+   "pacifico-400.ttf",
+   "Pacifico"
+  ]
+ ],
+ "presets": [
+  "bg",
+  "clock",
+  "weekday",
+  "day",
+  "steps",
+  "hr",
+  "battery"
+ ],
+ "bg": "#000000",
+ "styles": [
+  [
+   "Hour",
+   {
+    "size": 92,
+    "color": "#ffffff",
+    "shadowColor": "#0b2c4d",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 6
+   },
+   {
+    "zero": 1
+   }
+  ],
+  [
+   "Minute",
+   {
+    "size": 92,
+    "color": "#ffffff",
+    "shadowColor": "#0b2c4d",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 6
+   },
+   {
+    "zero": 1
+   }
+  ],
+  [
+   "Colon",
+   {
+    "size": 92,
+    "color": "#ffffff",
+    "shadowColor": "#0b2c4d",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 6
+   }
+  ],
+  [
+   "Weekday",
+   {
+    "font": "Pacifico",
+    "size": 40,
+    "color": "#fff4dc",
+    "shadowColor": "#0b2c4d",
+    "shadowX": 0,
+    "shadowY": 1,
+    "shadowBlur": 4
+   },
+   {
+    "labelForm": "short",
+    "labelCase": "none",
+    "labelAlign": "right"
+   }
+  ],
+  [
+   "Day",
+   {
+    "font": "Pacifico",
+    "size": 40,
+    "color": "#fff4dc",
+    "shadowColor": "#0b2c4d",
+    "shadowX": 0,
+    "shadowY": 1,
+    "shadowBlur": 4
+   }
+  ],
+  [
+   "Steps",
+   {
+    "size": 37,
+    "color": "#5b3413"
+   },
+   {
+    "alignH": "LEFT",
+    "hSpace": 1
+   }
+  ],
+  [
+   "Heart rate",
+   {
+    "size": 37,
+    "color": "#5b3413"
+   },
+   {
+    "alignH": "LEFT",
+    "hSpace": 1,
+    "unit": ""
+   }
+  ],
+  [
+   "Battery",
+   {
+    "size": 37,
+    "color": "#5b3413"
+   },
+   {
+    "alignH": "LEFT",
+    "hSpace": 1
+   }
+  ]
+ ]
+}

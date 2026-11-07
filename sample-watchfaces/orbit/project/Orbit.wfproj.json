@@ -1,0 +1,1558 @@
+{
+  "version": 1,
+  "name": "Orbit",
+  "device": "bip-6",
+  "appId": 2592873,
+  "vender": "dialcraft",
+  "description": "The view from a space station: the sunlit side of the Earth follows the real time of day, city lights come on at night, a satellite crosses every 52 s and a shooting star every 37 s.",
+  "font": "Orbitron",
+  "language": "en-US",
+  "fonts": [
+    {
+      "name": "orbitron-700.ttf",
+      "family": "Orbitron"
+    },
+    {
+      "name": "rajdhani-600.ttf",
+      "family": "Rajdhani"
+    }
+  ],
+  "groups": {
+    "gmw70zc0y5d": "Clock",
+    "gmw70zd3pqc": "Clock AOD",
+    "gDate": "Date",
+    "gSteps": "Steps",
+    "gHeartrate": "Heart rate",
+    "gBattery": "Battery",
+    "gOrbit": "Orbit"
+  },
+  "elements": [
+    {
+      "id": "elmw70zbzf34l",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmw70zcea4jr",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_orbit.png"
+    },
+    {
+      "id": "elmw70zcli4yg",
+      "kind": "IMG",
+      "name": "Night side",
+      "x": 0,
+      "y": 220,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gOrbit",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/night_010.png",
+      "images": [
+        "sp/night_010.png",
+        "sp/night_001.png",
+        "sp/night_002.png",
+        "sp/night_003.png",
+        "sp/night_004.png",
+        "sp/night_005.png",
+        "sp/night_006.png",
+        "sp/night_007.png",
+        "sp/night_008.png",
+        "sp/night_009.png",
+        "sp/night_000.png",
+        "sp/night_011.png",
+        "sp/night_012.png",
+        "sp/night_013.png",
+        "sp/night_014.png",
+        "sp/night_015.png",
+        "sp/night_016.png",
+        "sp/night_017.png",
+        "sp/night_018.png",
+        "sp/night_019.png",
+        "sp/night_020.png",
+        "sp/night_021.png",
+        "sp/night_022.png",
+        "sp/night_023.png",
+        "sp/night_024.png"
+      ],
+      "handle": "night"
+    },
+    {
+      "id": "elmw70zcmb15h",
+      "kind": "IMG",
+      "name": "Stars twinkle",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gOrbit",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/tw_027.png",
+      "images": [
+        "sp/tw_027.png",
+        "sp/tw_026.png",
+        "sp/tw_025.png",
+        "sp/tw_028.png"
+      ],
+      "handle": "tw"
+    },
+    {
+      "id": "elmw70zcnf2ct",
+      "kind": "IMG",
+      "name": "Shooting star",
+      "x": 330,
+      "y": 22,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gOrbit",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/shoot_033.png",
+      "images": [
+        "sp/shoot_033.png",
+        "sp/shoot_032.png"
+      ],
+      "handle": "shoot"
+    },
+    {
+      "id": "elmw70zcms281",
+      "kind": "IMG",
+      "name": "Satellite",
+      "x": 327,
+      "y": 167,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gOrbit",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/sat_030.png",
+      "images": [
+        "sp/sat_030.png",
+        "sp/sat_029.png",
+        "sp/sat_031.png"
+      ],
+      "handle": "sat"
+    },
+    {
+      "id": "elmw70zcnx1ou",
+      "kind": "IMG",
+      "name": "Reading pills",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gOrbit",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "orbit_pills.png"
+    },
+    {
+      "id": "elmw70zc0y602",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 198,
+      "y": 63,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70zc0y5d",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -26,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Orbitron",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#eaf6ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#2a8fe0",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 10
+      },
+      "aidPad": 13
+    },
+    {
+      "id": "elmw70zc0y7l1",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 163,
+      "y": 69,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70zc0y5d",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Orbitron",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#eaf6ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#2a8fe0",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 10
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 13
+    },
+    {
+      "id": "elmw70zc0y2ht",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 3,
+      "y": 63,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70zc0y5d",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -26,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Orbitron",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#eaf6ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#2a8fe0",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 10
+      },
+      "aidPad": 13
+    },
+    {
+      "id": "elmw70zd3p4eh",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 200,
+      "y": 185,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70zd3pqc",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Orbitron",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6fa3c8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6fa3c8",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70zd3p4rx",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 176,
+      "y": 192,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70zd3pqc",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Orbitron",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6fa3c8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6fa3c8",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmw70zd3p29t",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 13,
+      "y": 185,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw70zd3pqc",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Orbitron",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#6fa3c8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#6fa3c8",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70zc1g629",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 126,
+      "y": 23,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#9fd8ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmw70zc231w3",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 203,
+      "y": 31,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#9fd8ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70zcvg76n",
+      "kind": "IMG",
+      "name": "Steps icon",
+      "x": 122,
+      "y": 352,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_steps_9fd8ff.png"
+    },
+    {
+      "id": "elmw70zc2aws",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 160,
+      "y": 352,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gSteps",
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#eaf6ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70zcxc666",
+      "kind": "IMG",
+      "name": "Heart rate icon",
+      "x": 68,
+      "y": 406,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_heart_ff6b7a.png"
+    },
+    {
+      "id": "elmw70zc2q4g5",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 106,
+      "y": 406,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gHeartrate",
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#eaf6ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw70zczj3ot",
+      "kind": "IMG_LEVEL",
+      "name": "Battery level",
+      "x": 189,
+      "y": 409,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "images": [
+        "bat/btcfe8ff_0.png",
+        "bat/btcfe8ff_1.png",
+        "bat/btcfe8ff_2.png",
+        "bat/btcfe8ff_3.png",
+        "bat/btcfe8ff_4.png",
+        "bat/btcfe8ff_5.png",
+        "bat/btcfe8ff_6.png",
+        "bat/btcfe8ff_7.png",
+        "bat/btcfe8ff_8.png",
+        "bat/btcfe8ff_9.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "BATTERY",
+      "level": 0,
+      "glyph": {
+        "font": "Orbitron",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      }
+    },
+    {
+      "id": "elmw70zc3b462",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 237,
+      "y": 406,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBattery",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#eaf6ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "colon.png",
+      "width": 9,
+      "height": 19
+    },
+    {
+      "name": "week_w1.png",
+      "width": 77,
+      "height": 52
+    },
+    {
+      "name": "week_w2.png",
+      "width": 77,
+      "height": 52
+    },
+    {
+      "name": "week_w3.png",
+      "width": 77,
+      "height": 52
+    },
+    {
+      "name": "week_w4.png",
+      "width": 77,
+      "height": 52
+    },
+    {
+      "name": "week_w5.png",
+      "width": 77,
+      "height": 52
+    },
+    {
+      "name": "week_w6.png",
+      "width": 77,
+      "height": 52
+    },
+    {
+      "name": "week_w7.png",
+      "width": 77,
+      "height": 52
+    },
+    {
+      "name": "bpm.png",
+      "width": 46,
+      "height": 25
+    },
+    {
+      "name": "percent.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 98,
+      "height": 99
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 45,
+      "height": 86
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "scene_orbit.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/night_000.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_001.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_002.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_003.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_004.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_005.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_006.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_007.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_008.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_009.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_010.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_011.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_012.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_013.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_014.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_015.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_016.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_017.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_018.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_019.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_020.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_021.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_022.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_023.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/night_024.png",
+      "width": 390,
+      "height": 230
+    },
+    {
+      "name": "sp/tw_025.png",
+      "width": 390,
+      "height": 220
+    },
+    {
+      "name": "sp/tw_026.png",
+      "width": 390,
+      "height": 220
+    },
+    {
+      "name": "sp/tw_027.png",
+      "width": 390,
+      "height": 220
+    },
+    {
+      "name": "sp/tw_028.png",
+      "width": 390,
+      "height": 220
+    },
+    {
+      "name": "sp/sat_029.png",
+      "width": 46,
+      "height": 26
+    },
+    {
+      "name": "sp/sat_030.png",
+      "width": 46,
+      "height": 26
+    },
+    {
+      "name": "sp/sat_031.png",
+      "width": 46,
+      "height": 26
+    },
+    {
+      "name": "sp/shoot_032.png",
+      "width": 58,
+      "height": 34
+    },
+    {
+      "name": "sp/shoot_033.png",
+      "width": 58,
+      "height": 34
+    },
+    {
+      "name": "orbit_pills.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "ic_steps_9fd8ff.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "ic_heart_ff6b7a.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "bat/btcfe8ff_0.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_1.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_2.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_3.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_4.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_5.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_6.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_7.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_8.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "bat/btcfe8ff_9.png",
+      "width": 40,
+      "height": 24
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "colon_2.png",
+      "width": 9,
+      "height": 19
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 80,
+      "height": 81
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 22,
+      "height": 67
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // Orbit: the view from a space station. The night side of the Earth is the real time of day, a satellite and the odd shooting star cross.\n  const MS = 150;\n  const V = {\"night\":{\"h10\":0,\"h1\":1,\"h2\":2,\"h3\":3,\"h4\":4,\"h5\":5,\"h6\":6,\"h7\":7,\"h8\":8,\"h9\":9,\"h0\":10,\"h11\":11,\"h12\":12,\"h13\":13,\"h14\":14,\"h15\":15,\"h16\":16,\"h17\":17,\"h18\":18,\"h19\":19,\"h20\":20,\"h21\":21,\"h22\":22,\"h23\":23,\"__blank\":24},\"tw\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"sat\":{\"b\":0,\"a\":1,\"__blank\":2},\"shoot\":{\"__blank\":0,\"s\":1}};\n  const tick = () => {\n    const now = Date.now(), d = new Date(now);\n    // the day / night line follows the local time (one picture per hour, 15 degrees each)\n    const hh = d.getHours() + d.getMinutes() / 60;\n    slot('night')(0, 220, V.night['h' + (Math.floor(hh + 0.5) % 24)]);\n    // the stars twinkle in three phases\n    slot('tw')(0, 0, [V.tw.a, V.tw.b, V.tw.c][Math.floor(now / 900) % 3]);\n    // a satellite crosses the sky every 52 s, its beacon blinking\n    const p = (now % 52000) / 52000, sx = Math.round(-50 + p * 490);\n    if (sx > -44 && sx < 386) slot('sat')(sx, Math.round(176 + 9 * Math.sin(p * 6.283)), Math.floor(now / 500) % 2 ? V.sat.a : V.sat.b);\n    else slot('sat').hide();\n    // a shooting star every 37 s, a second long\n    const q = (now % 37000) / 1100;\n    if (q < 1) slot('shoot')(Math.round(330 - q * 250), Math.round(22 + q * 130), V.shoot.s);\n    else slot('shoot').hide();\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}

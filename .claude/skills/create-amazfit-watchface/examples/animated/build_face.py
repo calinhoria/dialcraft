@@ -14,7 +14,7 @@ KIT = open(H + '/kit.js').read(); TAIL = open(H + '/tail.js').read(); RUNTIME = 
 
 def build(stem):
     stem = os.path.abspath(stem); cfg = json.load(open(stem + '.face.json'))
-    build_js = open(stem + '.build.js').read(); code = open(stem + '.code.js').read()
+    build_js = open(stem + '.build.js').read(); code = open(stem + '.code.js').read() if os.path.exists(stem + '.code.js') else None   # no code file: a plain face, no watch script
     if os.path.exists(stem + '.data.json'): build_js = 'const DATA = ' + open(stem + '.data.json').read() + ';\n' + build_js
     tail = open(stem + '.tail.js').read() if os.path.exists(stem + '.tail.js') else TAIL
     fonts = cfg['fonts']; fam0 = fonts[0][1]; slug = cfg['slug']
@@ -32,8 +32,11 @@ def build(stem):
         step = {"edit": st[0], "glyph": gl}
         if len(st) > 2: step["set"] = st[2]
         steps.append(step)
-    main = ("const CODE_SRC = " + json.dumps(code) + ";\nconst RUNTIME_SRC = " + json.dumps(RUNTIME) + ";\n" + KIT + "\n" + build_js +
-            "\nrefPlace(fillCode(CODE_SRC, RUNTIME_SRC));\nproject.userCode = fillCode(CODE_SRC, RUNTIME_SRC);\nproject.userImports = globalThis.__IMPORTS || '';\nreturn project.elements.length;")
+    if code is None:
+        main = KIT + "\n" + build_js + "\nreturn project.elements.length;"
+    else:
+        main = ("const CODE_SRC = " + json.dumps(code) + ";\nconst RUNTIME_SRC = " + json.dumps(RUNTIME) + ";\n" + KIT + "\n" + build_js +
+                "\nrefPlace(fillCode(CODE_SRC, RUNTIME_SRC));\nproject.userCode = fillCode(CODE_SRC, RUNTIME_SRC);\nproject.userImports = globalThis.__IMPORTS || '';\nreturn project.elements.length;")
     steps.append({"script": main})
     steps.append({"script": KIT + "\n" + tail})
     rec = {"language": cfg['language'], "name": cfg['name'], "device": cfg.get('device', 'bip-6'), "steps": steps,
