@@ -99,7 +99,9 @@ Other scripts:
   circle's rim to change the radius. Snapping snaps to other layers, to the
   screen centre and to the 20px grid (toggle with **Grid**); pink guides show the
   active snap. The amber dashed rectangle is the 2px safe area; the black shape
-  outside it is the bezel mask (toggle with **Mask**).
+  outside it is the bezel mask (toggle with **Mask**). Tap zones and clickable
+  shortcuts often sit above the component they cover; **Alt+click** steps through
+  the layers stacked at that point (zones are skipped while a real component is underneath).
 - **Properties** — per-kind fields, plus **Align to box / Align to device /
   Distribute** when several layers are selected (see *Groups, align and
   distribute*). **Show in** and **Alpha** are the exception to "primary layer
@@ -274,6 +276,19 @@ After you add a language to such a face a notice says exactly this: how many nam
 the font the original face used (the button opens the Font library) and applying again makes the style match.
 
 ![The notice after adding a language to a face that came with only its own pictures](screenshots/translations-fontinfo.png)
+
+**Detecting the font of imported pictures.** The notice's **Detect the font…** button (or *Font library → Detect font…*, or the magnifier next to **Glyph font** when no font is set) compares one component's own
+weekday / month / digit pictures with the same names drawn in candidate typefaces. Pick the component, then press **Search fonts** — nothing is fetched before that. It tries the bundled and project fonts offline, reads the language and
+letter case of the pictures from their letter shapes (a French face with an English project language still reads `LUN, MAR …`; it reads them again with the best
+match once one is found), then ranks the 1,000 most popular Google Fonts families offline from a fingerprint index shipped with the app, and downloads and compares
+only the 12 closest in detail, so a search takes a few seconds. Letters drawn with an outline or a shadow are compared by their fill, faint "ghost" LCD segments are
+ignored, and letter spacing is not held against a font. When a face has digits and names, the default choice **… + digits · one font for both** compares them together
+(the digit set that agrees with the names is used); pick one component when the face mixes typefaces. A score under about 87% means *no close match* — the face may
+use a font Google Fonts does not have (DIN, a 7-segment design) or drawn letters; the list then shows the nearest lookalikes. Rebuild the index with
+`node_modules/.bin/electron tools/build-font-index.js`. Each candidate shows its shape match and a large live preview drawn in the same shape and position as the selected picture; click any of the face's own pictures above to compare that one. **Download & use** fetches the font file from Google Fonts, keeps it in the
+project (`fonts/`) and records it for **that component**, so weekdays, months and digits can each use a different typeface. Press **Apply** in Languages afterwards to redraw the translated names with it. The score is a
+similarity, not a promise: two grotesques can look alike, so the preview is the final check. A face whose font is not on Google Fonts still gets the
+closest candidates, and the family can be searched by name in the dialog.
 
 **Letters the font lacks.** A font without Ț, Ș, Ă … never gets a second typeface mixed in. Each missing letter is drawn from the font's own letter
 plus an accent when that is possible, else as its plain letter from the fallback table (Ț→T, Ș→S, Ă→A, Ł→L, Ø→O, Æ→AE, ß→ss …). Most plain letters

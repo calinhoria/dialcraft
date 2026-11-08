@@ -42,7 +42,9 @@
       "styles.css",
       "vendor/**/*",
       "renderer.js",
+      "fonts-detect.js",
       "assets/fonts/**/*",
+      "assets/fontindex/**/*",
       "assets/masks/**/*",
       "core/**/*"
     ],

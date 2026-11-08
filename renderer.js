@@ -195,7 +195,7 @@ function restoreHistory(json) {
   project.elements = p.elements;
   project.groups = p.groups || {};
   project.name = p.name; project.description = p.description;
-  project.appId = p.appId; project.font = p.font;
+  project.appId = p.appId; project.font = p.font; project.fontChosen = p.fontChosen;
   project.userImports = p.userImports; project.userCode = p.userCode;
   project.language = p.language || project.language;
   project.i18n = p.i18n || { languages: [], names: {}, strings: {}, meta: {} };
@@ -658,6 +658,7 @@ function fillFontSelect(sel) {
   for (const f of customFonts) addTo('Project fonts', f);
   for (const f of BUNDLED_FONTS) addTo(f.cat || 'Bundled', f);
   sel.value = sel.id === 'projFont' ? ((project && project.font) || '') : glyphFont;
+  if (sel.id === 'projFont' && typeof updateFontDetectButton === 'function') updateFontDetectButton();
 }
 const DEFAULT_GLYPH_FONT = 'Open Sans';   // a plain sans with every Latin accent; Orbitron (techno) is a choice, not the default
 
@@ -2195,16 +2196,44 @@ function drawOverlay(c, W, H) {
   for (const e of sel) {
     const b = elBox(e);
     const primary = e.id === selectedId;
+    // a full-screen widget (analog clock / date pointer) would put its frame on
+    // the canvas edge, where the round bezel clips it: draw a circle + name on a
+    // round watch, and an inset frame on square ones
+    const full = b.x <= 0 && b.y <= 0 && b.w >= W && b.h >= H;
     c.save();
     c.strokeStyle = primary ? '#5b8cff' : 'rgba(91,140,255,0.55)';
-    c.lineWidth = 1;
-    c.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
-    if (primary && WH_KINDS.has(e.kind)) {
-      for (const hRect of handleRects(b)) {
-        c.fillStyle = '#0d0f14';
-        c.fillRect(hRect.x, hRect.y, hRect.s, hRect.s);
-        c.strokeStyle = '#5b8cff';
-        c.strokeRect(hRect.x + 0.5, hRect.y + 0.5, hRect.s - 1, hRect.s - 1);
+    c.lineWidth = primary && full ? 1.5 : 1;
+    if (full) {
+      if (dev().shape === 'r') {
+        c.beginPath();
+        c.arc(W / 2, H / 2, Math.max(8, Math.min(W, H) / 2 - 14), 0, Math.PI * 2);
+        c.stroke();
+      } else {
+        c.strokeRect(7.5, 7.5, Math.max(1, W - 15), Math.max(1, H - 15));
+      }
+      if (primary && sel.length === 1) {
+        const label = e.name || e.kind;
+        c.font = '600 11px -apple-system, BlinkMacSystemFont, sans-serif';
+        const tw = c.measureText(label).width;
+        const lx = Math.round(W / 2 - tw / 2), ly = 19;
+        c.fillStyle = 'rgba(13,15,20,0.85)';
+        c.fillRect(lx - 5, ly - 11, tw + 10, 16);
+        c.strokeStyle = 'rgba(91,140,255,0.55)';
+        c.lineWidth = 1;
+        c.strokeRect(lx - 4.5, ly - 11.5, tw + 9, 16);
+        c.fillStyle = '#cdd9ff';
+        c.fillText(label, lx, ly);
+      }
+    } else {
+      const frame = b;
+      c.strokeRect(frame.x + 0.5, frame.y + 0.5, Math.max(1, frame.w - 1), Math.max(1, frame.h - 1));
+      if (primary && WH_KINDS.has(e.kind)) {
+        for (const hRect of handleRects(frame)) {
+          c.fillStyle = '#0d0f14';
+          c.fillRect(hRect.x, hRect.y, hRect.s, hRect.s);
+          c.strokeStyle = '#5b8cff';
+          c.strokeRect(hRect.x + 0.5, hRect.y + 0.5, hRect.s - 1, hRect.s - 1);
+        }
       }
     }
     if (primary && sel.length === 1) {
@@ -5501,6 +5530,7 @@ function refreshPanels() {
   syncLayersToolbar();
   syncVariantSel();
   if (typeof syncRunButton === 'function') syncRunButton();
+  if (typeof updateFontDetectButton === 'function') updateFontDetectButton();
   const has = !!project;
   ['btnCode', 'btnComponents', 'btnPresets', 'btnGlyphs', 'btnUpload', 'btnSave', 'btnExportZeus', 'btnBuild', 'btnInstall', 'btnFonts'].forEach((id) => { if ($(id)) $(id).disabled = !has; });
 }
@@ -5944,10 +5974,25 @@ function importedLook(e) {
   const color = weight ? `#${hex(sum[0] / weight)}${hex(sum[1] / weight)}${hex(sum[2] / weight)}` : '#ffffff';
   return { inkH, color };
 }
-// The font that draws the names a face's own pictures cannot give: a font you imported into the project when there is one (it is the
-// one meant to match), otherwise Open Sans Bold, a plain sans that carries every Latin accent.
+// The font that draws the names a face's own pictures cannot give: the project's
+// Glyph font when it is one of the bundled or imported typefaces (the detector
+// sets it to the original face's font), otherwise Open Sans Bold, a plain sans
+// that carries every Latin accent.
 const FALLBACK_LABEL_FONT = 'Open Sans';
-function fallbackFontFor() { return project.font && customFont(project.font) ? project.font : FALLBACK_LABEL_FONT; }
+function fallbackFontFor(e) {
+  const own = e && e.labelFont;
+  if (own && fontFamilies().includes(own)) return own;
+  return project.font && fontFamilies().includes(project.font) ? project.font : FALLBACK_LABEL_FONT;
+}
+// true when this component (or the project) has a font chosen on purpose
+function fontChosenFor(e) {
+  return !!(e && e.labelFont && fontFamilies().includes(e.labelFont)) || projectFontChosen();
+}
+// true when the project font was picked on purpose (by the user or the font
+// detector), not the default that fresh faces start with
+function projectFontChosen() {
+  return !!(project && project.font && (project.fontChosen || project.font !== DEFAULT_GLYPH_FONT));
+}
 async function reuseLabelSet(e, kind, code) {
   const form = e.labelForm || 'short', imgs = e.images || [];
   const have = localeNames(kind, languageOf(e), form).map(foldName);
@@ -5959,7 +6004,7 @@ async function reuseLabelSet(e, kind, code) {
     if (j >= 0 && imgs[j]) out[i] = imgs[j]; else todo.push(i);
   }
   if (todo.length) {
-    const look = importedLook(e), fam = fallbackFontFor(), t = kind === 'week' ? 'w' : 'm';
+    const look = importedLook(e), fam = fallbackFontFor(e), t = kind === 'week' ? 'w' : 'm';
 
     const size = Math.max(10, Math.min(200, Math.round(look.inkH / 0.72)));   // a capital is about 72% of the font size
     const key = '_' + String(code).replace(/[^A-Za-z0-9]+/g, '_'), pre = `${kind}${String(e.id || '').slice(-4)}`;
@@ -5969,7 +6014,7 @@ async function reuseLabelSet(e, kind, code) {
     });
     todo.forEach((i, k) => { out[i] = drawn[k]; });
   }
-  reuseReport.push({ layer: e.name || (kind === 'week' ? 'Weekday' : 'Month'), code, reused: imgs.length - todo.length, drawn: todo.length, total: imgs.length, font: todo.length ? fallbackFontFor() : '' });
+  reuseReport.push({ layer: e.name || (kind === 'week' ? 'Weekday' : 'Month'), code, reused: imgs.length - todo.length, drawn: todo.length, total: imgs.length, font: todo.length ? fallbackFontFor(e) : '', intentional: fontChosenFor(e) });
   return out;
 }
 // the weekday / month pictures of a layer in every other language of the project (e.sets)
@@ -6885,16 +6930,37 @@ function snapBox(boxX, boxY, boxW, boxH, exclude) {
   guides = { v, h };
   return { x: nX, y: nY };
 }
-function hitElement(ev) {
+const SELECT_THROUGH_KINDS = new Set(['TAP', 'IMG_CLICK']);
+function hitElementsAt(ev, opts = {}) {
   const p = eventDevPos(ev);
   const list = elements();
+  const out = [];
   for (let i = list.length - 1; i >= 0; i--) {
     const e = list[i];
     if (e.visible === false || e.locked || offView(e) || !whenAllows(e) || statusOff(e) || !editAllows(e)) continue;
+    if (opts.throughZones && SELECT_THROUGH_KINDS.has(e.kind)) continue;
     const b = elBox(e);
-    if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) return e;
+    if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) out.push(e);
   }
-  return null;
+  return out;
+}
+function hitElement(ev, opts = {}) {
+  return hitElementsAt(ev, opts)[0] || null;
+}
+// with Alt held, step through the layers stacked at the click point (tap zones
+// are skipped while a real component is there, so they never hide it)
+function cycleHitAt(ev) {
+  const all = hitElementsAt(ev);
+  if (!all.length) return null;
+  const nonZones = all.filter((e) => !SELECT_THROUGH_KINDS.has(e.kind));
+  const pool = nonZones.length ? nonZones : all;
+  const at = pool.findIndex((e) => e.id === selectedId || multiSel.has(e.id));
+  const index = at < 0 ? 0 : (at + 1) % pool.length;
+  return { el: pool[index], index, total: pool.length };
+}
+function hitElementForEvent(ev) {
+  if (!ev.altKey) return hitElement(ev);
+  return hitElement(ev, { throughZones: true }) || hitElement(ev);
 }
 function handleAt(ev) {
   const e = selEl();
@@ -6925,7 +6991,7 @@ function cv_scale() {
 let drag = null;
 $('cv').addEventListener('mousedown', (ev) => {
   if (!project) return;
-  const handle = handleAt(ev);
+  const handle = ev.altKey ? null : handleAt(ev);
   const p = eventDevPos(ev);
   if (handle === 'space' && selEl()) {
     const e = selEl();
@@ -6938,7 +7004,12 @@ $('cv').addEventListener('mousedown', (ev) => {
     drag = { mode: 'resize', before: snapshot(), handle, e, px: p.x, py: p.y, startX: +e.x || 0, startY: +e.y || 0, startW: b.w, startH: b.h, startRadius: +e.radius || 60, cx: +e.centerX || 0, cy: +e.centerY || 0 };
     return;
   }
-  const hit = hitElement(ev);
+  let altCycle = null;
+  const hit = ev.altKey ? (() => {
+    const c = cycleHitAt(ev);
+    if (c) { altCycle = c; return c.el; }
+    return null;
+  })() : hitElement(ev);
   const additive = ev.ctrlKey || ev.metaKey || ev.shiftKey;
   if (!hit) {
     if (additive) return;   // a slipped Ctrl-click must not drop the selection
@@ -6963,6 +7034,9 @@ $('cv').addEventListener('mousedown', (ev) => {
     startBox: elBox(hit),
     mates: selection().filter((m) => m.id !== hit.id && !m.locked).map((m) => ({ el: m, box: elBox(m) })),
   };
+  if (altCycle && altCycle.total > 1) {
+    status(`Selected “${hit.name || hit.kind}” (${altCycle.index + 1}/${altCycle.total}) — Alt+click again for the next layer at this spot.`);
+  }
 });
 window.addEventListener('mousemove', (ev) => {
   if (!drag || !project) return;
@@ -7022,12 +7096,12 @@ window.addEventListener('mouseup', () => {
 });
 $('cv').addEventListener('mousemove', (ev) => {
   if (drag || !project) return;
-  const h = handleAt(ev);
-  const cursor = h === 'space' ? 'ew-resize' : h === 'radius' ? 'nwse-resize' : h ? (h === 'nw' || h === 'se' ? 'nwse-resize' : 'nesw-resize') : (hitElement(ev) ? 'move' : 'default');
+  const h = ev.altKey ? null : handleAt(ev);
+  const cursor = h === 'space' ? 'ew-resize' : h === 'radius' ? 'nwse-resize' : h ? (h === 'nw' || h === 'se' ? 'nwse-resize' : 'nesw-resize') : (hitElementForEvent(ev) ? 'move' : 'default');
   $('cv').style.cursor = cursor;
 });
 $('cv').addEventListener('dblclick', (ev) => {
-  const hit = hitElement(ev);
+  const hit = hitElementForEvent(ev);
   if (hit && hit.group) {
     selectedId = hit.id; multiSel = new Set([hit.id]);
     refreshPanels(); render();
@@ -7762,7 +7836,12 @@ function trLabelsTable() {
 }
 function trFontFamily() {
   const l = elements().find((e) => labelKind(e) && glyphSpecForLayer(e));
-  return (l && glyphStyle(l).font) || (project && project.font) || glyphFont;
+  if (l) {
+    if (l.labelFont && fontFamilies().includes(l.labelFont)) return l.labelFont;
+    const f = glyphStyle(l).font;
+    if (f && f !== IMPORTED_FONT) return f;
+  }
+  return (project && project.font) || glyphFont;
 }
 // every non-ASCII letter the project's languages and typed texts need, with the plain letter it falls back to
 function trLetters() {
@@ -7879,7 +7958,7 @@ async function applyTranslations() {
   status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb + ru);
   // the face has no font of its own and names had to be drawn: tell the user, once per Apply
   // (a font you imported into the project is the one meant to match, so it needs no notice)
-  const fallback = used.filter((r) => r.drawn > 0 && !customFont(r.font));
+  const fallback = used.filter((r) => r.drawn > 0 && !r.intentional && !customFont(r.font));
   if (n && fallback.length) showFontInfo(fallback);
 }
 // After a language is added to a face that came with only its pictures: say what was drawn with which font, and how to match the style
@@ -7893,7 +7972,7 @@ function showFontInfo(used) {
     `<p>This face came with its own pictures for ${layers.map((l) => `<b>${esc(l)}</b>`).join(', ')}, but not with the font they were made with, so Dialcraft cannot draw ${esc(langs.join(', '))} in the same letters.</p>`
     + `<ul><li>${reused ? `${reused} name${reused === 1 ? '' : 's'} reuse${reused === 1 ? 's' : ''} the face's own pictures (they read the same, accents ignored).` : 'None of the names read the same as one of the face\'s own pictures, so none could be reused.'}</li>`
     + `<li>${drawn} name${drawn === 1 ? ' is' : 's are'} drawn with the fallback font <b>${esc(fonts.join(', '))}</b>, at the height and in the colour of the face's letters.</li></ul>`
-    + `<p>To match the style, <b>import the font the original face used</b> (Import a font…), choose it as the Glyph font in the Watchface panel, then open Languages and press Apply again.</p>`;
+    + `<p>To match the style, use <b>Detect the font…</b> to find the typeface of each component's pictures (or import the font the original face used), then open Languages and press Apply again.</p>`;
   $('trFontInfo').hidden = false;
 }
 $('trFontInfoOk').onclick = () => { $('trFontInfo').hidden = true; };
@@ -7922,7 +8001,8 @@ function languageSample() {
 }
 $('projFont').onchange = (ev) => {
   glyphFont = ev.target.value || DEFAULT_GLYPH_FONT;
-  if (project) { project.font = ev.target.value; scheduleCode(); buildGlyphsMenu(); }
+  if (project) { project.font = ev.target.value; project.fontChosen = !!ev.target.value; scheduleCode(); buildGlyphsMenu(); }
+  if (typeof updateFontDetectButton === 'function') updateFontDetectButton();
 };
 
 // ------------------------------------------------------------ open / save / recents --
@@ -8581,7 +8661,7 @@ function renderFontPreview() {
 }
 function useGlyphFont(family) {
   glyphFont = family || fontSelFamily || glyphFont;
-  if (project) { project.font = glyphFont; scheduleCode(); }
+  if (project) { project.font = glyphFont; project.fontChosen = true; scheduleCode(); }
   fillFontSelect($('projFont'));
   buildGlyphsMenu();
 }

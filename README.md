@@ -48,6 +48,13 @@
 - **Translations.** One face in several languages: a table of weekday and month
   names, texts and store info, pre-filled with the built-in names and editable
   cell by cell. The watch shows the language it is set to.
+- **Font detection for imported faces.** A face that came with only its pictures
+  can have its typeface found per component — weekdays, months and digits may
+  each use a different font: bundled and project fonts are compared offline,
+  then Google Fonts — ranked offline from a built-in fingerprint index of the
+  1,000 most popular families, the closest 12 checked in detail (a few seconds;
+  shape-based score and a preview for every candidate),
+  with a one-click download of the match into the project.
 - **Colour themes.** One face, several colours: pick one of 20 well-known palettes
   (or add your own colours) and the face's accent colour is moved to each of them.
   A tap zone switches the theme on the watch. **Imported Font** recolours and scales
@@ -210,7 +217,7 @@ See the skill's `references/recipe.md` for the recipe format and `examples/neon-
 ```
 main.js        Electron main process: dialogs, save / export / build / install IPC
 renderer.js    the editor: model, canvas, panels, glyph engine, import and install UI
-core/          codegen, importer, device catalog, widget kinds, data types, fonts, LAN server
+core/          codegen, importer, device catalog, widget kinds, data types, fonts, Google Fonts, LAN server
 assets/        bundled fonts (OFL) and device masks
 tools/         smoke test, screenshots, icon, masks, sample, font rebuild
 docs/          user guide and screenshots

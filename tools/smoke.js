@@ -1285,6 +1285,45 @@ app.whenReady().then(async () => {
       && trFb.plain.join() === 'plain:T,plain:S,plain:A' && trFb.edited === 'TT T ss' && trFb.special === 'L,O,AE,D,OE',
       `default ${trFb.compose.join(' ')} · plain mode ${trFb.plain.join(' ')} · edited ${trFb.edited} · special ${trFb.special}`);
 
+    // ---- font detection (offline: bundled fonts only, no Google request) ----
+    const fd = await run(`
+      await ensureFont('Bebas Neue'); await ensureFont('Open Sans');
+      const draw = (fam, text, size, { outline = false, spacing = 0 } = {}) => {
+        const cv = document.createElement('canvas'); cv.width = Math.ceil(size * text.length * 1.2 + 40); cv.height = Math.ceil(size * 1.6);
+        const c = cv.getContext('2d'); setFontOn(c, fam, size, 400, ''); c.letterSpacing = spacing + 'px';
+        if (outline) { c.lineWidth = size / 10; c.strokeStyle = '#102030'; c.strokeText(text, 10, size * 1.2); }
+        c.fillStyle = outline ? '#ffd040' : '#ffffff'; c.fillText(text, 10, size * 1.2); return cv;
+      };
+      const out = {};
+      out.peeled = fdetSignature(draw('Bebas Neue', '8', 60, { outline: true }), 48, 64).peeled;
+      out.plainPeeled = fdetSignature(draw('Bebas Neue', '8', 60), 48, 64).peeled;
+      const sp = fdetSignature(draw('Open Sans', 'MAR', 30, { spacing: 4 }), 128, 36);
+      out.letters = sp && sp.letters ? sp.letters.length : 0;
+      out.scanLatin = fdetScanText({ samples: [{ char: 'SÂM' }, { char: 'JOI' }] });
+      out.scanCyr = fdetScanText({ samples: [{ char: 'ПН' }] });
+      // weekday pictures in Romanian: the guess reads them as Romanian whatever the project language
+      const ro = fdetNamesFor({ kind: 'week', element: null }, 'ro-RO', 'short', 'upper');
+      const wg = { kind: 'week', element: null, samples: ro.map((n) => ({ char: '?', sig: fdetSignature(draw('Open Sans', n, 30), 128, 36) })) };
+      const g = await fdetGuessLanguage(wg);
+      out.guess = g ? fdetNamesFor({ kind: 'week', element: null }, g.code, g.form, g.caseMode).join() === ro.join() : false;
+      // digits drawn in a bundled font: the local pass ranks that font first
+      const dg = { kind: 'digits', samples: '0123456789'.split('').map((ch) => ({ char: ch, sig: fdetSignature(draw('Bebas Neue', ch, 56, { outline: true }), 48, 64) })) };
+      fdet = { token: 1, candidates: [], groups: [], groupKey: '', searchResults: null };
+      await fdetScanLocal(dg, 1);
+      const top = fdet.candidates.sort((a, b) => b.score - a.score).slice(0, 3).map((c) => c.family);
+      // the prebuilt index (offline) ranks the same family near the top in milliseconds
+      const t0 = performance.now();
+      const ranked = await fdetIndexRank(dg);
+      out.indexMs = Math.round(performance.now() - t0);
+      out.indexRank = ranked ? ranked.findIndex((r) => r.family === 'Bebas Neue') + 1 : -1;
+      fdet = null;
+      out.top = top;
+      return out;`);
+    check('font detection: outline peeled, letters cut, shared scan text, names read as Romanian, bundled font found from outlined digits',
+      fd.peeled === true && fd.plainPeeled === false && fd.letters === 3 && fd.scanLatin === undefined && /ПН/.test(fd.scanCyr || '')
+      && fd.guess === true && fd.top[0] === 'Bebas Neue' && fd.indexRank >= 1 && fd.indexRank <= 10 && fd.indexMs < 1500,
+      JSON.stringify(fd));
+
     {
       // app.json: one i18n entry per language (store name and description), the default language named; unchanged for one language
       const { generateAppJson } = require('../core/codegen');

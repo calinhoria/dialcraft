@@ -19,6 +19,7 @@ const { importFaceDir } = require('./core/importface');
 const { LANGUAGES } = require('./core/languages');
 const { extractZip } = require('./core/zip');
 const { appIconPng } = require('./core/icon');
+const googleFonts = require('./core/gfonts');
 
 // Headless mode (DIALCRAFT_HEADLESS=1 or --headless): the tools in tools/ load this file only for its IPC handlers and
 // drive the editor in their own hidden, offscreen window. Nothing may appear: no editor window, no Dock icon, no focus
@@ -231,6 +232,30 @@ ipcMain.handle('pick-font', async () => {
       dataBase64: buf.toString('base64'),
     };
   });
+});
+
+// --------------------------------------------------------- Google Fonts --
+// Used by “Detect font”: the catalogue decides what to try, a tiny subset of
+// each candidate is downloaded to compare shapes, and the full file is fetched
+// only when the user picks the match. Everything is cached under userData.
+ipcMain.handle('gfonts-catalog', async (_e, opts = {}) => {
+  try { return await googleFonts.catalog(app.getPath('userData'), { force: !!opts.force }); }
+  catch (err) { return { error: String(err.message || err), families: [] }; }
+});
+ipcMain.handle('gfonts-subset', async (_e, opts = {}) => {
+  try { return await googleFonts.subsetFace(app.getPath('userData'), opts || {}); }
+  catch (err) { return { error: String(err.message || err) }; }
+});
+// the prebuilt fingerprint index (tools/build-font-index.js); missing → the detector scans the catalogue instead
+ipcMain.handle('font-index', async () => {
+  try {
+    const dir = path.join(__dirname, 'assets', 'fontindex');
+    return { meta: JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8')), bin: new Uint8Array(fs.readFileSync(path.join(dir, 'index.bin'))) };
+  } catch (err) { return { error: String(err.message || err) }; }
+});
+ipcMain.handle('gfonts-face', async (_e, opts = {}) => {
+  try { return await googleFonts.fullFace(app.getPath('userData'), opts || {}); }
+  catch (err) { return { error: String(err.message || err) }; }
 });
 
 // ------------------------------------------------------------ image import --

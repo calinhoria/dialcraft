@@ -78,7 +78,7 @@
         <div class="row"><span class="lbl">Device</span><button id="projDevice" type="button" class="field-btn"><span id="projDeviceName"></span><span class="fb-act">Change…</span></button></div>
         <div class="row"><span class="lbl">Description</span><input id="inpDesc" type="text" placeholder="Short store description" /></div>
         <div class="row"><span class="lbl">App id</span><input id="inpAppId" type="number" min="1" max="9999999" /></div>
-        <div class="row"><span class="lbl">Glyph font</span><select id="projFont"></select></div>
+        <div class="row"><span class="lbl">Glyph font</span><span class="rowctl"><select id="projFont"></select><button id="projFontDetect" type="button" class="row-icon-btn" title="Find the typeface this face's own pictures were drawn with, and get it from Google Fonts" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m16 16 5 5"/></svg></button></span></div>
         <div class="row"><span class="lbl">Language</span><button id="btnTranslate" type="button" class="field-btn" title="The language of the face and any others you add: the watch shows the one it is set to. Names, texts and the store info can be translated."><span id="trLabel" class="fb-text"></span></button></div>
         <div class="row"><span class="lbl">Colours</span><button id="btnThemes" class="row-btn" title="Make the face switch between colours: the accent colour is recoloured to a palette">Colour themes…</button></div>
         <div class="row"><span class="lbl">Code</span><button id="btnCode" class="row-btn" title="JavaScript written into the exported watchface: timers, games, animation of your layers">Code of your own…</button></div>
@@ -160,7 +160,7 @@
       <span id="editSels" class="slot-pills" hidden></span>
     </div>
     <div id="meta" class="meta-status"></div>
-    <div class="hint">Drag widget to move &middot; resize from the corner handles &middot; click a layer to select &middot; Ctrl+Z undo</div>
+    <div class="hint">Drag widget to move &middot; resize from the corner handles &middot; click a layer to select &middot; <b>Alt+click</b> cycles overlapping layers / tap zones &middot; Ctrl+Z undo</div>
   </section>
 
   <section class="flex flex-col gap-3 min-w-0">
@@ -235,6 +235,7 @@
     <h3>The new languages use a fallback font</h3>
     <div id="trFontInfoBody" class="tr-info"></div>
     <div class="modal-btns">
+      <button id="trFontInfoDetect" class="primary" title="Compare the face's own pictures with the fonts Google Fonts offers">Detect the font…</button>
       <button id="trFontInfoFonts" title="Open the font library to import the face's font">Import a font…</button>
       <button id="trFontInfoOk">Got it</button>
     </div>
@@ -257,6 +258,7 @@
     <div id="i18nBody" class="i18n-body"></div>
     <div id="i18nNote" class="muted i18n-note"></div>
     <div class="modal-btns">
+      <button id="i18nDetect" title="Find the typeface the face's own weekday / month pictures were drawn with and get it from Google Fonts">Detect the pictures' font…</button>
       <button id="i18nReset" title="Forget every typed name and text in the current tab">Reset tab</button>
       <button id="i18nCancel">Cancel</button>
       <button id="i18nSave">Apply</button>
@@ -350,6 +352,7 @@
         <div class="font-col-head">
           <span>Typefaces</span>
           <span class="flex-1"></span>
+          <button id="fontDetect" title="Find the typeface an imported face's pictures were drawn with, and get it from Google Fonts">Detect font…</button>
           <button id="fontImport" title="Import .ttf / .otf / .woff / .woff2 — the file is kept inside the project folder">Import font…</button>
         </div>
         <div id="fontList" class="font-list"></div>
@@ -383,6 +386,34 @@
       <button id="fontRemove" class="danger" title="Remove the selected imported font from the project">Remove font</button>
       <button id="fontUseGlyph">Use for glyphs</button>
       <button id="fontClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- font detection: find the typeface an imported face was drawn with -->
+<div id="fontDetectModal" class="modal-backdrop" hidden>
+  <div class="modal wide font-detect-modal">
+    <h3>Detect the font <span id="fontDetectState" class="muted"></span></h3>
+    <div id="fontDetectIntro" class="muted"></div>
+    <div class="i18n-bar">
+      <label class="i18n-def">Compare <select id="fontDetectGroup" title="Which of the face's own pictures to compare"></select></label>
+      <label class="i18n-def">Pictures show <select id="fontDetectLang" title="The language the face's weekday / month pictures are written in"></select></label>
+      <label class="i18n-def">Case <select id="fontDetectCase" title="The letter case the face's pictures are written in"></select></label>
+      <span class="flex-1"></span>
+      <button id="fontDetectStart" type="button" class="primary" title="Compare this component's pictures with the bundled and Google fonts">Search fonts</button>
+      <button id="fontDetectMore" type="button" title="Try more Google Fonts when the first list had no convincing match" hidden>Search more fonts</button>
+    </div>
+    <div id="fontDetectSourceHead" class="fd-source-head" hidden>The face's own pictures — click one to compare</div>
+    <div id="fontDetectSource" class="fd-source" hidden></div>
+    <div id="fontDetectList" class="font-list font-detect-list"></div>
+    <div class="row" id="fontDetectSearchRow">
+      <span class="lbl">Google Fonts</span>
+      <input id="fontDetectSearch" type="search" placeholder="Search the catalogue by family name…" autocomplete="off" />
+    </div>
+    <div id="fontDetectHint" class="muted small"></div>
+    <div class="modal-btns">
+      <button id="fontDetectRedraw" hidden title="Apply the translations again so the names are drawn with the font you just chose">Redraw translations</button>
+      <button id="fontDetectClose">Close</button>
     </div>
   </div>
 </div>
@@ -432,6 +463,7 @@
 
 <script src="vendor/Sortable.min.js"></script>
 <script src="renderer.js"></script>
+<script src="fonts-detect.js"></script>
 <div id="toastHost" class="toast-host"></div>
 </body>
 </html>
