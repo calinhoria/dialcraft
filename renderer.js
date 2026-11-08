@@ -5495,9 +5495,11 @@ function syncPreviewLang() {
   const sel = $('previewLangSel'); if (!sel) return;
   const langs = extraLanguages();
   if (previewLang && !langs.includes(previewLang)) previewLang = '';
-  sel.hidden = !langs.length;
+  sel.hidden = !project;
   sel.innerHTML = '';
-  for (const c of [''].concat(langs)) { const o = document.createElement('option'); o.value = c; o.textContent = c ? `${c} · ${trLabelOf(c)}` : `${defaultLangCode()} (default)`; sel.appendChild(o); }
+  for (const c of [''].concat(langs)) { const o = document.createElement('option'); o.value = c; o.textContent = c ? trLabelOf(c) : `${trLabelOf(defaultLangCode())}${langs.length ? ' (default)' : ''}`; sel.appendChild(o); }
+  // the last entry opens the Languages dialog, where more languages are added
+  const more = document.createElement('option'); more.value = '__more'; more.textContent = '＋ Add more…'; sel.appendChild(more);
   sel.value = previewLang;
 }
 // a readable name for a language tag: en-US → English (United States), ro-RO → Romanian (Romania)
@@ -7789,7 +7791,11 @@ async function applyTranslations() {
   status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb);
 }
 $('btnTranslate').onclick = openTranslations;
-$('previewLangSel').onchange = () => { previewLang = $('previewLangSel').value; render(); };
+$('previewLangSel').onchange = () => {
+  const v = $('previewLangSel').value;
+  if (v === '__more') { $('previewLangSel').value = previewLang; openTranslations(); return; }
+  previewLang = v; render();
+};
 $('i18nCancel').onclick = () => { $('i18nModal').hidden = true; trDraft = null; };
 $('i18nSave').onclick = applyTranslations;
 $('i18nAdd').onchange = () => { const v = $('i18nAdd').value; if (v && trDraft && !trDraft.languages.includes(v)) { trDraft.languages.push(v); } trRender(); };
