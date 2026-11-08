@@ -2864,6 +2864,33 @@ app.whenReady().then(async () => {
         /WATCHFACE_EDIT_MASK/.test(jsE) && !/ui\.widget\.IMG, \{[^}]*ONLY_EDIT/.test(jsE),
         (jsE.match(/WATCHFACE_EDIT_\w*MASK/g) || []).join(','));
     }
+    {
+      // the Edit-screen placeholder: the face dimmed behind the complications, the slots themselves left out, refreshed in place
+      const bd = await run(`
+        await createProject('Backdrop', ${JSON.stringify(TARGET)}, 'blank');
+        await applyPreset('bg');
+        elements()[0].color = '#ffffff';                // a white face makes the dimming measurable
+        await applyPreset('editslot');
+        const slot = elements().find((e) => e.kind === 'EDIT_SLOT');
+        await applyPreset('editbackdrop');
+        await applyPreset('editbackdrop');               // a second time redraws, it does not add
+        const layers = elements().filter((e) => e.editBackdrop);
+        const e = layers[0], img = project.images.find((i) => i.name === e.src);
+        const im = await new Promise((r) => { const x = new Image(); x.onload = () => r(x); x.src = img.url; });
+        const cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height;
+        const c = cv.getContext('2d'); c.drawImage(im, 0, 0);
+        const px = c.getImageData(5, Math.round(im.height / 2), 1, 1).data[0];
+        const mode = previewMode; setPreviewMode('normal');
+        return { n: layers.length, first: elements()[0] === e, show: e.show, locked: e.locked, w: im.width, h: im.height, px, mode,
+          slotKept: !!slot, project: projectForCode() };`);
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const devB = require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET);
+      const jsB = gen.generateWatchface(bd.project, devB).code;
+      check('Watch placeholder preset: the face at ~30% on black, only on the Edit screen, at the back, exported as WATCHFACE_EDIT_MASK, refreshed in place',
+        bd.n === 1 && bd.first && bd.show === 'edit' && bd.locked && bd.w === devB.w && bd.h === devB.h
+        && bd.px > 60 && bd.px < 100 && bd.mode === 'edit' && /WATCHFACE_EDIT_MASK[^\n]*\n?[^]*edit_backdrop\.png/.test(jsB),
+        `layers ${bd.n} · first ${bd.first} · show ${bd.show} · ${bd.w}×${bd.h} · grey ${bd.px} · mode ${bd.mode}`);
+    }
     // the committed sample has to keep loading with the current model, images and all
     const sampleUi = await run(`
       const res = await API.openProjectPath(${JSON.stringify(path.join(__dirname, '..', 'samples', 'sample-digital'))});

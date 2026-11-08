@@ -574,6 +574,11 @@ picker's background (`tips_*`).
 - **Edit masks.** Pictures shown only while customising (the dimming mask and the foreground mask) are
   layers with **Show in → Edit**. They export as `WATCHFACE_EDIT_MASK` / `WATCHFACE_EDIT_FG_MASK`
   widgets — a plain image with the edit state would also be drawn over the normal face.
+- **Watch placeholder.** The customise screen shows only the slots and the masks, so the wearer edits
+  them over black. *Presets → Watch placeholder (Edit screen)* draws the face itself (reference time,
+  without the slots and the layers of their choices, which stay live) at 30% on black and adds it as a
+  locked Edit-only layer at the very back (`edit_backdrop.png`, exported as `WATCHFACE_EDIT_MASK`). Apply
+  the preset again after changing the face to redraw it; lower the layer's **Alpha** to dim it further.
 - **Preview.** The **Edit** button under the face previews the customise screen (the face plus the
   masks); the selector under the face picks which choice a slot shows; the **Edit** filter in the layer
   list focuses the edit layers and the slots.

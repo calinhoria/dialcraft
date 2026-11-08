@@ -2323,6 +2323,7 @@ function drawOverlay(c, W, H) {
   }
 }
 
+let backdropRender = false;   // while the Edit-screen placeholder is drawn: the face without its complications
 function drawScene(c, W, H, mode, overlay) {
   c.save();
   c.clearRect(0, 0, W, H);
@@ -2330,6 +2331,7 @@ function drawScene(c, W, H, mode, overlay) {
   c.fillRect(0, 0, W, H);
   for (const e of elements()) {
     if (e.visible === false) continue;
+    if (backdropRender && editRelated(e)) continue;
     if (!showAllowed(e.show, mode) || (mode === 'edit' && !editRelated(e)) || !whenAllows(e) || !editAllows(e)) continue;
     c.save();
     if (e.alpha != null && e.alpha < 255) c.globalAlpha = Math.max(0, e.alpha / 255);
@@ -6180,6 +6182,7 @@ const PRESETS = [
   { id: 'sleepchart', label: 'Sleep chart', sub: 'last night, by stage' },
   { id: 'polyline', label: 'Line chart', sub: 'heart rate / sleep, gradient' },
   { id: 'editslot', label: 'Complication slot', sub: 'the wearer picks what it shows' },
+  { id: 'editbackdrop', label: 'Watch placeholder (Edit screen)', sub: 'the face, dimmed, behind the complications · apply again to refresh' },
   { id: 'level', label: 'Battery image level', sub: 'IMG_LEVEL' },
   { id: 'rect', label: 'Filled rectangle', sub: 'FILL_RECT' },
   { id: 'stroke', label: 'Stroked rectangle', sub: 'STROKE_RECT' },
@@ -6220,6 +6223,41 @@ async function addPresetElement(kindId, patch) {
   const e = await addElement(kindId, patch);
   // addElement pushed history + refreshed; keep it silent for composite presets
   return e;
+}
+// The customise screen shows only the complications and the edit masks, so the
+// wearer edits them over black. This puts the face itself behind them, dimmed: the
+// normal face (reference time, without the slots and the layers of their choices,
+// which stay live) drawn at low opacity on black, as an Edit-only background
+// picture (exported as WATCHFACE_EDIT_MASK). Applying it again redraws it from
+// the current face; the opacity is the picture's, so the layer's Alpha can
+// darken it further.
+const EDIT_BACKDROP_FILE = 'edit_backdrop.png';
+async function editBackdropPreset(opacity = 0.3) {
+  const d = dev();
+  pushHistory();
+  let face;
+  backdropRender = true;
+  try { face = composePreviewCanvas(); } finally { backdropRender = false; }
+  const cv = document.createElement('canvas');
+  cv.width = d.w; cv.height = d.h;
+  const c = cv.getContext('2d');
+  c.fillStyle = '#000000'; c.fillRect(0, 0, d.w, d.h);
+  c.globalAlpha = opacity;
+  c.drawImage(face, 0, 0);
+  const { name } = addProjectImage(EDIT_BACKDROP_FILE, cv);
+  let e = elements().find((x) => x.editBackdrop);
+  const fresh = !e;
+  if (!e) {
+    e = newElement('IMG', { src: name, show: 'edit', x: 0, y: 0, w: d.w, h: d.h, name: 'Watch placeholder', locked: true, editBackdrop: true });
+    project.elements.unshift(e);   // the very back
+  } else e.src = name;
+  await loadAllImages();
+  selectedId = e.id; multiSel = new Set([e.id]);
+  setPreviewMode('edit');
+  status(fresh
+    ? `Added a watch placeholder: the face at ${Math.round(opacity * 100)}% behind the complications, shown only on the customise screen. Apply the preset again after changing the face to refresh it.`
+    : 'Watch placeholder redrawn from the current face.');
+  setDirty(true); refreshPanels(); render(); scheduleCode();
 }
 async function applyPreset(id) {
   if (!project) return;
@@ -6295,6 +6333,7 @@ async function applyPreset(id) {
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
       break;
     }
+    case 'editbackdrop': return editBackdropPreset();
     case 'editslot': {
       pushHistory();
       const nextId = Math.max(0, ...elements().filter((x) => x.kind === 'EDIT_SLOT').map((x) => +x.editId || 0)) + 1;
