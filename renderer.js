@@ -5509,9 +5509,7 @@ function friendlyLanguage(tag) {
 function showLanguageName(tag) {
   const el = $('projLangName'); if (!el) return;
   const t = friendlyLanguage(tag) ? cleanLangTag(tag) : '';
-  const extra = extraLanguages();
-  el.textContent = !t ? (String(tag || '').trim() ? 'Not a language the editor knows' : '')
-    : friendlyLanguage(t) + (extra.length ? ` + ${extra.map((c) => (zeppLanguage(c) || { label: c }).label).join(', ')}` : '');
+  el.textContent = !t ? (String(tag || '').trim() ? 'Not a language the editor knows' : '') : friendlyLanguage(t);
 }
 function renderProjectPanel() {
   if (!project) return;
@@ -5525,7 +5523,13 @@ function renderProjectPanel() {
   $('projLang').value = project.language || '';
   $('projLang').placeholder = 'en-US';
   $('projLang').title = languageSample();
-  { const n = extraLanguages().length; $('trSummary').textContent = n ? `· ${n + 1} languages` : ''; syncPreviewLang(); showLanguageName(project.language || 'en-US'); }
+  {
+    // one line: the languages added besides the project language, or an invitation to add some
+    const ex = extraLanguages();
+    $('trLabel').textContent = ex.length ? `${ex.map((c) => (zeppLanguage(c) || { label: c }).label).join(', ')} · edit…` : 'Add languages…';
+    $('btnTranslate').title = ex.length ? 'The face follows the watch language: edit the names, texts and store info of each language' : 'Show the weekday and month names, texts and the store info in more than one language: the face follows the language the watch is set to';
+    syncPreviewLang(); showLanguageName(project.language || 'en-US');
+  }
   const d = dev();
   $('screenInfo').textContent = `${d.w}×${d.h} px · designWidth ${d.designWidth} · ${d.shape === 'r' ? 'round' : d.shape === 's' ? 'square' : 'band'}`;
   $('targetInfo').textContent = `Zeus target ${d.target} · assets/${d.assetDir} · Zepp OS ${d.api}+`;
