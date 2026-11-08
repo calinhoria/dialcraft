@@ -4428,13 +4428,25 @@ function langInput(e) {
   inp.value = e.language || '';
   inp.placeholder = projectLanguage();
   inp.title = 'BCP-47 tag for this layer only, e.g. ro-RO or de-DE';
+  // the readable name of the language this layer uses (its own, or the project's when empty)
+  const wrap = document.createElement('div');
+  wrap.className = 'lang-ctl';
+  const nm = document.createElement('div');
+  nm.className = 'muted lang-name-note';
+  const showName = (v) => {
+    const t = String(v || '').trim();
+    nm.textContent = t ? (friendlyLanguage(t) || 'Not a language the editor knows') : `${friendlyLanguage(projectLanguage())} (the project language)`;
+  };
+  showName(e.language);
+  inp.addEventListener('input', () => showName(inp.value));
+  wrap.appendChild(inp); wrap.appendChild(nm);
   inp.onchange = () => {
     const v = inp.value.trim();
     if (v && !localeKnown(v)) { status(`“${v}” is not a language tag this browser knows.`, true); inp.value = e.language || ''; return; }
     pushHistory(); e.language = v;
     relabelGlyphs(e); refreshPanels(); render(); scheduleCode();
   };
-  return inp;
+  return wrap;
 }
 // names are baked into images: a set the designer drew is redrawn right away, an
 // imported one waits for “Re-render” so nobody loses their artwork by accident
@@ -5488,6 +5500,19 @@ function syncPreviewLang() {
   for (const c of [''].concat(langs)) { const o = document.createElement('option'); o.value = c; o.textContent = c ? `${c} · ${trLabelOf(c)}` : `${defaultLangCode()} (default)`; sel.appendChild(o); }
   sel.value = previewLang;
 }
+// a readable name for a language tag: en-US → English (United States), ro-RO → Romanian (Romania)
+function friendlyLanguage(tag) {
+  const t = cleanLangTag(tag);
+  if (!t || !localeKnown(t)) return '';
+  try { return new Intl.DisplayNames(['en'], { type: 'language', languageDisplay: 'standard' }).of(t) || t; } catch (e) { return t; }
+}
+function showLanguageName(tag) {
+  const el = $('projLangName'); if (!el) return;
+  const t = friendlyLanguage(tag) ? cleanLangTag(tag) : '';
+  const extra = extraLanguages();
+  el.textContent = !t ? (String(tag || '').trim() ? 'Not a language the editor knows' : '')
+    : friendlyLanguage(t) + (extra.length ? ` + ${extra.map((c) => (zeppLanguage(c) || { label: c }).label).join(', ')}` : '');
+}
 function renderProjectPanel() {
   if (!project) return;
   $('inpName').value = project.name || '';
@@ -5500,7 +5525,7 @@ function renderProjectPanel() {
   $('projLang').value = project.language || '';
   $('projLang').placeholder = 'en-US';
   $('projLang').title = languageSample();
-  { const n = extraLanguages().length; $('trSummary').textContent = n ? `· ${n + 1} languages` : ''; syncPreviewLang(); }
+  { const n = extraLanguages().length; $('trSummary').textContent = n ? `· ${n + 1} languages` : ''; syncPreviewLang(); showLanguageName(project.language || 'en-US'); }
   const d = dev();
   $('screenInfo').textContent = `${d.w}×${d.h} px · designWidth ${d.designWidth} · ${d.shape === 'r' ? 'round' : d.shape === 's' ? 'square' : 'band'}`;
   $('targetInfo').textContent = `Zeus target ${d.target} · assets/${d.assetDir} · Zepp OS ${d.api}+`;
@@ -7763,6 +7788,7 @@ async function applyTranslations() {
   status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb);
 }
 $('btnTranslate').onclick = openTranslations;
+$('projLang').addEventListener('input', () => showLanguageName($('projLang').value));
 $('previewLangSel').onchange = () => { previewLang = $('previewLangSel').value; render(); };
 $('i18nCancel').onclick = () => { $('i18nModal').hidden = true; trDraft = null; };
 $('i18nSave').onclick = applyTranslations;
