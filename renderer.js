@@ -1888,7 +1888,11 @@ function drawElement(c, e) {
       const ampm = ampmImage(e);
       if (ampm) { if (ampm.name) put(c, ampm.name, ampm.x, ampm.y, ampm.w, ampm.h); break; }
       const b = digitBox(e);
+      // a rotated reading turns clockwise around the widget's x, y (its top-left corner), as on the watch
+      const rot = (+e.angle || 0) * Math.PI / 180;
+      if (rot) { c.save(); c.translate(b.x, b.y); c.rotate(rot); c.translate(-b.x, -b.y); }
       drawDigits(c, e, digitRunX(e, b), b.y, digitTextFor(e));
+      if (rot) c.restore();
       break;
     }
     case 'IMG_WEEK': {
@@ -4821,6 +4825,29 @@ function propsKind(e) {
         const wrap = mkEl('div', 'rowctl'); wrap.appendChild(inp); wrap.appendChild(dl);
         add('Screen', wrap, 'The native Zepp screen to open, e.g. ScheduleCalScreen (calendar), SportListScreen (workouts), PowerSaveHintScreen');
       }
+      // the long press (700 ms): a second action on the same zone (BUTTON longpress_func)
+      section(frag, 'Long press (optional)');
+      add('On long press', ctlSelect(e.longAction || 'none', [
+        { value: 'none', label: 'Nothing' },
+        { value: 'variant', label: 'Cycle background variants' },
+        { value: 'theme', label: 'Next colour theme' },
+        { value: 'sysapp', label: 'Open a system app' },
+        { value: 'app', label: 'Open a Zepp screen (by name)' },
+      ], (v) => { e.longAction = v; refreshPanels(); render(); scheduleCode(); }), 'A second action when the zone is held for 700 ms, for example tap = calendar, long press = to-do list (BUTTON longpress_func)');
+      if (e.longAction === 'sysapp') {
+        add('Long: app', ctlSelect(e.longSysApp || '', [{ value: '', label: 'Pick an app…' }, ...(META.systemApps || []).map((a) => ({ value: a.key, label: a.label }))],
+          (v) => { e.longSysApp = v; render(); scheduleCode(); }), 'System apps need Zepp OS API 3.0 or newer');
+      }
+      if (e.longAction === 'app') {
+        const inp = document.createElement('input');
+        inp.type = 'text'; inp.value = e.longAppUrl || ''; inp.placeholder = 'todoListScreen';
+        inp.setAttribute('list', 'tapAppsLong');
+        inp.onchange = () => { pushHistory(); e.longAppUrl = inp.value.trim(); render(); scheduleCode(); };
+        const dl2 = document.createElement('datalist'); dl2.id = 'tapAppsLong';
+        for (const a of META.tapApps || []) { const o = document.createElement('option'); o.value = a.key; o.label = a.label; dl2.appendChild(o); }
+        const wrap = mkEl('div', 'rowctl'); wrap.appendChild(inp); wrap.appendChild(dl2);
+        add('Long: screen', wrap, 'The native Zepp screen to open on a long press, e.g. todoListScreen');
+      }
       section(frag, 'Look (optional)');
       add('Label', ctlText(e, 'text', 'empty = invisible zone'), 'Give the zone a label and/or colours and it becomes a visible BUTTON');
       add('Label color', ctlColor(e, 'textColor'));
@@ -4965,6 +4992,7 @@ function propsKind(e) {
       img('Decimal', 'dot');
       img('Negative', 'negative');
       img('Invalid', 'invalid');
+      add('Angle', ctlNum(e, 'angle', { min: -360, max: 360 }), 'Rotates the reading clockwise around its top-left corner (x, y), in degrees — angle on the widget. Checked on a Bip 6; not in the public docs');
       add('Zero padding', ctlCheck(e, 'padding'), 'The watch fills the reading with leading zeros: the alarm 07:03 instead of 7:3, the battery 058% instead of 58% (padding: true on the widget)');
       glyphStyleRows(frag, add, e);
       break;

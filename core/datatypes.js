@@ -53,6 +53,8 @@ const DATA_TYPES = [
   { key: 'STRESS', label: 'Stress', group: 'Health', digits: 3, preview: 42, reader: { cls: 'Stress', get: 'getCurrent' } },
   { key: 'PAI_DAILY', label: 'PAI today', group: 'Health', digits: 3, preview: 42, reader: { cls: 'Pai', get: 'getToday' } },
   { key: 'PAI_WEEKLY', label: 'PAI weekly', group: 'Health', digits: 3, preview: 168, reader: { cls: 'Pai', get: 'getTotal' } },
+  { key: 'BIO_CHARGE', label: 'Body charge (energy)', group: 'Health', digits: 3, preview: 64, bound: true, note: 'Zepp\'s body-energy score, 0-100 (checked on a Bip 6). Not in the public docs' },
+  { key: 'HRV', label: 'Heart rate variability', group: 'Health', digits: 3, preview: 48, bound: true, note: 'HRV in ms (checked on a Bip 6). Not in the public docs' },
 
   // ---- weather -------------------------------------------------------------
   { key: 'WEATHER_CURRENT', label: 'Temperature (current)', group: 'Weather', digits: 3, preview: 22, unit: '°C', negative: true, bound: true },
@@ -64,6 +66,9 @@ const DATA_TYPES = [
   { key: 'UVI', label: 'UV index', group: 'Weather', digits: 2, preview: 4, bound: true },
   { key: 'AQI', label: 'Air quality (mainland CN)', group: 'Weather', digits: 3, preview: 26, bound: true },
   { key: 'WIND', label: 'Wind force level', group: 'Weather', digits: 2, preview: 3, bound: true },
+  { key: 'WIND_SPEED', label: 'Wind speed', group: 'Weather', digits: 3, preview: 12, bound: true, note: 'The wind speed number (checked on a Bip 6), not the 0-12 force level. Not in the public docs' },
+  { key: 'WIND_DIRECTION', label: 'Wind direction (index)', group: 'Weather', digits: 1, preview: 1, bound: true, note: 'A small index for the compass direction (checked on a Bip 6 it shows 1). Not in the public docs' },
+  { key: 'WEATHER_HIGH_LOW', label: 'Temperature (high:low)', group: 'Weather', digits: 6, preview: '27:14', colon: true, negative: true, bound: true, note: 'The high and the low in one reading, separated by the layer\'s Decimal picture (a colon or slash). Checked on a Bip 6; not in the public docs' },
   { key: 'WEATHER', label: 'Weather icon', group: 'Weather', digits: 2, preview: 3, bound: true, icons: true, note: '29 icons, index order from the design specification' },
 
   // ---- system --------------------------------------------------------------
@@ -71,6 +76,7 @@ const DATA_TYPES = [
 
   // ---- click-only shortcuts (IMG_CLICK) ------------------------------------
   { key: 'MOON', label: 'Moon phase (tap)', group: 'Shortcut', digits: 2, preview: 0, bound: true, clickOnly: true },
+  { key: 'MOON_CURRENT', label: 'Moon screen (tap)', group: 'Shortcut', digits: 0, clickOnly: true, bound: true, note: 'Opens the moon screen. Used by Zepp\'s own faces; not in the public docs' },
   { key: 'OUTDOOR_RUNNING', label: 'Outdoor running (tap)', group: 'Shortcut', digits: 0, clickOnly: true, bound: true },
   { key: 'WALKING', label: 'Walking (tap)', group: 'Shortcut', digits: 0, clickOnly: true, bound: true },
   { key: 'OUTDOOR_CYCLING', label: 'Outdoor cycling (tap)', group: 'Shortcut', digits: 0, clickOnly: true, bound: true },

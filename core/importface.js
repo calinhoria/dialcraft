@@ -223,6 +223,9 @@ function makeShim(calls, notes, opts = {}) {
     if (params && typeof params.click_func === 'function') {
       try { p._click = Function.prototype.toString.call(params.click_func); } catch (e) { /* no source */ }
     }
+    if (params && typeof params.longpress_func === 'function') {
+      try { p._long = Function.prototype.toString.call(params.longpress_func); } catch (e) { /* no source */ }
+    }
     const entry = { type: nameOf(type) || String(type), params: p, sensor };
     if (params && typeof params.resume_call === 'function') listeners.push(params.resume_call);
     entries.push(entry);
@@ -963,10 +966,18 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       else if (sys) { action = 'sysapp'; sysApp = sys[1]; }
       else if (app) { action = 'app'; appUrl = app[1]; }
       else if (click) { note = click.replace(/\s+/g, ' ').slice(0, 160); ctx.customTaps = (ctx.customTaps || 0) + 1; }
+      // the long press (700 ms): another screen or system app
+      const longSrc = String(p._long || '');
+      const lApp = /startApp\s*\(\s*\{[^}]*?url\s*:\s*['"]([^'"]+)['"]/.exec(longSrc);
+      const lSys = /launchApp\s*\(\s*\{[^}]*?appId\s*:\s*(?:\w+\.)?(SYSTEM_APP_\w+)/.exec(longSrc);
+      let longAction = 'none', longAppUrl = '', longSysApp = '';
+      if (lSys) { longAction = 'sysapp'; longSysApp = lSys[1]; } else if (lApp) { longAction = 'app'; longAppUrl = lApp[1]; }
+      else if (longSrc) note = (note ? note + ' · ' : '') + 'long press: ' + longSrc.replace(/\s+/g, ' ').slice(0, 100);
       const tapName = action === 'variant' ? 'Tap: next background' : action === 'app' ? `Tap: ${appUrl.replace(/Screen$/, '')}` : action === 'sysapp' ? `Tap: ${sysApp.replace(/^SYSTEM_APP_/, '').toLowerCase()}` : 'Tap zone';
       const visible = (p.text && String(p.text).length) || p.normal_color != null;
       out.push(mk('TAP', {
         ...base, name: tapName, ...box, action, appUrl, sysApp: sysApp || undefined, note,
+        ...(longAction !== 'none' ? { longAction, longAppUrl, longSysApp: longSysApp || undefined } : {}),
         ...(visible ? {
           text: p.text == null ? '' : String(p.text), textColor: p.color != null ? hexOf(p.color) : undefined, textSize: num(p.text_size),
           normalColor: p.normal_color != null ? hexOf(p.normal_color) : undefined, pressColor: p.press_color != null ? hexOf(p.press_color) : undefined, radius: num(p.radius),
@@ -1012,7 +1023,7 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       const dt = nameOf(p.type);
       return el('TEXT_IMG', {
         name: (dt && dataType(dt) ? dataType(dt).label : 'Reading'), ...box,
-        dataType: dt, images: imgs(p.font_array), hSpace: num(p.h_space), alignH: alignOf(p.align_h), padding: p.padding ? 1 : 0,
+        dataType: dt, images: imgs(p.font_array), hSpace: num(p.h_space), alignH: alignOf(p.align_h), padding: p.padding ? 1 : 0, angle: num(p.angle),
         unit: img(p.unit_en) || '', dot: img(p.dot_image) || '', negative: img(p.negative_image) || '',
         unitImperial: img(p.imperial_unit_en || p.imperial_unit_sc || p.imperial_unit_tc) || '',
         invalid: img(Array.isArray(p.invalid_image) ? p.invalid_image[0] : p.invalid_image) || '',

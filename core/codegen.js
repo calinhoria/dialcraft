@@ -208,25 +208,34 @@ function emitElement(el, ctx, out) {
     }
     case 'TAP': {
       if (el.show === 'aod') break;   // the always-on display takes no taps
-      let body = null;
-      if (el.action === 'variant') body = 'cycleVariants()';
-      else if (el.action === 'theme') {
-        if (ctx.themed) body = 'cycleTheme()';
-        else ctx.warnings.push(`${el.name}: no colour themes yet — generate them from the project panel first (left out)`);
-      }
-      else if (el.action === 'sysapp' && ctx.api && ctx.api < 3) ctx.warnings.push(`${el.name}: system apps need Zepp OS API 3.0 or newer (this device is ${ctx.api}) — the tap zone is left out`);
-      else if (el.action === 'sysapp' && /^SYSTEM_APP_\w+$/.test(el.sysApp || '')) {
-        // the documented launchApp + SYSTEM_APP_* of @zos/router (API 3.0+); the import is added only when used
-        (ctx.routerApps = ctx.routerApps || new Set()).add(el.sysApp);
-        body = `try { launchApp({ appId: ${el.sysApp}, native: true }) } catch (e) {}`;
-        ctx.warnings.push(`${el.name}: opens a system app with launchApp from @zos/router — not yet tried on a watch; if the face shows a black screen, remove this tap zone`);
-      } else if (el.action === 'sysapp') ctx.warnings.push(`${el.name}: no system app chosen — the tap zone is left out`);
-      else if (el.action === 'app' && el.appUrl) {
-        body = `if (typeof hmApp !== 'undefined') hmApp.startApp({ url: ${JSON.stringify(String(el.appUrl))}, native: true })`;
-      } else if (el.action === 'app') ctx.warnings.push(`${el.name}: no screen chosen — the tap zone is left out`);
-      else ctx.warnings.push(`${el.name}: this tap zone has no action here (${el.note ? 'the original ran custom code' : 'none set'}) — left out`);
-      if (!body) break;
-      if (el.action === 'variant' && !ctx.variants.length) ctx.warnings.push(`${el.name}: no image layer with variants to cycle`);
+      // the code that one action runs: the tap, and the long press (the docs' BUTTON click_func / longpress_func, 700 ms)
+      const actionBody = (act, sysApp, appUrl, which) => {
+        let b = null;
+        const lbl = which === 'long' ? `${el.name} (long press)` : el.name;
+        if (act === 'variant') b = 'cycleVariants()';
+        else if (act === 'theme') {
+          if (ctx.themed) b = 'cycleTheme()';
+          else ctx.warnings.push(`${lbl}: no colour themes yet — generate them from the project panel first (left out)`);
+        }
+        else if (act === 'sysapp' && ctx.api && ctx.api < 3) ctx.warnings.push(`${lbl}: system apps need Zepp OS API 3.0 or newer (this device is ${ctx.api}) — left out`);
+        else if (act === 'sysapp' && /^SYSTEM_APP_\w+$/.test(sysApp || '')) {
+          // the documented launchApp + SYSTEM_APP_* of @zos/router (API 3.0+); the import is added only when used
+          (ctx.routerApps = ctx.routerApps || new Set()).add(sysApp);
+          b = `try { launchApp({ appId: ${sysApp}, native: true }) } catch (e) {}`;
+          ctx.warnings.push(`${lbl}: opens a system app with launchApp from @zos/router — not yet tried on a watch; if the face shows a black screen, remove this tap zone`);
+        } else if (act === 'sysapp') ctx.warnings.push(`${lbl}: no system app chosen — left out`);
+        else if (act === 'app' && appUrl) {
+          b = `if (typeof hmApp !== 'undefined') hmApp.startApp({ url: ${JSON.stringify(String(appUrl))}, native: true })`;
+        } else if (act === 'app') ctx.warnings.push(`${lbl}: no screen chosen — left out`);
+        else if (which === 'tap') ctx.warnings.push(`${lbl}: this tap zone has no action here (${el.note ? 'the original ran custom code' : 'none set'}) — left out`);
+        if (b && act === 'variant' && !ctx.variants.length) ctx.warnings.push(`${lbl}: no image layer with variants to cycle`);
+        return b;
+      };
+      const body = actionBody(el.action, el.sysApp, el.appUrl, 'tap');
+      const longBody = el.longAction && el.longAction !== 'none' ? actionBody(el.longAction, el.longSysApp, el.longAppUrl, 'long') : null;
+      if (!body && !longBody) break;
+      const fn = (b) => `() => { ${b || ''} }`;
+      const longLine = longBody ? `\n    longpress_func: ${fn(longBody)},` : '';
       ctx.usesTap = true;
       if (el.text || el.normalColor) {
         // a visible button: label and/or background colours (the docs' BUTTON text / color / press_color / normal_color / radius)
@@ -236,8 +245,8 @@ function emitElement(el, ctx, out) {
         if (el.textSize) B.push(`    text_size: ${p(el.textSize)},`);
         if (el.normalColor) { B.push(`    normal_color: ${hex(el.normalColor)},`, `    press_color: ${hex(el.pressColor || el.normalColor)},`); }
         if (el.radius) B.push(`    radius: ${p(el.radius)},`);
-        out.push(`  ui.createWidget(ui.widget.BUTTON, {\n${B.join('\n')}\n    click_func: () => { ${body} },\n    show_level: ${showLevel(el.show)},\n  })`);
-      } else out.push(`  ui.createWidget(ui.widget.BUTTON, {\n    x: ${p(el.x)}, y: ${p(el.y)}, w: ${p(el.w)}, h: ${p(el.h)},\n    text: '',\n    normal_src: A('tapzone.png'),\n    press_src: A('tapzone.png'),\n    click_func: () => { ${body} },\n    show_level: ${showLevel(el.show)},\n  })`);
+        out.push(`  ui.createWidget(ui.widget.BUTTON, {\n${B.join('\n')}\n    click_func: ${fn(body)},${longLine}\n    show_level: ${showLevel(el.show)},\n  })`);
+      } else out.push(`  ui.createWidget(ui.widget.BUTTON, {\n    x: ${p(el.x)}, y: ${p(el.y)}, w: ${p(el.w)}, h: ${p(el.h)},\n    text: '',\n    normal_src: A('tapzone.png'),\n    press_src: A('tapzone.png'),\n    click_func: ${fn(body)},${longLine}\n    show_level: ${showLevel(el.show)},\n  })`);
       break;
     }
     case 'IMG': {
@@ -329,6 +338,8 @@ function emitElement(el, ctx, out) {
       if (el.hSpace) kv(L, 'h_space', p(el.hSpace));
       // zero padding: the watch fills the reading with leading zeros (alarm 07:03 instead of 7:3, battery 058%)
       if (num(el.padding)) kv(L, 'padding', 'true');
+      // a rotated reading (clockwise around x, y)
+      if (num(el.angle)) kv(L, 'angle', num(el.angle));
       kv(L, 'align_h', `ui.align.${el.alignH || 'LEFT'}`);
       if (el.unit) { kv(L, 'unit_en', asset(el, 'unit')); kv(L, 'unit_sc', asset(el, 'unit')); kv(L, 'unit_tc', asset(el, 'unit')); }
       // the unit shown when the watch is set to imperial (mi, °F …)
@@ -691,7 +702,10 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   if (typeof project.userImports === 'string' && project.userImports.trim()) out.push(project.userImports.trim());
   // the import line comes before the widgets, so the system apps the tap zones use are collected here
   for (const e of els) {
-    if (e.kind === 'TAP' && e.action === 'sysapp' && e.show !== 'aod' && ctx.api >= 3 && /^SYSTEM_APP_\w+$/.test(e.sysApp || '')) (ctx.routerApps = ctx.routerApps || new Set()).add(e.sysApp);
+    if (e.kind === 'TAP' && e.show !== 'aod' && ctx.api >= 3) {
+      if (e.action === 'sysapp' && /^SYSTEM_APP_\w+$/.test(e.sysApp || '')) (ctx.routerApps = ctx.routerApps || new Set()).add(e.sysApp);
+      if (e.longAction === 'sysapp' && /^SYSTEM_APP_\w+$/.test(e.longSysApp || '')) (ctx.routerApps = ctx.routerApps || new Set()).add(e.longSysApp);
+    }
   }
   if (ctx.routerApps && ctx.routerApps.size) {
     out.push(`import { launchApp, ${[...ctx.routerApps].sort().join(', ')} } from '@zos/router'`);

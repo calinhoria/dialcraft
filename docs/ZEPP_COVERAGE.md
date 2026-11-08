@@ -34,14 +34,14 @@ Legend: ✅ full · 🟡 partial · ❌ not implemented · — not applicable
 | ARC | Arc | ✅ | ✅ | ✅ | — |
 | FILL_RECT | Filled rectangle | ✅ | ✅ | ✅ | `radius`, `angle`, alpha ✅. |
 | STROKE_RECT | Stroked rectangle | ✅ | ✅ | ✅ | — |
-| TEXT_IMG | Data reading (digit images) | ✅ | ✅ | ✅ | (new) **`imperial_unit_*`**, the fixed **`text`** mode and `invalid_image` added. Still one picture sent for sc/en/tc (a unit per language is not offered) and no `h`. `dot_image`, `negative_image`, `h_space`, `align_h`, `w` ✅. Distance capacity (3 digits + dot) matches the Maker. |
+| TEXT_IMG | Data reading (digit images) | ✅ | ✅ | ✅ | (new) **`imperial_unit_*`**, the fixed **`text`** mode and `invalid_image` added. Still one picture sent for sc/en/tc (a unit per language is not offered) and no `h`. `dot_image`, `negative_image`, `h_space`, `align_h`, `w` ✅. Distance capacity (3 digits + dot) matches the Maker. (0.4.7) **`padding`** (the Zero padding switch: the alarm 07:03, the battery 058%) and **`angle`** (rotates a reading clockwise around its x, y). Neither is in the public docs; both are written by Zepp's own face tool and the community Watch_Face_Editor, and both were checked on a Bip 6. `padding` does not change the countdown (it stays minutes only). |
 | ARC_PROGRESS | Arc progress | ✅ | 🟡 | ✅ | All parameters ✅. `level` follows a reading only for the 17 data types that have a sensor reader (below); the others stay static on the watch and a warning says so. |
 | IMG_PROGRESS | Image progress bar | ✅ | ✅ | ✅ | (new) irregular `x[]` / `y[]` positions are kept per picture (an even row stays start + spread). |
 | IMG_LEVEL | Image level (from data) | ✅ | ✅ | ✅ | Bound by `type` natively; sets picked at runtime are recognised on import. |
 | IMG_ANIM | Animation | 🟡 | 🟡 | ✅ | (new) `display_on_restart` and `default_frame_index` added. Still missing: `anim_complete_call`, `anim_auto_resume_call`, `anim_repeat`, and the runtime `ANIM_STATUS` control (START/PAUSE/RESUME/STOP) / `ANIM_IS_*` reads. Frames, fps, `step`, `repeat_count` ✅. |
 | CIRCLE | Circle | ✅ | ✅ | ✅ | — |
 | IMG_POINTER | Image pointer (dial) | ✅ | ✅ | ✅ | `invalid_visible` is always written as 0 when a data type is bound (docs default: true). |
-| BUTTON | Tap zone | ✅ | ✅ | ✅ | (new) a Tap zone with a label and/or fill colour is a visible button: `text`, `color`, `text_size`, `normal_color`, `press_color`, `radius`. Without them it stays the invisible zone (action = open a screen / cycle variants / next colour theme). Custom click code is not kept. |
+| BUTTON | Tap zone | ✅ | ✅ | ✅ | (new) a Tap zone with a label and/or fill colour is a visible button: `text`, `color`, `text_size`, `normal_color`, `press_color`, `radius`. Without them it stays the invisible zone (action = open a screen / cycle variants / next colour theme). Custom click code is not kept. **`longpress_func`** (documented, 700 ms) is the tap zone's second action, "On long press" (a screen, a system app, a theme or variant); it imports from faces that use it. |
 | IMG_STATUS | System status icon | ✅ | ✅ | ✅ | All four documented states (CLOCK, DISCONNECT, DISTURB, LOCK). |
 | IMG_TIME | Digital time | ✅ | 🟡 | ✅ | hour/minute/second, `zero`, `space`, `align`, `follow`, unit, 12-hour AM/PM images ✅. One unit picture is sent for sc/en/tc. Faces that set the digits from a refresh function are now lifted into IMG_TIME on import. |
 | TIME_POINTER | Analog clock | ✅ | ✅ | ✅ | Hour/minute/second hands and (new) `minute_cover_*` / `second_cover_*` next to the hour cover. |
@@ -121,3 +121,11 @@ Finder, and a Build tools row reports Node / npx / Zeus.
 3. More **sensor readers** so ARC_PROGRESS / BAR follow weather, UVI, AQI, wind, sleep (the sensor
    class names and methods are not in the widget docs).
 4. `photoscreen` in app.json, `is_character` for the day (31 pictures), a unit picture per language.
+
+## Undocumented but real (found in faces made by Zepp's tool and in the community Watch_Face_Editor)
+
+Checked on a Bip 6 with a probe face: these data types give a number on a `TEXT_IMG` and are offered as readings: `BIO_CHARGE` (body charge 0-100),
+`HRV`, `WIND_SPEED`, `WIND_DIRECTION` (a small index), `WEATHER_HIGH_LOW` (high and low in one reading, separated by the Decimal picture) and, as a tap
+target only, `MOON_CURRENT`. `BODY_TEMP` and `BARO` give 0 and `ACTIVITY` / `ACTIVITY_TARGET` give nothing on a Bip 6, so they are not offered.
+The editor's `SMOOTH_SECOND`, `TIME_POINTER_PRO`, `TIME_CIRCLE_OPTIONS`, `Circle_Scale` and `Linear_Scale` are comments it writes to remember its own settings,
+not widgets the watch runs.
