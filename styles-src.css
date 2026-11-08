@@ -682,6 +682,11 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 .i18n-def select { background: #0d0f14; border: 1px solid var(--color-line); border-radius: 6px; padding: 4px 8px; color: var(--color-ink); }
 .row.lang-name { margin-top: -4px; }
 .row.lang-name .muted { font-size: 12px; line-height: 1.35; }
+/* the fallback-font notice after adding a language to a face with its own pictures */
+.tr-info { font-size: 13px; line-height: 1.5; color: var(--color-ink); }
+.tr-info p { margin: 0 0 10px; }
+.tr-info ul { margin: 0 0 10px; padding-left: 18px; list-style: disc; }
+.tr-info b { color: #cdd9ff; }
 /* translations dialog */
 .modal.i18n-modal { width: min(820px, 94vw); max-height: 88vh; display: flex; flex-direction: column; }
 .i18n-bar { display: flex; align-items: center; gap: 10px; margin: 12px 0 8px; flex-wrap: wrap; }

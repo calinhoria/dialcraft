@@ -7840,7 +7840,27 @@ async function applyTranslations() {
   const used = reuseReport.filter((r) => r.total);
   const ru = used.length ? ` ${[...new Set(used.map((r) => r.layer))].map((name) => `“${name}” came with its own pictures: ${used.filter((r) => r.layer === name).map((r) => `${r.code} ${r.reused} reused, ${r.drawn} drawn`).join(', ')} (drawn with ${used[0].font}, sized and coloured like the face's letters)`).join('; ')}.` : '';
   status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb + ru);
+  // the face has no font of its own and names had to be drawn: tell the user, once per Apply
+  // (a font you imported into the project is the one meant to match, so it needs no notice)
+  const fallback = used.filter((r) => r.drawn > 0 && !customFont(r.font));
+  if (n && fallback.length) showFontInfo(fallback);
 }
+// After a language is added to a face that came with only its pictures: say what was drawn with which font, and how to match the style
+function showFontInfo(used) {
+  const fonts = [...new Set(used.map((r) => r.font))];
+  const drawn = used.reduce((n, r) => n + r.drawn, 0), reused = used.reduce((n, r) => n + r.reused, 0);
+  const layers = [...new Set(used.map((r) => r.layer))];
+  const langs = [...new Set(used.map((r) => (zeppLanguage(r.code) || { label: r.code }).label))];
+  const esc = (t) => String(t).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  $('trFontInfoBody').innerHTML =
+    `<p>This face came with its own pictures for ${layers.map((l) => `<b>${esc(l)}</b>`).join(', ')}, but not with the font they were made with, so Dialcraft cannot draw ${esc(langs.join(', '))} in the same letters.</p>`
+    + `<ul><li>${reused ? `${reused} name${reused === 1 ? '' : 's'} reuse${reused === 1 ? 's' : ''} the face's own pictures (they read the same, accents ignored).` : 'None of the names read the same as one of the face\'s own pictures, so none could be reused.'}</li>`
+    + `<li>${drawn} name${drawn === 1 ? ' is' : 's are'} drawn with the fallback font <b>${esc(fonts.join(', '))}</b>, at the height and in the colour of the face's letters.</li></ul>`
+    + `<p>To match the style, <b>import the font the original face used</b> (Import a font…), choose it as the Glyph font in the Watchface panel, then open Languages and press Apply again.</p>`;
+  $('trFontInfo').hidden = false;
+}
+$('trFontInfoOk').onclick = () => { $('trFontInfo').hidden = true; };
+$('trFontInfoFonts').onclick = () => { $('trFontInfo').hidden = true; if (project) openFontModal(); };
 $('btnTranslate').onclick = openTranslations;
 $('previewLangSel').onchange = () => {
   const v = $('previewLangSel').value;

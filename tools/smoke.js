@@ -1321,6 +1321,25 @@ app.whenReady().then(async () => {
         && imp.fold === 'SAM,TINUTA,SS,LODZ' && /^#[0-9a-f]{6}$/.test(imp.color) && imp.inkH > 4,
         `es ${imp.reusedEs} reused + ${imp.drawnEs} drawn · ro ${imp.reusedRo} + ${imp.drawnRo} · letters ${imp.inkH}px ${imp.color} · fold ${imp.fold}`);
     }
+    {
+      // adding a language to a face with only its own pictures says which fallback font drew the names, and how to match the style
+      const fi = await run(`
+        project.language = 'it-IT';
+        const e = await addElement('IMG_WEEK', { name: 'Info week' });
+        e.glyph = Object.assign({}, e.glyph, { font: IMPORTED_FONT });
+        const modal = document.getElementById('trFontInfo'); modal.hidden = true;
+        openTranslations(); trDraft.languages = ['ro-RO']; await applyTranslations();
+        const shown = !modal.hidden, text = document.getElementById('trFontInfoBody').textContent;
+        document.getElementById('trFontInfoOk').click(); const closed = modal.hidden;
+        openTranslations(); trDraft.languages = []; await applyTranslations();
+        const again = !modal.hidden;
+        project.elements = project.elements.filter((x) => x !== e);
+        project.language = 'en-US'; project.i18n = { languages: [], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+        return { shown, closed, again, text };`);
+      check('translations: a notice after adding a language to a face with its own pictures (fallback font, import the original font)',
+        fi.shown && fi.closed && !fi.again && /fallback font/.test(fi.text) && /import the font the original face used/.test(fi.text) && /drawn with the fallback font \w+/.test(fi.text),
+        fi.text.slice(0, 110));
+    }
     check('translations: app.json lists every language with its own name and description; one language stays as it was',
         JSON.stringify(o.i18n) === JSON.stringify({ 'en-US': { appName: 'Face' } }) && o.defaultLanguage === 'en-US'
         && m.i18n['ro-RO'].appName === 'Ceas' && m.i18n['ro-RO'].description === 'Un ceas' && m.i18n['de-DE'].appName === 'Face' && m.i18n['en-US'].appName === 'Face' && m.defaultLanguage === 'en-US',

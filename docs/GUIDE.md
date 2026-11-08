@@ -270,6 +270,10 @@ be drawn in the face's own letters. Each language reuses what it can: a name tha
 `SAM`, through the fallback table), takes that picture. Every other name is **drawn** with the project font (Inter when there is none), at the height and in
 the colour measured from the face's own letters. The status line says how many names of each language were reused and how many drawn. For a matching
 look pick a font that resembles the face's (Glyph font in the Watchface panel) before translating, or use **Re-render** with a font to redraw the whole set.
+After you add a language to such a face a notice says exactly this: how many names were reused and drawn, which fallback font drew them, and that importing
+the font the original face used (the button opens the Font library) and applying again makes the style match.
+
+![The notice after adding a language to a face that came with only its own pictures](screenshots/translations-fontinfo.png)
 
 **Letters the font lacks.** A font without Ț, Ș, Ă … never gets a second typeface mixed in. Each missing letter is drawn from the font's own letter
 plus an accent when that is possible, else as its plain letter from the fallback table (Ț→T, Ș→S, Ă→A, Ł→L, Ø→O, Æ→AE, ß→ss …). Most plain letters
