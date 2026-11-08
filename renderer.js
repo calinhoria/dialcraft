@@ -5881,18 +5881,58 @@ function foldName(s) {
     return plainLetterOf(ch) || ch;
   }).join('').normalize('NFD').replace(/\p{M}/gu, '').toLocaleUpperCase();
 }
-// the pictures a face brought along cannot be redrawn in another language (there is no font to draw with), so a language reuses
-// them where it can: a name that reads the same as one of the face's own pictures (accents ignored, SAM = SÂM) takes that picture
-// and every other name keeps the picture it had. `reuseReport` tells the user how many names stayed in the face's language.
+// The pictures a face brought along cannot be redrawn: there is no font behind them. For another language a name that reads the
+// same as one of the face's own pictures (accents ignored, SAM = SÂM) takes that picture; every other name is drawn with a
+// fallback font sized and coloured to match what the face's letters look like (their height and colour are measured from the
+// pictures). `reuseReport` says how many names were reused and how many drawn.
 let reuseReport = [];
 const importedLabels = (e) => glyphStyle(e).font === IMPORTED_FONT || !glyphSpecForLayer(e);
-function reuseLabelSet(e, kind, code) {
+// the letters of a picture set: the typical ink height and the colour of the strokes
+function importedLook(e) {
+  const heights = []; const sum = [0, 0, 0]; let weight = 0;
+  for (const name of (e.images || []).filter(Boolean)) {
+    const im = imgFor(name);
+    if (!im || !im.naturalWidth) continue;
+    const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+    const g = c.getContext('2d'); g.drawImage(im, 0, 0);
+    const d = g.getImageData(0, 0, c.width, c.height).data;
+    let top = c.height, bot = -1;
+    for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) {
+      const a = d[(y * c.width + x) * 4 + 3];
+      if (a < 128) continue;
+      if (y < top) top = y; if (y > bot) bot = y;
+      sum[0] += d[(y * c.width + x) * 4] * a; sum[1] += d[(y * c.width + x) * 4 + 1] * a; sum[2] += d[(y * c.width + x) * 4 + 2] * a; weight += a;
+    }
+    if (bot >= top) heights.push(bot - top + 1);
+  }
+  heights.sort((a, b) => a - b);
+  const inkH = heights.length ? heights[heights.length >> 1] : 24;
+  const hex = (v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
+  const color = weight ? `#${hex(sum[0] / weight)}${hex(sum[1] / weight)}${hex(sum[2] / weight)}` : '#ffffff';
+  return { inkH, color };
+}
+async function reuseLabelSet(e, kind, code) {
   const form = e.labelForm || 'short', imgs = e.images || [];
   const have = localeNames(kind, languageOf(e), form).map(foldName);
-  const want = localeNames(kind, code, form).map(foldName);
-  let kept = 0;
-  const out = imgs.map((n, i) => { const j = have.indexOf(want[i]); if (j >= 0 && imgs[j]) return imgs[j]; kept++; return n; });
-  reuseReport.push({ layer: e.name || (kind === 'week' ? 'Weekday' : 'Month'), code, kept, total: imgs.length });
+  const names = localeNames(kind, code, form).map((n) => applyLabelCase(n, labelCaseOf(e)));
+  const want = names.map(foldName);
+  const out = imgs.slice(), todo = [];
+  for (let i = 0; i < imgs.length; i++) {
+    const j = have.indexOf(want[i]);
+    if (j >= 0 && imgs[j]) out[i] = imgs[j]; else todo.push(i);
+  }
+  if (todo.length) {
+    const look = importedLook(e), fam = project.font || 'Inter', t = kind === 'week' ? 'w' : 'm';   // a neutral sans when the project has no font of its own
+
+    const size = Math.max(10, Math.min(200, Math.round(look.inkH / 0.72)));   // a capital is about 72% of the font size
+    const key = '_' + String(code).replace(/[^A-Za-z0-9]+/g, '_'), pre = `${kind}${String(e.id || '').slice(-4)}`;
+    const drawn = await genGlyphImages(todo.map((i) => ({ tag: `${t}${i + 1}${key}`, char: names[i], name: `${pre}${key}_${t}${i + 1}.png` })), {
+      prefix: pre, mono: true, replace: true, size, family: fam, weight: glyphOpts.weight, style: { fill: 'solid', color: look.color, size },
+      align: e.labelAlign || 'center', metricsRef: labelMetrics(e),
+    });
+    todo.forEach((i, k) => { out[i] = drawn[k]; });
+  }
+  reuseReport.push({ layer: e.name || (kind === 'week' ? 'Weekday' : 'Month'), code, reused: imgs.length - todo.length, drawn: todo.length, total: imgs.length, font: project.font || 'Inter' });
   return out;
 }
 // the weekday / month pictures of a layer in every other language of the project (e.sets)
@@ -5903,7 +5943,7 @@ async function regenLanguageSets(e) {
   if (!langs.length) { delete e.sets; return; }
   const imported = importedLabels(e);
   const sets = {};
-  for (const c of langs) sets[c] = imported ? reuseLabelSet(e, kind, c) : await genLabelSet(e, kind, c);
+  for (const c of langs) sets[c] = imported ? await reuseLabelSet(e, kind, c) : await genLabelSet(e, kind, c);
   e.sets = sets;
 }
 // A separator (colon.png, degree.png …) drawn with the digits' style and in
@@ -7756,7 +7796,7 @@ function trRender() {
   body.scrollTop = top;
   const imported = elements().filter((e) => labelKind(e) && (e.images || []).length && importedLabels(e)).length;
   $('i18nNote').textContent = trTab === 'week' || trTab === 'month'
-    ? 'The pictures of every weekday / month layer are redrawn in each language with the layer\'s own font and size (Names and Case in Properties apply). A language the watch is not set to is never shown.' + (imported ? ` ${imported} layer${imported === 1 ? '' : 's'} came with ${imported === 1 ? 'its' : 'their'} own pictures: ${imported === 1 ? 'it reuses' : 'they reuse'} them where a language\'s name matches one (accents ignored, SAM = SÂM); the other names stay as the face draws them.` : '')
+    ? 'The pictures of every weekday / month layer are redrawn in each language with the layer\'s own font and size (Names and Case in Properties apply). A language the watch is not set to is never shown.' + (imported ? ` ${imported} layer${imported === 1 ? '' : 's'} came with ${imported === 1 ? 'its' : 'their'} own pictures: a name that matches one of them (accents ignored) reuses it, the others are drawn with the project font (${project.font || 'Inter'}) sized and coloured like the face's letters.` : '')
     : trTab === 'letters' ? 'The table is used only for letters the chosen font does not have. Letters the font draws itself are never replaced.'
     : trTab === 'labels' ? 'Texts the watch shows by itself (data readings) follow the watch language already. A layer without a translation keeps its own text in every language.'
       : 'The name and description the Zepp app shows for the watchface, in each language.';
@@ -7797,8 +7837,8 @@ async function applyTranslations() {
   for (const key of need) { const [fam, ch] = key.split('\u0000'); if (!fontHas(fam, ch)) { const pl = glyphPlan(fam, ch); if (pl.how === 'plain') plain.set(`${ch}→${pl.ch}`, fam); } }
   const fb = plain.size ? ` ${[...plain.keys()].join(' ')} drawn as plain letters (${[...new Set(plain.values())].join(', ')} has no such letters). Change them in Letters.` : '';
   // pictures that came with the face: how many names could reuse one
-  const kept = reuseReport.filter((r) => r.kept > 0);
-  const ru = kept.length ? ` ${[...new Set(kept.map((r) => r.layer))].map((name) => `“${name}” keeps the pictures the face came with: ${kept.filter((r) => r.layer === name).map((r) => `${r.code} ${r.total - r.kept} of ${r.total} names have a picture`).join(', ')}; the others stay as the face draws them`).join('; ')}. A font in Re-render draws all of them.` : '';
+  const used = reuseReport.filter((r) => r.total);
+  const ru = used.length ? ` ${[...new Set(used.map((r) => r.layer))].map((name) => `“${name}” came with its own pictures: ${used.filter((r) => r.layer === name).map((r) => `${r.code} ${r.reused} reused, ${r.drawn} drawn`).join(', ')} (drawn with ${used[0].font}, sized and coloured like the face's letters)`).join('; ')}.` : '';
   status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb + ru);
 }
 $('btnTranslate').onclick = openTranslations;

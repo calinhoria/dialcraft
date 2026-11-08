@@ -1295,7 +1295,8 @@ app.whenReady().then(async () => {
       const one = generateAppJson(base, dev, { appId: 1 }), many = generateAppJson(multi, dev, { appId: 1 });
       const o = typeof one === 'string' ? JSON.parse(one) : one, m = typeof many === 'string' ? JSON.parse(many) : many;
       {
-      // a layer whose pictures came with the face (no font to draw with) reuses them where a language's name matches one, accents ignored
+      // a layer whose pictures came with the face (no font behind them): a name that matches one of the pictures reuses it (accents ignored),
+      // every other name is drawn with the project font, sized and coloured like the face's own letters
       const imp = await run(`
         project.language = 'it-IT';
         const e = await addElement('IMG_WEEK', { name: 'Imported week' });
@@ -1304,14 +1305,21 @@ app.whenReady().then(async () => {
         project.i18n = { languages: ['ro-RO', 'es-ES'], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
         reuseReport = [];
         await regenLanguageSets(e);
-        const same = (list) => list.map((n) => orig.indexOf(n)).join('');
-        const out = { es: same(e.sets['es-ES']), ro: same(e.sets['ro-RO']), noNew: e.images.join() === orig.join(), keptEs: reuseReport.find((r) => r.code === 'es-ES').kept, keptRo: reuseReport.find((r) => r.code === 'ro-RO').kept, fold: [foldName('SÂM'), foldName('Ținută'), foldName('ß'), foldName('Łódź')].join(',') };
+        await loadAllImages();
+        const es = e.sets['es-ES'], ro = e.sets['ro-RO'];
+        const rep = (c) => reuseReport.find((r) => r.code === c);
+        const look = importedLook(e);
+        const out = { reusedEs: es.filter((n) => orig.includes(n)).length, drawnEs: es.filter((n) => !orig.includes(n)).length, reusedRo: ro.filter((n) => orig.includes(n)).length,
+          drawnRo: ro.filter((n) => !orig.includes(n)).length, rep: [rep('es-ES').reused, rep('es-ES').drawn, rep('ro-RO').reused, rep('ro-RO').drawn].join('/'),
+          pics: ro.filter((n) => !orig.includes(n)).every((n) => imgMeta(n) && imgMeta(n).width > 4), noNew: e.images.join() === orig.join(), inkH: look.inkH, color: look.color,
+          fold: [foldName('SÂM'), foldName('Ținută'), foldName('ß'), foldName('Łódź')].join(',') };
         project.elements = project.elements.filter((x) => x !== e);
         project.language = 'en-US'; project.i18n = { languages: [], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
         return out;`);
-      check('translations: a face\'s own pictures are reused where a name matches (accents ignored), never redrawn with a font',
-        imp.noNew && imp.keptEs === 3 && imp.keptRo === 5 && imp.fold === 'SAM,TINUTA,SS,LODZ' && imp.es.length === 7,
-        `es keeps ${imp.keptEs} of 7 · ro keeps ${imp.keptRo} of 7 · fold ${imp.fold}`);
+      check('translations: a face\'s own pictures are reused where a name matches (accents ignored) and the other names are drawn',
+        imp.noNew && imp.reusedEs === 4 && imp.drawnEs === 3 && imp.reusedRo === 2 && imp.drawnRo === 5 && imp.rep === '4/3/2/5' && imp.pics
+        && imp.fold === 'SAM,TINUTA,SS,LODZ' && /^#[0-9a-f]{6}$/.test(imp.color) && imp.inkH > 4,
+        `es ${imp.reusedEs} reused + ${imp.drawnEs} drawn · ro ${imp.reusedRo} + ${imp.drawnRo} · letters ${imp.inkH}px ${imp.color} · fold ${imp.fold}`);
     }
     check('translations: app.json lists every language with its own name and description; one language stays as it was',
         JSON.stringify(o.i18n) === JSON.stringify({ 'en-US': { appName: 'Face' } }) && o.defaultLanguage === 'en-US'

@@ -265,10 +265,11 @@ Romanian reports 21) and picks that language's pictures and texts; a language it
 language generates exactly the code it always did. Text drawn into a picture (a baked label or scene art) cannot be translated: use a Text layer for
 words that need translating.
 
-**Faces that came with their own pictures.** The weekday / month pictures of an imported face cannot be redrawn in another language (there is no font to
-draw them with), so each language *reuses* them: a name that reads the same as one of the face's own pictures, accents ignored (`SÂM` = `SAM`, through the
-fallback table), takes that picture, and every other name stays as the face draws it. The status line says how many names of each language found a picture.
-**Re-render** with a font of your own draws them all when you want a complete translation.
+**Faces that came with their own pictures.** The weekday / month pictures of an imported face have no font behind them, so another language cannot
+be drawn in the face's own letters. Each language reuses what it can: a name that reads the same as one of the face's pictures, accents ignored (`SÂM` =
+`SAM`, through the fallback table), takes that picture. Every other name is **drawn** with the project font (Inter when there is none), at the height and in
+the colour measured from the face's own letters. The status line says how many names of each language were reused and how many drawn. For a matching
+look pick a font that resembles the face's (Glyph font in the Watchface panel) before translating, or use **Re-render** with a font to redraw the whole set.
 
 **Letters the font lacks.** A font without Ț, Ș, Ă … never gets a second typeface mixed in. Each missing letter is drawn from the font's own letter
 plus an accent when that is possible, else as its plain letter from the fallback table (Ț→T, Ș→S, Ă→A, Ł→L, Ø→O, Æ→AE, ß→ss …). Most plain letters
