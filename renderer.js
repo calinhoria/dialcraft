@@ -5506,11 +5506,6 @@ function friendlyLanguage(tag) {
   if (!t || !localeKnown(t)) return '';
   try { return new Intl.DisplayNames(['en'], { type: 'language', languageDisplay: 'standard' }).of(t) || t; } catch (e) { return t; }
 }
-function showLanguageName(tag) {
-  const el = $('projLangName'); if (!el) return;
-  const t = friendlyLanguage(tag) ? cleanLangTag(tag) : '';
-  el.textContent = !t ? (String(tag || '').trim() ? 'Not a language the editor knows' : '') : friendlyLanguage(t);
-}
 function renderProjectPanel() {
   if (!project) return;
   $('inpName').value = project.name || '';
@@ -5520,15 +5515,11 @@ function renderProjectPanel() {
   const dv = dev();
   $('projDeviceName').textContent = dv.name;
   $('projDevice').title = `${dv.label || dv.name} — click to retarget the project to another watch (scales the layout)`;
-  $('projLang').value = project.language || '';
-  $('projLang').placeholder = 'en-US';
-  $('projLang').title = languageSample();
   {
-    // one line: the languages added besides the project language, or an invitation to add some
+    // one line: the project language by name, then the languages added to it
     const ex = extraLanguages();
-    $('trLabel').textContent = ex.length ? `${ex.map((c) => (zeppLanguage(c) || { label: c }).label).join(', ')} · edit…` : 'Add languages…';
-    $('btnTranslate').title = ex.length ? 'The face follows the watch language: edit the names, texts and store info of each language' : 'Show the weekday and month names, texts and the store info in more than one language: the face follows the language the watch is set to';
-    syncPreviewLang(); showLanguageName(project.language || 'en-US');
+    $('trLabel').textContent = (friendlyLanguage(projectLanguage()) || projectLanguage()) + (ex.length ? ` + ${ex.map((c) => (zeppLanguage(c) || { label: c }).label).join(', ')}` : '');
+    syncPreviewLang();
   }
   const d = dev();
   $('screenInfo').textContent = `${d.w}×${d.h} px · designWidth ${d.designWidth} · ${d.shape === 'r' ? 'round' : d.shape === 's' ? 'square' : 'band'}`;
@@ -7590,9 +7581,10 @@ let trDraft = null, trTab = 'week';
 const TR_FORMS = [{ id: 'short', label: 'Short' }, { id: 'long', label: 'Full' }];
 function trClone() {
   const i = i18nOf();
-  return JSON.parse(JSON.stringify({ languages: extraLanguages(), names: i.names, strings: i.strings, meta: i.meta, fallback: i.fallback || {}, missing: i.missing || 'compose' }));
+  return JSON.parse(JSON.stringify({ defaultLang: defaultLangCode(), languages: extraLanguages(), names: i.names, strings: i.strings, meta: i.meta, fallback: i.fallback || {}, missing: i.missing || 'compose' }));
 }
-function trLanguages() { return [defaultLangCode(), ...trDraft.languages]; }
+function trDefault() { return (trDraft && trDraft.defaultLang) || defaultLangCode(); }
+function trLanguages() { return [trDefault(), ...trDraft.languages.filter((c) => c !== trDefault())]; }
 function trLabelOf(code) { const z = zeppLanguage(code); return z ? z.label : code; }
 function trTextLayers() { return elements().filter((e) => e.kind === 'TEXT' && !e.dataType && String(e.text || '').trim()); }
 function trBakedLayers() { return elements().filter((e) => (e.kind === 'TEXT' && !e.dataType && e.bakedImage) || (e.kind === 'IMG' && /^symbol_/.test(e.src || ''))); }
@@ -7608,7 +7600,7 @@ function trCell(value, placeholder, onInput) {
 function trHead(table, firstLabel) {
   const tr = document.createElement('tr');
   const th0 = document.createElement('th'); th0.textContent = firstLabel; tr.appendChild(th0);
-  for (const c of trLanguages()) { const th = document.createElement('th'); th.textContent = c + (c === defaultLangCode() ? ' (default)' : ''); th.title = trLabelOf(c); tr.appendChild(th); }
+  for (const c of trLanguages()) { const th = document.createElement('th'); th.textContent = (zeppLanguage(c) ? zeppLanguage(c).label : c) + (c === trDefault() ? ' (default)' : ''); th.title = c; th.title = trLabelOf(c); tr.appendChild(th); }
   table.appendChild(tr);
 }
 function trNamesTable(kind) {
@@ -7664,7 +7656,7 @@ function trLabelsTable() {
       const tr = document.createElement('tr');
       const k = document.createElement('td'); k.className = 'key'; k.textContent = e.name || 'Text'; tr.appendChild(k);
       for (const c of trLanguages()) {
-        if (c === defaultLangCode()) {
+        if (c === trDefault()) {
           const td = document.createElement('td'); const inp = document.createElement('input'); inp.type = 'text'; inp.value = e.text || ''; inp.readOnly = true; inp.title = 'The text of the layer itself (edit it in Properties)'; td.appendChild(inp); tr.appendChild(td);
         } else {
           const m = (trDraft.strings[e.id] = trDraft.strings[e.id] || {});
@@ -7735,11 +7727,15 @@ function trRender() {
   $('i18nCount').textContent = `· ${langs.length} language${langs.length === 1 ? '' : 's'}`;
   const chips = $('i18nChips'); chips.innerHTML = '';
   for (const c of langs) {
-    const chip = document.createElement('span'); chip.className = 'i18n-chip' + (c === defaultLangCode() ? ' def' : ''); chip.title = trLabelOf(c);
-    chip.appendChild(document.createTextNode(`${c} · ${trLabelOf(c)}`));
-    if (c !== defaultLangCode()) { const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.title = 'Remove this language'; x.onclick = () => { trDraft.languages = trDraft.languages.filter((l) => l !== c); trRender(); }; chip.appendChild(x); }
+    const chip = document.createElement('span'); chip.className = 'i18n-chip' + (c === trDefault() ? ' def' : ''); chip.title = c;
+    chip.appendChild(document.createTextNode(`${trLabelOf(c)}${c === trDefault() ? ' · default' : ''}`));
+    if (c !== trDefault()) { const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.title = 'Remove this language'; x.onclick = () => { trDraft.languages = trDraft.languages.filter((l) => l !== c); trRender(); }; chip.appendChild(x); }
     chips.appendChild(chip);
   }
+  const def = $('i18nDefault'); def.innerHTML = '';
+  for (const l of (META && META.languages) || []) { const o = document.createElement('option'); o.value = l.code; o.textContent = `${l.label} (${l.code})`; def.appendChild(o); }
+  def.value = trDefault();
+  def.onchange = () => { trDraft.defaultLang = def.value; trDraft.languages = trDraft.languages.filter((c) => c !== def.value); trRender(); };
   const sel = $('i18nAdd'); sel.innerHTML = '';
   const first = document.createElement('option'); first.value = ''; first.textContent = 'Add a language…'; sel.appendChild(first);
   for (const l of (META && META.languages) || []) { if (langs.includes(l.code)) continue; const o = document.createElement('option'); o.value = l.code; o.textContent = `${l.label} (${l.code})`; sel.appendChild(o); }
@@ -7770,6 +7766,7 @@ async function applyTranslations() {
   for (const id of Object.keys(d.strings)) { for (const c of Object.keys(d.strings[id])) if (!d.strings[id][c]) delete d.strings[id][c]; if (!Object.keys(d.strings[id]).length) delete d.strings[id]; }
   for (const k of Object.keys(d.meta)) { for (const c of Object.keys(d.meta[k])) if (!d.meta[k][c]) delete d.meta[k][c]; if (!Object.keys(d.meta[k]).length) delete d.meta[k]; }
   pushHistory();
+  if (d.defaultLang && d.defaultLang !== defaultLangCode()) { project.language = d.defaultLang; d.languages = d.languages.filter((c) => c !== d.defaultLang); }
   for (const k of Object.keys(d.fallback || {})) if (!d.fallback[k]) delete d.fallback[k];
   project.i18n = { languages: d.languages, names: d.names, strings: d.strings, meta: d.meta, fallback: d.fallback || {}, missing: d.missing || 'compose' };
   $('i18nModal').hidden = true; trDraft = null;
@@ -7792,7 +7789,6 @@ async function applyTranslations() {
   status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb);
 }
 $('btnTranslate').onclick = openTranslations;
-$('projLang').addEventListener('input', () => showLanguageName($('projLang').value));
 $('previewLangSel').onchange = () => { previewLang = $('previewLangSel').value; render(); };
 $('i18nCancel').onclick = () => { $('i18nModal').hidden = true; trDraft = null; };
 $('i18nSave').onclick = applyTranslations;
@@ -7805,36 +7801,11 @@ $('i18nReset').onclick = () => {
   else trDraft.meta = {};
   trRender();
 };
-$('projLang').onchange = (ev) => {
-  if (!project) return;
-  const v = ev.target.value.trim();
-  if (v && !localeKnown(v)) {
-    status(`“${v}” is not a language tag this browser knows (try ro-RO, de-DE, ja-JP…).`, true);
-    ev.target.value = project.language || '';
-    return;
-  }
-  pushHistory();
-  project.language = v || 'en-US';
-  setDirty(true);
-  refreshPanels();
-  status(`Project language: ${projectLanguage()} — ${languageSample()}. Existing sets keep their images until they are re-rendered.`);
-};
 function languageSample() {
   const w = localeNames('week', projectLanguage(), 'short');
   const m = localeNames('month', projectLanguage(), 'short');
   return `Mon → ${w[0]}, January → ${m[0]}, Sunday → ${localeNames('week', projectLanguage(), 'long')[6]}`;
 }
-function buildLangSuggest() {
-  const list = $('langSuggest');
-  if (!list) return;
-  list.innerHTML = '';
-  for (const tag of LANGUAGE_SUGGESTIONS) {
-    const o = document.createElement('option');
-    o.value = tag;
-    list.appendChild(o);
-  }
-}
-buildLangSuggest();
 $('projFont').onchange = (ev) => {
   glyphFont = ev.target.value || DEFAULT_GLYPH_FONT;
   if (project) { project.font = ev.target.value; scheduleCode(); buildGlyphsMenu(); }
