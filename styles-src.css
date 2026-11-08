@@ -671,7 +671,7 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 /* the language's readable name under the project language field */
 /* the Language button: the name on one line */
 #btnTranslate .fb-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; text-align: left; }
-.i18n-def { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+.i18n-def { display: flex; align-items: center; gap: 8px; font-size: 12.5px; white-space: nowrap; }
 .i18n-def select { background: #0d0f14; border: 1px solid var(--color-line); border-radius: 6px; padding: 4px 8px; color: var(--color-ink); }
 /* the same name under a component's own Language row */
 .lang-ctl { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }

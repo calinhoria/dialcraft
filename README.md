@@ -76,8 +76,8 @@
 | --- | --- |
 | <img src="docs/screenshots/image-picker.png" alt="Image picker with previews"> | <img src="docs/screenshots/font-library.png" alt="Font library with Romanian coverage"> |
 | **Image picker.** Every image field shows a preview; choosing opens a searchable grid of the project's images. | **Font library.** Fonts are marked ✓ / ≈ / ✕ for the project language. Here, `SÂMBĂTĂ` is drawn in Orbitron, which has no Ă. |
-| <img src="docs/screenshots/import.png" alt="Import report"> | |
-| **Import report.** What came across, what was traced, and what has no designer equivalent. | |
+| <img src="docs/screenshots/import.png" alt="Import report"> | <img src="docs/screenshots/translations-weekdays.png" alt="Translations table with weekday names in English, Romanian and German"> |
+| **Import report.** What came across, what was traced, and what has no designer equivalent. | **Translations.** One face in several languages: built-in weekday and month names in an editable table, plus texts, store info and a fallback table for letters a font lacks. |
 
 ## Sample watchfaces
 

@@ -4592,7 +4592,7 @@ function glyphStyleRows(frag, add, e) {
     }), isImp ? 'The pictures the face came with: Size scales them, the fill paints over them' : 'Typeface these images are rasterised from');
     const cov = isImp ? { native: true } : coverageSummary(st.font, need);
     if (!cov.native) {
-      const n = propNote(`${st.font}: ${cov.text}.${cov.system.length ? ' Pick a font marked without “lacks” to keep one typeface.' : ''}${cov.plain.length ? ' The plain letters come from the fallback table: change them in Languages & translations → Letters.' : ''}`);
+      const n = propNote(`${st.font}: ${cov.text}.${cov.system.length ? ' Pick a font marked without “lacks” to keep one typeface.' : ''}${cov.plain.length ? ' The plain letters come from the fallback table: change them in the Language row → Letters tab.' : ''}`);
       n.classList.add(cov.system.length ? 'warn' : 'info');
       frag.appendChild(n);
     }
@@ -5520,7 +5520,10 @@ function renderProjectPanel() {
   {
     // one line: the project language by name, then the languages added to it
     const ex = extraLanguages();
-    $('trLabel').textContent = (friendlyLanguage(projectLanguage()) || projectLanguage()) + (ex.length ? ` + ${ex.map((c) => (zeppLanguage(c) || { label: c }).label).join(', ')}` : '');
+    const def = (zeppLanguage(projectLanguage()) || {}).label || friendlyLanguage(projectLanguage()) || projectLanguage();
+    const names = ex.map((c) => (zeppLanguage(c) || { label: c }).label);
+    $('trLabel').textContent = def + (ex.length ? ` +${ex.length}` : '');
+    $('btnTranslate').title = ex.length ? `${[def, ...names].join(', ')} — the face follows the language the watch is set to. Click to edit the names, texts and store info of each language.` : `${def}. Add languages and the face follows the language the watch is set to (weekday and month names, texts, store info).`;
     syncPreviewLang();
   }
   const d = dev();

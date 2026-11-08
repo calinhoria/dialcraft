@@ -242,8 +242,14 @@ it, so the label does not jump from day to day.
 
 ### Translations: one face, several languages
 
-**Watchface ▸ Languages & translations…** makes the face follow the language the watch is set to. Add languages from the 34 that Zepp OS
-offers; the table then has one column per language and these tabs:
+The **Language** row of the Watchface panel shows the face's language by name (`English (US)`, or `English (US) +2` once other languages are added).
+Click it to open the Languages dialog: pick the **default language** (the one the face is designed in, and the one it shows when the watch uses a
+language you did not add), **add languages** from the 34 that Zepp OS offers, and translate. The face then follows the language the watch is set to.
+The toolbar's language switch (it ends with **＋ Add more…**, which opens the same dialog) previews each language.
+
+![The editor: the Language row, and the toolbar's language switch with the preview in Romanian](screenshots/translations-editor.png)
+
+The table has one column per language and these tabs:
 
 - **Weekdays** and **Months** (short and full names): every cell shows the built-in name (the browser's `Intl` data: `TUE` → `MAR`, `TUESDAY` →
   `marți` in Romanian). Type over any cell to change it; edited cells are marked, the rest stays built-in. **Apply** redraws the pictures of every
@@ -252,7 +258,9 @@ offers; the table then has one column per language and these tabs:
 - **Letters**: see below.
 - **Store info**: the name and description the Zepp app shows, per language (`app.json` `i18n`).
 
-The toolbar gets a language switch to preview each language. On the watch the face reads `getLanguage()` (`@zos/settings`, checked on a Bip 6:
+![The Translations dialog, Weekdays tab: built-in names, editable cell by cell](screenshots/translations-weekdays.png)
+
+On the watch the face reads `getLanguage()` (`@zos/settings`, checked on a Bip 6:
 Romanian reports 21) and picks that language's pictures and texts; a language it has no set for shows the project language. A face with a single
 language generates exactly the code it always did. Text drawn into a picture (a baked label or scene art) cannot be translated: use a Text layer for
 words that need translating.
@@ -262,6 +270,8 @@ plus an accent when that is possible, else as its plain letter from the fallback
 come from dropping the accent, the rest are listed in the editor. The **Letters** tab lists every letter the chosen languages need, whether the font
 draws it, and lets every plain letter be edited; a switch chooses *compose, then plain letter* (default), *always the plain letter*, or *let a system
 font fill in*. The Font list and the layer's note say which letters fall back.
+
+![The Letters tab with a font that has no Ă or Ț: they fall back to A and T, and every plain letter can be edited](screenshots/translations-letters.png)
 
 **Letters a font lacks.** A canvas silently borrows a missing glyph from a system
 font, which is how `SÂMBĂTĂ` used to come out in two typefaces. The designer reads
