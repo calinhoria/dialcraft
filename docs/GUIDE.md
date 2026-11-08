@@ -91,9 +91,9 @@ Other scripts:
   saves, Esc cancels. A group can also be renamed from the *Group name* row in
   Properties when the whole group is selected.
 - **Add ▾ and Presets ▾** open a menu with a search box (focused on open; Enter picks the first match,
-  Esc closes). Above the face, under the watch name, a row of pills: **Normal · AOD · Edit · Run code · Live clock**, the preview
-  language, and selectors for a colour theme and a background variant when the face has them. A face with complication slots gets a
-  second row with two linked pills: pick the **complication**, then what it **shows** (the choices that complication offers).
+  Esc closes). Above the face, under the watch name: the pills **Normal · AOD · Edit · Run code · Live clock**. Below the face: the preview
+  language (it ends with **＋ Add more…**), and selectors for a colour theme and a background variant when the face has them. A face with
+  complication slots gets a row of two linked pills: pick the **complication**, then what it **shows** (the choices that complication offers).
 - **Canvas** — drawn at device pixel size and CSS-scaled, so what you see is what
   the watch renders. Drag to move, corner handles to resize, the square on a
   circle's rim to change the radius. Snapping snaps to other layers, to the

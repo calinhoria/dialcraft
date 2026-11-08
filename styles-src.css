@@ -635,6 +635,9 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 .center-tools button { white-space: nowrap; }
 .center-tools select { background: #0d0f14; border: 1px solid var(--color-line); color: var(--color-ink); font-size: 12px; padding: 4px 10px; border-radius: 999px; cursor: pointer; max-width: 170px; }
 .center-tools select:hover { border-color: #39415a; background: #151a24; }
+/* the pills under the watch: language, theme, variant, complications (the row vanishes when none of them applies) */
+.center-tools.bottom-tools { margin: 6px 0 2px; }
+.center-tools.bottom-tools:not(:has(> :not([hidden]))) { display: none; }
 /* complications: one row, a slot pill and then the values that slot can show */
 .center-tools .slot-pills { flex-basis: 100%; display: flex; justify-content: center; align-items: center; gap: 6px; }
 .center-tools .slot-pills[hidden] { display: none; }
