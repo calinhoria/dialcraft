@@ -7,6 +7,7 @@
 // kept inside the project folder (fonts/<file>) so a project stays portable.
 
 const BUNDLED_FONTS = [
+  { family: 'Open Sans', file: 'assets/fonts/OpenSans-Bold.ttf', cat: 'General' },
   { family: 'Orbitron', file: 'assets/fonts/Orbitron-Bold.ttf', cat: 'Clean digital' },
   { family: 'Rajdhani', file: 'assets/fonts/Rajdhani-SemiBold.ttf', cat: 'Clean digital' },
   { family: 'Exo 2', file: 'assets/fonts/Exo2-SemiBold.ttf', cat: 'Clean digital' },
@@ -38,7 +39,6 @@ const BUNDLED_FONTS = [
   { family: 'Josefin Sans', file: 'assets/fonts/JosefinSans-SemiBold.ttf', cat: 'Minimal' },
   { family: 'Roboto Condensed', file: 'assets/fonts/RobotoCondensed-Bold.ttf', cat: 'General' },
   { family: 'Roboto Mono', file: 'assets/fonts/RobotoMono-Bold.ttf', cat: 'General' },
-  { family: 'Open Sans', file: 'assets/fonts/OpenSans-Bold.ttf', cat: 'General' },
   { family: 'Lato', file: 'assets/fonts/Lato-Bold.ttf', cat: 'General' },
 ];
 

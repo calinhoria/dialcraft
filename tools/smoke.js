@@ -1340,6 +1340,35 @@ app.whenReady().then(async () => {
         fi.shown && fi.closed && !fi.again && /fallback font/.test(fi.text) && /import the font the original face used/.test(fi.text) && /drawn with the fallback font \w+/.test(fi.text),
         fi.text.slice(0, 110));
     }
+    {
+      // the other translation-dependent components: month names follow the languages too (own pictures reused, others drawn), and a Text layer's export
+      // swaps a letter its font file lacks for the plain letter (the stored text stays as typed)
+      const oc = await run(`
+        project.language = 'it-IT';
+        project.i18n = { languages: ['es-ES'], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+        const m = await addElement('IMG_DATE', { name: 'Month names', part: 'month', isCharacter: true });
+        rememberGlyphStyle(m, 40); m.images = await genLabelSet(m, 'month');
+        const gen = m.images.slice();
+        reuseReport = [];
+        await regenLanguageSets(m);
+        const monthSet = (m.sets['es-ES'] || []).length;
+        m.glyph = Object.assign({}, m.glyph, { font: IMPORTED_FONT });
+        await regenLanguageSets(m);
+        const rep = reuseReport.find((r) => r.code === 'es-ES');
+        const t = await addElement('TEXT', { name: 'Fb text', text: 'PAȘI ȚARĂ' });
+        t.fontFile = 'Orbitron-Bold.ttf';
+        project.i18n.strings[t.id] = { 'es-ES': 'ȘTEFAN' };
+        const code = projectForCode();
+        const te = code.elements.find((x) => x.id === t.id);
+        const out = { monthSet, reportTotal: rep && rep.total, reused: rep && rep.reused, drawn: rep && rep.drawn, exportText: te.text, exportTr: code.i18n.strings[t.id]['es-ES'], stored: t.text, storedTr: project.i18n.strings[t.id]['es-ES'], missing: textMissingChars(t) };
+        project.elements = project.elements.filter((x) => x !== m && x !== t);
+        project.language = 'en-US'; project.i18n = { languages: [], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+        return out;`);
+      check('translations: month names follow the languages too; a Text layer exports the plain letter where its font lacks one (stored text unchanged)',
+        oc.monthSet === 12 && oc.reportTotal === 12 && oc.reused + oc.drawn === 12 && oc.reused >= 1
+        && oc.exportText === 'PASI TARA' && oc.exportTr === 'STEFAN' && oc.stored === 'PAȘI ȚARĂ' && oc.storedTr === 'ȘTEFAN' && /Ș/.test(oc.missing),
+        `months ${oc.monthSet} · ${oc.reused} reused + ${oc.drawn} drawn · export “${oc.exportText}” / “${oc.exportTr}” · stored “${oc.stored}”`);
+    }
     check('translations: app.json lists every language with its own name and description; one language stays as it was',
         JSON.stringify(o.i18n) === JSON.stringify({ 'en-US': { appName: 'Face' } }) && o.defaultLanguage === 'en-US'
         && m.i18n['ro-RO'].appName === 'Ceas' && m.i18n['ro-RO'].description === 'Un ceas' && m.i18n['de-DE'].appName === 'Face' && m.i18n['en-US'].appName === 'Face' && m.defaultLanguage === 'en-US',

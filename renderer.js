@@ -78,7 +78,7 @@ let testData = {};                    // dataType key -> preview value
 const imgCache = new Map();           // name -> HTMLImageElement
 // copies the designer keeps for itself: colour-theme variants and the original pictures of a restyled imported set
 const HIDDEN_IMG_RE = /__(t\d+|src)\.png$/i;
-let glyphFont = 'Orbitron';
+let glyphFont = 'Open Sans';
 
 // geometric kinds whose anchor is a centre rather than a top-left corner
 const CENTER_KINDS = new Set(['CIRCLE', 'ARC_PROGRESS', 'TIME_POINTER', 'DATE_POINTER']);
@@ -659,7 +659,7 @@ function fillFontSelect(sel) {
   for (const f of BUNDLED_FONTS) addTo(f.cat || 'Bundled', f);
   sel.value = sel.id === 'projFont' ? ((project && project.font) || '') : glyphFont;
 }
-const DEFAULT_GLYPH_FONT = 'Orbitron';
+const DEFAULT_GLYPH_FONT = 'Open Sans';   // a plain sans with every Latin accent; Orbitron (techno) is a choice, not the default
 
 // font_#_0-9 style asset naming rules from the watchface specification
 let glyphSetSeq = 1;
@@ -1487,8 +1487,36 @@ function bakeReason(e) {
 function textMissingChars(e) {
   const fam = e && e.fontFile ? familyForFontFile(e.fontFile) : null;
   if (!fam) return '';
-  const r = coverageReport(fam, textOf(e));
-  return [...r.alternate, ...r.composed, ...r.system].join(' ');
+  // the text of the layer and every translation of it
+  const tr = (project && project.i18n && project.i18n.strings && project.i18n.strings[e.id]) || {};
+  const r = coverageReport(fam, [textOf(e), ...Object.values(tr)].join(''));
+  return [...r.alternate, ...r.composed, ...r.plain, ...r.system].join(' ');
+}
+// A Text layer is drawn live on the watch with the font file it ships, so a letter that file lacks would not appear. The export
+// writes the plain letter from the fallback table in its place (Ș→S) — for the text and every translation; what is stored is never changed.
+function fallbackText(fam, text) {
+  return [...String(text == null ? '' : text)].map((ch) => (fontHas(fam, ch) ? ch : (plainLetterOf(ch) || ch))).join('');
+}
+function projectForCode() {
+  if (!project) return project;
+  let changed = false;
+  const fontOf = (e) => (e && e.kind === 'TEXT' && !e.dataType && e.fontFile ? familyForFontFile(e.fontFile) : null);
+  const els = project.elements.map((e) => {
+    const fam = fontOf(e); if (!fam) return e;
+    const t = fallbackText(fam, e.text);
+    if (t === String(e.text == null ? '' : e.text)) return e;
+    changed = true; return { ...e, text: t };
+  });
+  let strings = project.i18n && project.i18n.strings;
+  if (strings) {
+    const out = {};
+    for (const [id, m] of Object.entries(strings)) {
+      const fam = fontOf(project.elements.find((x) => x.id === id));
+      out[id] = fam ? Object.fromEntries(Object.entries(m).map(([c, t]) => { const f = fallbackText(fam, t); if (f !== t) changed = true; return [c, f]; })) : m;
+    }
+    strings = out;
+  }
+  return changed ? { ...project, elements: els, i18n: { ...project.i18n, strings } } : project;
 }
 // the watch has no fake-bold either: pick the heavy end of the family
 function textWeight(e) { const w = +e.weight || 400; return e.bold ? Math.max(700, w) : w; }
@@ -1944,7 +1972,9 @@ function drawElement(c, e) {
       const b = elBox(e);
       const name = labelPics(e)[weekIndexS()];
       const cell = setCell(e);
-      put(c, name, b.x, b.y, cell.w, cell.h);
+      // another language's pictures differ in width: the watch draws each at its own size, so the preview does too
+      const own = previewLang && e.sets && e.sets[previewLang] ? imgMeta(name) : null;
+      put(c, name, b.x, b.y, own ? own.width : cell.w, own ? own.height : cell.h);
       break;
     }
     case 'TEXT': {
@@ -3214,11 +3244,14 @@ function imageField(obj, key, { onChange } = {}) {
 // expects, and the editor one click away.
 function imageSetField(e, { buttons = [] } = {}) {
   const field = setFieldOf(e);
-  const list = e[field] || [];
+  // while the preview shows another language, the strip shows that language's pictures (read-only; Edit… still edits the default set)
+  const langSet = field === 'images' && labelKind(e) && previewLang && e.sets && e.sets[previewLang] && e.sets[previewLang].length ? e.sets[previewLang] : null;
+  const list = langSet || e[field] || [];
   const wrap = mkEl('div', 'setfield');
   const strip = mkEl('div', 'sf-strip');
   const shown = list.slice(0, 40);
-  const labels = e.kind === 'IMG_WEEK' ? weekNames(e) : labelKind(e) === 'month' ? monthNames(e) : null;
+  const labels = langSet ? localeNames(labelKind(e), previewLang, e.labelForm || 'short').map((n) => applyLabelCase(n, labelCaseOf(e)))
+    : e.kind === 'IMG_WEEK' ? weekNames(e) : labelKind(e) === 'month' ? monthNames(e) : null;
   shown.forEach((n, i) => {
     const c = thumbEl(n, 'sf-cell');
     c.dataset.i = String(i);
@@ -3240,7 +3273,7 @@ function imageSetField(e, { buttons = [] } = {}) {
   const foot = mkEl('div', 'sf-foot');
   const first = list.map(imgMeta).find(Boolean);
   foot.appendChild(mkEl('span', 'sf-count', `${list.length} image${list.length === 1 ? '' : 's'}${first ? ` · ${first.width}×${first.height}` : ''}`));
-  const hint = setHint(e.kind, e);
+  const hint = langSet ? `${trLabelOf(previewLang)} · preview language` : setHint(e.kind, e);
   if (hint) foot.appendChild(mkEl('span', 'sf-hint', hint));
   foot.appendChild(mkEl('span', 'flex-1'));
   for (const b of buttons) foot.appendChild(b);
@@ -5113,7 +5146,7 @@ function propsKind(e) {
       if (missing) {
         const n = propNote(`${familyForFontFile(e.fontFile)} has no ${missing} — ${needsTextBake(e)
           ? 'they are drawn from a system font in the baked image.'
-          : 'the watch cannot draw them with this font. Pick a font that has them.'}`);
+          : 'the export writes the plain letter from the fallback table instead (Ș→S). Pick a font that has them to keep the accents.'}`);
         n.classList.add('warn');
         frag.appendChild(n);
       }
@@ -5442,7 +5475,7 @@ async function refreshCode() {
   if (!project) return;
   try {
     await bakedTextImages();      // gives codegen the baked names for styled text
-    const res = await API.generateCode({ project });
+    const res = await API.generateCode({ project: projectForCode() });
     $('code').textContent = res.code || '// (no code)';
     const w = $('codeWarn');
     if (res.warnings && res.warnings.length) {
@@ -5911,6 +5944,10 @@ function importedLook(e) {
   const color = weight ? `#${hex(sum[0] / weight)}${hex(sum[1] / weight)}${hex(sum[2] / weight)}` : '#ffffff';
   return { inkH, color };
 }
+// The font that draws the names a face's own pictures cannot give: a font you imported into the project when there is one (it is the
+// one meant to match), otherwise Open Sans Bold, a plain sans that carries every Latin accent.
+const FALLBACK_LABEL_FONT = 'Open Sans';
+function fallbackFontFor() { return project.font && customFont(project.font) ? project.font : FALLBACK_LABEL_FONT; }
 async function reuseLabelSet(e, kind, code) {
   const form = e.labelForm || 'short', imgs = e.images || [];
   const have = localeNames(kind, languageOf(e), form).map(foldName);
@@ -5922,17 +5959,17 @@ async function reuseLabelSet(e, kind, code) {
     if (j >= 0 && imgs[j]) out[i] = imgs[j]; else todo.push(i);
   }
   if (todo.length) {
-    const look = importedLook(e), fam = project.font || 'Inter', t = kind === 'week' ? 'w' : 'm';   // a neutral sans when the project has no font of its own
+    const look = importedLook(e), fam = fallbackFontFor(), t = kind === 'week' ? 'w' : 'm';
 
     const size = Math.max(10, Math.min(200, Math.round(look.inkH / 0.72)));   // a capital is about 72% of the font size
     const key = '_' + String(code).replace(/[^A-Za-z0-9]+/g, '_'), pre = `${kind}${String(e.id || '').slice(-4)}`;
     const drawn = await genGlyphImages(todo.map((i) => ({ tag: `${t}${i + 1}${key}`, char: names[i], name: `${pre}${key}_${t}${i + 1}.png` })), {
-      prefix: pre, mono: true, replace: true, size, family: fam, weight: glyphOpts.weight, style: { fill: 'solid', color: look.color, size },
+      prefix: pre, mono: true, replace: true, size, family: fam, weight: 700, style: { fill: 'solid', color: look.color, size },
       align: e.labelAlign || 'center', metricsRef: labelMetrics(e),
     });
     todo.forEach((i, k) => { out[i] = drawn[k]; });
   }
-  reuseReport.push({ layer: e.name || (kind === 'week' ? 'Weekday' : 'Month'), code, reused: imgs.length - todo.length, drawn: todo.length, total: imgs.length, font: project.font || 'Inter' });
+  reuseReport.push({ layer: e.name || (kind === 'week' ? 'Weekday' : 'Month'), code, reused: imgs.length - todo.length, drawn: todo.length, total: imgs.length, font: todo.length ? fallbackFontFor() : '' });
   return out;
 }
 // the weekday / month pictures of a layer in every other language of the project (e.sets)
@@ -7796,7 +7833,7 @@ function trRender() {
   body.scrollTop = top;
   const imported = elements().filter((e) => labelKind(e) && (e.images || []).length && importedLabels(e)).length;
   $('i18nNote').textContent = trTab === 'week' || trTab === 'month'
-    ? 'The pictures of every weekday / month layer are redrawn in each language with the layer\'s own font and size (Names and Case in Properties apply). A language the watch is not set to is never shown.' + (imported ? ` ${imported} layer${imported === 1 ? '' : 's'} came with ${imported === 1 ? 'its' : 'their'} own pictures: a name that matches one of them (accents ignored) reuses it, the others are drawn with the project font (${project.font || 'Inter'}) sized and coloured like the face's letters.` : '')
+    ? 'The pictures of every weekday / month layer are redrawn in each language with the layer\'s own font and size (Names and Case in Properties apply). A language the watch is not set to is never shown.' + (imported ? ` ${imported} layer${imported === 1 ? '' : 's'} came with ${imported === 1 ? 'its' : 'their'} own pictures: a name that matches one of them (accents ignored) reuses it, the others are drawn with Open Sans (or your imported font), sized and coloured like the face's letters.` : '')
     : trTab === 'letters' ? 'The table is used only for letters the chosen font does not have. Letters the font draws itself are never replaced.'
     : trTab === 'labels' ? 'Texts the watch shows by itself (data readings) follow the watch language already. A layer without a translation keeps its own text in every language.'
       : 'The name and description the Zepp app shows for the watchface, in each language.';
@@ -7865,7 +7902,7 @@ $('btnTranslate').onclick = openTranslations;
 $('previewLangSel').onchange = () => {
   const v = $('previewLangSel').value;
   if (v === '__more') { $('previewLangSel').value = previewLang; openTranslations(); return; }
-  previewLang = v; render();
+  previewLang = v; refreshPanels(); render();
 };
 $('i18nCancel').onclick = () => { $('i18nModal').hidden = true; trDraft = null; };
 $('i18nSave').onclick = applyTranslations;
@@ -8127,7 +8164,7 @@ $('logFolder').onclick = () => { if (lastLogPath) API.showInFolder(lastLogPath);
 $('btnExportZeus').onclick = async () => {
   if (!project) return;
   stopCodeRun();
-  const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
+  const payload = { project: projectForCode(), images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
   const res = await API.exportZeus(payload);
   if (!res) return;
   if (res.ok === false) { openLogModal('Zeus export failed', '', res.error); return; }
@@ -8144,7 +8181,7 @@ $('btnBuild').onclick = async () => {
   stopCodeRun();
   openLogModal('Zeus build', '', 'running the Zeus CLI…');
   appendLog('Exporting the project first…');
-  const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
+  const payload = { project: projectForCode(), images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
   // an animated face (code, or frame animations) also gets a GIF of it moving, for the store folder
   if ((project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false)) {
     try {
@@ -8253,8 +8290,8 @@ function lintProject() {
       else if (!fam) add('info', `“${label}”: ${e.fontFile} will be copied into assets/${d.assetDir}/fonts/ for the build.`);
     }
     if (e.kind === 'TEXT' && textMissingChars(e)) {
-      add(needsTextBake(e) ? 'info' : 'warn', `“${label}”: ${familyForFontFile(e.fontFile)} has no ${textMissingChars(e)} — ${needsTextBake(e)
-        ? 'a system font fills them in in the baked image' : 'the watch cannot draw them with this font'}.`);
+      add('info', `“${label}”: ${familyForFontFile(e.fontFile)} has no ${textMissingChars(e)} — ${needsTextBake(e)
+        ? 'a system font fills them in in the baked image' : 'the export uses the plain letter from the fallback table (Ș→S)'}.`);
     }
     if (e.kind === 'IMG_ANIM' && showAllowed(e.show, 'aod')) add('warn', `“${label}” is an animation shown in AOD — the spec discourages that.`);
     if (e.kind === 'TIME_POINTER' && e.second && showAllowed(e.show, 'aod')) {
@@ -8574,7 +8611,7 @@ $('fontRemove').onclick = () => {
   for (const e of used) e.fontFile = '';
   customFonts.splice(customFonts.indexOf(rec), 1);
   fontCache.delete(rec.family);
-  if (glyphFont === rec.family) useGlyphFont('Orbitron');
+  if (glyphFont === rec.family) useGlyphFont(DEFAULT_GLYPH_FONT);
   if (used.length) status(`Removed “${rec.family}” and unlinked it from ${used.length} layer(s).`);
   else status(`Removed “${rec.family}”.`);
   fillFontSelect($('projFont'));
@@ -8780,7 +8817,7 @@ function fmtBytes(n) {
 async function installPayload() {
   stopCodeRun();
   return {
-    project: { ...project, fonts: projectFontsPayload() },
+    project: { ...projectForCode(), fonts: projectFontsPayload() },
     images: await exportImagesPayload(),
     fonts: fontRecords(),
     previewBase64: composePreviewB64(),

@@ -267,9 +267,9 @@ words that need translating.
 
 **Faces that came with their own pictures.** The weekday / month pictures of an imported face have no font behind them, so another language cannot
 be drawn in the face's own letters. Each language reuses what it can: a name that reads the same as one of the face's pictures, accents ignored (`SÂM` =
-`SAM`, through the fallback table), takes that picture. Every other name is **drawn** with the project font (Inter when there is none), at the height and in
+`SAM`, through the fallback table), takes that picture. Every other name is **drawn** with **Open Sans** (bold; or the font you imported into the project, which is the one meant to match), at the height and in
 the colour measured from the face's own letters. The status line says how many names of each language were reused and how many drawn. For a matching
-look pick a font that resembles the face's (Glyph font in the Watchface panel) before translating, or use **Re-render** with a font to redraw the whole set.
+look import the font the original face used (the Glyph font in the Watchface panel), or use **Re-render** with a font to redraw the whole set.
 After you add a language to such a face a notice says exactly this: how many names were reused and drawn, which fallback font drew them, and that importing
 the font the original face used (the button opens the Font library) and applying again makes the style match.
 
@@ -280,6 +280,13 @@ plus an accent when that is possible, else as its plain letter from the fallback
 come from dropping the accent, the rest are listed in the editor. The **Letters** tab lists every letter the chosen languages need, whether the font
 draws it, and lets every plain letter be edited; a switch chooses *compose, then plain letter* (default), *always the plain letter*, or *let a system
 font fill in*. The Font list and the layer's note say which letters fall back.
+
+A **Text** layer is drawn live on the watch with the font file it ships, so a letter that file lacks would not appear there. The export writes the plain
+letter from the same table in its place (`Ș` → `S`), for the text and for every translation of it; what you typed is never changed, and the layer's note and
+the Project check say which letters are swapped. Month names follow the languages like weekday names do (own pictures reused, the others drawn).
+
+**Fonts.** New glyph sets are drawn in **Open Sans** (a plain sans with every Latin accent), and it comes first in every font list: the project's Glyph font, a
+layer's Font, a Text layer's font file and the Font library. Orbitron and the other display fonts are a choice, not the default.
 
 ![The Letters tab with a font that has no Ă or Ț: they fall back to A and T, and every plain letter can be edited](screenshots/translations-letters.png)
 
