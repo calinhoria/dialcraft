@@ -988,7 +988,9 @@ function digitTextFor(e) {
       const d = dtByKey(e.dataType);
       // the widget shows the reading as it is (22°, 8670 steps); the data type's
       // digit count is the *box* it stays in, not a padding request
-      const raw = valueString(e.dataType);
+      let raw = valueString(e.dataType);
+      // zero padding: the alarm shows both parts as two digits (07:03)
+      if (+e.padding && e.dataType === 'ALARM_CLOCK') { const m = /^\s*(\d{1,2})\s*:\s*(\d{1,2})\s*$/.exec(String(dtValue('ALARM_CLOCK'))); if (m) raw = `${m[1].padStart(2, '0')}:${m[2].padStart(2, '0')}`; }
       // a reading with a decimal point keeps it when the layer has a dot picture
       const dotted = !!(e.dot && d && d.dot);
       // a clock-like reading (sunrise, sunset) keeps its colon when the layer has a separator picture
@@ -999,6 +1001,8 @@ function digitTextFor(e) {
         while (k > 0 && left > 0) { k--; if (t[k] !== '.' && t[k] !== ':') left--; }
         t = t.slice(k);
       }
+      // zero padding fills a plain number up to the data type's digit count (battery 58 → 058)
+      if (+e.padding && d && d.digits && !d.colon && !dotted && /^\d+$/.test(t)) t = t.padStart(d.digits, '0');   // not the clock-like readings: their digit count includes the colon
       // a negative reading puts the layer's minus picture in front, when it has one
       return e.negative && /^\s*-/.test(raw) && t ? '-' + t : t;
     }
@@ -4961,6 +4965,7 @@ function propsKind(e) {
       img('Decimal', 'dot');
       img('Negative', 'negative');
       img('Invalid', 'invalid');
+      add('Zero padding', ctlCheck(e, 'padding'), 'The watch fills the reading with leading zeros: the alarm 07:03 instead of 7:3, the battery 058% instead of 58% (padding: true on the widget)');
       glyphStyleRows(frag, add, e);
       break;
     case 'TEXT': {

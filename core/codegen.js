@@ -327,6 +327,8 @@ function emitElement(el, ctx, out) {
       else if (el.dataType) kv(L, 'type', `ui.data_type.${el.dataType}`);
       kv(L, 'font_array', arrays[arrName(el)]);
       if (el.hSpace) kv(L, 'h_space', p(el.hSpace));
+      // zero padding: the watch fills the reading with leading zeros (alarm 07:03 instead of 7:3, battery 058%)
+      if (num(el.padding)) kv(L, 'padding', 'true');
       kv(L, 'align_h', `ui.align.${el.alignH || 'LEFT'}`);
       if (el.unit) { kv(L, 'unit_en', asset(el, 'unit')); kv(L, 'unit_sc', asset(el, 'unit')); kv(L, 'unit_tc', asset(el, 'unit')); }
       // the unit shown when the watch is set to imperial (mi, °F …)

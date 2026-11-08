@@ -1012,7 +1012,7 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       const dt = nameOf(p.type);
       return el('TEXT_IMG', {
         name: (dt && dataType(dt) ? dataType(dt).label : 'Reading'), ...box,
-        dataType: dt, images: imgs(p.font_array), hSpace: num(p.h_space), alignH: alignOf(p.align_h),
+        dataType: dt, images: imgs(p.font_array), hSpace: num(p.h_space), alignH: alignOf(p.align_h), padding: p.padding ? 1 : 0,
         unit: img(p.unit_en) || '', dot: img(p.dot_image) || '', negative: img(p.negative_image) || '',
         unitImperial: img(p.imperial_unit_en || p.imperial_unit_sc || p.imperial_unit_tc) || '',
         invalid: img(Array.isArray(p.invalid_image) ? p.invalid_image[0] : p.invalid_image) || '',
