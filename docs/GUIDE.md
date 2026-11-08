@@ -224,17 +224,16 @@ colour and fill* below.
 
 ### Language and names
 
-Weekday and month names are not hard-coded: the project has a **Language**
-(BCP-47 tag, e.g. `en-US`, `ro-RO`, `ja-JP`) and every name is asked of the
-browser's `Intl` data, so any language Electron ships works — no table, no
-library. A layer can override the project language in its own **Language** row,
-and weekday/month layers add:
+Weekday and month names are not hard-coded: the project has a **Language** (the
+Language row of the Watchface panel, `English (US)`, `Romanian` …) and every name
+is asked of the browser's `Intl` data, so any language Electron ships works — no
+table, no library. The language is a project setting (see *Translations* below),
+not a per-layer one. Weekday / month layers have:
 
 | Row | Values |
 | --- | --- |
 | Names | *Short* (`Mon`), *Full* (`Monday`), *Narrow* (`M`) |
 | Case | `UPPERCASE` (the default, as the designer has always drawn weekday sets), the language's own casing (`Mon`), `Capitalize` or `lowercase` |
-| Language | empty = the project language, or a tag for this layer alone |
 
 Each weekday / month layer owns its set, so two layers in two languages or
 styles never overwrite each other. The names share one cell — as wide as the
@@ -265,6 +264,11 @@ On the watch the face reads `getLanguage()` (`@zos/settings`, checked on a Bip 6
 Romanian reports 21) and picks that language's pictures and texts; a language it has no set for shows the project language. A face with a single
 language generates exactly the code it always did. Text drawn into a picture (a baked label or scene art) cannot be translated: use a Text layer for
 words that need translating.
+
+**Faces that came with their own pictures.** The weekday / month pictures of an imported face cannot be redrawn in another language (there is no font to
+draw them with), so each language *reuses* them: a name that reads the same as one of the face's own pictures, accents ignored (`SÂM` = `SAM`, through the
+fallback table), takes that picture, and every other name stays as the face draws it. The status line says how many names of each language found a picture.
+**Re-render** with a font of your own draws them all when you want a complete translation.
 
 **Letters the font lacks.** A font without Ț, Ș, Ă … never gets a second typeface mixed in. Each missing letter is drawn from the font's own letter
 plus an accent when that is possible, else as its plain letter from the fallback table (Ț→T, Ș→S, Ă→A, Ł→L, Ø→O, Æ→AE, ß→ss …). Most plain letters

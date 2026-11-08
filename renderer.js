@@ -4424,37 +4424,10 @@ function labelRows(add, e, kind) {
       : 'Jan, January or J — written in the language below and rasterised as images');
   add('Case', ctlSelect(labelCaseOf(e), LABEL_CASES, (v) => { e.labelCase = v; relabelGlyphs(e); }),
     'UPPERCASE (the default), the language’s own casing, Capitalize or lowercase');
-  add('Language', langInput(e), `Empty uses the project language (${projectLanguage()})`);
   add('Label align', ctlSelect(e.labelAlign || 'center', [
     { value: 'left', label: 'Left' }, { value: 'center', label: 'Center' }, { value: 'right', label: 'Right' },
   ], (v) => { e.labelAlign = v; relabelGlyphs(e); }),
   'Every name is drawn in one cell as wide as the longest; this places each name inside it, so the label never jumps between days');
-}
-function langInput(e) {
-  const inp = document.createElement('input');
-  inp.type = 'text';
-  inp.value = e.language || '';
-  inp.placeholder = projectLanguage();
-  inp.title = 'BCP-47 tag for this layer only, e.g. ro-RO or de-DE';
-  // the readable name of the language this layer uses (its own, or the project's when empty)
-  const wrap = document.createElement('div');
-  wrap.className = 'lang-ctl';
-  const nm = document.createElement('div');
-  nm.className = 'muted lang-name-note';
-  const showName = (v) => {
-    const t = String(v || '').trim();
-    nm.textContent = t ? (friendlyLanguage(t) || 'Not a language the editor knows') : `${friendlyLanguage(projectLanguage())} (the project language)`;
-  };
-  showName(e.language);
-  inp.addEventListener('input', () => showName(inp.value));
-  wrap.appendChild(inp); wrap.appendChild(nm);
-  inp.onchange = () => {
-    const v = inp.value.trim();
-    if (v && !localeKnown(v)) { status(`“${v}” is not a language tag this browser knows.`, true); inp.value = e.language || ''; return; }
-    pushHistory(); e.language = v;
-    relabelGlyphs(e); refreshPanels(); render(); scheduleCode();
-  };
-  return wrap;
 }
 // names are baked into images: a set the designer drew is redrawn right away, an
 // imported one waits for “Re-render” so nobody loses their artwork by accident
@@ -5901,14 +5874,36 @@ async function genLabelSet(e, kind, code = null) {
     variations: st.variations, style: st, align: el.labelAlign || 'center', metricsRef: labelMetrics(el),
   });
 }
+// A name with its accents folded (SÂM = SAM, ȚARĂ = TARA) through the fallback table, upper case: how names are compared
+function foldName(s) {
+  return [...String(s)].map((ch) => {
+    if (ch.codePointAt(0) <= 0x7e || !/\p{L}/u.test(ch)) return ch;
+    return plainLetterOf(ch) || ch;
+  }).join('').normalize('NFD').replace(/\p{M}/gu, '').toLocaleUpperCase();
+}
+// the pictures a face brought along cannot be redrawn in another language (there is no font to draw with), so a language reuses
+// them where it can: a name that reads the same as one of the face's own pictures (accents ignored, SAM = SÂM) takes that picture
+// and every other name keeps the picture it had. `reuseReport` tells the user how many names stayed in the face's language.
+let reuseReport = [];
+const importedLabels = (e) => glyphStyle(e).font === IMPORTED_FONT || !glyphSpecForLayer(e);
+function reuseLabelSet(e, kind, code) {
+  const form = e.labelForm || 'short', imgs = e.images || [];
+  const have = localeNames(kind, languageOf(e), form).map(foldName);
+  const want = localeNames(kind, code, form).map(foldName);
+  let kept = 0;
+  const out = imgs.map((n, i) => { const j = have.indexOf(want[i]); if (j >= 0 && imgs[j]) return imgs[j]; kept++; return n; });
+  reuseReport.push({ layer: e.name || (kind === 'week' ? 'Weekday' : 'Month'), code, kept, total: imgs.length });
+  return out;
+}
 // the weekday / month pictures of a layer in every other language of the project (e.sets)
 async function regenLanguageSets(e) {
   const kind = labelKind(e);
   if (!kind || !(e.images || []).length) return;
   const langs = extraLanguages();
   if (!langs.length) { delete e.sets; return; }
+  const imported = importedLabels(e);
   const sets = {};
-  for (const c of langs) sets[c] = await genLabelSet(e, kind, c);
+  for (const c of langs) sets[c] = imported ? reuseLabelSet(e, kind, c) : await genLabelSet(e, kind, c);
   e.sets = sets;
 }
 // A separator (colon.png, degree.png …) drawn with the digits' style and in
@@ -7759,9 +7754,9 @@ function trRender() {
   const body = $('i18nBody'); const top = body.scrollTop; body.innerHTML = '';
   body.appendChild(trTab === 'week' ? trNamesTable('week') : trTab === 'month' ? trNamesTable('month') : trTab === 'labels' ? trLabelsTable() : trTab === 'letters' ? trLettersTable() : trStoreTable());
   body.scrollTop = top;
-  const imported = elements().filter((e) => labelKind(e) && !glyphSpecForLayer(e)).length;
+  const imported = elements().filter((e) => labelKind(e) && (e.images || []).length && importedLabels(e)).length;
   $('i18nNote').textContent = trTab === 'week' || trTab === 'month'
-    ? 'The pictures of every weekday / month layer are redrawn in each language with the layer\'s own font and size (Names and Case in Properties apply). A language the watch is not set to is never shown.' + (imported ? ` ${imported} imported layer${imported === 1 ? '' : 's'} with its own pictures ${imported === 1 ? 'is' : 'are'} left as ${imported === 1 ? 'it is' : 'they are'}: use Re-render on ${imported === 1 ? 'it' : 'them'} first.` : '')
+    ? 'The pictures of every weekday / month layer are redrawn in each language with the layer\'s own font and size (Names and Case in Properties apply). A language the watch is not set to is never shown.' + (imported ? ` ${imported} layer${imported === 1 ? '' : 's'} came with ${imported === 1 ? 'its' : 'their'} own pictures: ${imported === 1 ? 'it reuses' : 'they reuse'} them where a language\'s name matches one (accents ignored, SAM = SÂM); the other names stay as the face draws them.` : '')
     : trTab === 'letters' ? 'The table is used only for letters the chosen font does not have. Letters the font draws itself are never replaced.'
     : trTab === 'labels' ? 'Texts the watch shows by itself (data readings) follow the watch language already. A layer without a translation keeps its own text in every language.'
       : 'The name and description the Zepp app shows for the watchface, in each language.';
@@ -7783,12 +7778,14 @@ async function applyTranslations() {
   for (const k of Object.keys(d.fallback || {})) if (!d.fallback[k]) delete d.fallback[k];
   project.i18n = { languages: d.languages, names: d.names, strings: d.strings, meta: d.meta, fallback: d.fallback || {}, missing: d.missing || 'compose' };
   $('i18nModal').hidden = true; trDraft = null;
-  const layers = elements().filter((e) => labelKind(e) && glyphSpecForLayer(e) && (e.images || []).length);
-  status(layers.length ? 'Drawing the names in every language…' : 'Translations saved.');
+  const layers = elements().filter((e) => labelKind(e) && glyphSpecForLayer(e) && (e.images || []).length && !importedLabels(e));
+  const all = elements().filter((e) => labelKind(e) && (e.images || []).length);
+  reuseReport = [];
+  status(all.length ? 'Drawing the names in every language…' : 'Translations saved.');
   try {
     if (layers.length) await rerenderGlyphLayers(layers, { quiet: true });
-    // layers whose default set is not drawn again still need their other languages
-    for (const e of layers) if (extraLanguages().length ? !e.sets : e.sets) await regenLanguageSets(e);
+    // layers whose default set is not drawn again still need their other languages; a face's own pictures are reused, never redrawn
+    for (const e of all) if (importedLabels(e) || (extraLanguages().length ? !e.sets : e.sets)) await regenLanguageSets(e);
   } catch (err) { status('Could not draw the translations: ' + (err.message || err), true); return; }
   await loadAllImages();
   setDirty(true); refreshPanels(); render(); scheduleCode();
@@ -7799,7 +7796,10 @@ async function applyTranslations() {
   const plain = new Map();
   for (const key of need) { const [fam, ch] = key.split('\u0000'); if (!fontHas(fam, ch)) { const pl = glyphPlan(fam, ch); if (pl.how === 'plain') plain.set(`${ch}→${pl.ch}`, fam); } }
   const fb = plain.size ? ` ${[...plain.keys()].join(' ')} drawn as plain letters (${[...new Set(plain.values())].join(', ')} has no such letters). Change them in Letters.` : '';
-  status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb);
+  // pictures that came with the face: how many names could reuse one
+  const kept = reuseReport.filter((r) => r.kept > 0);
+  const ru = kept.length ? ` ${[...new Set(kept.map((r) => r.layer))].map((name) => `“${name}” keeps the pictures the face came with: ${kept.filter((r) => r.layer === name).map((r) => `${r.code} ${r.total - r.kept} of ${r.total} names have a picture`).join(', ')}; the others stay as the face draws them`).join('; ')}. A font in Re-render draws all of them.` : '';
+  status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb + ru);
 }
 $('btnTranslate').onclick = openTranslations;
 $('previewLangSel').onchange = () => {

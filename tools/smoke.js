@@ -1231,7 +1231,7 @@ app.whenReady().then(async () => {
       weekNames2.known && !weekNames2.bad && weekNames2.en[0] === 'MON' && weekNames2.enAs[0] === 'Mon' && weekNames2.en.length === 7
       && /^lun/i.test(weekNames2.ro[0]) && weekNames2.roLong[0] === 'ianuarie'
       && weekNames2.shout[0] === 'MONDAY'
-      && ['Names', 'Case', 'Language'].every((l) => weekNames2.rows.includes(l))
+      && ['Names', 'Case'].every((l) => weekNames2.rows.includes(l)) && !weekNames2.rows.includes('Language')
       && /^week\d*_w1\.png$/.test(weekNames2.files[0])
       && weekNames2.files.join(',') === [1, 2, 3, 4, 5, 6, 7].map((i) => weekNames2.files[0].replace('_w1.', `_w${i}.`)).join(','),
       `default ${weekNames2.en[0]} · as generated ${weekNames2.enAs[0]} · ro ${weekNames2.ro[0]} / ${weekNames2.roLong[0]} · ${weekNames2.shout[0]} · rows ${weekNames2.rows.filter((l) => /Names|Case|Language/.test(l)).join(',')}`);
@@ -1294,7 +1294,26 @@ app.whenReady().then(async () => {
       const multi = { ...base, i18n: { languages: ['ro-RO', 'de-DE'], names: {}, strings: {}, meta: { appName: { 'ro-RO': 'Ceas' }, description: { 'ro-RO': 'Un ceas' } } } };
       const one = generateAppJson(base, dev, { appId: 1 }), many = generateAppJson(multi, dev, { appId: 1 });
       const o = typeof one === 'string' ? JSON.parse(one) : one, m = typeof many === 'string' ? JSON.parse(many) : many;
-      check('translations: app.json lists every language with its own name and description; one language stays as it was',
+      {
+      // a layer whose pictures came with the face (no font to draw with) reuses them where a language's name matches one, accents ignored
+      const imp = await run(`
+        project.language = 'it-IT';
+        const e = await addElement('IMG_WEEK', { name: 'Imported week' });
+        const orig = e.images.slice();
+        e.glyph = Object.assign({}, e.glyph, { font: IMPORTED_FONT });
+        project.i18n = { languages: ['ro-RO', 'es-ES'], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+        reuseReport = [];
+        await regenLanguageSets(e);
+        const same = (list) => list.map((n) => orig.indexOf(n)).join('');
+        const out = { es: same(e.sets['es-ES']), ro: same(e.sets['ro-RO']), noNew: e.images.join() === orig.join(), keptEs: reuseReport.find((r) => r.code === 'es-ES').kept, keptRo: reuseReport.find((r) => r.code === 'ro-RO').kept, fold: [foldName('SÂM'), foldName('Ținută'), foldName('ß'), foldName('Łódź')].join(',') };
+        project.elements = project.elements.filter((x) => x !== e);
+        project.language = 'en-US'; project.i18n = { languages: [], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+        return out;`);
+      check('translations: a face\'s own pictures are reused where a name matches (accents ignored), never redrawn with a font',
+        imp.noNew && imp.keptEs === 3 && imp.keptRo === 5 && imp.fold === 'SAM,TINUTA,SS,LODZ' && imp.es.length === 7,
+        `es keeps ${imp.keptEs} of 7 · ro keeps ${imp.keptRo} of 7 · fold ${imp.fold}`);
+    }
+    check('translations: app.json lists every language with its own name and description; one language stays as it was',
         JSON.stringify(o.i18n) === JSON.stringify({ 'en-US': { appName: 'Face' } }) && o.defaultLanguage === 'en-US'
         && m.i18n['ro-RO'].appName === 'Ceas' && m.i18n['ro-RO'].description === 'Un ceas' && m.i18n['de-DE'].appName === 'Face' && m.i18n['en-US'].appName === 'Face' && m.defaultLanguage === 'en-US',
         `single ${JSON.stringify(o.i18n)} · multi ${Object.keys(m.i18n).join(',')}`);
