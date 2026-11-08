@@ -1308,24 +1308,32 @@ function editAllows(e) {
   const slot = editSlotOf(e.editSlot);
   return !slot || e.editType === slotType(slot);
 }
+let editSlotId = null;                  // the complication whose choices the second pill lists
+// One row, two pills: pick a complication, then what it shows (the choices that complication offers)
 function syncEditSels() {
   const host = $('editSels');
   if (!host) return;
   host.innerHTML = '';
   const slots = project ? elements().filter((e) => e.kind === 'EDIT_SLOT' && (e.optionalTypes || []).length) : [];
   host.hidden = !slots.length;
-  for (const slot of slots) {
+  if (!slots.length) return;
+  if (!slots.some((x) => String(x.editId) === String(editSlotId))) editSlotId = slots[0].editId;
+  const cur = slots.find((x) => String(x.editId) === String(editSlotId));
+  const pill = (title, opts, value, onchange) => {
     const sel = document.createElement('select');
-    sel.title = `What the wearer has picked for “${slot.name || 'complication'}” on the watch — the face below shows that choice`;
-    for (const o of slot.optionalTypes) {
-      const opt = document.createElement('option');
-      opt.value = o.type; opt.textContent = `${slot.name || 'Slot'} shows: ${o.type}`;
-      sel.appendChild(opt);
-    }
-    sel.value = slotType(slot);
-    sel.onchange = () => { editPick[slot.editId] = sel.value; render(); };
-    host.appendChild(sel);
+    sel.title = title;
+    for (const [v, t] of opts) { const o = document.createElement('option'); o.value = v; o.textContent = t; sel.appendChild(o); }
+    sel.value = value; sel.onchange = () => onchange(sel.value);
+    return sel;
+  };
+  if (slots.length > 1) {
+    host.appendChild(pill('Which complication the next pill is about', slots.map((x) => [String(x.editId), x.name || `Complication ${x.editId}`]), String(cur.editId), (v) => { editSlotId = v; syncEditSels(); }));
+    const lbl = document.createElement('span'); lbl.className = 'slot-lbl'; lbl.textContent = 'shows'; host.appendChild(lbl);
+  } else {
+    const lbl = document.createElement('span'); lbl.className = 'slot-lbl'; lbl.textContent = `${cur.name || 'Complication'} shows`; host.appendChild(lbl);
   }
+  host.appendChild(pill(`What the wearer has picked for “${cur.name || 'complication'}” on the watch — the face below shows that choice`,
+    cur.optionalTypes.map((o) => [o.type, (dtByKey(o.type) || {}).label || o.type]), slotType(cur), (v) => { editPick[cur.editId] = v; render(); }));
 }
 function syncVariantSel() {
   syncEditSels();

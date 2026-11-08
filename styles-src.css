@@ -309,9 +309,9 @@ main.empty .watch-head, main.empty .center-tools { display: none; }
 /* preview */
 .canvas-wrap { padding: 6px; background: none; border: 0; box-shadow: none; }
 canvas { display: block; background: #000; user-select: auto; touch-action: none; }
-.center-tools { display: flex; gap: 4px; padding: 3px; border-radius: 9px; background: #0d0f14; border: 1px solid var(--color-line); }
-.center-tools button { background: transparent; border: 0; color: var(--color-mut); font-size: 12px; padding: 4px 12px; border-radius: 7px; cursor: pointer; }
-.center-tools button:hover { color: var(--color-ink); background: #ffffff0d; }
+.center-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 0; max-width: 940px; margin: 2px 0 4px; }
+.center-tools button { background: #0d0f14; border: 1px solid var(--color-line); color: var(--color-mut); font-size: 12px; padding: 4px 13px; border-radius: 999px; cursor: pointer; }
+.center-tools button:hover { color: var(--color-ink); border-color: #39415a; background: #151a24; }
 .meta-status { font-size: 12px; color: var(--color-mut); min-height: 18px; background: #131720; border: 1px solid var(--color-line); border-radius: 999px; padding: 3px 14px; max-width: 720px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .meta-status:empty { display: none; }
 .meta-status.err { color: #ffb4b4; border-color: #3a2430; background: #1d1318; }
@@ -589,7 +589,7 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 .field-btn:hover { border-color: var(--color-acc); }
 .field-btn #projDeviceName { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .field-btn .fb-act { flex: none; font-size: 11px; color: #9fb6ff; }
-.center-tools button.on { background: rgb(91 140 255 / .18); color: #cdd9ff; }
+.center-tools button.on { background: rgb(91 140 255 / .18); border-color: rgb(91 140 255 / .55); color: #cdd9ff; }
 
 /* face-variant segments (Show in) */
 .seg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 2px; border-radius: 9px; background: #0d0f14; border: 1px solid var(--color-line); min-width: 0; }
@@ -633,8 +633,12 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 .layer.offview.sel, .layer.offview.multi { background: transparent; }
 
 .center-tools button { white-space: nowrap; }
-.center-tools select { background: #0d0f14; border: 0; color: var(--color-ink); font-size: 12px; padding: 4px 8px; border-radius: 7px; cursor: pointer; max-width: 150px; }
-.center-tools select:hover { background: #ffffff0d; }
+.center-tools select { background: #0d0f14; border: 1px solid var(--color-line); color: var(--color-ink); font-size: 12px; padding: 4px 10px; border-radius: 999px; cursor: pointer; max-width: 170px; }
+.center-tools select:hover { border-color: #39415a; background: #151a24; }
+/* complications: one row, a slot pill and then the values that slot can show */
+.center-tools .slot-pills { flex-basis: 100%; display: flex; justify-content: center; align-items: center; gap: 6px; }
+.center-tools .slot-pills[hidden] { display: none; }
+.center-tools .slot-pills .slot-lbl { font-size: 11px; color: var(--color-mut); }
 .center-tools select[hidden] { display: none; }
 
 /* digit props: spacing helpers and the idle align control */

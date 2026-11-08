@@ -145,7 +145,6 @@
       <div id="watchTitle" class="text-[17px] font-bold leading-tight">No face loaded</div>
       <div id="watchSub" class="text-xs text-mut mt-0.5"></div>
     </div>
-    <div class="canvas-wrap"><div id="cvDevice" class="cv-device"><canvas id="cv"></canvas></div></div>
     <div class="center-tools">
       <button id="btnPreviewNormal" class="on" title="Preview the normal (always-on for the user) state">Normal</button>
       <button id="btnPreviewAod" title="Preview the AOD (always-on display) state">AOD</button>
@@ -155,8 +154,9 @@
       <select id="previewLangSel" hidden title="The language the preview shows (weekday and month names, translated texts). Add more… opens the Languages dialog"></select>
       <select id="themeSel" hidden title="Which colour theme the preview shows"></select>
       <select id="variantSel" hidden title="Which variant of the background layer the preview shows"></select>
-      <span id="editSels" hidden></span>
+      <span id="editSels" class="slot-pills" hidden></span>
     </div>
+    <div class="canvas-wrap"><div id="cvDevice" class="cv-device"><canvas id="cv"></canvas></div></div>
     <div id="meta" class="meta-status"></div>
     <div class="hint">Drag widget to move &middot; resize from the corner handles &middot; click a layer to select &middot; Ctrl+Z undo</div>
   </section>
