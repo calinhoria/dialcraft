@@ -1634,7 +1634,7 @@ function openFontDetect(from) {
     return;
   }
   $('fontDetectGroup').disabled = false;
-  intro.textContent = 'The detector compares the face\'s own pictures with the same names drawn in each candidate font. Bundled fonts come first, then Google Fonts; only a tiny subset is fetched to compare, and the full font when you choose it.';
+  intro.textContent = 'The detector compares the face\'s own pictures with the same names drawn in each candidate font: the bundled fonts, then the 1,000 most popular Google Fonts families, ranked offline from a built-in index. Only the closest few are fetched (a tiny subset) to compare in detail, and the full font when you choose it.';
   fdet.groupKey = (fdet.groups.find((g) => g.kind === 'all') || fdet.groups.find((g) => g.kind === 'week')
     || fdet.groups.find((g) => g.kind === 'month') || fdet.groups[0]).key;
   fdetBuildGroupSelect();

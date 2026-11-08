@@ -33,7 +33,8 @@
   480×480), with each device's display mask, safe edge, snapping guides, and a
   live or reference (10:09:36) clock.
 - **Every Zepp watchface widget**: digital time and date, analog hands, date
-  pointers, data readings (steps, heart rate, battery, weather …), image levels and
+  pointers, data readings (steps, heart rate, battery, weather, HRV, bio charge,
+  wind, today's high/low …, with zero padding and rotation), image levels and
   progress, arcs, shapes, text, line charts, status icons, tap shortcuts, buttons
   and animations. Each layer maps 1:1 to an `hmUI.widget.*` call. See the
   **[widget coverage report](docs/ZEPP_COVERAGE.md)** for what is and is not covered.
@@ -64,7 +65,8 @@
   Heart rate …) with their edit masks, previewed on a customise-screen mode, with an
   Edit filter in the layer list.
 - **Tap zones.** Cycle backgrounds or colour themes, open one of 66 named native
-  screens or 39 documented system apps, or draw a visible button.
+  screens or 39 documented system apps, or draw a visible button. A **long press**
+  can run a second action on the same zone.
 - **AOD (always-on) design**: preview the normal and screen-off states.
   *Check* measures the lit-pixel budget and the other Zepp design-spec rules.
 - **Import existing faces**: open a watchface `.zip`, a Zeus CLI project or a
@@ -85,6 +87,8 @@
 | **Image picker.** Every image field shows a preview; choosing opens a searchable grid of the project's images. | **Font library.** Fonts are marked ✓ / ≈ / ✕ for the project language. Here, `SÂMBĂTĂ` is drawn in Orbitron, which has no Ă. |
 | <img src="docs/screenshots/import.png" alt="Import report"> | <img src="docs/screenshots/translations-weekdays.png" alt="Translations table with weekday names in English, Romanian and German"> |
 | **Import report.** What came across, what was traced, and what has no designer equivalent. | **Translations.** One face in several languages: built-in weekday and month names in an editable table, plus texts, store info and a fallback table for letters a font lacks. |
+| <img src="docs/screenshots/font-detect.png" alt="Detect the font: Courier Prime found for an imported face's Romanian weekday pictures"> | <img src="docs/screenshots/translations-fontinfo.png" alt="Notice after adding a language to a face that came with only its pictures"> |
+| **Detect the font.** An imported face's own pictures (here Romanian weekdays and digits) matched against 1,000 Google Fonts families in seconds: Courier Prime at 98%, with a live preview of each candidate. | **Fallback notice.** After adding a language to a face that came with only its pictures: what was reused, what was drawn with which font, and a button to detect the original one. |
 
 ## Sample watchfaces
 

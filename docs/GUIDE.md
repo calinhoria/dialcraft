@@ -160,7 +160,7 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | Date images | `IMG_DATE` | day / month / year (two digits); the **Character** switch turns the month into its 12 names |
 | Analog clock | `TIME_POINTER` | hour + minute + second hands, optional caps (hour / minute / second) |
 | Date pointer | `DATE_POINTER` | a pointer that turns from a start to an end angle with the weekday, day or month; optional scale behind and cap above |
-| Data reading | `TEXT_IMG` | digits + unit / imperial unit / separator / invalid images for any `data_type`, or a fixed number (**Fixed text**) |
+| Data reading | `TEXT_IMG` | digits + unit / imperial unit / separator / invalid images for any `data_type`, or a fixed number (**Fixed text**). **Zero padding** (`padding: true`) keeps the leading zeros the watch would drop (alarm `07:03` instead of `7:3`, battery `058%`); **Angle** (`angle`) turns the whole reading around its box — both found in Zepp-tool faces and checked on a Bip 6 |
 | Text | `TEXT` | multiline, size, alignment, live font, **Overflow** (`text_style`: none / wrap / ellipsis), solid/gradient/outline fill, bold + italic |
 | Line chart | `GRADKIENT_POLYLINE` | the firmware-drawn heart-rate or sleep line chart (the widget is spelled that way in the docs) |
 | Sleep chart | `GROUP` | last night's stages, filled by a small reader in the generated code |
@@ -175,7 +175,10 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | Arc progress | `ARC_PROGRESS` | data-driven sweep, optional background image |
 
 Data-bound widgets use the framework's own binding (`data_type`), so the watch
-updates them natively. `ARC_PROGRESS` is the one exception: its level is pushed
+updates them natively. Besides the classic readings there are **Bio charge**, **HRV**, **Wind speed**,
+**Wind direction** and **Weather high / low** (today's high and low with a separator), and the moon
+phase opens the Moon app on tap. A countdown reading shows minutes (seconds in the last minute) —
+the watch gives no `MM:SS` to a watchface. `ARC_PROGRESS` is the one exception: its level is pushed
 from a small reader in the generated code (`@zos/sensor`), which the app writes
 for step, calorie, heart rate, battery, stand, distance, stress, SpO₂, barometer
 and fat-burning.
@@ -276,6 +279,8 @@ After you add a language to such a face a notice says exactly this: how many nam
 the font the original face used (the button opens the Font library) and applying again makes the style match.
 
 ![The notice after adding a language to a face that came with only its own pictures](screenshots/translations-fontinfo.png)
+
+![Detect the font: the face's own Romanian weekday pictures matched to Courier Prime](screenshots/font-detect.png)
 
 **Detecting the font of imported pictures.** The notice's **Detect the font…** button (or *Font library → Detect font…*, or the magnifier next to **Glyph font** when no font is set) compares one component's own
 weekday / month / digit pictures with the same names drawn in candidate typefaces. Pick the component, then press **Search fonts** — nothing is fetched before that. It tries the bundled and project fonts offline, reads the language and
@@ -540,6 +545,9 @@ Zepp screen. Dialcraft models both.
     World clock, …) collected from the community's ButtonFunctions list of SashaCX75's
     Watch-face-editor; they are not officially published and a screen may not exist on every watch.
     Any other name can be typed.
+  **Long press** (optional) gives the same zone a second action with the same choices — e.g. a tap
+  cycles the background, a long press opens Workout. It exports as the button's `longpress_func`,
+  the option Zepp's own tool writes.
   A zone with **no label and no fill** draws nothing and is shown dashed in the editor only. Give it
   a **Label** and/or a **Fill** colour (with pressed colour, label colour and size, radius) and it
   becomes a visible `BUTTON`.
