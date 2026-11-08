@@ -52,6 +52,7 @@ let variantIdx = 0;                  // which picture the variants layers show i
 let layerFocus = true;               // dim the layers the current preview doesn't draw
 let previewMode = 'normal';          // 'normal' | 'aod' | 'edit' (the customise screen)
 let liveClock = false;
+let previewLang = '';   // the language the preview shows ('' = the project language)
 let clockTimer = null;
 
 let showGrid = true;
@@ -197,6 +198,7 @@ function restoreHistory(json) {
   project.appId = p.appId; project.font = p.font;
   project.userImports = p.userImports; project.userCode = p.userCode;
   project.language = p.language || project.language;
+  project.i18n = p.i18n || { languages: [], names: {}, strings: {}, meta: {} };
   project.images = p.images || project.images;
   loadAllImages();
   if (selectedId && !elementById(selectedId)) selectedId = null;
@@ -474,25 +476,50 @@ const MARK_SPACING = {
   '\u0326': [','], '\u0327': ['\u00B8', ','], '\u0328': ['\u02DB'],
 };
 const MARK_BELOW = new Set(['\u0326', '\u0327', '\u0328']);
+// ---- the fallback table: the plain letter for an accented or special letter (Ț→T, Ș→S, Ă→A, Ł→L, ß→SS …) ----
+// Most accented letters decompose (Ț = T + comma below), so their plain letter is found by dropping the mark. The letters that are
+// not an accent on another letter are listed here. The Translations dialog (Letters tab) shows every letter the languages need and
+// lets any entry be changed: project.i18n.fallback holds those edits.
+const PLAIN_SPECIAL = {
+  'Ł': 'L', 'ł': 'l', 'Ø': 'O', 'ø': 'o', 'Đ': 'D', 'đ': 'd', 'Ð': 'D', 'ð': 'd', 'Þ': 'TH', 'þ': 'th',
+  'Æ': 'AE', 'æ': 'ae', 'Œ': 'OE', 'œ': 'oe', 'ß': 'ss', 'ẞ': 'SS', 'ı': 'i', 'ĸ': 'k', 'Ŋ': 'N', 'ŋ': 'n',
+  'Ħ': 'H', 'ħ': 'h', 'Ŧ': 'T', 'ŧ': 't', 'Ƶ': 'Z', 'ƶ': 'z', 'ȷ': 'j', 'Ə': 'E', 'ə': 'e', 'Ɵ': 'O', 'ɵ': 'o',
+};
+function plainLetterOf(ch, useOwn = true) {
+  const own = useOwn && project && project.i18n && project.i18n.fallback && project.i18n.fallback[ch];
+  if (own) return String(own);
+  if (PLAIN_SPECIAL[ch]) return PLAIN_SPECIAL[ch];
+  const base = [...ch.normalize('NFD')].filter((c) => !/\p{M}/u.test(c)).join('');
+  return base && base !== ch ? base : '';
+}
+// what to do when the glyph font lacks a letter: 'compose' (the font's own letter + accent, then the plain letter),
+// 'plain' (always the plain letter from the table) or 'system' (a system font fills in — two typefaces in one word)
+function missingMode() { return (project && project.i18n && project.i18n.missing) || 'compose'; }
 // how one character is drawn with this family: as itself, as an alternate form,
 // composed from base + accent, or (last resort) by the system font
 function glyphPlan(family, ch) {
   if (fontHas(family, ch)) return { how: 'native', ch };
   const alt = GLYPH_ALTERNATES[ch];
   if (alt && fontHas(family, alt)) return { how: 'alternate', ch: alt };
+  const mode = missingMode();
   const parts = [...ch.normalize('NFD')];
-  if (parts.length > 1 && fontHas(family, parts[0])) {
+  if (mode !== 'plain' && parts.length > 1 && fontHas(family, parts[0])) {
     const marks = parts.slice(1).map((m) => {
       const spacing = (MARK_SPACING[m] || []).find((g) => fontHas(family, g));
       return { mark: m, glyph: spacing || null, below: MARK_BELOW.has(m) };
     });
     if (marks.every((m) => m.glyph || m.mark === '\u0306')) return { how: 'composed', base: parts[0], marks };
   }
+  // the plain letter from the fallback table, if the font has it (a system font is the last resort)
+  if (mode !== 'system') {
+    const pl = plainLetterOf(ch);
+    if (pl && [...pl].every((c) => fontHas(family, c))) return { how: 'plain', ch: pl, from: ch };
+  }
   return { how: 'system', ch };
 }
 // the characters of `text` this family cannot draw natively, by how they end up
 function coverageReport(family, text) {
-  const out = { alternate: [], composed: [], system: [] };
+  const out = { alternate: [], composed: [], plain: [], system: [] };
   for (const ch of new Set([...String(text || '')])) {
     if (/\s/.test(ch)) continue;
     const p = glyphPlan(family, ch);
@@ -505,6 +532,7 @@ function coverageSummary(family, text) {
   const bits = [];
   if (r.alternate.length) bits.push(`${r.alternate.join(' ')} drawn in its other form`);
   if (r.composed.length) bits.push(`${r.composed.join(' ')} composed from the font's own letter + accent`);
+  if (r.plain.length) bits.push(`${r.plain.map((c) => `${c}→${plainLetterOf(c)}`).join(' ')} drawn as the plain letter`);
   if (r.system.length) bits.push(`${r.system.join(' ')} not in the font — a system font fills in`);
   return { ...r, native: !bits.length, text: bits.join(' · ') };
 }
@@ -839,7 +867,16 @@ function dtValue(key) {
 }
 // the string a Text layer shows: the reading when it follows one, else its own text
 function textOf(e) {
+  if (e && !e.dataType && previewLang && project && project.i18n && project.i18n.strings) {
+    const t = (project.i18n.strings[e.id] || {})[previewLang];
+    if (t) return String(t);
+  }
   return e && e.dataType ? valueString(e.dataType) : String(e && e.text != null ? e.text : '');
+}
+// the weekday / month pictures the preview shows: the chosen language's set when the layer has one
+function labelPics(e) {
+  const s = previewLang && e && e.sets && e.sets[previewLang];
+  return s && s.length ? s : ((e && e.images) || []);
 }
 function valueString(key) {
   const v = dtValue(key);
@@ -1060,7 +1097,7 @@ function effSpace(e) { const s = followSource(e); return s ? effSpace(s) : setSp
 function monthNameImage(e) {
   if (e.kind !== 'IMG_DATE' || !e.isCharacter) return null;
   const idx = Math.max(0, Math.min(11, (+dateParts.month || 1) - 1));
-  return (e.images || [])[idx] || null;
+  return labelPics(e)[idx] || null;
 }
 // A 12-hour layer that only holds the AM / PM pictures (no digit images): which
 // one the clock shows, and where. Null for every other layer.
@@ -1897,7 +1934,7 @@ function drawElement(c, e) {
     }
     case 'IMG_WEEK': {
       const b = elBox(e);
-      const name = (e.images || [])[weekIndexS()];
+      const name = labelPics(e)[weekIndexS()];
       const cell = setCell(e);
       put(c, name, b.x, b.y, cell.w, cell.h);
       break;
@@ -3111,7 +3148,8 @@ const IMAGE_KEYS = ['src', 'unit', 'dot', 'negative', 'hour', 'minute', 'second'
 function imageUseCount(name) {
   if (!name) return 0;
   return elements().filter((x) => IMAGE_KEYS.some((k) => x[k] === name)
-    || ['images', 'frames'].some((k) => (x[k] || []).includes(name))).length;
+    || ['images', 'frames'].some((k) => (x[k] || []).includes(name))
+    || (x.sets && Object.values(x.sets).some((l) => (l || []).includes(name)))).length;
 }
 function thumbEl(name, cls = 'thumb') {
   const t = mkEl('span', cls);
@@ -3661,12 +3699,55 @@ function labelCaseOf(e) {
   const c = e && e.labelCase;
   return c == null ? 'upper' : c;
 }
+// ---- translations: the project's other languages and the names the user typed ----
+// project.i18n = { languages: ['ro-RO', …]   the languages besides the project language (Zepp codes)
+//                  names:  { 'week.short': { 'ro-RO': ['', 'Mar', …] } }   only what was edited ('' = the built-in name)
+//                  strings: { <layer id>: { 'ro-RO': 'text' } }            translated fixed texts
+//                  meta:   { appName: { lang: '…' }, description: { lang: '…' } }   store info per language }
+function i18nOf() {
+  const i = project.i18n || (project.i18n = {});
+  i.languages = Array.isArray(i.languages) ? i.languages : [];
+  i.names = i.names || {}; i.strings = i.strings || {}; i.meta = i.meta || {};
+  return i;
+}
+// 'en-GB' / 'ro-RO' / 'he-IL' → the Zepp language entry it belongs to (by code, by browser tag, then by the language part)
+function zeppLanguage(tag) {
+  const list = (META && META.languages) || [];
+  const t = String(tag || '').trim().toLowerCase();
+  if (!t) return null;
+  return list.find((l) => l.code.toLowerCase() === t) || list.find((l) => l.intl.toLowerCase() === t)
+    || list.find((l) => l.code.split('-')[0].toLowerCase() === t.split('-')[0]) || null;
+}
+function defaultLangCode() { const z = zeppLanguage(projectLanguage()); return z ? z.code : projectLanguage(); }
+function extraLanguages() {
+  const d = defaultLangCode();
+  return ((project && project.i18n && project.i18n.languages) || []).filter((c, i, a) => c && c !== d && zeppLanguage(c) && a.indexOf(c) === i);
+}
+function intlTagOf(code) { const z = zeppLanguage(code); return z ? z.intl : (cleanLangTag(code) || 'en-US'); }
+const I18N_COUNT = { week: 7, month: 12 };
+// the typed names of one row (kind week / month, form short / long / narrow) for a language; '' = not edited
+function editedNames(kind, form, code) {
+  const row = project && project.i18n && project.i18n.names && project.i18n.names[`${kind}.${form || 'short'}`];
+  const z = zeppLanguage(code);
+  const arr = row && row[z ? z.code : code];
+  return Array.isArray(arr) ? arr : [];
+}
 // 2024-01-01 is a Monday and the 15th sits mid-month: walking from those two
 // gives the seven weekdays and the twelve months in the order the widget wants.
 // short names come with a full stop in many languages (ro "lun.", fr "janv."): a label on a watch looks better without it
 const noStop = (t) => String(t).replace(/\.$/, '');
 function localeNames(kind, tag, form) {
-  const loc = localeKnown(tag) ? tag : 'en-US';
+  const it = intlTagOf(tag);
+  const loc = localeKnown(it) ? it : (localeKnown(tag) ? tag : 'en-US');
+  // names the user typed in the Translations table replace the built-in ones, cell by cell
+  const typed = editedNames(kind, form, tag);
+  if (typed.some((x) => x)) {
+    const base = builtInNames(kind, loc, form);
+    return base.map((d, i) => (typed[i] ? String(typed[i]) : d));
+  }
+  return builtInNames(kind, loc, form);
+}
+function builtInNames(kind, loc, form) {
   try {
     if (kind === 'week') {
       const fmt = new Intl.DateTimeFormat(loc, { weekday: form || 'short', timeZone: 'UTC' });
@@ -4218,6 +4299,8 @@ async function regenerateGlyphs(e, { targets = [e] } = {}) {
   if (e.kind === 'IMG') e.src = names[0];
   else if (e.kind === 'IMG_ANIM') e.frames = names;
   else e.images = names;
+  // names in the project's other languages follow the style the layer was just given
+  if (labelKind(e) && (e.sets || extraLanguages().length)) await regenLanguageSets(e);
   // the extra room a border / shadow needs is invisible: pull the layer back so the ink stays where it
   // was, and tighten the digit spacing by the same amount (each picture grew on both sides)
   {
@@ -4482,7 +4565,8 @@ function glyphStyleRows(frag, add, e) {
       if (o.value === IMPORTED_FONT) return o;
       const cov = coverageReport(o.value, need);
       const tag = cov.system.length ? ` · lacks ${cov.system.join('')}`
-        : (cov.composed.length || cov.alternate.length) ? ` · composes ${[...cov.composed, ...cov.alternate].join('')}` : '';
+        : (cov.composed.length || cov.alternate.length) ? ` · composes ${[...cov.composed, ...cov.alternate].join('')}`
+          : cov.plain.length ? ` · plain ${cov.plain.map((c) => `${c}→${plainLetterOf(c)}`).join(' ')}` : '';
       return { value: o.value, label: o.label + tag };
     });
     add('Font', ctlSelect(st.font, fontOpts, (v) => {
@@ -4496,7 +4580,7 @@ function glyphStyleRows(frag, add, e) {
     }), isImp ? 'The pictures the face came with: Size scales them, the fill paints over them' : 'Typeface these images are rasterised from');
     const cov = isImp ? { native: true } : coverageSummary(st.font, need);
     if (!cov.native) {
-      const n = propNote(`${st.font}: ${cov.text}.${cov.system.length ? ' Pick a font marked without “lacks” to keep one typeface.' : ''}`);
+      const n = propNote(`${st.font}: ${cov.text}.${cov.system.length ? ' Pick a font marked without “lacks” to keep one typeface.' : ''}${cov.plain.length ? ' The plain letters come from the fallback table: change them in Languages & translations → Letters.' : ''}`);
       n.classList.add(cov.system.length ? 'warn' : 'info');
       frag.appendChild(n);
     }
@@ -5394,6 +5478,16 @@ function refreshPanels() {
   const has = !!project;
   ['btnCode', 'btnComponents', 'btnPresets', 'btnGlyphs', 'btnUpload', 'btnSave', 'btnExportZeus', 'btnBuild', 'btnInstall', 'btnFonts'].forEach((id) => { if ($(id)) $(id).disabled = !has; });
 }
+// the toolbar's language switch: shown only when the project has more than one language
+function syncPreviewLang() {
+  const sel = $('previewLangSel'); if (!sel) return;
+  const langs = extraLanguages();
+  if (previewLang && !langs.includes(previewLang)) previewLang = '';
+  sel.hidden = !langs.length;
+  sel.innerHTML = '';
+  for (const c of [''].concat(langs)) { const o = document.createElement('option'); o.value = c; o.textContent = c ? `${c} · ${trLabelOf(c)}` : `${defaultLangCode()} (default)`; sel.appendChild(o); }
+  sel.value = previewLang;
+}
 function renderProjectPanel() {
   if (!project) return;
   $('inpName').value = project.name || '';
@@ -5406,6 +5500,7 @@ function renderProjectPanel() {
   $('projLang').value = project.language || '';
   $('projLang').placeholder = 'en-US';
   $('projLang').title = languageSample();
+  { const n = extraLanguages().length; $('trSummary').textContent = n ? `· ${n + 1} languages` : ''; syncPreviewLang(); }
   const d = dev();
   $('screenInfo').textContent = `${d.w}×${d.h} px · designWidth ${d.designWidth} · ${d.shape === 'r' ? 'round' : d.shape === 's' ? 'square' : 'band'}`;
   $('targetInfo').textContent = `Zeus target ${d.target} · assets/${d.assetDir} · Zepp OS ${d.api}+`;
@@ -5446,6 +5541,8 @@ function collectUsedImages(set) {
     for (const key of ['images', 'frames']) {
       if (Array.isArray(e[key])) for (const n of e[key]) if (n) set.add(typeof n === 'string' ? n : n.name);
     }
+    // the weekday / month names in the other languages of the project
+    if (e.sets && typeof e.sets === 'object') for (const list of Object.values(e.sets)) for (const n of list || []) if (n) set.add(n);
     // a complication slot's pictures: the picker previews, the tips background and the select marks
     for (const key of ['tipsBg', 'selectImage', 'unSelectImage']) if (e[key]) set.add(e[key]);
     if (Array.isArray(e.optionalTypes)) for (const o of e.optionalTypes) if (o && o.preview) set.add(o.preview);
@@ -5457,6 +5554,7 @@ function deleteImage(name) {
   const scrub = (e) => {
     for (const key of ['src', 'unit', 'dot', 'negative', 'hour', 'minute', 'second', 'cover', 'bg', 'am', 'pm']) if (e[key] === name) e[key] = '';
     for (const key of ['images', 'frames']) if (Array.isArray(e[key])) e[key] = e[key].filter((n) => (typeof n === 'string' ? n : n.name) !== name);
+    if (e.sets) for (const c of Object.keys(e.sets)) e.sets[c] = (e.sets[c] || []).filter((n) => n !== name);
   };
   for (const e of elements()) scrub(e);
   imgCache.delete(name);
@@ -5656,6 +5754,7 @@ async function attachDigitSet(e) {
     if (labelKind(e)) {
       rememberGlyphStyle(e, 40);
       e.images = await genLabelSet(e, labelKind(e));
+      if (extraLanguages().length) await regenLanguageSets(e);
     } else {
       const prefix = nextDigitPrefix();
       const names = await genGlyphImages('0123456789'.split('').map((c, i) => ({ tag: String(i), char: c })), { prefix });
@@ -5749,16 +5848,35 @@ $('btnGlyphs').onclick = (e) => { e.stopPropagation(); toggleGlyphs(); };
 // tallest accent — with each name placed by the layer's label alignment, so
 // switching days never makes the label jump. A layer that owns its set
 // redraws it in place; otherwise it gets a set of its own (week2_w1.png …).
-async function genLabelSet(e, kind) {
+// `code` (a Zepp language code) draws the same set in another language of the project: the names come from the Translations
+// table (or the built-in ones), the style is the layer's own, and the files are `<prefix>_<lang>_<w|m><n>.png`
+async function genLabelSet(e, kind, code = null) {
   const el = e || { kind: kind === 'week' ? 'IMG_WEEK' : 'IMG_DATE', isCharacter: kind === 'month' };
-  const labels = kind === 'week' ? weekNames(el) : monthNames(el);
   const t = kind === 'week' ? 'w' : 'm';
-  const pre = ownLabelPrefix(el, kind) || nextLabelPrefix(kind);
+  let labels = kind === 'week' ? weekNames(el) : monthNames(el);
+  let pre = ownLabelPrefix(el, kind) || nextLabelPrefix(kind);
+  let key = '';
+  if (code) {
+    labels = localeNames(kind, code, el.labelForm || 'short').map((n) => applyLabelCase(n, labelCaseOf(el)));
+    const m = LABEL_FILE_RE[kind].exec((el.images || [])[0] || '');
+    if (m) pre = m[1];
+    key = '_' + String(code).replace(/[^A-Za-z0-9]+/g, '_');
+  }
   const st = glyphStyle(el);
-  return genGlyphImages(labels.map((l, i) => ({ tag: `${t}${i + 1}`, char: l, name: `${pre}_${t}${i + 1}.png` })), {
+  return genGlyphImages(labels.map((l, i) => ({ tag: `${t}${i + 1}${key}`, char: l, name: `${pre}${key}_${t}${i + 1}.png` })), {
     prefix: pre, mono: true, replace: true, size: st.size, family: st.font, weight: st.weight,
     variations: st.variations, style: st, align: el.labelAlign || 'center', metricsRef: labelMetrics(el),
   });
+}
+// the weekday / month pictures of a layer in every other language of the project (e.sets)
+async function regenLanguageSets(e) {
+  const kind = labelKind(e);
+  if (!kind || !(e.images || []).length) return;
+  const langs = extraLanguages();
+  if (!langs.length) { delete e.sets; return; }
+  const sets = {};
+  for (const c of langs) sets[c] = await genLabelSet(e, kind, c);
+  e.sets = sets;
 }
 // A separator (colon.png, degree.png …) drawn with the digits' style and in
 // their exact cell: same font size, same cell height, same baseline. Placed at
@@ -7309,6 +7427,7 @@ function freshProject(name, target) {
     description: '',
     font: glyphFont,
     language: 'en-US',
+    i18n: { languages: [], names: {}, strings: {}, meta: {} },
     fonts: [],
     groups: {},
     elements: [],
@@ -7435,6 +7554,227 @@ $('inpDesc').oninput = (ev) => { if (!project) return; project.description = ev.
 $('inpAppId').oninput = (ev) => { if (!project) return; project.appId = +ev.target.value || 0; setDirty(true); scheduleCode(); };
 // The language decides how weekday and month names are written when a glyph set
 // is generated (Intl, so every locale the browser knows works — no table here).
+// ----------------------------------------------------------- translations --
+// A dialog with one table per kind of text: store info, weekday names, month names and the texts of the layers. Every column is a
+// language (the project language first); every cell shows the built-in value until it is typed over. Nothing changes until Apply.
+let trDraft = null, trTab = 'week';
+const TR_FORMS = [{ id: 'short', label: 'Short' }, { id: 'long', label: 'Full' }];
+function trClone() {
+  const i = i18nOf();
+  return JSON.parse(JSON.stringify({ languages: extraLanguages(), names: i.names, strings: i.strings, meta: i.meta, fallback: i.fallback || {}, missing: i.missing || 'compose' }));
+}
+function trLanguages() { return [defaultLangCode(), ...trDraft.languages]; }
+function trLabelOf(code) { const z = zeppLanguage(code); return z ? z.label : code; }
+function trTextLayers() { return elements().filter((e) => e.kind === 'TEXT' && !e.dataType && String(e.text || '').trim()); }
+function trBakedLayers() { return elements().filter((e) => (e.kind === 'TEXT' && !e.dataType && e.bakedImage) || (e.kind === 'IMG' && /^symbol_/.test(e.src || ''))); }
+function trCell(value, placeholder, onInput) {
+  const td = document.createElement('td');
+  const inp = document.createElement('input');
+  inp.type = 'text'; inp.value = value || ''; inp.placeholder = placeholder || '';
+  inp.className = value ? 'edited' : '';
+  inp.oninput = () => { inp.classList.toggle('edited', inp.value !== ''); onInput(inp.value); };
+  td.appendChild(inp);
+  return td;
+}
+function trHead(table, firstLabel) {
+  const tr = document.createElement('tr');
+  const th0 = document.createElement('th'); th0.textContent = firstLabel; tr.appendChild(th0);
+  for (const c of trLanguages()) { const th = document.createElement('th'); th.textContent = c + (c === defaultLangCode() ? ' (default)' : ''); th.title = trLabelOf(c); tr.appendChild(th); }
+  table.appendChild(tr);
+}
+function trNamesTable(kind) {
+  const host = document.createElement('div');
+  for (const f of TR_FORMS) {
+    const sec = document.createElement('div'); sec.className = 'i18n-sec'; sec.textContent = f.label + (kind === 'week' ? ' weekday names' : ' month names');
+    host.appendChild(sec);
+    const table = document.createElement('table'); table.className = 'i18n-table';
+    trHead(table, kind === 'week' ? 'Day' : 'Month');
+    const en = builtInNames(kind, 'en-US', f.id);
+    const keyName = `${kind}.${f.id}`;
+    for (let i = 0; i < I18N_COUNT[kind]; i++) {
+      const tr = document.createElement('tr');
+      const k = document.createElement('td'); k.className = 'key'; k.textContent = en[i] || String(i + 1); tr.appendChild(k);
+      for (const c of trLanguages()) {
+        const row = (trDraft.names[keyName] = trDraft.names[keyName] || {});
+        const arr = (row[c] = row[c] || []);
+        const built = builtInNames(kind, localeKnown(intlTagOf(c)) ? intlTagOf(c) : 'en-US', f.id)[i] || '';
+        tr.appendChild(trCell(arr[i] || '', built, (v) => { arr[i] = v; }));
+      }
+      table.appendChild(tr);
+    }
+    host.appendChild(table);
+  }
+  return host;
+}
+function trStoreTable() {
+  const table = document.createElement('table'); table.className = 'i18n-table';
+  trHead(table, 'Store info');
+  for (const [key, label, ph, max] of [['appName', 'Name', project.name || 'Watchface', 60], ['description', 'Description (120 characters)', project.description || '', 120]]) {
+    const tr = document.createElement('tr');
+    const k = document.createElement('td'); k.className = 'key'; k.textContent = label; tr.appendChild(k);
+    for (const c of trLanguages()) {
+      const m = (trDraft.meta[key] = trDraft.meta[key] || {});
+      const td = trCell(m[c] || '', ph, (v) => { m[c] = v.slice(0, max); });
+      td.querySelector('input').maxLength = max;
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+  return table;
+}
+function trLabelsTable() {
+  const host = document.createElement('div');
+  const layers = trTextLayers();
+  if (!layers.length) {
+    const p = document.createElement('div'); p.className = 'muted'; p.textContent = 'No text layers with a fixed text yet. Add a Text layer and type its text: it appears here so every language can have its own wording.';
+    host.appendChild(p);
+  } else {
+    const table = document.createElement('table'); table.className = 'i18n-table';
+    trHead(table, 'Text layer');
+    for (const e of layers) {
+      const tr = document.createElement('tr');
+      const k = document.createElement('td'); k.className = 'key'; k.textContent = e.name || 'Text'; tr.appendChild(k);
+      for (const c of trLanguages()) {
+        if (c === defaultLangCode()) {
+          const td = document.createElement('td'); const inp = document.createElement('input'); inp.type = 'text'; inp.value = e.text || ''; inp.readOnly = true; inp.title = 'The text of the layer itself (edit it in Properties)'; td.appendChild(inp); tr.appendChild(td);
+        } else {
+          const m = (trDraft.strings[e.id] = trDraft.strings[e.id] || {});
+          tr.appendChild(trCell(m[c] || '', e.text || '', (v) => { m[c] = v; }));
+        }
+      }
+      table.appendChild(tr);
+    }
+    host.appendChild(table);
+  }
+  const baked = trBakedLayers();
+  if (baked.length) {
+    const p = document.createElement('div'); p.className = 'muted'; p.style.marginTop = '8px';
+    p.textContent = `${baked.length} layer${baked.length === 1 ? ' is' : 's are'} text drawn as a picture (${baked.map((e) => e.name).slice(0, 4).join(', ')}${baked.length > 4 ? '…' : ''}): the watch cannot translate those. Use a plain Text layer for words that need translating.`;
+    host.appendChild(p);
+  }
+  return host;
+}
+function trFontFamily() {
+  const l = elements().find((e) => labelKind(e) && glyphSpecForLayer(e));
+  return (l && glyphStyle(l).font) || (project && project.font) || glyphFont;
+}
+// every non-ASCII letter the project's languages and typed texts need, with the plain letter it falls back to
+function trLetters() {
+  const set = new Set();
+  const add = (t) => { for (const ch of String(t || '')) if (ch.codePointAt(0) > 0x7e && /\p{L}/u.test(ch)) set.add(ch); };
+  for (const c of trLanguages()) { add(languageChars(intlTagOf(c))); add(languageChars(c)); }
+  for (const row of Object.values(trDraft.names)) for (const arr of Object.values(row)) for (const t of arr || []) add(t);
+  for (const m of Object.values(trDraft.strings)) for (const t of Object.values(m)) add(t);
+  return [...set].sort((a, b) => a.codePointAt(0) - b.codePointAt(0));
+}
+function trLettersTable() {
+  const host = document.createElement('div');
+  const fam = trFontFamily();
+  const intro = document.createElement('div'); intro.className = 'muted';
+  intro.textContent = `Some fonts have no Ț, Ș, Ă, Ł … Those letters are drawn another way, never with a different typeface. Font used for the names: ${fam}.`;
+  host.appendChild(intro);
+  const row = document.createElement('div'); row.className = 'i18n-bar';
+  const lab = document.createElement('span'); lab.textContent = 'When the font lacks a letter:'; row.appendChild(lab);
+  const sel = document.createElement('select');
+  for (const [v, t] of [['compose', 'Draw the font\'s letter + accent; the plain letter below if that is not possible (recommended)'], ['plain', 'Always use the plain letter from the table'], ['system', 'Let a system font fill in (two typefaces in one word)']]) { const o = document.createElement('option'); o.value = v; o.textContent = t; sel.appendChild(o); }
+  sel.value = trDraft.missing || 'compose';
+  sel.onchange = () => { trDraft.missing = sel.value; trRender(); };
+  row.appendChild(sel); host.appendChild(row);
+  const letters = trLetters();
+  if (!letters.length) { const p = document.createElement('div'); p.className = 'muted'; p.textContent = 'The languages you chose only use plain letters.'; host.appendChild(p); return host; }
+  const table = document.createElement('table'); table.className = 'i18n-table';
+  const hr = document.createElement('tr');
+  for (const t of ['Letter', 'Plain letter (editable)', `In ${fam}`]) { const th = document.createElement('th'); th.textContent = t; hr.appendChild(th); }
+  table.appendChild(hr);
+  for (const ch of letters) {
+    const tr = document.createElement('tr');
+    const k = document.createElement('td'); k.className = 'key'; k.textContent = ch; k.style.fontSize = '16px'; tr.appendChild(k);
+    const auto = plainLetterOf(ch, false);
+    tr.appendChild(trCell((trDraft.fallback || (trDraft.fallback = {}))[ch] || '', auto, (v) => { trDraft.fallback[ch] = v; trRender(); }));
+    const st = document.createElement('td'); st.className = 'key';
+    const own = (trDraft.fallback || {})[ch] || auto;
+    st.textContent = fontHas(fam, ch) ? '✓ the font draws it' : (own ? `✕ not in the font → ${own}` : '✕ not in the font');
+    st.style.color = fontHas(fam, ch) ? '#6fcf97' : '#ffb454';
+    tr.appendChild(st); table.appendChild(tr);
+  }
+  host.appendChild(table);
+  return host;
+}
+function trRender() {
+  if (!trDraft) return;
+  const langs = trLanguages();
+  $('i18nCount').textContent = `· ${langs.length} language${langs.length === 1 ? '' : 's'}`;
+  const chips = $('i18nChips'); chips.innerHTML = '';
+  for (const c of langs) {
+    const chip = document.createElement('span'); chip.className = 'i18n-chip' + (c === defaultLangCode() ? ' def' : ''); chip.title = trLabelOf(c);
+    chip.appendChild(document.createTextNode(`${c} · ${trLabelOf(c)}`));
+    if (c !== defaultLangCode()) { const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.title = 'Remove this language'; x.onclick = () => { trDraft.languages = trDraft.languages.filter((l) => l !== c); trRender(); }; chip.appendChild(x); }
+    chips.appendChild(chip);
+  }
+  const sel = $('i18nAdd'); sel.innerHTML = '';
+  const first = document.createElement('option'); first.value = ''; first.textContent = 'Add a language…'; sel.appendChild(first);
+  for (const l of (META && META.languages) || []) { if (langs.includes(l.code)) continue; const o = document.createElement('option'); o.value = l.code; o.textContent = `${l.label} (${l.code})`; sel.appendChild(o); }
+  const tabs = $('i18nTabs'); tabs.innerHTML = '';
+  for (const [id, label] of [['week', 'Weekdays'], ['month', 'Months'], ['labels', 'Texts'], ['letters', 'Letters'], ['store', 'Store info']]) {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.className = trTab === id ? 'on' : ''; b.onclick = () => { trTab = id; trRender(); }; tabs.appendChild(b);
+  }
+  const body = $('i18nBody'); const top = body.scrollTop; body.innerHTML = '';
+  body.appendChild(trTab === 'week' ? trNamesTable('week') : trTab === 'month' ? trNamesTable('month') : trTab === 'labels' ? trLabelsTable() : trTab === 'letters' ? trLettersTable() : trStoreTable());
+  body.scrollTop = top;
+  const imported = elements().filter((e) => labelKind(e) && !glyphSpecForLayer(e)).length;
+  $('i18nNote').textContent = trTab === 'week' || trTab === 'month'
+    ? 'The pictures of every weekday / month layer are redrawn in each language with the layer\'s own font and size (Names and Case in Properties apply). A language the watch is not set to is never shown.' + (imported ? ` ${imported} imported layer${imported === 1 ? '' : 's'} with its own pictures ${imported === 1 ? 'is' : 'are'} left as ${imported === 1 ? 'it is' : 'they are'}: use Re-render on ${imported === 1 ? 'it' : 'them'} first.` : '')
+    : trTab === 'letters' ? 'The table is used only for letters the chosen font does not have. Letters the font draws itself are never replaced.'
+    : trTab === 'labels' ? 'Texts the watch shows by itself (data readings) follow the watch language already. A layer without a translation keeps its own text in every language.'
+      : 'The name and description the Zepp app shows for the watchface, in each language.';
+}
+function openTranslations() {
+  if (!project) return;
+  trDraft = trClone(); trTab = trTab || 'week';
+  trRender();
+  $('i18nModal').hidden = false;
+}
+async function applyTranslations() {
+  const d = trDraft; if (!d) return;
+  // a name row nobody edited, and a text nobody translated, are not worth keeping
+  for (const k of Object.keys(d.names)) { for (const c of Object.keys(d.names[k])) if (!(d.names[k][c] || []).some((x) => x)) delete d.names[k][c]; if (!Object.keys(d.names[k]).length) delete d.names[k]; }
+  for (const id of Object.keys(d.strings)) { for (const c of Object.keys(d.strings[id])) if (!d.strings[id][c]) delete d.strings[id][c]; if (!Object.keys(d.strings[id]).length) delete d.strings[id]; }
+  for (const k of Object.keys(d.meta)) { for (const c of Object.keys(d.meta[k])) if (!d.meta[k][c]) delete d.meta[k][c]; if (!Object.keys(d.meta[k]).length) delete d.meta[k]; }
+  pushHistory();
+  for (const k of Object.keys(d.fallback || {})) if (!d.fallback[k]) delete d.fallback[k];
+  project.i18n = { languages: d.languages, names: d.names, strings: d.strings, meta: d.meta, fallback: d.fallback || {}, missing: d.missing || 'compose' };
+  $('i18nModal').hidden = true; trDraft = null;
+  const layers = elements().filter((e) => labelKind(e) && glyphSpecForLayer(e) && (e.images || []).length);
+  status(layers.length ? 'Drawing the names in every language…' : 'Translations saved.');
+  try {
+    if (layers.length) await rerenderGlyphLayers(layers, { quiet: true });
+    // layers whose default set is not drawn again still need their other languages
+    for (const e of layers) if (extraLanguages().length ? !e.sets : e.sets) await regenLanguageSets(e);
+  } catch (err) { status('Could not draw the translations: ' + (err.message || err), true); return; }
+  await loadAllImages();
+  setDirty(true); refreshPanels(); render(); scheduleCode();
+  const n = extraLanguages().length;
+  // tell the user which letters had to fall back to a plain letter
+  const need = new Set();
+  for (const e of layers) { const fam = glyphStyle(e).font; for (const ch of languageChars(languageOf(e))) need.add(`${fam}\u0000${ch}`); for (const c of extraLanguages()) for (const ch of languageChars(intlTagOf(c))) need.add(`${fam}\u0000${ch}`); }
+  const plain = new Map();
+  for (const key of need) { const [fam, ch] = key.split('\u0000'); if (!fontHas(fam, ch)) { const pl = glyphPlan(fam, ch); if (pl.how === 'plain') plain.set(`${ch}→${pl.ch}`, fam); } }
+  const fb = plain.size ? ` ${[...plain.keys()].join(' ')} drawn as plain letters (${[...new Set(plain.values())].join(', ')} has no such letters). Change them in Letters.` : '';
+  status((n ? `Translations applied: ${n + 1} languages. The watch shows the one it is set to.` : 'Back to one language.') + fb);
+}
+$('btnTranslate').onclick = openTranslations;
+$('previewLangSel').onchange = () => { previewLang = $('previewLangSel').value; render(); };
+$('i18nCancel').onclick = () => { $('i18nModal').hidden = true; trDraft = null; };
+$('i18nSave').onclick = applyTranslations;
+$('i18nAdd').onchange = () => { const v = $('i18nAdd').value; if (v && trDraft && !trDraft.languages.includes(v)) { trDraft.languages.push(v); } trRender(); };
+$('i18nReset').onclick = () => {
+  if (!trDraft) return;
+  if (trTab === 'week' || trTab === 'month') { for (const k of Object.keys(trDraft.names)) if (k.startsWith(trTab + '.')) trDraft.names[k] = {}; }
+  else if (trTab === 'labels') trDraft.strings = {};
+  else if (trTab === 'letters') { trDraft.fallback = {}; trDraft.missing = 'compose'; }
+  else trDraft.meta = {};
+  trRender();
+};
 $('projLang').onchange = (ev) => {
   if (!project) return;
   const v = ev.target.value.trim();

@@ -9,6 +9,14 @@ A recipe is one JSON file (no comments in the real file — the `//` notes below
   "device": "bip-6",               // a target key from devices.md
   "font": "Orbitron",              // glyph font for digits / weekday / readings (a bundled family)
   "language": "en-US",             // optional; weekday / month names follow it (ro-RO, de-DE …)
+  "languages": ["ro-RO", "de-DE"], // optional; more languages besides `language` (Zepp codes): the face follows the watch language
+  "translations": {                // optional; only what you want to change from the built-in names (see docs/GUIDE.md → Translations)
+    "names": { "week.short": { "ro-RO": ["", "MAR", "", "", "", "", ""] } },   // '' = built-in; also week.long, month.short, month.long
+    "strings": {},                 // translated fixed texts: { "<layer id>": { "ro-RO": "PAȘI" } }
+    "meta": { "appName": { "ro-RO": "Ceas" }, "description": { "ro-RO": "…" } },   // store info per language
+    "fallback": { "Ț": "T" },      // plain letters for letters the font lacks (edits of the built-in table)
+    "missing": "compose"           // compose (default) | plain | system
+  },
   "optimizePng": false,            // optional; "lossless" re-encodes every PNG without changing a pixel; true also re-saves big (>20 KB) ones as 256-colour PNGs when clearly smaller; a number 2–256 reduces every animation frame to that many colours (lossy) and re-encodes the rest losslessly
   "description": "…",              // optional store description
   "userImports": "…", "userCode": "…", // optional JavaScript written into the watchface (see docs/GUIDE.md → Code of your own)

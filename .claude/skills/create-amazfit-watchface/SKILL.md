@@ -134,7 +134,7 @@ recipe, previews and output in a scratch folder (not in the repo).
   static preview) and the toolkit: [references/animated-faces.md](references/animated-faces.md).
 - **Taste for the funny / weird / witty request (the owner's standing preference).** No characters, no mascots, no cartoon art. The
   humour lives in the interface itself: a player that buffers, a BIOS report, a departure board, a receipt, subtitles, a spreadsheet that
-  errors, deadpan copy. Write the copy in the watch's language with real diacritics. When asked for concepts first, show **animated GIFs**
+  errors, deadpan copy. Write the copy in the watch's language with real diacritics. For a face in several languages use the recipe keys `languages` and `translations` (references/recipe.md): the watch then shows the language it is set to, and a font without a letter falls back to its plain letter (Ț→T). When asked for concepts first, show **animated GIFs**
   of working faces, not still sketches.
 - **If space runs out, ask the user, do not decide alone.** When the chosen elements will not fit at readable
   sizes, stop and ask a multiple-choice question for the resolution (drop an element, move it to AOD only or to

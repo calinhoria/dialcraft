@@ -240,6 +240,29 @@ styles never overwrite each other. The names share one cell — as wide as the
 longest, as tall as the tallest accent — and **Label align** places each name in
 it, so the label does not jump from day to day.
 
+### Translations: one face, several languages
+
+**Watchface ▸ Languages & translations…** makes the face follow the language the watch is set to. Add languages from the 34 that Zepp OS
+offers; the table then has one column per language and these tabs:
+
+- **Weekdays** and **Months** (short and full names): every cell shows the built-in name (the browser's `Intl` data: `TUE` → `MAR`, `TUESDAY` →
+  `marți` in Romanian). Type over any cell to change it; edited cells are marked, the rest stays built-in. **Apply** redraws the pictures of every
+  weekday / month layer in each language with the layer's own font, size and style.
+- **Texts**: a row per Text layer with a fixed text, one translation per language. Readings the watch writes itself already follow the watch language.
+- **Letters**: see below.
+- **Store info**: the name and description the Zepp app shows, per language (`app.json` `i18n`).
+
+The toolbar gets a language switch to preview each language. On the watch the face reads `getLanguage()` (`@zos/settings`, checked on a Bip 6:
+Romanian reports 21) and picks that language's pictures and texts; a language it has no set for shows the project language. A face with a single
+language generates exactly the code it always did. Text drawn into a picture (a baked label or scene art) cannot be translated: use a Text layer for
+words that need translating.
+
+**Letters the font lacks.** A font without Ț, Ș, Ă … never gets a second typeface mixed in. Each missing letter is drawn from the font's own letter
+plus an accent when that is possible, else as its plain letter from the fallback table (Ț→T, Ș→S, Ă→A, Ł→L, Ø→O, Æ→AE, ß→ss …). Most plain letters
+come from dropping the accent, the rest are listed in the editor. The **Letters** tab lists every letter the chosen languages need, whether the font
+draws it, and lets every plain letter be edited; a switch chooses *compose, then plain letter* (default), *always the plain letter*, or *let a system
+font fill in*. The Font list and the layer's note say which letters fall back.
+
 **Letters a font lacks.** A canvas silently borrows a missing glyph from a system
 font, which is how `SÂMBĂTĂ` used to come out in two typefaces. The designer reads
 every font's character map (`core/fonts.js`) and draws a missing letter from the

@@ -121,6 +121,9 @@ Finder, and a Build tools row reports Node / npx / Zeus.
 3. More **sensor readers** so ARC_PROGRESS / BAR follow weather, UVI, AQI, wind, sleep (the sensor
    class names and methods are not in the widget docs).
 4. `photoscreen` in app.json, `is_character` for the day (31 pictures), a unit picture per language.
+   *(0.4.8)* Weekday / month names and fixed texts per language are done: Zepp's widgets only have the `_en` / `_sc` / `_tc` slots, so the face picks the
+   set itself with `getLanguage()` of `@zos/settings` (the number is Zepp's Multilingual Mapping, checked on a Bip 6) and `app.json` `i18n` lists every
+   language. A unit picture per language and text drawn into pictures are still not translated. `hmSetting` is not a global on newer watches.
 
 ## Undocumented but real (found in faces made by Zepp's tool and in the community Watch_Face_Editor)
 

@@ -81,6 +81,7 @@
         <div class="row"><span class="lbl">Glyph font</span><select id="projFont"></select></div>
         <div class="row"><span class="lbl">Language</span><input id="projLang" type="text" list="langSuggest" placeholder="en-US" /></div>
         <datalist id="langSuggest"></datalist>
+        <div class="row"><span class="lbl">Translations</span><button id="btnTranslate" class="row-btn" title="Show the weekday and month names, texts and the store info in more than one language: the face follows the language the watch is set to">Languages &amp; translations&hellip; <span id="trSummary" class="muted"></span></button></div>
         <div class="row"><span class="lbl">Colours</span><button id="btnThemes" class="row-btn" title="Make the face switch between colours: the accent colour is recoloured to a palette">Colour themes…</button></div>
         <div class="row"><span class="lbl">Code</span><button id="btnCode" class="row-btn" title="JavaScript written into the exported watchface: timers, games, animation of your layers">Code of your own…</button></div>
         <div class="row"><span class="lbl">Fonts</span><button id="btnFonts" class="row-btn" title="Import your own fonts, preview them and rasterize glyph sets">Font library &amp; glyphs…</button></div>
@@ -153,6 +154,7 @@
       <button id="btnPreviewEdit" title="Preview the screen the wearer sees when long-pressing the face to customise it (edit masks and complication slots)">Edit</button>
       <button id="btnRunCode" disabled title="Run your code (Watchface ▸ Code of your own…) in the preview: layers with a code handle move and swap pictures as they would on the watch. Stop puts everything back; nothing is saved or exported while it runs.">▶ Run code</button>
       <button id="btnPreviewLive" title="Run the preview clock from the real time">Live clock</button>
+      <select id="previewLangSel" hidden title="Which language the preview shows (the weekday and month names, translated texts)"></select>
       <select id="themeSel" hidden title="Which colour theme the preview shows"></select>
       <select id="variantSel" hidden title="Which variant of the background layer the preview shows"></select>
       <span id="editSels" hidden></span>
@@ -223,6 +225,26 @@
     <div class="modal-btns">
       <button id="ismCancel">Cancel</button>
       <button id="ismSave">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- translations -->
+<div id="i18nModal" class="modal-backdrop" hidden>
+  <div class="modal i18n-modal">
+    <h3>Translations <span id="i18nCount" class="muted"></span></h3>
+    <div class="muted">The watch picks the language it is set to. Names start from the built-in lists: change any cell, the rest stays as it is. Cells you edit are marked.</div>
+    <div class="i18n-bar">
+      <span id="i18nChips" class="i18n-chips"></span>
+      <select id="i18nAdd" title="Add a language"></select>
+    </div>
+    <div class="i18n-tabs" id="i18nTabs"></div>
+    <div id="i18nBody" class="i18n-body"></div>
+    <div id="i18nNote" class="muted i18n-note"></div>
+    <div class="modal-btns">
+      <button id="i18nReset" title="Forget every typed name and text in the current tab">Reset tab</button>
+      <button id="i18nCancel">Cancel</button>
+      <button id="i18nSave">Apply</button>
     </div>
   </div>
 </div>

@@ -63,6 +63,14 @@ app.whenReady().then(async () => {
       if (R.font) { project.font = R.font; glyphFont = R.font; }
     }
     if (R.language) project.language = R.language;
+    // translations: 'languages' (besides the project language, Zepp codes like ro-RO) and 'translations' { names, strings, meta, fallback, missing }
+    if (R.languages || R.translations) {
+      const i = i18nOf();
+      if (Array.isArray(R.languages)) i.languages = R.languages.filter((c) => c && c !== defaultLangCode());
+      const t = R.translations || {};
+      for (const k of ['names', 'strings', 'meta', 'fallback']) if (t[k] && typeof t[k] === 'object') i[k] = t[k];
+      if (t.missing) i.missing = t.missing;
+    }
     if (R.userImports) project.userImports = R.userImports;
     if (R.userCode) project.userCode = R.userCode;
     if (R.optimizePng === true || R.optimizePng === 'lossless' || (Number.isInteger(R.optimizePng) && R.optimizePng >= 2 && R.optimizePng <= 256)) project.optimizePng = R.optimizePng;
@@ -97,6 +105,8 @@ app.whenReady().then(async () => {
       } catch (err) { log.push('step ' + (i + 1) + ' failed: ' + (err && err.message || err)); }
     }
     await glyphGenNow();
+    // the weekday / month pictures in the project's other languages (drawn after every step, so the layers have their final style)
+    if (extraLanguages().length) for (const e of project.elements) if (labelKind(e) && glyphSpecForLayer(e) && (e.images || []).length) await regenLanguageSets(e);
     await loadAllImages();
     refreshPanels(); render();
     const lint = lintProject().map((l) => l.level + ': ' + l.message);

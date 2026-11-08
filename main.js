@@ -16,6 +16,7 @@ const { KINDS, SHOW_LEVELS } = require('./core/kinds');
 const { BUNDLED_FONTS, fontInfoFromBuffer, readCmapRanges, isFontFile, fontFormat, zeusApiLevel, FONT_VARIATIONS } = require('./core/fonts');
 const { LanServer, lanAddresses } = require('./core/lanserver');
 const { importFaceDir } = require('./core/importface');
+const { LANGUAGES } = require('./core/languages');
 const { extractZip } = require('./core/zip');
 const { appIconPng } = require('./core/icon');
 
@@ -189,6 +190,7 @@ function bundledFonts() {
 ipcMain.handle('meta', async () => ({
   devices: DEVICES.map((d) => ({ ...d, label: deviceLabel(d) })),
   dataTypes: DATA_TYPES,
+  languages: LANGUAGES,
   kinds: KINDS,
   showLevels: SHOW_LEVELS,
   weatherIcons: WEATHER_ICONS,
@@ -576,6 +578,8 @@ async function writeZeusProject(outDir, payload) {
   for (const el of project.elements || []) {
     if (!el || el.kind === 'IMG_ANIM') continue;
     for (const key of ['images', 'frames']) for (const n of el[key] || []) usedNames.add(n);
+    // the weekday / month names in the project's other languages
+    if (el.sets && typeof el.sets === 'object') for (const list of Object.values(el.sets)) for (const n of list || []) usedNames.add(n);
     for (const key of ['src', 'unit', 'unitImperial', 'invalid', 'minuteCover', 'secondCover', 'dot', 'negative', 'bg', 'cover', 'scale', 'am', 'pm', 'hour', 'minute', 'second', 'tipsBg', 'selectImage', 'unSelectImage']) {
       if (el[key]) usedNames.add(el[key]);
     }

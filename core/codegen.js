@@ -48,6 +48,52 @@ function asset(el, key) {
 function validHandle(h) { return typeof h === 'string' && /^[A-Za-z_$][\w$]*$/.test(h) && !['W', 'F'].includes(h); }
 function arrName(el) { return `img_${ident(el.name)}_${el.id.slice(-4)}`; }
 
+// ---- translations ----
+// A layer's pictures for the other languages (project.i18n / el.sets): { 'ro-RO': [names] }. Only languages the project lists are used.
+const { LANGUAGES, forTag } = require('./languages');
+const langList = (project) => ((project && project.i18n && project.i18n.languages) || []).filter((c) => LANGUAGES.some((l) => l.code === c));
+const defaultLangCode = (project) => { const l = forTag(project && project.language); return l ? l.code : 'en-US'; };
+const hasLanguages = (project) => langList(project).some((c) => c !== defaultLangCode(project));
+const setsOf = (el, project) => {
+  const out = {};
+  if (!el || !el.sets || !hasLanguages(project)) return out;
+  for (const c of langList(project)) if (c !== defaultLangCode(project) && Array.isArray(el.sets[c]) && el.sets[c].filter(Boolean).length) out[c] = el.sets[c];
+  return out;
+};
+const langId = (c) => LANGUAGES.find((l) => l.code === c).id;
+// app.json `i18n`: with one language it stays as it always was; with more, one entry per language (the store name and description)
+const i18nFor = (project) => {
+  const name = project.name || 'Watchface';
+  if (!hasLanguages(project)) return { 'en-US': { appName: name } };
+  const meta = (project.i18n && project.i18n.meta) || {};
+  const out = {};
+  for (const c of [defaultLangCode(project), ...langList(project).filter((x) => x !== defaultLangCode(project))]) {
+    const e = { appName: ((meta.appName || {})[c] || name) };
+    const d = (meta.description || {})[c];
+    if (d) e.description = String(d).slice(0, 120);
+    out[c] = e;
+  }
+  return out;
+};
+const textStrings = (el, project) => {   // translated texts of a TEXT layer: { 'ro-RO': 'Pași' }
+  const t = project && project.i18n && project.i18n.strings && project.i18n.strings[el.id];
+  const out = {};
+  if (!t || !hasLanguages(project)) return out;
+  for (const c of langList(project)) if (c !== defaultLangCode(project) && typeof t[c] === 'string' && t[c] !== '') out[c] = t[c];
+  return out;
+};
+// every language the generated code has to tell apart (the layers' sets and texts), plus the default one
+const usedLangs = (project, els) => {
+  const set = new Set();
+  for (const el of els) {
+    for (const c of Object.keys(setsOf(el, project))) set.add(c);
+    if (el.kind === 'TEXT') for (const c of Object.keys(textStrings(el, project))) set.add(c);
+  }
+  if (set.size) set.add(defaultLangCode(project));
+  return [...set];
+};
+const arrLang = (el, code) => `${arrName(el)}__${code.replace(/[^A-Za-z0-9]+/g, '_')}`;
+
 // A widget that has lost its picture would be built with a reference to an
 // image the package does not contain — the watch then fails to initialise the
 // face, taking every widget after it down as well. Those layers are reported
@@ -319,7 +365,12 @@ function emitElement(el, ctx, out) {
       if (el.charSpace) kv(L, 'char_space', p(el.charSpace));
       if (el.textStyle && el.textStyle !== 'NONE') kv(L, 'text_style', `ui.text_style.${el.textStyle}`);
       if (el.dataType) kv(L, 'type', `ui.data_type.${el.dataType}`);
-      else kv(L, 'text', JSON.stringify(el.text == null ? '' : String(el.text)));
+      else {
+        // a fixed text with translations: the watch shows the one in its own language, the original everywhere else
+        const tr = textStrings(el, ctx.project), orig = JSON.stringify(el.text == null ? '' : String(el.text));
+        if (Object.keys(tr).length) { ctx.usesLang = true; kv(L, 'text', `byLang({ ${Object.entries(tr).map(([c, t]) => `'${c}': ${JSON.stringify(t)}`).join(', ')} }, ${orig})`); }
+        else kv(L, 'text', orig);
+      }
       if (el.alpha != null && el.alpha < 255) kv(L, 'alpha', Math.max(0, num(el.alpha)));
       // custom typeface: the file is exported next to the images as
       // assets/<target>/fonts/<file> and referenced relative to that folder.
@@ -391,9 +442,19 @@ function emitElement(el, ctx, out) {
     }
     case 'IMG_WEEK': {
       kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y));
-      kv(L, 'week_en', arrays[arrName(el)]);
-      kv(L, 'week_sc', arrays[arrName(el)]);
-      kv(L, 'week_tc', arrays[arrName(el)]);
+      const wk = arrays[arrName(el)], wl = (ctx.langArrays || {})[arrName(el)];
+      if (wl && wl.length) {
+        // the names in the watch's own language; the zh-CN / zh-TW sets also go to the native _sc / _tc slots
+        const map = `{ ${wl.map((x) => `'${x.code}': ${x.id}`).join(', ')} }`;
+        ctx.usesLang = true;
+        kv(L, 'week_en', `byLang(${map}, ${wk})`);
+        kv(L, 'week_sc', wl.some((x) => x.code === 'zh-CN') ? `${wl.find((x) => x.code === 'zh-CN').id}` : `byLang(${map}, ${wk})`);
+        kv(L, 'week_tc', wl.some((x) => x.code === 'zh-TW') ? `${wl.find((x) => x.code === 'zh-TW').id}` : `byLang(${map}, ${wk})`);
+      } else {
+        kv(L, 'week_en', wk);
+        kv(L, 'week_sc', wk);
+        kv(L, 'week_tc', wk);
+      }
       kv(L, 'show_level', showLevel(el.show));
       out.push(`  ui.createWidget(ui.widget.IMG_WEEK, {\n${L.join('\n')}\n  })`);
       break;
@@ -411,9 +472,18 @@ function emitElement(el, ctx, out) {
       }
       kv(L, `${part}_follow`, follow);
       if (el.isCharacter) kv(L, `${part}_is_character`, 'true');
-      kv(L, `${part}_en_array`, arrays[arrName(el)]);
-      kv(L, `${part}_sc_array`, arrays[arrName(el)]);
-      kv(L, `${part}_tc_array`, arrays[arrName(el)]);
+      const dk = arrays[arrName(el)], dl = (ctx.langArrays || {})[arrName(el)];
+      if (dl && dl.length && el.isCharacter) {
+        const map = `{ ${dl.map((x) => `'${x.code}': ${x.id}`).join(', ')} }`;
+        ctx.usesLang = true;
+        kv(L, `${part}_en_array`, `byLang(${map}, ${dk})`);
+        kv(L, `${part}_sc_array`, dl.some((x) => x.code === 'zh-CN') ? dl.find((x) => x.code === 'zh-CN').id : `byLang(${map}, ${dk})`);
+        kv(L, `${part}_tc_array`, dl.some((x) => x.code === 'zh-TW') ? dl.find((x) => x.code === 'zh-TW').id : `byLang(${map}, ${dk})`);
+      } else {
+        kv(L, `${part}_en_array`, dk);
+        kv(L, `${part}_sc_array`, dk);
+        kv(L, `${part}_tc_array`, dk);
+      }
       if (el.unit) {
         kv(L, `${part}_unit_en`, asset(el, 'unit'));
         kv(L, `${part}_unit_sc`, asset(el, 'unit'));
@@ -635,13 +705,14 @@ function readerFor(el, ctx) {
 }
 
 function generateWatchface(project, device = deviceByKey(project.device)) {
-  const ctx = { sensors: new Set(), declared: new Set(), arrays: {}, warnings: [], variants: [], usesTap: false };
+  const ctx = { sensors: new Set(), declared: new Set(), arrays: {}, warnings: [], variants: [], usesTap: false, project };
   // colour themes: pictures with a recoloured copy per theme; the face rebuilds itself on a switch
   const th = project.themes;
   const themed = !!(th && Array.isArray(th.list) && th.list.length && Array.isArray(th.recolored) && th.recolored.length);
   ctx.themed = themed;
   ctx.api = parseFloat(device && device.api) || 0;
   const els = (project.elements || []).filter((e) => e.visible !== false && !e.previewOnly);
+  const wantLangs = usedLangs(project, els);   // the languages the face has to tell apart (empty = single-language face)
   // ---- declare the image arrays the widgets reference ----
   const decls = [];
   const fills = [];                   // themed faces: the arrays are filled again after a switch
@@ -654,6 +725,15 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     if (!names || !names.length) {
       if (['TEXT_IMG', 'IMG_LEVEL', 'IMG_PROGRESS'].includes(el.kind)) ctx.warnings.push(`${el.name}: no images assigned`);
       continue;
+    }
+    // the same weekday / month names in the project's other languages (picked at run time by the watch language)
+    if (el.kind === 'IMG_WEEK' || el.kind === 'IMG_DATE') {
+      for (const [code, list] of Object.entries(setsOf(el, project))) {
+        const lid = arrLang(el, code), ln = list.map((n) => (typeof n === 'string' ? n : n.name)).filter(Boolean);
+        (ctx.langArrays = ctx.langArrays || {})[arrName(el)] = (ctx.langArrays[arrName(el)] || []).concat({ code, id: lid });
+        if (themed) { decls.push(`let ${lid} = []`); fills.push(`  ${lid} = [\n${ln.map((n) => `    ${A(n)}`).join(',\n')},\n  ]`); }
+        else decls.push(`const ${lid} = [\n${ln.map((n) => `  ${A(n)}`).join(',\n')},\n]`);
+      }
     }
     const key = names.join('\u0000');
     if (arrayByContent.has(key)) { ctx.arrays[arrName(el)] = arrayByContent.get(key); continue; }
@@ -692,6 +772,8 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   const hasVariants = els.some((e) => variantsOf(e) && e.show !== 'aod');
   const hasSunWhen = els.some((e) => (e.showWhen === 'sunrise' || e.showWhen === 'sunset') && !missingPicture(e));
   out.push("import ui from '@zos/ui'");
+  // the watch language: getLanguage() of @zos/settings (API 2.0+, checked on a Bip 6). hmSetting is not a global on newer watches.
+  if (wantLangs.length && ctx.api >= 2) out.push("import * as zosSettings from '@zos/settings'");
   if ((themed || hasVariants) && ctx.api >= 3) out.push("import * as zosFs from '@zos/fs'");
 
   if (ctx.sensors.size) {
@@ -719,6 +801,21 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push("const A = (p) => `images/${themeIdx && THEMED[p] ? p.replace(/\\.png$/i, '__t' + themeIdx + '.png') : p}`");
   } else out.push('const A = (p) => `images/${p}`');
   out.push('');
+  // the watch language: weekday / month pictures and fixed texts in more than one language are picked once, when the face is built
+  if (wantLangs.length) {
+    out.push('// ---- the watch language: the face picks the weekday / month pictures and texts of the language the watch is set to ----');
+    out.push(`const LANG_IDS = { ${wantLangs.map((c) => `${langId(c)}: '${c}'`).join(', ')} }`);
+    out.push(`const DEFAULT_LANG = '${defaultLangCode(project)}'`);
+    out.push("const detectLang = () => {");
+    out.push("  let id");
+    out.push("  try { if (typeof zosSettings !== 'undefined' && zosSettings.getLanguage) id = zosSettings.getLanguage() } catch (e) {}");
+    out.push("  try { if (id === undefined && typeof hmSetting !== 'undefined' && hmSetting.getLanguage) id = hmSetting.getLanguage() } catch (e) {}");
+    out.push("  return LANG_IDS[id] || DEFAULT_LANG");
+    out.push("}");
+    out.push('const LANG = detectLang()');
+    out.push('const byLang = (m, d) => (m && m[LANG]) || d');
+    out.push('');
+  }
   if (decls.length) {
     out.push('// ---- image arrays (frame order matters: digits 0-9, week 1-7) ----');
     out.push(decls.join('\n\n'));
@@ -993,8 +1090,8 @@ function generateAppJson(project, device, opts = {}) {
         designWidth: device.designWidth,
       },
     },
-    i18n: { 'en-US': { appName: project.name || 'Watchface' } },
-    defaultLanguage: 'en-US',
+    i18n: i18nFor(project),
+    defaultLanguage: hasLanguages(project) ? defaultLangCode(project) : 'en-US',
     debug: false,
   };
   return JSON.stringify(doc, null, 2) + '\n';

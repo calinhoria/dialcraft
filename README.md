@@ -43,7 +43,11 @@
 - **Any language.** Weekday and month names come from the system's locale data
   (`ro-RO` gives *LUNI … DUMINICĂ*, `de-DE` gives *MONTAG …*). A letter a font
   lacks (`ă ș ț` in a Latin-only face) is built from that font's own glyphs
-  instead of falling back to a system font.
+  (or drawn as its plain letter from an editable fallback table, `Ț→T`) instead of
+  falling back to a system font.
+- **Translations.** One face in several languages: a table of weekday and month
+  names, texts and store info, pre-filled with the built-in names and editable
+  cell by cell. The watch shows the language it is set to.
 - **Colour themes.** One face, several colours: pick one of 20 well-known palettes
   (or add your own colours) and the face's accent colour is moved to each of them.
   A tap zone switches the theme on the watch. **Imported Font** recolours and scales

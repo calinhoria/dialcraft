@@ -1236,6 +1236,70 @@ app.whenReady().then(async () => {
       && weekNames2.files.join(',') === [1, 2, 3, 4, 5, 6, 7].map((i) => weekNames2.files[0].replace('_w1.', `_w${i}.`)).join(','),
       `default ${weekNames2.en[0]} · as generated ${weekNames2.enAs[0]} · ro ${weekNames2.ro[0]} / ${weekNames2.roLong[0]} · ${weekNames2.shout[0]} · rows ${weekNames2.rows.filter((l) => /Names|Case|Language/.test(l)).join(',')}`);
 
+    // ---- translations: names typed in the table, a set per language, the run-time picker, app.json i18n, the fallback letters ----
+    const tr = await run(`
+      project.language = 'en-US';
+      project.i18n = { languages: ['ro-RO', 'de-DE'], names: { 'week.short': { 'ro-RO': ['', 'MAR!', '', '', '', '', ''] } }, strings: {}, meta: { appName: { 'ro-RO': 'Ceas' }, description: { 'ro-RO': 'Un ceas' } }, fallback: {}, missing: 'compose' };
+      const e = await addElement('IMG_WEEK', { name: 'Tr week' });
+      await regenLanguageSets(e);
+      const t = await addElement('TEXT', { name: 'Tr text', text: 'STEPS' });
+      project.i18n.strings[t.id] = { 'ro-RO': 'PAȘI' };
+      const typed = localeNames('week', 'ro-RO', 'short'), built = localeNames('week', 'de-DE', 'short');
+      const ro = (e.sets['ro-RO'] || []).slice(), de = (e.sets['de-DE'] || []).slice();
+      const gen = await API.generateCode({ project });
+      const used = new Set(); collectUsedImages(used);
+      const out = { typed, built, ro, de, defaultKept: (e.images || []).length, usedAll: ro.every((n) => used.has(n)) && de.every((n) => used.has(n)), code: gen.code || '' };
+      project.elements = project.elements.filter((x) => x !== e && x !== t);
+      project.i18n = { languages: [], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+      return out;`);
+    check('translations: typed names replace the built-in ones cell by cell, and every language gets its own picture set',
+      tr.typed[1] === 'MAR!' && /^lun/i.test(tr.typed[0]) && tr.built[0] === 'Mo' && tr.ro.length === 7 && tr.de.length === 7
+      && /_ro_RO_w1\.png$/.test(tr.ro[0]) && /_de_DE_w7\.png$/.test(tr.de[6]) && tr.defaultKept === 7 && tr.usedAll,
+      `typed ${tr.typed.slice(0, 2).join('/')} · de ${tr.built[0]} · ro files ${tr.ro[0]} · de files ${tr.de[0]}`);
+    check('translations: the face picks its weekday pictures and texts by the watch language (getLanguage), the default elsewhere',
+      /import \* as zosSettings from '@zos\/settings'/.test(tr.code) && /const LANG_IDS = \{[^}]*21: 'ro-RO'[^}]*7: 'de-DE'[^}]*2: 'en-US'/.test(tr.code)
+      && /const byLang = /.test(tr.code) && /week_en: byLang\(\{ 'ro-RO': \w+, 'de-DE': \w+ \}, \w+\)/.test(tr.code)
+      && /text: byLang\(\{ 'ro-RO': "PAȘI" \}, "STEPS"\)/.test(tr.code) && /zosSettings\.getLanguage\(\)/.test(tr.code),
+      'import, id map, byLang for the weekday arrays and the text');
+    const trOne = await run(`
+      const e = await addElement('IMG_WEEK', { name: 'One lang' });
+      const gen = await API.generateCode({ project });
+      project.elements = project.elements.filter((x) => x !== e);
+      return gen.code || '';`);
+    check('translations: a single-language face generates no language code at all (nothing changes for existing faces)',
+      !/byLang|LANG_IDS|zosSettings|detectLang/.test(trOne), 'no picker, no @zos/settings import');
+    const trFb = await run(`
+      project.i18n = { languages: [], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+      const f = 'Orbitron';
+      const plan = (c) => { const p = glyphPlan(f, c); return p.how === 'native' ? 'native' : p.how + ':' + (p.ch || p.base); };
+      const compose = [...'ȚȘĂŁØ'].map(plan);
+      project.i18n.missing = 'plain';
+      const plain = [...'ȚȘĂ'].map(plan);
+      project.i18n.fallback = { 'Ț': 'TT' };
+      const edited = plainLetterOf('Ț') + ' ' + plainLetterOf('Ț', false) + ' ' + plainLetterOf('ß');
+      const special = ['Ł', 'Ø', 'Æ', 'Đ', 'Œ'].map((c) => plainLetterOf(c)).join(',');
+      project.i18n = { languages: [], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+      return { compose, plain, edited, special };`);
+    check('fallback letters: Ț→T, Ș→S, Ł→L … when the font lacks a letter (composed first, the plain letter on request or when it cannot be composed)',
+      trFb.compose[0] === 'composed:T' && trFb.compose[3] === 'plain:L' && trFb.compose[4] === 'plain:O'
+      && trFb.plain.join() === 'plain:T,plain:S,plain:A' && trFb.edited === 'TT T ss' && trFb.special === 'L,O,AE,D,OE',
+      `default ${trFb.compose.join(' ')} · plain mode ${trFb.plain.join(' ')} · edited ${trFb.edited} · special ${trFb.special}`);
+
+    {
+      // app.json: one i18n entry per language (store name and description), the default language named; unchanged for one language
+      const { generateAppJson } = require('../core/codegen');
+      const { deviceByKey } = require('../core/devices');
+      const dev = deviceByKey(TARGET);
+      const base = { name: 'Face', device: TARGET, language: 'en-US', description: 'A face', images: [], elements: [] };
+      const multi = { ...base, i18n: { languages: ['ro-RO', 'de-DE'], names: {}, strings: {}, meta: { appName: { 'ro-RO': 'Ceas' }, description: { 'ro-RO': 'Un ceas' } } } };
+      const one = generateAppJson(base, dev, { appId: 1 }), many = generateAppJson(multi, dev, { appId: 1 });
+      const o = typeof one === 'string' ? JSON.parse(one) : one, m = typeof many === 'string' ? JSON.parse(many) : many;
+      check('translations: app.json lists every language with its own name and description; one language stays as it was',
+        JSON.stringify(o.i18n) === JSON.stringify({ 'en-US': { appName: 'Face' } }) && o.defaultLanguage === 'en-US'
+        && m.i18n['ro-RO'].appName === 'Ceas' && m.i18n['ro-RO'].description === 'Un ceas' && m.i18n['de-DE'].appName === 'Face' && m.i18n['en-US'].appName === 'Face' && m.defaultLanguage === 'en-US',
+        `single ${JSON.stringify(o.i18n)} · multi ${Object.keys(m.i18n).join(',')}`);
+    }
+
     const importedSet = await run(`
       const el = await addElement('IMG_TIME', { name: 'Imported set' });
       // pretend the pictures came from another watchface: private copies under

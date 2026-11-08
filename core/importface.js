@@ -17,6 +17,7 @@ const path = require('path');
 const vm = require('vm');
 const { PNG } = require('pngjs');
 const { DEVICES } = require('./devices');
+const LANGS = require('./languages');
 const { newElement } = require('./kinds');
 const { dataType } = require('./datatypes');
 const { fontInfoFromBuffer, fontFormat, isFontFile } = require('./fonts');
@@ -812,6 +813,7 @@ function importFaceDir(dir) {
     font: fonts.length ? fonts[0].family : '',
     // what the face declares; weekday / month names follow it
     language: languageTag(appJson.defaultLanguage || app.defaultLanguage || Object.keys(appJson.i18n || {})[0]),
+    i18n: importedI18n(appJson, ctx),
     groups: {},
     elements,
   };
@@ -898,6 +900,15 @@ function mapWidget(type, p, ctx, skipped, sensor) {
   if (!kindId) { skipped.set(type || '?', (skipped.get(type || '?') || 0) + 1); return []; }
   const img = (ref) => ctx.resolve(ref);
   const imgs = (arr) => (Array.isArray(arr) ? arr.map(img).filter(Boolean) : []);
+  // the English set, plus the Simplified / Traditional Chinese sets when they are different pictures
+  const langPics = (en, sc, tc) => {
+    const base = imgs(en || sc || tc), sets = {};
+    for (const [arr, code] of [[sc, 'zh-CN'], [tc, 'zh-TW']]) {
+      const list = imgs(arr);
+      if (list.length && JSON.stringify(list) !== JSON.stringify(base)) { sets[code] = list; (ctx.extraLangs = ctx.extraLangs || new Set()).add(code); }
+    }
+    return [base, Object.keys(sets).length ? sets : null];
+  };
   // A picture the face picked from a reading: the index never made it through
   // the sandbox, but the whole set is in the package, so the widget comes in as
   // a level widget over it instead of as a picture with a broken name.
@@ -1063,7 +1074,11 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       return out;
     }
     case 'IMG_WEEK':
-      return el('IMG_WEEK', { name: 'Weekday', ...box, images: imgs(p.week_en || p.week_sc || p.week_tc) });
+    {
+      // the three native sets: a face that draws different names for Simplified / Traditional Chinese keeps them as languages
+      const [images, sets] = langPics(p.week_en, p.week_sc, p.week_tc);
+      return el('IMG_WEEK', { name: 'Weekday', ...box, images, ...(sets ? { sets } : {}) });
+    }
     case 'IMG_DATE': {
       const out = [];
       for (const part of DATE_PARTS) {
@@ -1076,7 +1091,7 @@ function mapWidget(type, p, ctx, skipped, sensor) {
           zero: num(p[`${part}_zero`]) ? 1 : 0, space: num(p[`${part}_space`]), follow,
           alignH: alignOf(p[`${part}_align`]),
           isCharacter: !!p[`${part}_is_character`],
-          images: imgs(p[`${part}_en_array`] || p[`${part}_sc_array`] || p[`${part}_tc_array`]),
+          ...(() => { const [images, sets] = p[`${part}_is_character`] ? langPics(p[`${part}_en_array`], p[`${part}_sc_array`], p[`${part}_tc_array`]) : [imgs(p[`${part}_en_array`] || p[`${part}_sc_array`] || p[`${part}_tc_array`]), null]; return { images, ...(sets ? { sets } : {}) }; })(),
           unit: img(p[`${part}_unit_en`]) || '',
         }));
       }
@@ -1193,6 +1208,21 @@ function mapWidget(type, p, ctx, skipped, sensor) {
 // The designer emits a layer shown in both states as two widgets (ONLY_NORMAL +
 // ONLY_AOD). Fold them back into one layer on the way in.
 // "enUS", "zh_CN", "en-us" → a valid BCP-47 tag ("en-US"); anything unusable → en-US
+// the translations a face already declares: every `i18n` entry of app.json (store name and description per language) and the
+// Chinese picture sets some faces carry. The names themselves stay in the pictures.
+function importedI18n(appJson, ctx) {
+  const out = { languages: [], names: {}, strings: {}, meta: {}, fallback: {}, missing: 'compose' };
+  const def = (LANGS.forTag(languageTag(appJson.defaultLanguage || (appJson.app || {}).defaultLanguage || Object.keys(appJson.i18n || {})[0])) || {}).code;
+  for (const [key, entry] of Object.entries(appJson.i18n || {})) {
+    const z = LANGS.forTag(languageTag(key));
+    if (!z || !entry || typeof entry !== 'object') continue;
+    if (entry.appName) (out.meta.appName = out.meta.appName || {})[z.code] = String(entry.appName);
+    if (entry.description) (out.meta.description = out.meta.description || {})[z.code] = String(entry.description).slice(0, 120);
+    if (z.code !== def && !out.languages.includes(z.code)) out.languages.push(z.code);
+  }
+  for (const c of (ctx && ctx.extraLangs) || []) if (c !== def && !out.languages.includes(c)) out.languages.push(c);
+  return out;
+}
 function languageTag(raw) {
   let t = String(raw || '').trim().replace(/_/g, '-');
   if (/^[a-z]{2,3}[A-Z]{2}$/.test(t)) t = `${t.slice(0, -2)}-${t.slice(-2)}`;
