@@ -16,7 +16,7 @@
 
 <p align="center"><sub>The <i>Honeybee</i> face for the Amazfit Bip 6, imported straight from its Zepp OS project folder.</sub></p>
 
-> **Beta release (0.2.x).** Dialcraft is under active development and is not finished software.
+> **Beta release (0.5.x).** Dialcraft is under active development and is not finished software.
 > Expect rough edges and changes between versions. Generated watchface code is checked with
 > automated tests and a mock runtime, but not every widget has been tried on every watch — test a
 > face on your own watch before sharing it, and keep a copy of your projects. The macOS builds are
