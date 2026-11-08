@@ -1062,7 +1062,7 @@
     {
       "id": "elmvfp01d55b",
       "kind": "IMG_CLICK",
-      "name": "Temperature (current) 2",
+      "name": "Tap: Temperature (current)",
       "x": 281,
       "y": 274,
       "show": "normal",

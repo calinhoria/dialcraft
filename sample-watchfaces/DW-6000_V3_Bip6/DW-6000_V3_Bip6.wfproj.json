@@ -812,7 +812,7 @@
     {
       "id": "elmvfgapbaq1",
       "kind": "IMG_CLICK",
-      "name": "Calories",
+      "name": "Tap: Calories",
       "x": 137,
       "y": 110,
       "show": "normal",
@@ -827,7 +827,7 @@
     {
       "id": "elmvfgapbar2",
       "kind": "IMG_CLICK",
-      "name": "Heart rate 2",
+      "name": "Tap: Heart rate",
       "x": 274,
       "y": 388,
       "show": "normal",
@@ -842,7 +842,7 @@
     {
       "id": "elmvfgapba39r",
       "kind": "IMG_CLICK",
-      "name": "Time to sunrise/sunset",
+      "name": "Tap: Next sunrise / sunset (time)",
       "x": 232,
       "y": 201,
       "show": "normal",
@@ -857,7 +857,7 @@
     {
       "id": "elmvfgapbak0",
       "kind": "IMG_CLICK",
-      "name": "Temperature (current) 2",
+      "name": "Tap: Temperature (current)",
       "x": 278,
       "y": 157,
       "show": "normal",
@@ -872,7 +872,7 @@
     {
       "id": "elmvfgapba2vb",
       "kind": "IMG_CLICK",
-      "name": "Countdown (min/sec)",
+      "name": "Tap: Countdown (min/sec)",
       "x": 294,
       "y": 259,
       "show": "normal",
@@ -887,7 +887,7 @@
     {
       "id": "elmvfgapba27",
       "kind": "IMG_CLICK",
-      "name": "Stopwatch (min/sec)",
+      "name": "Tap: Stopwatch (min/sec)",
       "x": 162,
       "y": 266,
       "show": "normal",
@@ -902,7 +902,7 @@
     {
       "id": "elmvfgapba7bp",
       "kind": "IMG_CLICK",
-      "name": "Alarm",
+      "name": "Tap: Alarm",
       "x": 337,
       "y": 308,
       "show": "normal",

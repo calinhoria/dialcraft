@@ -1177,7 +1177,8 @@ function mapWidget(type, p, ctx, skipped, sensor) {
     case 'IMG_CLICK': {
       const dt = nameOf(p.type);
       return el('IMG_CLICK', {
-        name: (dt && dataType(dt) ? dataType(dt).label : 'Shortcut'), ...box,
+        // named for what it does: it looks like a reading's icon, but tapping it opens a screen
+        name: `Tap: ${dt && dataType(dt) ? dataType(dt).label.replace(/\s*\(tap\)\s*$/i, '') : 'shortcut'}`, ...box,
         src: img(p.src), dataType: dt,
       });
     }

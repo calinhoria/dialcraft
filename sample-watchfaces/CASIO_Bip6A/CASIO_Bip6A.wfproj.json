@@ -696,7 +696,7 @@
     {
       "id": "elmvfj0xpy5qm",
       "kind": "IMG_CLICK",
-      "name": "Steps 2",
+      "name": "Tap: Steps",
       "x": 37,
       "y": 168,
       "show": "normal",
@@ -711,7 +711,7 @@
     {
       "id": "elmvfj0xpy5uw",
       "kind": "IMG_CLICK",
-      "name": "Stopwatch (min/sec)",
+      "name": "Tap: Stopwatch (min/sec)",
       "x": 132,
       "y": 235,
       "show": "normal",
@@ -727,7 +727,7 @@
     {
       "id": "elmvfj0xpy6f5",
       "kind": "IMG_CLICK",
-      "name": "Countdown (min/sec)",
+      "name": "Tap: Countdown (min/sec)",
       "x": 280,
       "y": 255,
       "show": "normal",
@@ -743,7 +743,7 @@
     {
       "id": "elmvfj0xpy1yu",
       "kind": "IMG_CLICK",
-      "name": "Alarm",
+      "name": "Tap: Alarm",
       "x": 209,
       "y": 120,
       "show": "normal",
@@ -759,7 +759,7 @@
     {
       "id": "elmvfj0xpy40z",
       "kind": "IMG_CLICK",
-      "name": "Time to sunrise/sunset",
+      "name": "Tap: Next sunrise / sunset (time)",
       "x": 255,
       "y": 118,
       "show": "normal",
@@ -775,7 +775,7 @@
     {
       "id": "elmvfj0xpy115",
       "kind": "IMG_CLICK",
-      "name": "Temperature (current) 2",
+      "name": "Tap: Temperature (current)",
       "x": 252,
       "y": 178,
       "show": "normal",
@@ -791,7 +791,7 @@
     {
       "id": "elmvfj0xpy1c8",
       "kind": "IMG_CLICK",
-      "name": "PAI weekly",
+      "name": "Tap: PAI weekly",
       "x": 37,
       "y": 170,
       "show": "normal",
@@ -806,7 +806,7 @@
     {
       "id": "elmvfj0xpy534",
       "kind": "IMG_CLICK",
-      "name": "Blood oxygen",
+      "name": "Tap: Blood oxygen",
       "x": 324,
       "y": 319,
       "show": "normal",
@@ -822,7 +822,7 @@
     {
       "id": "elmvfj0xpy3nj",
       "kind": "IMG_CLICK",
-      "name": "Heart rate 2",
+      "name": "Tap: Heart rate",
       "x": 249,
       "y": 323,
       "show": "normal",

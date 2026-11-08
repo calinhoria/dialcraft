@@ -168,7 +168,7 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | Complication slot | `WATCHFACE_EDIT_GROUP` | an editable slot: the wearer picks what it shows; see *Complication slots* |
 | Tap zone / button | `BUTTON` | an invisible tap zone, or a visible button with a label and colours; see *Variants and tap zones* |
 | System status | `IMG_STATUS` | disconnect / DND / … icons |
-| Tap shortcut | `IMG_CLICK` | opens an app on tap |
+| Tap shortcut | `IMG_CLICK` | a picture that opens the watch's own screen for a reading on tap (heart rate, steps, weather, alarm …; **Opens on tap** in Properties) — no code. Marked **TAP** in Layers and outlined with what it opens on the canvas; imported ones are named `Tap: Heart rate` |
 | Filled / stroked rect | `FILL_RECT`, `STROKE_RECT` | corner radius, optional rotation |
 | Circle | `CIRCLE` | filled (alpha via the layer's Alpha) |
 | Arc | `ARC` | static sweep, line width |

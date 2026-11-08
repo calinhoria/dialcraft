@@ -2865,6 +2865,21 @@ app.whenReady().then(async () => {
         (jsE.match(/WATCHFACE_EDIT_\w*MASK/g) || []).join(','));
     }
     {
+      // a tap shortcut (IMG_CLICK) says what it opens: a TAP badge in the layer list and a note + "Opens on tap" in Properties
+      const tc = await run(`
+        await createProject('Tap shortcut', ${JSON.stringify(TARGET)}, 'blank');
+        await applyPreset('click');
+        const e = elements().find((x) => x.kind === 'IMG_CLICK');
+        e.dataType = 'HEART';
+        selectedId = e.id; multiSel = new Set([e.id]); refreshPanels(); renderLayers();
+        const badge = [...document.querySelectorAll('.layer .grp.tap')].map((b) => b.title);
+        const props = document.querySelector('#props') ? document.querySelector('#props').textContent : document.body.textContent;
+        const shown = [...document.querySelectorAll('#props select')].some((x) => x.value === 'HEART');
+        return { badge, note: /opens the Heart rate screen/.test(props), label: /Opens on tap/.test(props), target: clickTarget(e), shown };`);
+      check('tap shortcuts are marked: a TAP badge in Layers, "Opens on tap" showing the reading it opens (HEART) in Properties',
+        tc.badge.length === 1 && /opens Heart rate/.test(tc.badge[0]) && tc.note && tc.label && tc.target === 'Heart rate' && tc.shown, JSON.stringify(tc));
+    }
+    {
       // the Edit-screen placeholder: the face dimmed behind the complications, the slots themselves left out, refreshed in place
       const bd = await run(`
         await createProject('Backdrop', ${JSON.stringify(TARGET)}, 'blank');

@@ -2177,7 +2177,7 @@ function drawOverlay(c, W, H) {
   }
   // tap zones draw nothing on the watch: show where they are, with what they do
   for (const e of elements()) {
-    if (e.kind !== 'TAP' || e.visible === false || !showAllowed(e.show, previewMode)) continue;
+    if (e.kind !== 'TAP' || e.visible === false || !showAllowed(e.show, previewMode) || !editAllows(e) || !whenAllows(e)) continue;
     const b = elBox(e);
     c.save();
     c.setLineDash([4, 3]);
@@ -2190,6 +2190,21 @@ function drawOverlay(c, W, H) {
     c.font = '600 10px system-ui, sans-serif';
     c.textBaseline = 'top';
     c.fillText(e.action === 'variant' ? '↻ variant' : e.action === 'theme' ? '◐ theme' : e.action === 'sysapp' ? '↗ ' + String((META.systemApps || []).find((a) => a.key === e.sysApp)?.label || 'app') : e.action === 'app' ? '↗ ' + String(e.appUrl || 'app').replace(/Screen$/, '') : 'tap', b.x + 4, b.y + 3, Math.max(10, b.w - 8));
+    c.restore();
+  }
+  // tap shortcuts (IMG_CLICK) open a watch screen on tap: outline them like the tap zones, with what they open
+  for (const e of elements()) {
+    if (e.kind !== 'IMG_CLICK' || e.visible === false || !showAllowed(e.show, previewMode) || offView(e) || !editAllows(e) || !whenAllows(e)) continue;
+    const b = elBox(e);
+    c.save();
+    c.setLineDash([4, 3]);
+    c.strokeStyle = 'rgba(255,170,60,0.85)';
+    c.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
+    c.setLineDash([]);
+    c.fillStyle = 'rgba(255,200,120,0.95)';
+    c.font = '600 10px system-ui, sans-serif';
+    c.textBaseline = 'top';
+    c.fillText('↗ ' + clickTarget(e), b.x + 4, b.y + 3, Math.max(10, b.w - 8));
     c.restore();
   }
   const sel = selection();
@@ -2612,6 +2627,11 @@ function kindIcon(kind) {
   const g = k ? k.group : 'Image';
   return g === 'Time' || g === 'Clock' ? ICON.clock : g === 'Data' ? ICON.data : g === 'Shape' ? ICON.shape : g === 'Text' ? ICON.text : ICON.img;
 }
+// what a tap shortcut opens, without the "(tap)" the shortcut-only entries carry
+function clickTarget(e) {
+  const k = e.dataType || 'OUTDOOR_RUNNING', d = (DATA_TYPES || []).find((x) => x.key === k);
+  return String(d ? d.label : k).replace(/\s*\(tap\)\s*$/i, '');
+}
 function aodBadge(e) {
   if (e.show === 'aod') return 'AOD';
   if (e.show === 'both') return 'BOTH';
@@ -2674,6 +2694,12 @@ function layerRow(e) {
     left.appendChild(w);
   }
   if (badge) { const b = document.createElement('span'); b.className = 'grp ' + badge.toLowerCase(); b.textContent = badge; b.title = 'Shown in: ' + badge.toLowerCase(); left.appendChild(b); }
+  if (e.kind === 'IMG_CLICK' || e.kind === 'TAP') {
+    const t = document.createElement('span');
+    t.className = 'grp tap'; t.textContent = 'TAP';
+    t.title = e.kind === 'IMG_CLICK' ? `Tap shortcut: tapping it on the watch opens ${clickTarget(e)}` : 'Tap zone: does something when tapped';
+    left.appendChild(t);
+  }
   left.appendChild(nm);
   nm.title = 'Double-click to rename this layer';
   const right = document.createElement('span');
@@ -3435,8 +3461,11 @@ function setHint(kind, e) {
 function dtOptions(forClick, forText = false) {
   const groups = [];
   const out = [];
-  for (const d of DATA_TYPES) {
-    if (!!d.clickOnly !== !!forClick) continue;
+  // a tap shortcut's type is what it opens: the shortcut-only entries (Moon, Outdoor running …) and
+  // every reading (HEART opens the heart-rate screen, STEP the activity one …), shortcuts listed first
+  const list = forClick ? [...DATA_TYPES.filter((d) => d.clickOnly), ...DATA_TYPES.filter((d) => !d.clickOnly)] : DATA_TYPES;
+  for (const d of list) {
+    if (!forClick && d.clickOnly) continue;
     if (d.textOnly && !forText) continue;   // a time string like “9:07 pm” has no digit pictures
     if (d.preview == null && !d.bound) continue;
     if (d.key === 'TIME' || d.key === 'DATE' || d.key === 'WEEK') continue;
@@ -5211,7 +5240,13 @@ function propsKind(e) {
       glyphStyleRows(frag, add, e);
       break;
     case 'IMG_CLICK':
-      add('Action', ctlSelect(e.dataType || 'OUTDOOR_RUNNING', dtOptions(true), (v) => { e.dataType = v; }));
+      frag.appendChild(propNote(`Tap shortcut: tapping this picture on the watch opens the ${clickTarget(e)} screen (the watch's own action for that reading; no code).`));
+      {
+        const opts = dtOptions(true);
+        // a type this editor does not list (a newer firmware's) is kept and shown as it is
+        if (e.dataType && !opts.some((o) => o.value === e.dataType)) opts.unshift({ value: e.dataType, label: e.dataType });
+        add('Opens on tap', ctlSelect(e.dataType || 'OUTDOOR_RUNNING', opts, (v) => { e.dataType = v; refreshPanels(); render(); }));
+      }
       img('Icon', 'src');
       glyphStyleRows(frag, add, e);
       break;

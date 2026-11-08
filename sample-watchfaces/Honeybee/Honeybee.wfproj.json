@@ -489,7 +489,7 @@
     {
       "id": "elmvfb4nll6dj",
       "kind": "IMG_CLICK",
-      "name": "Heart rate",
+      "name": "Tap: Heart rate",
       "x": 250,
       "y": 315,
       "show": "normal",

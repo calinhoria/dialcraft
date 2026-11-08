@@ -497,7 +497,7 @@
     {
       "id": "elmvfe54xf75i",
       "kind": "IMG_CLICK",
-      "name": "Steps 2",
+      "name": "Tap: Steps",
       "x": 48,
       "y": 240,
       "show": "normal",
@@ -512,7 +512,7 @@
     {
       "id": "elmvfe54xf3jj",
       "kind": "IMG_CLICK",
-      "name": "Heart rate 2",
+      "name": "Tap: Heart rate",
       "x": 218,
       "y": 334,
       "show": "normal",
@@ -527,7 +527,7 @@
     {
       "id": "elmvfe54xf2s",
       "kind": "IMG_CLICK",
-      "name": "Battery 2",
+      "name": "Tap: Battery",
       "x": 42,
       "y": 335,
       "show": "normal",
@@ -542,7 +542,7 @@
     {
       "id": "elmvfe54xf2l6",
       "kind": "IMG_CLICK",
-      "name": "Temperature (current) 2",
+      "name": "Tap: Temperature (current)",
       "x": 215,
       "y": 238,
       "show": "normal",
@@ -557,7 +557,7 @@
     {
       "id": "elmvfe54xf4zn",
       "kind": "IMG_CLICK",
-      "name": "Countdown (min/sec)",
+      "name": "Tap: Countdown (min/sec)",
       "x": 213,
       "y": 27,
       "show": "normal",
@@ -572,7 +572,7 @@
     {
       "id": "elmvfe54xf620",
       "kind": "IMG_CLICK",
-      "name": "Alarm",
+      "name": "Tap: Alarm",
       "x": 67,
       "y": 23,
       "show": "normal",

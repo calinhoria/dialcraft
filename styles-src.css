@@ -644,6 +644,7 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; }
 .layer .grp.both { background: #1f3a5f; color: #8fc2ff; }
 .layer .grp.when { background: #3a2f12; color: #ffd27a; }
 .layer .grp.edit { background: #4a3a1c; color: #ffd58a; }
+.layer .grp.tap { background: #4a2e12; color: #ffc078; }
 
 /* recent projects */
 .recent-item { gap: 12px; padding: 10px 12px; }
