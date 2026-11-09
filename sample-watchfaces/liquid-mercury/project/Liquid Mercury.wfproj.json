@@ -1,0 +1,2022 @@
+{
+  "version": 1,
+  "name": "Liquid Mercury",
+  "device": "bip-6",
+  "appId": 2350980,
+  "vender": "dialcraft",
+  "description": "Chrome liquid-metal digits with mercury beads that bridge and merge and a colon that drips into a mercury pool; at every minute and hour change the two digits shrink into balls, unite into one blob and split into the new digits.",
+  "font": "Rajdhani",
+  "language": "ro-RO",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "rajdhani-600.ttf",
+      "family": "Rajdhani"
+    },
+    {
+      "name": "lilita-one-400.ttf",
+      "family": "Lilita One"
+    }
+  ],
+  "groups": {
+    "gmw9u3n2nhn": "Clock",
+    "gmw9u3o1j63": "Clock AOD",
+    "gDate": "Date",
+    "gTemperature": "Temperature",
+    "gBeads": "Beads",
+    "gDrip": "Drip",
+    "gDigitmelt": "Digit melt"
+  },
+  "elements": [
+    {
+      "id": "elmw9u3n0o104",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmw9u3naa70o",
+      "kind": "IMG",
+      "name": "AOD Scene",
+      "x": 0,
+      "y": 0,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "aod_mercury.png"
+    },
+    {
+      "id": "elmw9u3n9y5px",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_mercury.png"
+    },
+    {
+      "id": "elmw9u3n2n2li",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 207,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9u3n2nhn",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "mercury/d_0.png",
+        "mercury/d_1.png",
+        "mercury/d_2.png",
+        "mercury/d_3.png",
+        "mercury/d_4.png",
+        "mercury/d_5.png",
+        "mercury/d_6.png",
+        "mercury/d_7.png",
+        "mercury/d_8.png",
+        "mercury/d_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmw9u3n2n3yv",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 175,
+      "y": 131,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9u3n2nhn",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "mercury/colon.png",
+      "glyph": null,
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmw9u3n2n2b0",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 41,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9u3n2nhn",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "mercury/d_0.png",
+        "mercury/d_1.png",
+        "mercury/d_2.png",
+        "mercury/d_3.png",
+        "mercury/d_4.png",
+        "mercury/d_5.png",
+        "mercury/d_6.png",
+        "mercury/d_7.png",
+        "mercury/d_8.png",
+        "mercury/d_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmw9u3o1j7gb",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 209,
+      "y": 164,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9u3o1j63",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Lilita One",
+        "size": 94,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#8a93ad",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#8a93ad",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9u3o1j1co",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 180,
+      "y": 173,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9u3o1j63",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Lilita One",
+        "size": 94,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#8a93ad",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#8a93ad",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmw9u3o1j676",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 54,
+      "y": 164,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9u3o1j63",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Lilita One",
+        "size": 94,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#8a93ad",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#8a93ad",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9u3n365dn",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 136,
+      "y": 4,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#aab4d0",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "center"
+    },
+    {
+      "id": "elmw9u3n4443b",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 207,
+      "y": 12,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -6,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#aab4d0",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9u3n4s7o5",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 182,
+      "y": 408,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#e8eeff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9u3nz111x",
+      "kind": "IMG",
+      "name": "Temperature icon",
+      "x": 144,
+      "y": 408,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_thermo_9fc4ff.png"
+    },
+    {
+      "id": "elmw9u3nqz4ax",
+      "kind": "IMG",
+      "name": "Bead 1a",
+      "x": 139,
+      "y": 82,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBeads",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/b0a_055.png",
+      "images": [
+        "sp/b0a_055.png",
+        "sp/b0a_056.png",
+        "sp/b0a_057.png",
+        "sp/b0a_058.png",
+        "sp/b0a_059.png",
+        "sp/b0a_060.png",
+        "sp/b0a_061.png"
+      ],
+      "handle": "b0a"
+    },
+    {
+      "id": "elmw9u3nrfdf",
+      "kind": "IMG",
+      "name": "Bead 1b",
+      "x": 207,
+      "y": 94,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBeads",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/b0b_062.png",
+      "images": [
+        "sp/b0b_062.png",
+        "sp/b0b_063.png"
+      ],
+      "handle": "b0b"
+    },
+    {
+      "id": "elmw9u3ns03lq",
+      "kind": "IMG",
+      "name": "Bead 2a",
+      "x": 116,
+      "y": 265,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBeads",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/b1a_064.png",
+      "images": [
+        "sp/b1a_064.png",
+        "sp/b1a_065.png",
+        "sp/b1a_066.png",
+        "sp/b1a_067.png",
+        "sp/b1a_068.png",
+        "sp/b1a_069.png",
+        "sp/b1a_070.png"
+      ],
+      "handle": "b1a"
+    },
+    {
+      "id": "elmw9u3nsg2sh",
+      "kind": "IMG",
+      "name": "Bead 2b",
+      "x": 76,
+      "y": 279,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBeads",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/b1b_071.png",
+      "images": [
+        "sp/b1b_071.png",
+        "sp/b1b_072.png"
+      ],
+      "handle": "b1b"
+    },
+    {
+      "id": "elmw9u3nt27dy",
+      "kind": "IMG",
+      "name": "Bead 3a",
+      "x": 286,
+      "y": 276,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBeads",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/b2a_073.png",
+      "images": [
+        "sp/b2a_073.png",
+        "sp/b2a_074.png",
+        "sp/b2a_075.png",
+        "sp/b2a_076.png",
+        "sp/b2a_077.png",
+        "sp/b2a_078.png",
+        "sp/b2a_079.png"
+      ],
+      "handle": "b2a"
+    },
+    {
+      "id": "elmw9u3nti40o",
+      "kind": "IMG",
+      "name": "Bead 3b",
+      "x": 214,
+      "y": 268,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gBeads",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/b2b_080.png",
+      "images": [
+        "sp/b2b_080.png",
+        "sp/b2b_081.png"
+      ],
+      "handle": "b2b"
+    },
+    {
+      "id": "elmw9u3nub3ay",
+      "kind": "IMG",
+      "name": "Colon drop",
+      "x": 182,
+      "y": 219,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDrip",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/drop_086.png",
+      "images": [
+        "sp/drop_086.png",
+        "sp/drop_083.png",
+        "sp/drop_084.png",
+        "sp/drop_085.png",
+        "sp/drop_082.png"
+      ],
+      "handle": "drop"
+    },
+    {
+      "id": "elmw9u3nv54ws",
+      "kind": "IMG",
+      "name": "Splash",
+      "x": 164,
+      "y": 332,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDrip",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/crown_087.png",
+      "images": [
+        "sp/crown_087.png",
+        "sp/crown_088.png",
+        "sp/crown_089.png",
+        "sp/crown_090.png"
+      ],
+      "handle": "crown"
+    },
+    {
+      "id": "elmw9u3nvp1tj",
+      "kind": "IMG",
+      "name": "Ripples",
+      "x": 122,
+      "y": 350,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDrip",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ripple_091.png",
+      "images": [
+        "sp/ripple_091.png",
+        "sp/ripple_092.png",
+        "sp/ripple_093.png",
+        "sp/ripple_094.png",
+        "sp/ripple_095.png"
+      ],
+      "handle": "ripple"
+    },
+    {
+      "id": "elmw9u3nj45wz",
+      "kind": "IMG",
+      "name": "Minute patch",
+      "x": 207,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDigitmelt",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mt_001.png",
+      "images": [
+        "sp/mt_001.png",
+        "sp/mt_000.png"
+      ],
+      "handle": "mt"
+    },
+    {
+      "id": "elmw9u3nn64ex",
+      "kind": "IMG",
+      "name": "Minute melt left",
+      "x": 207,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDigitmelt",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/melt_043.png",
+      "images": [
+        "sp/melt_043.png",
+        "sp/melt_003.png",
+        "sp/melt_004.png",
+        "sp/melt_005.png",
+        "sp/melt_006.png",
+        "sp/melt_007.png",
+        "sp/melt_008.png",
+        "sp/melt_009.png",
+        "sp/melt_010.png",
+        "sp/melt_011.png",
+        "sp/melt_012.png",
+        "sp/melt_013.png",
+        "sp/melt_014.png",
+        "sp/melt_015.png",
+        "sp/melt_016.png",
+        "sp/melt_017.png",
+        "sp/melt_018.png",
+        "sp/melt_019.png",
+        "sp/melt_020.png",
+        "sp/melt_021.png",
+        "sp/melt_022.png",
+        "sp/melt_023.png",
+        "sp/melt_024.png",
+        "sp/melt_025.png",
+        "sp/melt_026.png",
+        "sp/melt_027.png",
+        "sp/melt_028.png",
+        "sp/melt_029.png",
+        "sp/melt_030.png",
+        "sp/melt_031.png",
+        "sp/melt_032.png",
+        "sp/melt_033.png",
+        "sp/melt_034.png",
+        "sp/melt_035.png",
+        "sp/melt_036.png",
+        "sp/melt_037.png",
+        "sp/melt_038.png",
+        "sp/melt_039.png",
+        "sp/melt_040.png",
+        "sp/melt_041.png",
+        "sp/melt_042.png",
+        "sp/melt_002.png"
+      ],
+      "handle": "ml"
+    },
+    {
+      "id": "elmw9u3nnk464",
+      "kind": "IMG",
+      "name": "Minute melt right",
+      "x": 275,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDigitmelt",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/melt_043.png",
+      "images": [
+        "sp/melt_043.png",
+        "sp/melt_003.png",
+        "sp/melt_004.png",
+        "sp/melt_005.png",
+        "sp/melt_006.png",
+        "sp/melt_007.png",
+        "sp/melt_008.png",
+        "sp/melt_009.png",
+        "sp/melt_010.png",
+        "sp/melt_011.png",
+        "sp/melt_012.png",
+        "sp/melt_013.png",
+        "sp/melt_014.png",
+        "sp/melt_015.png",
+        "sp/melt_016.png",
+        "sp/melt_017.png",
+        "sp/melt_018.png",
+        "sp/melt_019.png",
+        "sp/melt_020.png",
+        "sp/melt_021.png",
+        "sp/melt_022.png",
+        "sp/melt_023.png",
+        "sp/melt_024.png",
+        "sp/melt_025.png",
+        "sp/melt_026.png",
+        "sp/melt_027.png",
+        "sp/melt_028.png",
+        "sp/melt_029.png",
+        "sp/melt_030.png",
+        "sp/melt_031.png",
+        "sp/melt_032.png",
+        "sp/melt_033.png",
+        "sp/melt_034.png",
+        "sp/melt_035.png",
+        "sp/melt_036.png",
+        "sp/melt_037.png",
+        "sp/melt_038.png",
+        "sp/melt_039.png",
+        "sp/melt_040.png",
+        "sp/melt_041.png",
+        "sp/melt_042.png",
+        "sp/melt_002.png"
+      ],
+      "handle": "mr"
+    },
+    {
+      "id": "elmw9u3nolx3",
+      "kind": "IMG",
+      "name": "Minute blob",
+      "x": 227,
+      "y": 168,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDigitmelt",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/meltp_052.png",
+      "images": [
+        "sp/meltp_052.png",
+        "sp/meltp_045.png",
+        "sp/meltp_046.png",
+        "sp/meltp_047.png",
+        "sp/meltp_048.png",
+        "sp/meltp_049.png",
+        "sp/meltp_050.png",
+        "sp/meltp_051.png",
+        "sp/meltp_044.png"
+      ],
+      "handle": "mp"
+    },
+    {
+      "id": "elmw9u3np1ae",
+      "kind": "IMG",
+      "name": "Hour patch",
+      "x": 41,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDigitmelt",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ht_054.png",
+      "images": [
+        "sp/ht_054.png",
+        "sp/ht_053.png"
+      ],
+      "handle": "ht"
+    },
+    {
+      "id": "elmw9u3npf2zw",
+      "kind": "IMG",
+      "name": "Hour melt left",
+      "x": 41,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDigitmelt",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/melt_043.png",
+      "images": [
+        "sp/melt_043.png",
+        "sp/melt_003.png",
+        "sp/melt_004.png",
+        "sp/melt_005.png",
+        "sp/melt_006.png",
+        "sp/melt_007.png",
+        "sp/melt_008.png",
+        "sp/melt_009.png",
+        "sp/melt_010.png",
+        "sp/melt_011.png",
+        "sp/melt_012.png",
+        "sp/melt_013.png",
+        "sp/melt_014.png",
+        "sp/melt_015.png",
+        "sp/melt_016.png",
+        "sp/melt_017.png",
+        "sp/melt_018.png",
+        "sp/melt_019.png",
+        "sp/melt_020.png",
+        "sp/melt_021.png",
+        "sp/melt_022.png",
+        "sp/melt_023.png",
+        "sp/melt_024.png",
+        "sp/melt_025.png",
+        "sp/melt_026.png",
+        "sp/melt_027.png",
+        "sp/melt_028.png",
+        "sp/melt_029.png",
+        "sp/melt_030.png",
+        "sp/melt_031.png",
+        "sp/melt_032.png",
+        "sp/melt_033.png",
+        "sp/melt_034.png",
+        "sp/melt_035.png",
+        "sp/melt_036.png",
+        "sp/melt_037.png",
+        "sp/melt_038.png",
+        "sp/melt_039.png",
+        "sp/melt_040.png",
+        "sp/melt_041.png",
+        "sp/melt_042.png",
+        "sp/melt_002.png"
+      ],
+      "handle": "hl"
+    },
+    {
+      "id": "elmw9u3npt46u",
+      "kind": "IMG",
+      "name": "Hour melt right",
+      "x": 109,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDigitmelt",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/melt_043.png",
+      "images": [
+        "sp/melt_043.png",
+        "sp/melt_003.png",
+        "sp/melt_004.png",
+        "sp/melt_005.png",
+        "sp/melt_006.png",
+        "sp/melt_007.png",
+        "sp/melt_008.png",
+        "sp/melt_009.png",
+        "sp/melt_010.png",
+        "sp/melt_011.png",
+        "sp/melt_012.png",
+        "sp/melt_013.png",
+        "sp/melt_014.png",
+        "sp/melt_015.png",
+        "sp/melt_016.png",
+        "sp/melt_017.png",
+        "sp/melt_018.png",
+        "sp/melt_019.png",
+        "sp/melt_020.png",
+        "sp/melt_021.png",
+        "sp/melt_022.png",
+        "sp/melt_023.png",
+        "sp/melt_024.png",
+        "sp/melt_025.png",
+        "sp/melt_026.png",
+        "sp/melt_027.png",
+        "sp/melt_028.png",
+        "sp/melt_029.png",
+        "sp/melt_030.png",
+        "sp/melt_031.png",
+        "sp/melt_032.png",
+        "sp/melt_033.png",
+        "sp/melt_034.png",
+        "sp/melt_035.png",
+        "sp/melt_036.png",
+        "sp/melt_037.png",
+        "sp/melt_038.png",
+        "sp/melt_039.png",
+        "sp/melt_040.png",
+        "sp/melt_041.png",
+        "sp/melt_042.png",
+        "sp/melt_002.png"
+      ],
+      "handle": "hr"
+    },
+    {
+      "id": "elmw9u3nqaw6",
+      "kind": "IMG",
+      "name": "Hour blob",
+      "x": 61,
+      "y": 168,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDigitmelt",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/meltp_052.png",
+      "images": [
+        "sp/meltp_052.png",
+        "sp/meltp_045.png",
+        "sp/meltp_046.png",
+        "sp/meltp_047.png",
+        "sp/meltp_048.png",
+        "sp/meltp_049.png",
+        "sp/meltp_050.png",
+        "sp/meltp_051.png",
+        "sp/meltp_044.png"
+      ],
+      "handle": "hp"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "colon.png",
+      "width": 8,
+      "height": 18
+    },
+    {
+      "name": "week_w1.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w2.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w3.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w4.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w5.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w6.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w7.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "degree.png",
+      "width": 13,
+      "height": 35
+    },
+    {
+      "name": "negative.png",
+      "width": 16,
+      "height": 32
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 56,
+      "height": 73
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 19,
+      "height": 59
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "scene_mercury.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "aod_mercury.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "mercury/d_0.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_1.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_2.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_3.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_4.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_5.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_6.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_7.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_8.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/d_9.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "mercury/colon.png",
+      "width": 34,
+      "height": 118
+    },
+    {
+      "name": "sp/mt_000.png",
+      "width": 136,
+      "height": 118
+    },
+    {
+      "name": "sp/mt_001.png",
+      "width": 136,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_002.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_003.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_004.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_005.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_006.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_007.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_008.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_009.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_010.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_011.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_012.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_013.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_014.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_015.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_016.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_017.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_018.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_019.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_020.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_021.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_022.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_023.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_024.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_025.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_026.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_027.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_028.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_029.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_030.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_031.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_032.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_033.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_034.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_035.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_036.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_037.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_038.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_039.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_040.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_041.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_042.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/melt_043.png",
+      "width": 68,
+      "height": 118
+    },
+    {
+      "name": "sp/meltp_044.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/meltp_045.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/meltp_046.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/meltp_047.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/meltp_048.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/meltp_049.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/meltp_050.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/meltp_051.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/meltp_052.png",
+      "width": 96,
+      "height": 64
+    },
+    {
+      "name": "sp/ht_053.png",
+      "width": 136,
+      "height": 118
+    },
+    {
+      "name": "sp/ht_054.png",
+      "width": 136,
+      "height": 118
+    },
+    {
+      "name": "sp/b0a_055.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b0a_056.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b0a_057.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b0a_058.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b0a_059.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b0a_060.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b0a_061.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b0b_062.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/b0b_063.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/b1a_064.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b1a_065.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b1a_066.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b1a_067.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b1a_068.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b1a_069.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b1a_070.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b1b_071.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/b1b_072.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/b2a_073.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b2a_074.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b2a_075.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b2a_076.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b2a_077.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b2a_078.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b2a_079.png",
+      "width": 56,
+      "height": 32
+    },
+    {
+      "name": "sp/b2b_080.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/b2b_081.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/drop_082.png",
+      "width": 20,
+      "height": 40
+    },
+    {
+      "name": "sp/drop_083.png",
+      "width": 20,
+      "height": 40
+    },
+    {
+      "name": "sp/drop_084.png",
+      "width": 20,
+      "height": 40
+    },
+    {
+      "name": "sp/drop_085.png",
+      "width": 20,
+      "height": 40
+    },
+    {
+      "name": "sp/drop_086.png",
+      "width": 20,
+      "height": 40
+    },
+    {
+      "name": "sp/crown_087.png",
+      "width": 56,
+      "height": 40
+    },
+    {
+      "name": "sp/crown_088.png",
+      "width": 56,
+      "height": 40
+    },
+    {
+      "name": "sp/crown_089.png",
+      "width": 56,
+      "height": 40
+    },
+    {
+      "name": "sp/crown_090.png",
+      "width": 56,
+      "height": 40
+    },
+    {
+      "name": "sp/ripple_091.png",
+      "width": 140,
+      "height": 32
+    },
+    {
+      "name": "sp/ripple_092.png",
+      "width": 140,
+      "height": 32
+    },
+    {
+      "name": "sp/ripple_093.png",
+      "width": 140,
+      "height": 32
+    },
+    {
+      "name": "sp/ripple_094.png",
+      "width": 140,
+      "height": 32
+    },
+    {
+      "name": "sp/ripple_095.png",
+      "width": 140,
+      "height": 32
+    },
+    {
+      "name": "ic_thermo_9fc4ff.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "colon_2.png",
+      "width": 11,
+      "height": 32
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 60,
+      "height": 75
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 24,
+      "height": 55
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // Liquid Mercury: mercury beads bridge and merge, the colon drips into a pool, and the changing digits melt behind a chrome slab.\n  const MS = 100, TAU = 6.283185307179586;\n  const C = {\"cx\":192,\"by\":225,\"pool\":366,\"pairs\":[{\"id\":0,\"cx\":195,\"cy\":104,\"Ax\":80,\"Tm\":16,\"ph\":0,\"ay\":9},{\"id\":1,\"cx\":118,\"cy\":288,\"Ax\":44,\"Tm\":20,\"ph\":1.3,\"ay\":7},{\"id\":2,\"cx\":272,\"cy\":288,\"Ax\":44,\"Tm\":14,\"ph\":2.6,\"ay\":7}],\"m\":{\"x\":207,\"y\":132},\"h\":{\"x\":41,\"y\":132}};\n  const V = {\"mt\":{\"__blank\":0,\"p\":1},\"ml\":{\"__blank\":0,\"d0k1\":1,\"d0k2\":2,\"d0k3\":3,\"d1k0\":4,\"d1k1\":5,\"d1k2\":6,\"d1k3\":7,\"d2k0\":8,\"d2k1\":9,\"d2k2\":10,\"d2k3\":11,\"d3k0\":12,\"d3k1\":13,\"d3k2\":14,\"d3k3\":15,\"d4k0\":16,\"d4k1\":17,\"d4k2\":18,\"d4k3\":19,\"d5k0\":20,\"d5k1\":21,\"d5k2\":22,\"d5k3\":23,\"d6k0\":24,\"d6k1\":25,\"d6k2\":26,\"d6k3\":27,\"d7k0\":28,\"d7k1\":29,\"d7k2\":30,\"d7k3\":31,\"d8k0\":32,\"d8k1\":33,\"d8k2\":34,\"d8k3\":35,\"d9k0\":36,\"d9k1\":37,\"d9k2\":38,\"d9k3\":39,\"ball\":40,\"d0k0\":41},\"mr\":{\"__blank\":0,\"d0k1\":1,\"d0k2\":2,\"d0k3\":3,\"d1k0\":4,\"d1k1\":5,\"d1k2\":6,\"d1k3\":7,\"d2k0\":8,\"d2k1\":9,\"d2k2\":10,\"d2k3\":11,\"d3k0\":12,\"d3k1\":13,\"d3k2\":14,\"d3k3\":15,\"d4k0\":16,\"d4k1\":17,\"d4k2\":18,\"d4k3\":19,\"d5k0\":20,\"d5k1\":21,\"d5k2\":22,\"d5k3\":23,\"d6k0\":24,\"d6k1\":25,\"d6k2\":26,\"d6k3\":27,\"d7k0\":28,\"d7k1\":29,\"d7k2\":30,\"d7k3\":31,\"d8k0\":32,\"d8k1\":33,\"d8k2\":34,\"d8k3\":35,\"d9k0\":36,\"d9k1\":37,\"d9k2\":38,\"d9k3\":39,\"ball\":40,\"d0k0\":41},\"mp\":{\"__blank\":0,\"pr1\":1,\"pr2\":2,\"pr3\":3,\"pr4\":4,\"w0\":5,\"w1\":6,\"w2\":7,\"pr0\":8},\"ht\":{\"__blank\":0,\"p\":1},\"hl\":{\"__blank\":0,\"d0k1\":1,\"d0k2\":2,\"d0k3\":3,\"d1k0\":4,\"d1k1\":5,\"d1k2\":6,\"d1k3\":7,\"d2k0\":8,\"d2k1\":9,\"d2k2\":10,\"d2k3\":11,\"d3k0\":12,\"d3k1\":13,\"d3k2\":14,\"d3k3\":15,\"d4k0\":16,\"d4k1\":17,\"d4k2\":18,\"d4k3\":19,\"d5k0\":20,\"d5k1\":21,\"d5k2\":22,\"d5k3\":23,\"d6k0\":24,\"d6k1\":25,\"d6k2\":26,\"d6k3\":27,\"d7k0\":28,\"d7k1\":29,\"d7k2\":30,\"d7k3\":31,\"d8k0\":32,\"d8k1\":33,\"d8k2\":34,\"d8k3\":35,\"d9k0\":36,\"d9k1\":37,\"d9k2\":38,\"d9k3\":39,\"ball\":40,\"d0k0\":41},\"hr\":{\"__blank\":0,\"d0k1\":1,\"d0k2\":2,\"d0k3\":3,\"d1k0\":4,\"d1k1\":5,\"d1k2\":6,\"d1k3\":7,\"d2k0\":8,\"d2k1\":9,\"d2k2\":10,\"d2k3\":11,\"d3k0\":12,\"d3k1\":13,\"d3k2\":14,\"d3k3\":15,\"d4k0\":16,\"d4k1\":17,\"d4k2\":18,\"d4k3\":19,\"d5k0\":20,\"d5k1\":21,\"d5k2\":22,\"d5k3\":23,\"d6k0\":24,\"d6k1\":25,\"d6k2\":26,\"d6k3\":27,\"d7k0\":28,\"d7k1\":29,\"d7k2\":30,\"d7k3\":31,\"d8k0\":32,\"d8k1\":33,\"d8k2\":34,\"d8k3\":35,\"d9k0\":36,\"d9k1\":37,\"d9k2\":38,\"d9k3\":39,\"ball\":40,\"d0k0\":41},\"hp\":{\"__blank\":0,\"pr1\":1,\"pr2\":2,\"pr3\":3,\"pr4\":4,\"w0\":5,\"w1\":6,\"w2\":7,\"pr0\":8},\"b0a\":{\"bead\":0,\"br1\":1,\"br1m\":2,\"br2\":3,\"br2m\":4,\"mg\":5,\"__blank\":6},\"b0b\":{\"bead\":0,\"__blank\":1},\"b1a\":{\"bead\":0,\"br1\":1,\"br1m\":2,\"br2\":3,\"br2m\":4,\"mg\":5,\"__blank\":6},\"b1b\":{\"bead\":0,\"__blank\":1},\"b2a\":{\"bead\":0,\"br1\":1,\"br1m\":2,\"br2\":3,\"br2m\":4,\"mg\":5,\"__blank\":6},\"b2b\":{\"bead\":0,\"__blank\":1},\"drop\":{\"__blank\":0,\"h1\":1,\"h2\":2,\"fall\":3,\"h0\":4},\"crown\":{\"c0\":0,\"c1\":1,\"c2\":2,\"__blank\":3},\"ripple\":{\"r0\":0,\"r1\":1,\"r2\":2,\"r3\":3,\"__blank\":4}};\n  const sl = {}; const g = (h) => sl[h] || (sl[h] = slot(h));\n  const ease = (t) => { t = Math.max(0, Math.min(1, t)); return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };\n  const SH = [0, 3.5, 7, 10.5, 14];\n  const melt = (key, tens, units, ts) => {\n    const P = C[key], pt = g(key + 't'), l = g(key + 'l'), r = g(key + 'r'), bl = g(key + 'p');\n    if (ts < -1.7 || ts >= 2.0) { pt.hide(); l.hide(); r.hide(); bl.hide(); return; }\n    pt(P.x, P.y, V[key + 't'].p);\n    if (ts < -0.9 || ts >= 1.2) {\n      const i = ts < -0.9 ? Math.min(4, Math.floor((ts + 1.7) / 0.16)) : 4 - Math.min(4, Math.floor((ts - 1.2) / 0.16));\n      l(Math.round(P.x + SH[i]), P.y, V[key + 'l'][i === 4 ? 'ball' : 'd' + tens + 'k' + i]); r(Math.round(P.x + 68 - SH[i]), P.y, V[key + 'r'][i === 4 ? 'ball' : 'd' + units + 'k' + i]); bl.hide();\n    } else {\n      l.hide(); r.hide();\n      const pic = ts < -0.5 ? 'pr' + Math.min(4, Math.floor((ts + 0.9) / 0.08)) : ts < 0.8 ? 'w' + (Math.floor((ts + 0.5) / 0.3) % 3) : 'pr' + (4 - Math.min(4, Math.floor((ts - 0.8) / 0.08)));\n      bl(P.x + 68 - 48, P.y + 68 - 32, V[key + 'p'][pic]);\n    }\n  };\n  const tick = () => {\n    const now = Date.now(), d = new Date(now), t = now / 1000, sec = d.getSeconds() + d.getMilliseconds() / 1000, min = d.getMinutes();\n    // bead pairs: apart, a bridge, one bigger bead\n    for (const p of C.pairs) {\n      const th = TAU * t / p.Tm + p.ph, u = Math.cos(th), s = 2 * p.Ax * Math.abs(u), dy = p.ay * Math.sin(2 * th);\n      const a = g('b' + p.id + 'a'), b = g('b' + p.id + 'b'), va = V['b' + p.id + 'a'], vb = V['b' + p.id + 'b'];\n      const ax = p.cx + p.Ax * u, ay = p.cy + dy, bx = p.cx - p.Ax * u, by = p.cy - dy;\n      if (s >= 36) { a(Math.round(ax - 28), Math.round(ay - 16), va.bead); b(Math.round(bx - 16), Math.round(by - 16), vb.bead); }\n      else {\n        const k = s >= 26 ? 'br1' : s >= 14 ? 'br2' : 'mg', pic = k === 'mg' ? va.mg : va[u < 0 ? k : k + 'm'];\n        a(Math.round(p.cx - 28), Math.round(p.cy + (ay - p.cy + (by - p.cy)) / 2 - 16), pic); b.hide();\n      }\n    }\n    // the colon drips: grow, fall, splash, ripple (every 5 s)\n    const pc = (now % 5000) / 5000, dr = g('drop'), cr = g('crown'), rp = g('ripple');\n    if (pc < 0.12) dr(C.cx - 10, C.by - 6, V.drop.h0);\n    else if (pc < 0.24) dr(C.cx - 10, C.by - 6, V.drop.h1);\n    else if (pc < 0.34) dr(C.cx - 10, C.by - 6, V.drop.h2);\n    else if (pc < 0.58) { const f = (pc - 0.34) / 0.24, yc = C.by + 16 + (C.pool - 8 - C.by - 16) * f * f; dr(C.cx - 10, Math.round(yc - 19), V.drop.fall); }\n    else dr.hide();\n    if (pc >= 0.58 && pc < 0.7) cr(C.cx - 28, C.pool - 34, V.crown[['c0', 'c1', 'c2'][Math.min(2, Math.floor((pc - 0.58) / 0.04))]]); else cr.hide();\n    if (pc >= 0.58 && pc < 0.93) rp(C.cx - 70, C.pool - 16, V.ripple['r' + Math.min(3, Math.floor((pc - 0.58) / 0.0875))]); else rp.hide();\n    // the melt: the two digits that change shrink into balls, unite into one blob, hold through the change, split, and grow into the new digits\n    const ts = sec >= 58.3 ? sec - 60 : sec;\n    melt('m', Math.floor(min / 10), min % 10, ts);\n    const hr = d.getHours(), hourChanges = (min === 59 && ts < 0) || (min === 0 && ts >= 0);   // 24-hour digits\n    melt('h', Math.floor(hr / 10), hr % 10, hourChanges ? ts : 99);\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}

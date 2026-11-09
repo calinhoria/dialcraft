@@ -865,10 +865,15 @@ function writeStoreFolder(outDir, payload, device) {
   fs.mkdirSync(dir, { recursive: true });
   const written = [];
   if (payload.previewBase64) {
-    const png = Buffer.from(payload.previewBase64, 'base64');
+    const png = Buffer.from(payload.storePreviewBase64 || payload.previewBase64, 'base64');   // screen-shaped, transparent outside
     const name = `preview-${device.w}x${device.h}.png`;
     fs.writeFileSync(path.join(dir, name), png);
     written.push(name + (png.length > 1024 * 1024 ? ' (over the 1 MB limit)' : ''));
+  }
+  if (payload.storeShotBase64) {
+    const name = 'screenshot-360x360.png';   // Zepp app introduction screenshot: transparent, screen-shaped
+    fs.writeFileSync(path.join(dir, name), Buffer.from(payload.storeShotBase64, 'base64'));
+    written.push(name);
   }
   if (payload.gifBase64) {
     const gif = Buffer.from(payload.gifBase64, 'base64');

@@ -1,0 +1,2545 @@
+{
+  "version": 1,
+  "name": "Firefly Lake",
+  "device": "bip-6",
+  "appId": 2481806,
+  "vender": "dialcraft",
+  "description": "A night camp by a lake under a full moon: the clock is made of fireflies that scatter into a swirling cloud and gather into the new digits at every minute and hour change, while the campfire flickers and the lake and the moon's reflection shimmer.",
+  "font": "Rajdhani",
+  "language": "ro-RO",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "rajdhani-600.ttf",
+      "family": "Rajdhani"
+    }
+  ],
+  "groups": {
+    "gmw9uoow8lo": "Clock",
+    "gmw9uoq332u": "Clock AOD",
+    "gTemperature": "Temperature",
+    "gFireflyswarm": "Firefly swarm",
+    "gStars": "Stars",
+    "gFire": "Fire",
+    "gLake": "Lake",
+    "gWanderingfireflies": "Wandering fireflies"
+  },
+  "elements": [
+    {
+      "id": "elmw9uooud712",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmw9uop233ek",
+      "kind": "IMG",
+      "name": "AOD Scene",
+      "x": 0,
+      "y": 0,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "aod_firefly.png"
+    },
+    {
+      "id": "elmw9uop1q5v",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_firefly.png"
+    },
+    {
+      "id": "elmw9uoow87iq",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 202,
+      "y": 117,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9uoow8lo",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "firefly/d_0.png",
+        "firefly/d_1.png",
+        "firefly/d_2.png",
+        "firefly/d_3.png",
+        "firefly/d_4.png",
+        "firefly/d_5.png",
+        "firefly/d_6.png",
+        "firefly/d_7.png",
+        "firefly/d_8.png",
+        "firefly/d_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmw9uoow83ub",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 174,
+      "y": 118,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9uoow8lo",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "firefly/colon.png",
+      "glyph": null,
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmw9uoow857a",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 43,
+      "y": 118,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9uoow8lo",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "firefly/d_0.png",
+        "firefly/d_1.png",
+        "firefly/d_2.png",
+        "firefly/d_3.png",
+        "firefly/d_4.png",
+        "firefly/d_5.png",
+        "firefly/d_6.png",
+        "firefly/d_7.png",
+        "firefly/d_8.png",
+        "firefly/d_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmw9uoq335e3",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 201,
+      "y": 128,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9uoq332u",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 112,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#7d8296",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#7d8296",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9uoq331ts",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 180,
+      "y": 135,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9uoq332u",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 112,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#7d8296",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#7d8296",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmw9uoq331w6",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 54,
+      "y": 128,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9uoq332u",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 112,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#7d8296",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#7d8296",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9uoox84dc",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 287,
+      "y": 408,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#dfe8ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9uopzv4eq",
+      "kind": "IMG",
+      "name": "Temperature icon",
+      "x": 249,
+      "y": 408,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_thermo_ffc27a.png"
+    },
+    {
+      "id": "elmw9uop7z20l",
+      "kind": "IMG",
+      "name": "Minute sky patch",
+      "x": 202,
+      "y": 117,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFireflyswarm",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mt_001.png",
+      "images": [
+        "sp/mt_001.png",
+        "sp/mt_000.png"
+      ],
+      "handle": "mt"
+    },
+    {
+      "id": "elmw9uopag7c2",
+      "kind": "IMG",
+      "name": "Minute swarm left",
+      "x": 184,
+      "y": 99,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFireflyswarm",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/fly_050.png",
+      "images": [
+        "sp/fly_050.png",
+        "sp/fly_003.png",
+        "sp/fly_004.png",
+        "sp/fly_005.png",
+        "sp/fly_006.png",
+        "sp/fly_007.png",
+        "sp/fly_008.png",
+        "sp/fly_009.png",
+        "sp/fly_010.png",
+        "sp/fly_011.png",
+        "sp/fly_012.png",
+        "sp/fly_013.png",
+        "sp/fly_014.png",
+        "sp/fly_015.png",
+        "sp/fly_016.png",
+        "sp/fly_017.png",
+        "sp/fly_018.png",
+        "sp/fly_019.png",
+        "sp/fly_020.png",
+        "sp/fly_021.png",
+        "sp/fly_022.png",
+        "sp/fly_023.png",
+        "sp/fly_024.png",
+        "sp/fly_025.png",
+        "sp/fly_026.png",
+        "sp/fly_027.png",
+        "sp/fly_028.png",
+        "sp/fly_029.png",
+        "sp/fly_030.png",
+        "sp/fly_031.png",
+        "sp/fly_032.png",
+        "sp/fly_033.png",
+        "sp/fly_034.png",
+        "sp/fly_035.png",
+        "sp/fly_036.png",
+        "sp/fly_037.png",
+        "sp/fly_038.png",
+        "sp/fly_039.png",
+        "sp/fly_040.png",
+        "sp/fly_041.png",
+        "sp/fly_042.png",
+        "sp/fly_043.png",
+        "sp/fly_044.png",
+        "sp/fly_045.png",
+        "sp/fly_046.png",
+        "sp/fly_047.png",
+        "sp/fly_048.png",
+        "sp/fly_049.png",
+        "sp/fly_002.png"
+      ],
+      "handle": "ml"
+    },
+    {
+      "id": "elmw9uopb24mz",
+      "kind": "IMG",
+      "name": "Minute swarm right",
+      "x": 252,
+      "y": 99,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFireflyswarm",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/fly_050.png",
+      "images": [
+        "sp/fly_050.png",
+        "sp/fly_003.png",
+        "sp/fly_004.png",
+        "sp/fly_005.png",
+        "sp/fly_006.png",
+        "sp/fly_007.png",
+        "sp/fly_008.png",
+        "sp/fly_009.png",
+        "sp/fly_010.png",
+        "sp/fly_011.png",
+        "sp/fly_012.png",
+        "sp/fly_013.png",
+        "sp/fly_014.png",
+        "sp/fly_015.png",
+        "sp/fly_016.png",
+        "sp/fly_017.png",
+        "sp/fly_018.png",
+        "sp/fly_019.png",
+        "sp/fly_020.png",
+        "sp/fly_021.png",
+        "sp/fly_022.png",
+        "sp/fly_023.png",
+        "sp/fly_024.png",
+        "sp/fly_025.png",
+        "sp/fly_026.png",
+        "sp/fly_027.png",
+        "sp/fly_028.png",
+        "sp/fly_029.png",
+        "sp/fly_030.png",
+        "sp/fly_031.png",
+        "sp/fly_032.png",
+        "sp/fly_033.png",
+        "sp/fly_034.png",
+        "sp/fly_035.png",
+        "sp/fly_036.png",
+        "sp/fly_037.png",
+        "sp/fly_038.png",
+        "sp/fly_039.png",
+        "sp/fly_040.png",
+        "sp/fly_041.png",
+        "sp/fly_042.png",
+        "sp/fly_043.png",
+        "sp/fly_044.png",
+        "sp/fly_045.png",
+        "sp/fly_046.png",
+        "sp/fly_047.png",
+        "sp/fly_048.png",
+        "sp/fly_049.png",
+        "sp/fly_002.png"
+      ],
+      "handle": "mr"
+    },
+    {
+      "id": "elmw9uopbm39z",
+      "kind": "IMG",
+      "name": "Hour sky patch",
+      "x": 43,
+      "y": 118,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFireflyswarm",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/ht_052.png",
+      "images": [
+        "sp/ht_052.png",
+        "sp/ht_051.png"
+      ],
+      "handle": "ht"
+    },
+    {
+      "id": "elmw9uopc55q5",
+      "kind": "IMG",
+      "name": "Hour swarm left",
+      "x": 25,
+      "y": 100,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFireflyswarm",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/fly_050.png",
+      "images": [
+        "sp/fly_050.png",
+        "sp/fly_003.png",
+        "sp/fly_004.png",
+        "sp/fly_005.png",
+        "sp/fly_006.png",
+        "sp/fly_007.png",
+        "sp/fly_008.png",
+        "sp/fly_009.png",
+        "sp/fly_010.png",
+        "sp/fly_011.png",
+        "sp/fly_012.png",
+        "sp/fly_013.png",
+        "sp/fly_014.png",
+        "sp/fly_015.png",
+        "sp/fly_016.png",
+        "sp/fly_017.png",
+        "sp/fly_018.png",
+        "sp/fly_019.png",
+        "sp/fly_020.png",
+        "sp/fly_021.png",
+        "sp/fly_022.png",
+        "sp/fly_023.png",
+        "sp/fly_024.png",
+        "sp/fly_025.png",
+        "sp/fly_026.png",
+        "sp/fly_027.png",
+        "sp/fly_028.png",
+        "sp/fly_029.png",
+        "sp/fly_030.png",
+        "sp/fly_031.png",
+        "sp/fly_032.png",
+        "sp/fly_033.png",
+        "sp/fly_034.png",
+        "sp/fly_035.png",
+        "sp/fly_036.png",
+        "sp/fly_037.png",
+        "sp/fly_038.png",
+        "sp/fly_039.png",
+        "sp/fly_040.png",
+        "sp/fly_041.png",
+        "sp/fly_042.png",
+        "sp/fly_043.png",
+        "sp/fly_044.png",
+        "sp/fly_045.png",
+        "sp/fly_046.png",
+        "sp/fly_047.png",
+        "sp/fly_048.png",
+        "sp/fly_049.png",
+        "sp/fly_002.png"
+      ],
+      "handle": "hl"
+    },
+    {
+      "id": "elmw9uopcn2xo",
+      "kind": "IMG",
+      "name": "Hour swarm right",
+      "x": 93,
+      "y": 100,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFireflyswarm",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/fly_050.png",
+      "images": [
+        "sp/fly_050.png",
+        "sp/fly_003.png",
+        "sp/fly_004.png",
+        "sp/fly_005.png",
+        "sp/fly_006.png",
+        "sp/fly_007.png",
+        "sp/fly_008.png",
+        "sp/fly_009.png",
+        "sp/fly_010.png",
+        "sp/fly_011.png",
+        "sp/fly_012.png",
+        "sp/fly_013.png",
+        "sp/fly_014.png",
+        "sp/fly_015.png",
+        "sp/fly_016.png",
+        "sp/fly_017.png",
+        "sp/fly_018.png",
+        "sp/fly_019.png",
+        "sp/fly_020.png",
+        "sp/fly_021.png",
+        "sp/fly_022.png",
+        "sp/fly_023.png",
+        "sp/fly_024.png",
+        "sp/fly_025.png",
+        "sp/fly_026.png",
+        "sp/fly_027.png",
+        "sp/fly_028.png",
+        "sp/fly_029.png",
+        "sp/fly_030.png",
+        "sp/fly_031.png",
+        "sp/fly_032.png",
+        "sp/fly_033.png",
+        "sp/fly_034.png",
+        "sp/fly_035.png",
+        "sp/fly_036.png",
+        "sp/fly_037.png",
+        "sp/fly_038.png",
+        "sp/fly_039.png",
+        "sp/fly_040.png",
+        "sp/fly_041.png",
+        "sp/fly_042.png",
+        "sp/fly_043.png",
+        "sp/fly_044.png",
+        "sp/fly_045.png",
+        "sp/fly_046.png",
+        "sp/fly_047.png",
+        "sp/fly_048.png",
+        "sp/fly_049.png",
+        "sp/fly_002.png"
+      ],
+      "handle": "hr"
+    },
+    {
+      "id": "elmw9uopdc6j9",
+      "kind": "IMG",
+      "name": "Star 1",
+      "x": 33,
+      "y": 51,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gStars",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/star_055.png",
+      "images": [
+        "sp/star_055.png",
+        "sp/star_054.png",
+        "sp/star_053.png",
+        "sp/star_056.png"
+      ],
+      "handle": "st0"
+    },
+    {
+      "id": "elmw9uopdv5n1",
+      "kind": "IMG",
+      "name": "Star 2",
+      "x": 111,
+      "y": 29,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gStars",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/star_055.png",
+      "images": [
+        "sp/star_055.png",
+        "sp/star_054.png",
+        "sp/star_053.png",
+        "sp/star_056.png"
+      ],
+      "handle": "st1"
+    },
+    {
+      "id": "elmw9uoped4cq",
+      "kind": "IMG",
+      "name": "Star 3",
+      "x": 165,
+      "y": 89,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gStars",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/star_054.png",
+      "images": [
+        "sp/star_054.png",
+        "sp/star_053.png",
+        "sp/star_055.png",
+        "sp/star_056.png"
+      ],
+      "handle": "st2"
+    },
+    {
+      "id": "elmw9uopeu5r0",
+      "kind": "IMG",
+      "name": "Star 4",
+      "x": 329,
+      "y": 33,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gStars",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/star_053.png",
+      "images": [
+        "sp/star_053.png",
+        "sp/star_054.png",
+        "sp/star_055.png",
+        "sp/star_056.png"
+      ],
+      "handle": "st3"
+    },
+    {
+      "id": "elmw9uopfb1va",
+      "kind": "IMG",
+      "name": "Star 5",
+      "x": 353,
+      "y": 105,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gStars",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/star_054.png",
+      "images": [
+        "sp/star_054.png",
+        "sp/star_053.png",
+        "sp/star_055.png",
+        "sp/star_056.png"
+      ],
+      "handle": "st4"
+    },
+    {
+      "id": "elmw9uopft4s",
+      "kind": "IMG",
+      "name": "Star 6",
+      "x": 55,
+      "y": 207,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gStars",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/star_054.png",
+      "images": [
+        "sp/star_054.png",
+        "sp/star_053.png",
+        "sp/star_055.png",
+        "sp/star_056.png"
+      ],
+      "handle": "st5"
+    },
+    {
+      "id": "elmw9uopgg7pm",
+      "kind": "IMG",
+      "name": "Fire glow",
+      "x": 0,
+      "y": 302,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFire",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/gl_057.png",
+      "images": [
+        "sp/gl_057.png",
+        "sp/gl_058.png",
+        "sp/gl_059.png"
+      ],
+      "handle": "gl"
+    },
+    {
+      "id": "elmw9uopha1ox",
+      "kind": "IMG",
+      "name": "Flames",
+      "x": 58,
+      "y": 326,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFire",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/fl_065.png",
+      "images": [
+        "sp/fl_065.png",
+        "sp/fl_061.png",
+        "sp/fl_062.png",
+        "sp/fl_063.png",
+        "sp/fl_064.png",
+        "sp/fl_060.png",
+        "sp/fl_066.png"
+      ],
+      "handle": "fl"
+    },
+    {
+      "id": "elmw9uophx1xb",
+      "kind": "IMG",
+      "name": "Spark 1",
+      "x": 69,
+      "y": 326,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFire",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/spark_067.png",
+      "images": [
+        "sp/spark_067.png",
+        "sp/spark_068.png",
+        "sp/spark_069.png",
+        "sp/spark_070.png"
+      ],
+      "handle": "sp0"
+    },
+    {
+      "id": "elmw9uopig6cu",
+      "kind": "IMG",
+      "name": "Spark 2",
+      "x": 82,
+      "y": 272,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFire",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/spark_068.png",
+      "images": [
+        "sp/spark_068.png",
+        "sp/spark_067.png",
+        "sp/spark_069.png",
+        "sp/spark_070.png"
+      ],
+      "handle": "sp1"
+    },
+    {
+      "id": "elmw9uopiztq",
+      "kind": "IMG",
+      "name": "Spark 3",
+      "x": 75,
+      "y": 272,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFire",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/spark_068.png",
+      "images": [
+        "sp/spark_068.png",
+        "sp/spark_067.png",
+        "sp/spark_069.png",
+        "sp/spark_070.png"
+      ],
+      "handle": "sp2"
+    },
+    {
+      "id": "elmw9uopji46r",
+      "kind": "IMG",
+      "name": "Spark 4",
+      "x": 92,
+      "y": 332,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFire",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/spark_067.png",
+      "images": [
+        "sp/spark_067.png",
+        "sp/spark_068.png",
+        "sp/spark_069.png",
+        "sp/spark_070.png"
+      ],
+      "handle": "sp3"
+    },
+    {
+      "id": "elmw9uopk55ym",
+      "kind": "IMG",
+      "name": "Moon glimmer 1",
+      "x": 259,
+      "y": 304,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mg0_073.png",
+      "images": [
+        "sp/mg0_073.png",
+        "sp/mg0_072.png",
+        "sp/mg0_071.png",
+        "sp/mg0_074.png"
+      ],
+      "handle": "mg0"
+    },
+    {
+      "id": "elmw9uopku3s2",
+      "kind": "IMG",
+      "name": "Moon glimmer 2",
+      "x": 257,
+      "y": 320,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mg1_076.png",
+      "images": [
+        "sp/mg1_076.png",
+        "sp/mg1_075.png",
+        "sp/mg1_077.png",
+        "sp/mg1_078.png"
+      ],
+      "handle": "mg1"
+    },
+    {
+      "id": "elmw9uoplj1er",
+      "kind": "IMG",
+      "name": "Moon glimmer 3",
+      "x": 268,
+      "y": 336,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mg2_079.png",
+      "images": [
+        "sp/mg2_079.png",
+        "sp/mg2_080.png",
+        "sp/mg2_081.png",
+        "sp/mg2_082.png"
+      ],
+      "handle": "mg2"
+    },
+    {
+      "id": "elmw9uopmd37d",
+      "kind": "IMG",
+      "name": "Moon glimmer 4",
+      "x": 271,
+      "y": 352,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mg3_085.png",
+      "images": [
+        "sp/mg3_085.png",
+        "sp/mg3_084.png",
+        "sp/mg3_083.png",
+        "sp/mg3_086.png"
+      ],
+      "handle": "mg3"
+    },
+    {
+      "id": "elmw9uopn13do",
+      "kind": "IMG",
+      "name": "Moon glimmer 5",
+      "x": 253,
+      "y": 368,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mg4_088.png",
+      "images": [
+        "sp/mg4_088.png",
+        "sp/mg4_087.png",
+        "sp/mg4_089.png",
+        "sp/mg4_090.png"
+      ],
+      "handle": "mg4"
+    },
+    {
+      "id": "elmw9uopnp76v",
+      "kind": "IMG",
+      "name": "Moon glimmer 6",
+      "x": 233,
+      "y": 384,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mg5_091.png",
+      "images": [
+        "sp/mg5_091.png",
+        "sp/mg5_092.png",
+        "sp/mg5_093.png",
+        "sp/mg5_094.png"
+      ],
+      "handle": "mg5"
+    },
+    {
+      "id": "elmw9uopoe6h7",
+      "kind": "IMG",
+      "name": "Moon glimmer 7",
+      "x": 238,
+      "y": 400,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mg6_097.png",
+      "images": [
+        "sp/mg6_097.png",
+        "sp/mg6_096.png",
+        "sp/mg6_095.png",
+        "sp/mg6_098.png"
+      ],
+      "handle": "mg6"
+    },
+    {
+      "id": "elmw9uopp35aa",
+      "kind": "IMG",
+      "name": "Ripple 1",
+      "x": 72,
+      "y": 314,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/wv0_101.png",
+      "images": [
+        "sp/wv0_101.png",
+        "sp/wv0_100.png",
+        "sp/wv0_099.png",
+        "sp/wv0_102.png"
+      ],
+      "handle": "wv0"
+    },
+    {
+      "id": "elmw9uoppu2g9",
+      "kind": "IMG",
+      "name": "Ripple 2",
+      "x": 190,
+      "y": 336,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/wv1_105.png",
+      "images": [
+        "sp/wv1_105.png",
+        "sp/wv1_104.png",
+        "sp/wv1_103.png",
+        "sp/wv1_106.png"
+      ],
+      "handle": "wv1"
+    },
+    {
+      "id": "elmw9uopqk3rh",
+      "kind": "IMG",
+      "name": "Ripple 3",
+      "x": 134,
+      "y": 358,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/wv2_107.png",
+      "images": [
+        "sp/wv2_107.png",
+        "sp/wv2_108.png",
+        "sp/wv2_109.png",
+        "sp/wv2_110.png"
+      ],
+      "handle": "wv2"
+    },
+    {
+      "id": "elmw9uoprbsv",
+      "kind": "IMG",
+      "name": "Ripple 4",
+      "x": 248,
+      "y": 382,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/wv3_112.png",
+      "images": [
+        "sp/wv3_112.png",
+        "sp/wv3_111.png",
+        "sp/wv3_113.png",
+        "sp/wv3_114.png"
+      ],
+      "handle": "wv3"
+    },
+    {
+      "id": "elmw9uops26x2",
+      "kind": "IMG",
+      "name": "Ripple 5",
+      "x": 245,
+      "y": 398,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/wv4_116.png",
+      "images": [
+        "sp/wv4_116.png",
+        "sp/wv4_115.png",
+        "sp/wv4_117.png",
+        "sp/wv4_118.png"
+      ],
+      "handle": "wv4"
+    },
+    {
+      "id": "elmw9uopst572",
+      "kind": "IMG",
+      "name": "Glint 1",
+      "x": 328,
+      "y": 312,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/glint_120.png",
+      "images": [
+        "sp/glint_120.png",
+        "sp/glint_119.png",
+        "sp/glint_121.png",
+        "sp/glint_122.png"
+      ],
+      "handle": "gt0"
+    },
+    {
+      "id": "elmw9uopth6u9",
+      "kind": "IMG",
+      "name": "Glint 2",
+      "x": 240,
+      "y": 330,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/glint_122.png",
+      "images": [
+        "sp/glint_122.png",
+        "sp/glint_120.png",
+        "sp/glint_121.png",
+        "sp/glint_119.png"
+      ],
+      "handle": "gt1"
+    },
+    {
+      "id": "elmw9uopu5405",
+      "kind": "IMG",
+      "name": "Glint 3",
+      "x": 325,
+      "y": 381,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/glint_120.png",
+      "images": [
+        "sp/glint_120.png",
+        "sp/glint_119.png",
+        "sp/glint_121.png",
+        "sp/glint_122.png"
+      ],
+      "handle": "gt2"
+    },
+    {
+      "id": "elmw9uoput4s",
+      "kind": "IMG",
+      "name": "Glint 4",
+      "x": 173,
+      "y": 377,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/glint_121.png",
+      "images": [
+        "sp/glint_121.png",
+        "sp/glint_120.png",
+        "sp/glint_119.png",
+        "sp/glint_122.png"
+      ],
+      "handle": "gt3"
+    },
+    {
+      "id": "elmw9uopvg4fg",
+      "kind": "IMG",
+      "name": "Glint 5",
+      "x": 340,
+      "y": 355,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gLake",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/glint_119.png",
+      "images": [
+        "sp/glint_119.png",
+        "sp/glint_120.png",
+        "sp/glint_121.png",
+        "sp/glint_122.png"
+      ],
+      "handle": "gt4"
+    },
+    {
+      "id": "elmw9uopw4dl",
+      "kind": "IMG",
+      "name": "Firefly 1",
+      "x": 253,
+      "y": 227,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWanderingfireflies",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/amb_124.png",
+      "images": [
+        "sp/amb_124.png",
+        "sp/amb_123.png",
+        "sp/amb_125.png"
+      ],
+      "handle": "am0"
+    },
+    {
+      "id": "elmw9uopwr19a",
+      "kind": "IMG",
+      "name": "Firefly 2",
+      "x": 265,
+      "y": 201,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWanderingfireflies",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/amb_124.png",
+      "images": [
+        "sp/amb_124.png",
+        "sp/amb_123.png",
+        "sp/amb_125.png"
+      ],
+      "handle": "am1"
+    },
+    {
+      "id": "elmw9uopxc3bq",
+      "kind": "IMG",
+      "name": "Firefly 3",
+      "x": 66,
+      "y": 252,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWanderingfireflies",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/amb_123.png",
+      "images": [
+        "sp/amb_123.png",
+        "sp/amb_124.png",
+        "sp/amb_125.png"
+      ],
+      "handle": "am2"
+    },
+    {
+      "id": "elmw9uopxy6f3",
+      "kind": "IMG",
+      "name": "Firefly 4",
+      "x": 103,
+      "y": 314,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWanderingfireflies",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/amb_123.png",
+      "images": [
+        "sp/amb_123.png",
+        "sp/amb_124.png",
+        "sp/amb_125.png"
+      ],
+      "handle": "am3"
+    },
+    {
+      "id": "elmw9uopyk3cg",
+      "kind": "IMG",
+      "name": "Firefly 5",
+      "x": 308,
+      "y": 265,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWanderingfireflies",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/amb_123.png",
+      "images": [
+        "sp/amb_123.png",
+        "sp/amb_124.png",
+        "sp/amb_125.png"
+      ],
+      "handle": "am4"
+    },
+    {
+      "id": "elmw9uopz62te",
+      "kind": "IMG",
+      "name": "Firefly 6",
+      "x": 250,
+      "y": 260,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWanderingfireflies",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/amb_125.png",
+      "images": [
+        "sp/amb_125.png",
+        "sp/amb_124.png",
+        "sp/amb_123.png"
+      ],
+      "handle": "am5"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "colon.png",
+      "width": 8,
+      "height": 18
+    },
+    {
+      "name": "degree.png",
+      "width": 13,
+      "height": 35
+    },
+    {
+      "name": "negative.png",
+      "width": 16,
+      "height": 32
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 20,
+      "height": 66
+    },
+    {
+      "name": "scene_firefly.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "aod_firefly.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "firefly/d_0.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_1.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_2.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_3.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_4.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_5.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_6.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_7.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_8.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/d_9.png",
+      "width": 68,
+      "height": 100
+    },
+    {
+      "name": "firefly/colon.png",
+      "width": 34,
+      "height": 100
+    },
+    {
+      "name": "sp/mt_000.png",
+      "width": 136,
+      "height": 100
+    },
+    {
+      "name": "sp/mt_001.png",
+      "width": 136,
+      "height": 100
+    },
+    {
+      "name": "sp/fly_002.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_003.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_004.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_005.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_006.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_007.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_008.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_009.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_010.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_011.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_012.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_013.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_014.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_015.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_016.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_017.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_018.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_019.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_020.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_021.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_022.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_023.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_024.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_025.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_026.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_027.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_028.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_029.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_030.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_031.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_032.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_033.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_034.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_035.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_036.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_037.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_038.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_039.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_040.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_041.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_042.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_043.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_044.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_045.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_046.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_047.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_048.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_049.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/fly_050.png",
+      "width": 104,
+      "height": 136
+    },
+    {
+      "name": "sp/ht_051.png",
+      "width": 135,
+      "height": 100
+    },
+    {
+      "name": "sp/ht_052.png",
+      "width": 135,
+      "height": 100
+    },
+    {
+      "name": "sp/star_053.png",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "name": "sp/star_054.png",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "name": "sp/star_055.png",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "name": "sp/star_056.png",
+      "width": 14,
+      "height": 14
+    },
+    {
+      "name": "sp/gl_057.png",
+      "width": 172,
+      "height": 146
+    },
+    {
+      "name": "sp/gl_058.png",
+      "width": 172,
+      "height": 146
+    },
+    {
+      "name": "sp/gl_059.png",
+      "width": 172,
+      "height": 146
+    },
+    {
+      "name": "sp/fl_060.png",
+      "width": 56,
+      "height": 76
+    },
+    {
+      "name": "sp/fl_061.png",
+      "width": 56,
+      "height": 76
+    },
+    {
+      "name": "sp/fl_062.png",
+      "width": 56,
+      "height": 76
+    },
+    {
+      "name": "sp/fl_063.png",
+      "width": 56,
+      "height": 76
+    },
+    {
+      "name": "sp/fl_064.png",
+      "width": 56,
+      "height": 76
+    },
+    {
+      "name": "sp/fl_065.png",
+      "width": 56,
+      "height": 76
+    },
+    {
+      "name": "sp/fl_066.png",
+      "width": 56,
+      "height": 76
+    },
+    {
+      "name": "sp/spark_067.png",
+      "width": 12,
+      "height": 12
+    },
+    {
+      "name": "sp/spark_068.png",
+      "width": 12,
+      "height": 12
+    },
+    {
+      "name": "sp/spark_069.png",
+      "width": 12,
+      "height": 12
+    },
+    {
+      "name": "sp/spark_070.png",
+      "width": 12,
+      "height": 12
+    },
+    {
+      "name": "sp/mg0_071.png",
+      "width": 34,
+      "height": 10
+    },
+    {
+      "name": "sp/mg0_072.png",
+      "width": 34,
+      "height": 10
+    },
+    {
+      "name": "sp/mg0_073.png",
+      "width": 34,
+      "height": 10
+    },
+    {
+      "name": "sp/mg0_074.png",
+      "width": 34,
+      "height": 10
+    },
+    {
+      "name": "sp/mg1_075.png",
+      "width": 41,
+      "height": 10
+    },
+    {
+      "name": "sp/mg1_076.png",
+      "width": 41,
+      "height": 10
+    },
+    {
+      "name": "sp/mg1_077.png",
+      "width": 41,
+      "height": 10
+    },
+    {
+      "name": "sp/mg1_078.png",
+      "width": 41,
+      "height": 10
+    },
+    {
+      "name": "sp/mg2_079.png",
+      "width": 48,
+      "height": 10
+    },
+    {
+      "name": "sp/mg2_080.png",
+      "width": 48,
+      "height": 10
+    },
+    {
+      "name": "sp/mg2_081.png",
+      "width": 48,
+      "height": 10
+    },
+    {
+      "name": "sp/mg2_082.png",
+      "width": 48,
+      "height": 10
+    },
+    {
+      "name": "sp/mg3_083.png",
+      "width": 55,
+      "height": 10
+    },
+    {
+      "name": "sp/mg3_084.png",
+      "width": 55,
+      "height": 10
+    },
+    {
+      "name": "sp/mg3_085.png",
+      "width": 55,
+      "height": 10
+    },
+    {
+      "name": "sp/mg3_086.png",
+      "width": 55,
+      "height": 10
+    },
+    {
+      "name": "sp/mg4_087.png",
+      "width": 62,
+      "height": 10
+    },
+    {
+      "name": "sp/mg4_088.png",
+      "width": 62,
+      "height": 10
+    },
+    {
+      "name": "sp/mg4_089.png",
+      "width": 62,
+      "height": 10
+    },
+    {
+      "name": "sp/mg4_090.png",
+      "width": 62,
+      "height": 10
+    },
+    {
+      "name": "sp/mg5_091.png",
+      "width": 69,
+      "height": 10
+    },
+    {
+      "name": "sp/mg5_092.png",
+      "width": 69,
+      "height": 10
+    },
+    {
+      "name": "sp/mg5_093.png",
+      "width": 69,
+      "height": 10
+    },
+    {
+      "name": "sp/mg5_094.png",
+      "width": 69,
+      "height": 10
+    },
+    {
+      "name": "sp/mg6_095.png",
+      "width": 76,
+      "height": 10
+    },
+    {
+      "name": "sp/mg6_096.png",
+      "width": 76,
+      "height": 10
+    },
+    {
+      "name": "sp/mg6_097.png",
+      "width": 76,
+      "height": 10
+    },
+    {
+      "name": "sp/mg6_098.png",
+      "width": 76,
+      "height": 10
+    },
+    {
+      "name": "sp/wv0_099.png",
+      "width": 104,
+      "height": 16
+    },
+    {
+      "name": "sp/wv0_100.png",
+      "width": 104,
+      "height": 16
+    },
+    {
+      "name": "sp/wv0_101.png",
+      "width": 104,
+      "height": 16
+    },
+    {
+      "name": "sp/wv0_102.png",
+      "width": 104,
+      "height": 16
+    },
+    {
+      "name": "sp/wv1_103.png",
+      "width": 132,
+      "height": 16
+    },
+    {
+      "name": "sp/wv1_104.png",
+      "width": 132,
+      "height": 16
+    },
+    {
+      "name": "sp/wv1_105.png",
+      "width": 132,
+      "height": 16
+    },
+    {
+      "name": "sp/wv1_106.png",
+      "width": 132,
+      "height": 16
+    },
+    {
+      "name": "sp/wv2_107.png",
+      "width": 158,
+      "height": 16
+    },
+    {
+      "name": "sp/wv2_108.png",
+      "width": 158,
+      "height": 16
+    },
+    {
+      "name": "sp/wv2_109.png",
+      "width": 158,
+      "height": 16
+    },
+    {
+      "name": "sp/wv2_110.png",
+      "width": 158,
+      "height": 16
+    },
+    {
+      "name": "sp/wv3_111.png",
+      "width": 118,
+      "height": 16
+    },
+    {
+      "name": "sp/wv3_112.png",
+      "width": 118,
+      "height": 16
+    },
+    {
+      "name": "sp/wv3_113.png",
+      "width": 118,
+      "height": 16
+    },
+    {
+      "name": "sp/wv3_114.png",
+      "width": 118,
+      "height": 16
+    },
+    {
+      "name": "sp/wv4_115.png",
+      "width": 138,
+      "height": 16
+    },
+    {
+      "name": "sp/wv4_116.png",
+      "width": 138,
+      "height": 16
+    },
+    {
+      "name": "sp/wv4_117.png",
+      "width": 138,
+      "height": 16
+    },
+    {
+      "name": "sp/wv4_118.png",
+      "width": 138,
+      "height": 16
+    },
+    {
+      "name": "sp/glint_119.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "sp/glint_120.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "sp/glint_121.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "sp/glint_122.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "sp/amb_123.png",
+      "width": 28,
+      "height": 28
+    },
+    {
+      "name": "sp/amb_124.png",
+      "width": 28,
+      "height": 28
+    },
+    {
+      "name": "sp/amb_125.png",
+      "width": 28,
+      "height": 28
+    },
+    {
+      "name": "ic_thermo_ffc27a.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "colon_2.png",
+      "width": 8,
+      "height": 18
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 20,
+      "height": 66
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 64,
+  "userCode": "{\n  // Firefly Lake: the clock's fireflies scatter into a swirling cloud at every minute / hour change and gather into the new digits; flames, sparks,\n  // the moon's glimmer, ripples, glints, twinkling stars and wandering fireflies move alongside.\n  const MS = 100, TAU = 6.283185307179586, MX = 285, TW = [[40, 58], [118, 36], [172, 96], [336, 40], [360, 112], [62, 214]];\n  const C = {\"m\":{\"x\":202,\"y\":117},\"h\":{\"x\":43,\"y\":118},\"fx\":86,\"fy\":396,\"mx\":285};\n  const V = {\"mt\":{\"__blank\":0,\"p\":1},\"ml\":{\"__blank\":0,\"d0k1\":1,\"d0k2\":2,\"d0k3\":3,\"d1k0\":4,\"d1k1\":5,\"d1k2\":6,\"d1k3\":7,\"d2k0\":8,\"d2k1\":9,\"d2k2\":10,\"d2k3\":11,\"d3k0\":12,\"d3k1\":13,\"d3k2\":14,\"d3k3\":15,\"d4k0\":16,\"d4k1\":17,\"d4k2\":18,\"d4k3\":19,\"d5k0\":20,\"d5k1\":21,\"d5k2\":22,\"d5k3\":23,\"d6k0\":24,\"d6k1\":25,\"d6k2\":26,\"d6k3\":27,\"d7k0\":28,\"d7k1\":29,\"d7k2\":30,\"d7k3\":31,\"d8k0\":32,\"d8k1\":33,\"d8k2\":34,\"d8k3\":35,\"d9k0\":36,\"d9k1\":37,\"d9k2\":38,\"d9k3\":39,\"sw0\":40,\"sw1\":41,\"sw2\":42,\"sw3\":43,\"sw4\":44,\"sw5\":45,\"sw6\":46,\"sw7\":47,\"d0k0\":48},\"mr\":{\"__blank\":0,\"d0k1\":1,\"d0k2\":2,\"d0k3\":3,\"d1k0\":4,\"d1k1\":5,\"d1k2\":6,\"d1k3\":7,\"d2k0\":8,\"d2k1\":9,\"d2k2\":10,\"d2k3\":11,\"d3k0\":12,\"d3k1\":13,\"d3k2\":14,\"d3k3\":15,\"d4k0\":16,\"d4k1\":17,\"d4k2\":18,\"d4k3\":19,\"d5k0\":20,\"d5k1\":21,\"d5k2\":22,\"d5k3\":23,\"d6k0\":24,\"d6k1\":25,\"d6k2\":26,\"d6k3\":27,\"d7k0\":28,\"d7k1\":29,\"d7k2\":30,\"d7k3\":31,\"d8k0\":32,\"d8k1\":33,\"d8k2\":34,\"d8k3\":35,\"d9k0\":36,\"d9k1\":37,\"d9k2\":38,\"d9k3\":39,\"sw0\":40,\"sw1\":41,\"sw2\":42,\"sw3\":43,\"sw4\":44,\"sw5\":45,\"sw6\":46,\"sw7\":47,\"d0k0\":48},\"ht\":{\"__blank\":0,\"p\":1},\"hl\":{\"__blank\":0,\"d0k1\":1,\"d0k2\":2,\"d0k3\":3,\"d1k0\":4,\"d1k1\":5,\"d1k2\":6,\"d1k3\":7,\"d2k0\":8,\"d2k1\":9,\"d2k2\":10,\"d2k3\":11,\"d3k0\":12,\"d3k1\":13,\"d3k2\":14,\"d3k3\":15,\"d4k0\":16,\"d4k1\":17,\"d4k2\":18,\"d4k3\":19,\"d5k0\":20,\"d5k1\":21,\"d5k2\":22,\"d5k3\":23,\"d6k0\":24,\"d6k1\":25,\"d6k2\":26,\"d6k3\":27,\"d7k0\":28,\"d7k1\":29,\"d7k2\":30,\"d7k3\":31,\"d8k0\":32,\"d8k1\":33,\"d8k2\":34,\"d8k3\":35,\"d9k0\":36,\"d9k1\":37,\"d9k2\":38,\"d9k3\":39,\"sw0\":40,\"sw1\":41,\"sw2\":42,\"sw3\":43,\"sw4\":44,\"sw5\":45,\"sw6\":46,\"sw7\":47,\"d0k0\":48},\"hr\":{\"__blank\":0,\"d0k1\":1,\"d0k2\":2,\"d0k3\":3,\"d1k0\":4,\"d1k1\":5,\"d1k2\":6,\"d1k3\":7,\"d2k0\":8,\"d2k1\":9,\"d2k2\":10,\"d2k3\":11,\"d3k0\":12,\"d3k1\":13,\"d3k2\":14,\"d3k3\":15,\"d4k0\":16,\"d4k1\":17,\"d4k2\":18,\"d4k3\":19,\"d5k0\":20,\"d5k1\":21,\"d5k2\":22,\"d5k3\":23,\"d6k0\":24,\"d6k1\":25,\"d6k2\":26,\"d6k3\":27,\"d7k0\":28,\"d7k1\":29,\"d7k2\":30,\"d7k3\":31,\"d8k0\":32,\"d8k1\":33,\"d8k2\":34,\"d8k3\":35,\"d9k0\":36,\"d9k1\":37,\"d9k2\":38,\"d9k3\":39,\"sw0\":40,\"sw1\":41,\"sw2\":42,\"sw3\":43,\"sw4\":44,\"sw5\":45,\"sw6\":46,\"sw7\":47,\"d0k0\":48},\"st0\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"st1\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"st2\":{\"b\":0,\"a\":1,\"c\":2,\"__blank\":3},\"st3\":{\"a\":0,\"b\":1,\"c\":2,\"__blank\":3},\"st4\":{\"b\":0,\"a\":1,\"c\":2,\"__blank\":3},\"st5\":{\"b\":0,\"a\":1,\"c\":2,\"__blank\":3},\"gl\":{\"g0\":0,\"g1\":1,\"__blank\":2},\"fl\":{\"f5\":0,\"f1\":1,\"f2\":2,\"f3\":3,\"f4\":4,\"f0\":5,\"__blank\":6},\"sp0\":{\"big\":0,\"mid\":1,\"small\":2,\"__blank\":3},\"sp1\":{\"mid\":0,\"big\":1,\"small\":2,\"__blank\":3},\"sp2\":{\"mid\":0,\"big\":1,\"small\":2,\"__blank\":3},\"sp3\":{\"big\":0,\"mid\":1,\"small\":2,\"__blank\":3},\"mg0\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"mg1\":{\"b\":0,\"a\":1,\"c\":2,\"__blank\":3},\"mg2\":{\"a\":0,\"b\":1,\"c\":2,\"__blank\":3},\"mg3\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"mg4\":{\"b\":0,\"a\":1,\"c\":2,\"__blank\":3},\"mg5\":{\"a\":0,\"b\":1,\"c\":2,\"__blank\":3},\"mg6\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"wv0\":{\"v2\":0,\"v1\":1,\"v0\":2,\"__blank\":3},\"wv1\":{\"v2\":0,\"v1\":1,\"v0\":2,\"__blank\":3},\"wv2\":{\"v0\":0,\"v1\":1,\"v2\":2,\"__blank\":3},\"wv3\":{\"v1\":0,\"v0\":1,\"v2\":2,\"__blank\":3},\"wv4\":{\"v1\":0,\"v0\":1,\"v2\":2,\"__blank\":3},\"gt0\":{\"b\":0,\"a\":1,\"c\":2,\"__blank\":3},\"gt1\":{\"__blank\":0,\"b\":1,\"c\":2,\"a\":3},\"gt2\":{\"b\":0,\"a\":1,\"c\":2,\"__blank\":3},\"gt3\":{\"c\":0,\"b\":1,\"a\":2,\"__blank\":3},\"gt4\":{\"a\":0,\"b\":1,\"c\":2,\"__blank\":3},\"am0\":{\"b\":0,\"a\":1,\"__blank\":2},\"am1\":{\"b\":0,\"a\":1,\"__blank\":2},\"am2\":{\"a\":0,\"b\":1,\"__blank\":2},\"am3\":{\"a\":0,\"b\":1,\"__blank\":2},\"am4\":{\"a\":0,\"b\":1,\"__blank\":2},\"am5\":{\"__blank\":0,\"b\":1,\"a\":2}};\n  const sl = {}; const g = (h) => sl[h] || (sl[h] = slot(h));\n  const ease = (t) => { t = Math.max(0, Math.min(1, t)); return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };\n  const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };\n  const AM = [[300, 250, 40, 22, 0.35, 0.5, 0.0], [250, 232, 50, 18, 0.28, 0.41, 1.1], [60, 262, 34, 24, 0.4, 0.33, 2.2], [150, 318, 46, 14, 0.31, 0.47, 3.1], [335, 290, 30, 26, 0.37, 0.29, 4.0], [200, 276, 60, 16, 0.26, 0.44, 5.2]];\n  // the clock: scatter (0.8 s), swirl (1.9 s, through the change at :00), gather (0.8 s)\n  const swarm = (key, tens, units, ts) => {\n    const P = C[key], pt = g(key + 't'), l = g(key + 'l'), r = g(key + 'r');\n    if (ts < -1.7 || ts >= 1.82) { pt.hide(); l.hide(); r.hide(); return; }\n    pt(P.x, P.y, V[key + 't'].p);\n    let kl, kr;\n    if (ts < -0.9) { const i = Math.min(4, Math.floor((ts + 1.7) / 0.16)); kl = i === 4 ? 'sw0' : 'd' + tens + 'k' + i; kr = i === 4 ? 'sw0' : 'd' + units + 'k' + i; }\n    else if (ts < 1.02) { kl = kr = 'sw' + (Math.floor((ts + 0.9) / 0.12) % 8); }\n    else { const i = 4 - Math.min(4, Math.floor((ts - 1.02) / 0.16)); kl = i === 4 ? 'sw0' : 'd' + tens + 'k' + i; kr = i === 4 ? 'sw0' : 'd' + units + 'k' + i; }\n    l(P.x - 18, P.y - 18, V[key + 'l'][kl]); r(P.x + 68 - 18, P.y - 18, V[key + 'r'][kr]);\n  };\n  let n = 5;   // the first tick updates everything (the still picture is made from it)\n  const tick = () => {\n    n++;\n    const now = Date.now(), d = new Date(now), t = now / 1000, sec = d.getSeconds() + d.getMilliseconds() / 1000, min = d.getMinutes(), ts = sec >= 58.3 ? sec - 60 : sec;\n    swarm('m', Math.floor(min / 10), min % 10, ts);\n    const hr = d.getHours(), hc = (min === 59 && ts < 0) || (min === 0 && ts >= 0);   // 24-hour digits\n    swarm('h', Math.floor(hr / 10), hr % 10, hc ? ts : 99);\n    // the fire: flames flicker, the glow breathes, sparks rise\n    g('fl')(C.fx - 28, C.fy - 70, V.fl['f' + Math.floor(hash(Math.floor(now / 90)) * 6) % 6]);\n    g('gl')(C.fx - 86, C.fy - 94, V.gl['g' + (Math.floor(now / 170 + hash(Math.floor(now / 1700)) * 3) % 2)]);\n    if (n % 2 === 0) {\n      for (let j = 0; j < 4; j++) {\n        const s = g('sp' + j), T = 2.2 + 0.5 * j, p = (t / T + j * 0.77) % 1;\n        if (p > 0.93) { s.hide(); continue; }\n        s(Math.round(C.fx - 6 + (j - 1.5) * 6 + (j % 2 ? 1 : -1) * 16 * p + 8 * Math.sin(t * 1.3 + j * 2) * p), Math.round(C.fy - 50 - 112 * p), V['sp' + j][p < 0.4 ? 'big' : p < 0.75 ? 'mid' : 'small']);\n      }\n      // wandering fireflies; they drift into orbits around the clock while it changes\n      const w = ts >= -1.7 && ts < -0.7 ? ease(ts + 1.7) : ts >= -0.7 && ts < 1.0 ? 1 : ts >= 1.0 && ts < 2.0 ? 1 - ease(ts - 1.0) : 0;\n      for (let i = 0; i < 6; i++) {\n        const a = AM[i], bx = a[0] + a[2] * Math.sin(t * a[4] + a[6]), by = a[1] + a[3] * Math.sin(t * a[5] + a[6] * 1.3);\n        const tgt = (i % 2 && hc) ? C.h : C.m, th = t * 1.6 + i, tx = tgt.x + (i % 2 && hc ? 68 : 68) + 54 * Math.cos(th), ty = tgt.y + 50 + 44 * Math.sin(th);\n        const x = bx + (tx - bx) * w, y = by + (ty - by) * w, bl = Math.sin(t * (1.1 + i * 0.13) + i * 2), s = g('am' + i);\n        if (w < 0.3 && bl < -0.7) s.hide(); else s(Math.round(x - 14), Math.round(y - 14), V['am' + i][w > 0.3 || bl > 0.1 ? 'b' : 'a']);\n      }\n    }\n    // the lake and the stars (slow: every third tick)\n    if (n % 3 === 0) {\n      for (let i = 0; i < 7; i++) { const wd = 26 + 7 * i, sn = Math.sin(t * 1.7 + i * 2.1); g('mg' + i)(Math.round(MX + (10 + i * 1.5) * Math.sin(t * 0.9 + i * 1.3) - (wd + 8) / 2), 304 + i * 16, V['mg' + i][sn < -0.3 ? 'a' : sn < 0.5 ? 'b' : 'c']); }\n      const WVX = [60, 200, 120, 235, 235], WVY = [314, 336, 358, 382, 398];\n      for (let i = 0; i < 5; i++) g('wv' + i)(Math.round(WVX[i] + 14 * Math.sin(t / (1.6 + 0.25 * i) + i)), WVY[i], V['wv' + i]['v' + (Math.floor(t / 2.2 + i * 0.7) % 3)]);\n      for (let j = 0; j < 5; j++) {\n        const cyc = t / 2.4 + j * 0.41, ph = cyc - Math.floor(cyc), k = Math.floor(cyc), x = 175 + hash(k * 5 + j) * 195, y = 303 + hash(k * 3 + j * 7) * 118, s = g('gt' + j);\n        if (ph > 0.9 || (y > 388 && x < 205)) s.hide(); else s(Math.round(x - 8), Math.round(y - 8), V['gt' + j][ph < 0.3 ? 'a' : ph < 0.6 ? 'b' : 'c']);\n      }\n      for (let j = 0; j < 6; j++) g('st' + j)(TW[j][0] - 7, TW[j][1] - 7, V['st' + j][['a', 'b', 'c', 'b'][Math.floor(t / (0.9 + 0.15 * j) + j) % 4]]);\n    }\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}

@@ -2423,7 +2423,7 @@ $('btnGrid').onclick = () => {
 
 // compose the saved preview: black background, normal state, no editor overlay
 let gifTick = null;   // set while the store GIF is recorded: the animation clock in 1/30 s units (null: layers show their default frame)
-function composePreviewCanvas() {
+function composePreviewCanvas(shaped) {
   const d = dev();
   const cv = document.createElement('canvas');
   cv.width = d.w; cv.height = d.h;
@@ -2433,12 +2433,32 @@ function composePreviewCanvas() {
   const keep = { clock, dateParts };
   clock = { ...REF_CLOCK }; dateParts = { ...REF_DATE };
   exportRender = true;
-  try { drawScene(cv.getContext('2d', { willReadFrequently: true }), d.w, d.h, 'normal', false); }
+  try {
+    const cx = cv.getContext('2d', { willReadFrequently: true });
+    // shaped: the screen's own outline (round / rounded rectangle) with a transparent outside, for the store pictures
+    if (shaped) { cx.beginPath(); cx.roundRect(0, 0, d.w, d.h, Math.min(d.radius || 0, d.w / 2, d.h / 2)); cx.clip(); }
+    drawScene(cx, d.w, d.h, 'normal', false);
+  }
   finally { exportRender = prev; clock = keep.clock; dateParts = keep.dateParts; }
   return cv;
 }
-function composePreviewB64() {
-  return composePreviewCanvas().toDataURL('image/png').split(',')[1];
+function composePreviewB64(shaped) {
+  return composePreviewCanvas(shaped).toDataURL('image/png').split(',')[1];
+}
+// Zepp "app introduction screenshot": 360x360 PNG, transparent background, the screen shape (round, or the rounded rectangle) filling the frame:
+// round screens with no margins, rectangular ones with equal left/right margins and none top/bottom.
+function composeStoreShotB64() {
+  const d = dev(), S = 360, k = S / Math.max(d.w, d.h);
+  const w = d.w * k, h = d.h * k, r = Math.min(d.radius || 0, d.w / 2, d.h / 2) * k;
+  const out = document.createElement('canvas');
+  out.width = S; out.height = S;
+  const c = out.getContext('2d');
+  c.imageSmoothingQuality = 'high';
+  c.beginPath();
+  c.roundRect((S - w) / 2, (S - h) / 2, w, h, r);
+  c.clip();
+  c.drawImage(composePreviewCanvas(true), (S - w) / 2, (S - h) / 2, w, h);
+  return out.toDataURL('image/png').split(',')[1];
 }
 
 // ---- animated store preview: the face's own code on a virtual clock, written as a GIF ----
@@ -2488,7 +2508,7 @@ function gifEncode(frames, w, h, delayMs) {
   for (const f of frames) {
     const p = f.data, idx = new Uint8Array(w * h), now = new Uint8Array(w * h);
     for (let i = 0, j = 0; j < w * h; i += 4, j++) {
-      now[j] = nearest(p[i], p[i + 1], p[i + 2]);
+      now[j] = p[i + 3] < 128 ? 255 : nearest(p[i], p[i + 1], p[i + 2]);   // outside the screen shape: transparent
       idx[j] = prev && prev[j] === now[j] ? 255 : now[j];
     }
     prev = now;
@@ -2531,7 +2551,7 @@ async function captureStoreGif(secs = storeLoopSeconds(), fps = 10) {
       gifTick = (i * dt / 1000) * 30;
       for (;;) { q.sort((a, b) => a.at - b.at); const n = q[0]; if (!n || n.at > target) break; vt = n.at; if (n.rep) n.at += n.rep; else q.shift(); try { n.f(); } catch (e) { /* the code's own errors show in the status bar */ } }
       vt = target;
-      frames.push(composePreviewCanvas().getContext('2d').getImageData(0, 0, d.w, d.h));
+      frames.push(composePreviewCanvas(true).getContext('2d').getImageData(0, 0, d.w, d.h));
     }
   } finally {
     gifTick = null;
@@ -2539,7 +2559,13 @@ async function captureStoreGif(secs = storeLoopSeconds(), fps = 10) {
     window.Date = RD; window.setTimeout = rs; window.setInterval = ri; window.clearTimeout = rc; window.clearInterval = rci;
   }
   let use = frames, delay = dt, gif = gifEncode(use, d.w, d.h, delay);
-  while (gif.length > 1024 * 1024 && use.length > 8) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }   // the console takes at most 1 MB
+  // the console takes at most 1 MB: drop every other frame (down to 8), then posterize the colours (fewer distinct colours compress far better
+  // and keep the frame-to-frame "unchanged" pixels identical), then keep dropping frames (down to 4)
+  const LIM = 1000 * 1024;
+  while (gif.length > LIM && use.length > 8) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
+  const poster = (fs, mask) => fs.map((f) => { const o = new ImageData(new Uint8ClampedArray(f.data), f.width, f.height); const a = o.data; for (let i = 0; i < a.length; i += 4) { a[i] &= mask; a[i + 1] &= mask; a[i + 2] &= mask; } return o; });
+  for (const mask of [0xF8, 0xF0, 0xE0, 0xC0]) { if (gif.length <= LIM) break; use = poster(use, mask); gif = gifEncode(use, d.w, d.h, delay); }
+  while (gif.length > LIM && use.length > 4) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
   let s = ''; for (let i = 0; i < gif.length; i += 0x8000) s += String.fromCharCode.apply(null, gif.subarray(i, i + 0x8000));
   return { base64: btoa(s), frames: use.length, bytes: gif.length };
 }
@@ -8335,7 +8361,7 @@ $('btnBuild').onclick = async () => {
   stopCodeRun();
   openLogModal('Zeus build', '', 'running the Zeus CLI…');
   appendLog('Exporting the project first…');
-  const payload = { project: projectForCode(), images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64() };
+  const payload = { project: projectForCode(), images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64(), storePreviewBase64: composePreviewB64(true), storeShotBase64: composeStoreShotB64() };
   // an animated face (code, or frame animations) also gets a GIF of it moving, for the store folder
   if ((project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false)) {
     try {

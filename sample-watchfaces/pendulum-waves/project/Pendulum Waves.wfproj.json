@@ -1,0 +1,1468 @@
+{
+  "version": 1,
+  "name": "Pendulum Waves",
+  "device": "bip-6",
+  "appId": 2087630,
+  "vender": "dialcraft",
+  "description": "Twelve colour beads swing like a pendulum wave and line up in a perfect ring at every minute; a gold and a white bead on the inner ring tell the hour and the minute.",
+  "font": "Rajdhani",
+  "language": "ro-RO",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "rajdhani-600.ttf",
+      "family": "Rajdhani"
+    }
+  ],
+  "groups": {
+    "gmw9t32z72g": "Clock",
+    "gmw9t33hrn8": "Clock AOD",
+    "gDate": "Date",
+    "gTemperature": "Temperature",
+    "gPendulums": "Pendulums",
+    "gTimebeads": "Time beads"
+  },
+  "elements": [
+    {
+      "id": "elmw9t32x870z",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmw9t336ywy",
+      "kind": "IMG",
+      "name": "AOD Scene",
+      "x": 0,
+      "y": 0,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "aod_pendulum.png"
+    },
+    {
+      "id": "elmw9t336k4t8",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_pendulum.png"
+    },
+    {
+      "id": "elmw9t32z74ze",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 143,
+      "y": 230,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9t32z72g",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#f4f6ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9t32z7wv",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 139,
+      "y": 157,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9t32z72g",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffd27a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9t33hr39x",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 143,
+      "y": 230,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9t33hrn8",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#7d8296",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#7d8296",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9t33hr6rx",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 139,
+      "y": 157,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9t33hrn8",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#7d8296",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#7d8296",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9t32zs75z",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 136,
+      "y": 4,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#aeb6cc",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "center"
+    },
+    {
+      "id": "elmw9t330t2xh",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 207,
+      "y": 12,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -6,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#aeb6cc",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9t331i5ib",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 182,
+      "y": 408,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Rajdhani",
+        "size": 40,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#f4f6ff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmw9t33fp51h",
+      "kind": "IMG",
+      "name": "Temperature icon",
+      "x": 144,
+      "y": 408,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTemperature",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ic_thermo_ffb86b.png"
+    },
+    {
+      "id": "elmw9t337e6sx",
+      "kind": "IMG",
+      "name": "Pendulum 1",
+      "x": 179,
+      "y": 71,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w0_001.png",
+      "images": [
+        "sp/w0_001.png",
+        "sp/w0_000.png",
+        "sp/w0_002.png",
+        "sp/w0_003.png"
+      ],
+      "handle": "w0"
+    },
+    {
+      "id": "elmw9t337qld",
+      "kind": "IMG",
+      "name": "Pendulum 2",
+      "x": 260,
+      "y": 71,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w1_004.png",
+      "images": [
+        "sp/w1_004.png",
+        "sp/w1_005.png",
+        "sp/w1_006.png",
+        "sp/w1_007.png"
+      ],
+      "handle": "w1"
+    },
+    {
+      "id": "elmw9t33837fd",
+      "kind": "IMG",
+      "name": "Pendulum 3",
+      "x": 318,
+      "y": 131,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w2_008.png",
+      "images": [
+        "sp/w2_008.png",
+        "sp/w2_009.png",
+        "sp/w2_010.png",
+        "sp/w2_011.png"
+      ],
+      "handle": "w2"
+    },
+    {
+      "id": "elmw9t338e5j2",
+      "kind": "IMG",
+      "name": "Pendulum 4",
+      "x": 316,
+      "y": 211,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w3_013.png",
+      "images": [
+        "sp/w3_013.png",
+        "sp/w3_012.png",
+        "sp/w3_014.png",
+        "sp/w3_015.png"
+      ],
+      "handle": "w3"
+    },
+    {
+      "id": "elmw9t338r1wo",
+      "kind": "IMG",
+      "name": "Pendulum 5",
+      "x": 282,
+      "y": 271,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w4_018.png",
+      "images": [
+        "sp/w4_018.png",
+        "sp/w4_017.png",
+        "sp/w4_016.png",
+        "sp/w4_019.png"
+      ],
+      "handle": "w4"
+    },
+    {
+      "id": "elmw9t33943d8",
+      "kind": "IMG",
+      "name": "Pendulum 6",
+      "x": 243,
+      "y": 322,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w5_022.png",
+      "images": [
+        "sp/w5_022.png",
+        "sp/w5_021.png",
+        "sp/w5_020.png",
+        "sp/w5_023.png"
+      ],
+      "handle": "w5"
+    },
+    {
+      "id": "elmw9t339h724",
+      "kind": "IMG",
+      "name": "Pendulum 7",
+      "x": 179,
+      "y": 365,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w6_024.png",
+      "images": [
+        "sp/w6_024.png",
+        "sp/w6_025.png",
+        "sp/w6_026.png",
+        "sp/w6_027.png"
+      ],
+      "handle": "w6"
+    },
+    {
+      "id": "elmw9t339v5cw",
+      "kind": "IMG",
+      "name": "Pendulum 8",
+      "x": 97,
+      "y": 354,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w7_028.png",
+      "images": [
+        "sp/w7_028.png",
+        "sp/w7_029.png",
+        "sp/w7_030.png",
+        "sp/w7_031.png"
+      ],
+      "handle": "w7"
+    },
+    {
+      "id": "elmw9t33a96cy",
+      "kind": "IMG",
+      "name": "Pendulum 9",
+      "x": 50,
+      "y": 286,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w8_033.png",
+      "images": [
+        "sp/w8_033.png",
+        "sp/w8_032.png",
+        "sp/w8_034.png",
+        "sp/w8_035.png"
+      ],
+      "handle": "w8"
+    },
+    {
+      "id": "elmw9t33am5kw",
+      "kind": "IMG",
+      "name": "Pendulum 10",
+      "x": 54,
+      "y": 211,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w9_038.png",
+      "images": [
+        "sp/w9_038.png",
+        "sp/w9_037.png",
+        "sp/w9_036.png",
+        "sp/w9_039.png"
+      ],
+      "handle": "w9"
+    },
+    {
+      "id": "elmw9t33b05pi",
+      "kind": "IMG",
+      "name": "Pendulum 11",
+      "x": 74,
+      "y": 151,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w10_042.png",
+      "images": [
+        "sp/w10_042.png",
+        "sp/w10_041.png",
+        "sp/w10_040.png",
+        "sp/w10_043.png"
+      ],
+      "handle": "w10"
+    },
+    {
+      "id": "elmw9t33bf694",
+      "kind": "IMG",
+      "name": "Pendulum 12",
+      "x": 108,
+      "y": 88,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPendulums",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/w11_045.png",
+      "images": [
+        "sp/w11_045.png",
+        "sp/w11_044.png",
+        "sp/w11_046.png",
+        "sp/w11_047.png"
+      ],
+      "handle": "w11"
+    },
+    {
+      "id": "elmw9t33c355u",
+      "kind": "IMG",
+      "name": "Hour bead",
+      "x": 91,
+      "y": 148,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTimebeads",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/hb_048.png",
+      "images": [
+        "sp/hb_048.png",
+        "sp/hb_049.png"
+      ],
+      "handle": "hb"
+    },
+    {
+      "id": "elmw9t33cl331",
+      "kind": "IMG",
+      "name": "Minute bead",
+      "x": 260,
+      "y": 153,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gTimebeads",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/mb_050.png",
+      "images": [
+        "sp/mb_050.png",
+        "sp/mb_051.png"
+      ],
+      "handle": "mb"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "colon.png",
+      "width": 8,
+      "height": 18
+    },
+    {
+      "name": "week_w1.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w2.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w3.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w4.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w5.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w6.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "week_w7.png",
+      "width": 74,
+      "height": 52
+    },
+    {
+      "name": "degree.png",
+      "width": 13,
+      "height": 35
+    },
+    {
+      "name": "negative.png",
+      "width": 16,
+      "height": 32
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 16,
+      "height": 55
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 26,
+      "height": 32
+    },
+    {
+      "name": "scene_pendulum.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "aod_pendulum.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/w0_000.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w0_001.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w0_002.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w0_003.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w1_004.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w1_005.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w1_006.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w1_007.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w2_008.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w2_009.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w2_010.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w2_011.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w3_012.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w3_013.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w3_014.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w3_015.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w4_016.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w4_017.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w4_018.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w4_019.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w5_020.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w5_021.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w5_022.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w5_023.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w6_024.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w6_025.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w6_026.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w6_027.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w7_028.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w7_029.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w7_030.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w7_031.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w8_032.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w8_033.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w8_034.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w8_035.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w9_036.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w9_037.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w9_038.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w9_039.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w10_040.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w10_041.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w10_042.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w10_043.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w11_044.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w11_045.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w11_046.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/w11_047.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "sp/hb_048.png",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "sp/hb_049.png",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "sp/mb_050.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "sp/mb_051.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "ic_thermo_ffb86b.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "colon_2.png",
+      "width": 11,
+      "height": 32
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 52,
+      "height": 68
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 52,
+      "height": 68
+    }
+  ],
+  "savePath": null,
+  "optimizePng": 32,
+  "userCode": "{\n  // Pendulum Waves: bead i swings N0+i times a minute along its hour spoke, so all 12 line up on the outer ring at every minute start.\n  // k = harmonic number of the shape = t/5, so the ring turns into a shifted ring, an ellipse, a trefoil ... a 6-lobed gear at 30 s and back.\n  const MS = 110, DCX = 195, DCY = 227, R0 = 142, A = 23, RT = 100, N0 = 4, HZ = 16, HH = 22, MH = 17, TAU = 6.283185307179586;\n  const V = {\"w0\":{\"mid\":0,\"on\":1,\"off\":2,\"__blank\":3},\"w1\":{\"on\":0,\"mid\":1,\"off\":2,\"__blank\":3},\"w2\":{\"on\":0,\"mid\":1,\"off\":2,\"__blank\":3},\"w3\":{\"mid\":0,\"on\":1,\"off\":2,\"__blank\":3},\"w4\":{\"off\":0,\"mid\":1,\"on\":2,\"__blank\":3},\"w5\":{\"off\":0,\"mid\":1,\"on\":2,\"__blank\":3},\"w6\":{\"on\":0,\"mid\":1,\"off\":2,\"__blank\":3},\"w7\":{\"on\":0,\"mid\":1,\"off\":2,\"__blank\":3},\"w8\":{\"mid\":0,\"on\":1,\"off\":2,\"__blank\":3},\"w9\":{\"off\":0,\"mid\":1,\"on\":2,\"__blank\":3},\"w10\":{\"off\":0,\"mid\":1,\"on\":2,\"__blank\":3},\"w11\":{\"mid\":0,\"on\":1,\"off\":2,\"__blank\":3},\"hb\":{\"s\":0,\"__blank\":1},\"mb\":{\"s\":0,\"__blank\":1}};\n  const sl = []; let hb, mb;   // slot() comes from the runtime below, so the setters are made on the first tick\n  const tick = () => {\n    if (!hb) { for (let i = 0; i < 12; i++) sl.push(slot('w' + i)); hb = slot('hb'); mb = slot('mb'); }\n    const d = new Date(), t = d.getSeconds() + d.getMilliseconds() / 1000;\n    for (let i = 0; i < 12; i++) {\n      const c = Math.cos(TAU * (N0 + i) * t / 60), r = R0 + A * c, a = i * TAU / 12;\n      sl[i](Math.round(DCX + r * Math.sin(a) - HZ), Math.round(DCY - r * Math.cos(a) - HZ), c > 0.5 ? V['w' + i].on : c > -0.25 ? V['w' + i].mid : V['w' + i].off);\n    }\n    const ma = ((d.getMinutes() + t / 60) / 60) * TAU, ha = (((d.getHours() % 12) + d.getMinutes() / 60 + t / 3600) / 12) * TAU;\n    hb(Math.round(DCX + RT * Math.sin(ha) - HH), Math.round(DCY - RT * Math.cos(ha) - HH), V.hb.s);\n    mb(Math.round(DCX + RT * Math.sin(ma) - MH), Math.round(DCY - RT * Math.cos(ma) - MH), V.mb.s);\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}
