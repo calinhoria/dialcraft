@@ -1,0 +1,2359 @@
+{
+  "version": 1,
+  "name": "Concentric Dial Half",
+  "device": "bip-6",
+  "appId": 2644072,
+  "vender": "dialcraft",
+  "description": "Half a concentric dial: the whole tick ring melts away to the left, with a seconds reel (one tall strip scrolled with pos_y, soft fade top and bottom) and the hour and minute side by side. Tap the seconds to switch between 5 colour themes: the hour, the big ticks and the seconds take the accent. Pictures are made by bake.py.",
+  "font": "Outfit",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "outfit-400.ttf",
+      "family": "Outfit"
+    }
+  ],
+  "groups": {
+    "gmwb81hnjc9": "Clock",
+    "gmwbarc11mf": "Clock 2",
+    "gmwbarc2uqi": "Clock 3",
+    "gmwbarc3pap": "Clock 4",
+    "gmwbarc4ed0": "Clock 5",
+    "gmwbarc56rm": "Clock 6",
+    "gmwbbax95pi": "Sunrise / sunset"
+  },
+  "elements": [
+    {
+      "id": "elmwb81hll188",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "kind": "IMG",
+      "x": 0,
+      "y": 0,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmhalfaod0001",
+      "name": "Dial AOD",
+      "src": "dial-aod-half.png"
+    },
+    {
+      "kind": "IMG",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmhalfticks001",
+      "name": "Ticks",
+      "src": "ticks/t0.png"
+    },
+    {
+      "id": "elmwb81hnj6c2",
+      "kind": "IMG_TIME",
+      "name": "Hour AOD",
+      "x": 13,
+      "y": 128,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwb81hnjc9",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Outfit",
+        "size": 118,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwb81hnjh0",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 13,
+      "y": 229,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gmwb81hnjc9",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Outfit",
+        "size": 118,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "hSpace": 0
+    },
+    {
+      "kind": "IMG",
+      "x": 182,
+      "y": 175,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 54,
+      "h": 100,
+      "angle": 0,
+      "posX": 0,
+      "posY": -1116,
+      "id": "elmhalfreel0001",
+      "name": "Seconds reel",
+      "src": "strip/s0.png",
+      "handle": "reel"
+    },
+    {
+      "kind": "IMG",
+      "x": 182,
+      "y": 175,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmhalffadet001",
+      "name": "Reel fade top",
+      "src": "fade-top.png"
+    },
+    {
+      "kind": "IMG",
+      "x": 182,
+      "y": 241,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmhalffadeb001",
+      "name": "Reel fade bottom",
+      "src": "fade-bot.png"
+    },
+    {
+      "kind": "IMG",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 1,
+      "h": 1,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmhalftap00001",
+      "name": "Tap pad",
+      "src": "tap.png"
+    },
+    {
+      "id": "elmwbarc114id",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 13,
+      "y": 128,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwbarc11mf",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Outfit",
+        "size": 118,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#7599d2",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "kind": "IMG",
+      "x": 268,
+      "y": 40,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmbadgea00001",
+      "name": "Badge temp",
+      "src": "cdisc0.png"
+    },
+    {
+      "kind": "IMG",
+      "x": 298,
+      "y": 168,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmbadgeb00001",
+      "name": "Badge sun",
+      "src": "cdisc0.png"
+    },
+    {
+      "kind": "IMG",
+      "x": 278,
+      "y": 296,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmbadgecfill01",
+      "name": "Badge battery disc",
+      "src": "cdisc0.png"
+    },
+    {
+      "kind": "IMG_CLICK",
+      "x": 266,
+      "y": 40,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 92,
+      "h": 114,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmtaptemp0001",
+      "name": "Tap temperature",
+      "dataType": "WEATHER_CURRENT",
+      "src": "tapzone-b.png"
+    },
+    {
+      "kind": "IMG_CLICK",
+      "x": 296,
+      "y": 168,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 92,
+      "h": 114,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmtapsun00001",
+      "name": "Tap sun",
+      "dataType": "SUN_CURRENT",
+      "src": "tapzone-b.png"
+    },
+    {
+      "kind": "TAP",
+      "x": 276,
+      "y": 296,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 92,
+      "h": 114,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmtapbatt0001",
+      "name": "Tap battery",
+      "action": "app",
+      "appUrl": "Settings_batteryManagerScreen",
+      "note": ""
+    },
+    {
+      "id": "elmwbbax6r5bl",
+      "kind": "IMG",
+      "name": "Sunrise icon",
+      "x": 325,
+      "y": 195,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwbbax95pi",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sunrise.png",
+      "showWhen": "sunrise"
+    },
+    {
+      "id": "elmwbbax8l6z1",
+      "kind": "IMG",
+      "name": "Sunset icon",
+      "x": 325,
+      "y": 195,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwbbax95pi",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sunset.png",
+      "showWhen": "sunset"
+    },
+    {
+      "id": "elmwbbaxat18g",
+      "kind": "IMG_LEVEL",
+      "name": "Battery level",
+      "x": 305,
+      "y": 323,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "bat0.png",
+        "bat1.png",
+        "bat2.png",
+        "bat3.png",
+        "bat4.png",
+        "bat5.png",
+        "bat6.png",
+        "bat7.png",
+        "bat8.png",
+        "bat9.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "BATTERY",
+      "level": 0
+    },
+    {
+      "kind": "IMG_LEVEL",
+      "x": 295,
+      "y": 67,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "id": "elmweathericon01",
+      "name": "Weather icon",
+      "dataType": "WEATHER",
+      "images": [
+        "weather/w00.png",
+        "weather/w01.png",
+        "weather/w02.png",
+        "weather/w03.png",
+        "weather/w04.png",
+        "weather/w05.png",
+        "weather/w06.png",
+        "weather/w07.png",
+        "weather/w08.png",
+        "weather/w09.png",
+        "weather/w10.png",
+        "weather/w11.png",
+        "weather/w12.png",
+        "weather/w13.png",
+        "weather/w14.png",
+        "weather/w15.png",
+        "weather/w16.png",
+        "weather/w17.png",
+        "weather/w18.png",
+        "weather/w19.png",
+        "weather/w20.png",
+        "weather/w21.png",
+        "weather/w22.png",
+        "weather/w23.png",
+        "weather/w24.png",
+        "weather/w25.png",
+        "weather/w26.png",
+        "weather/w27.png",
+        "weather/w28.png"
+      ],
+      "level": 0
+    },
+    {
+      "id": "elmthmtm00000",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 278,
+      "y": 125,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_12_0.png",
+        "font_12_1.png",
+        "font_12_2.png",
+        "font_12_3.png",
+        "font_12_4.png",
+        "font_12_5.png",
+        "font_12_6.png",
+        "font_12_7.png",
+        "font_12_8.png",
+        "font_12_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "deg0.png",
+      "dot": "",
+      "negative": "neg0.png",
+      "glyph": {
+        "font": "Outfit",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8ab4f8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmthmsr00000",
+      "kind": "TEXT_IMG",
+      "name": "Sunrise",
+      "x": 291,
+      "y": 253,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwbbax95pi",
+      "alpha": 255,
+      "dataType": "SUN_RISE",
+      "images": [
+        "font_13_0.png",
+        "font_13_1.png",
+        "font_13_2.png",
+        "font_13_3.png",
+        "font_13_4.png",
+        "font_13_5.png",
+        "font_13_6.png",
+        "font_13_7.png",
+        "font_13_8.png",
+        "font_13_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "col0.png",
+      "negative": "",
+      "showWhen": "sunrise",
+      "glyph": {
+        "font": "Outfit",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8ab4f8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmthmss00000",
+      "kind": "TEXT_IMG",
+      "name": "Sunset",
+      "x": 291,
+      "y": 253,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwbbax95pi",
+      "alpha": 255,
+      "dataType": "SUN_SET",
+      "images": [
+        "font_13_0.png",
+        "font_13_1.png",
+        "font_13_2.png",
+        "font_13_3.png",
+        "font_13_4.png",
+        "font_13_5.png",
+        "font_13_6.png",
+        "font_13_7.png",
+        "font_13_8.png",
+        "font_13_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "col0.png",
+      "negative": "",
+      "showWhen": "sunset",
+      "glyph": {
+        "font": "Outfit",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8ab4f8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmthmbt00000",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 284,
+      "y": 381,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_13_0.png",
+        "font_13_1.png",
+        "font_13_2.png",
+        "font_13_3.png",
+        "font_13_4.png",
+        "font_13_5.png",
+        "font_13_6.png",
+        "font_13_7.png",
+        "font_13_8.png",
+        "font_13_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "pct0.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Outfit",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8ab4f8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "kind": "TAP",
+      "id": "elmthemetap0001",
+      "name": "Tap: next colour theme",
+      "action": "theme",
+      "x": 172,
+      "y": 155,
+      "w": 90,
+      "h": 140,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "note": ""
+    }
+  ],
+  "images": [
+    {
+      "name": "bat0.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat5.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat6.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat7.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat8.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat9.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "cdisc0.png",
+      "width": 88,
+      "height": 88
+    },
+    {
+      "name": "col0.png",
+      "width": 10,
+      "height": 27
+    },
+    {
+      "name": "deg0.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "dial-aod-half.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fade-bot.png",
+      "width": 54,
+      "height": 34
+    },
+    {
+      "name": "fade-top.png",
+      "width": 54,
+      "height": 34
+    },
+    {
+      "name": "font_12_0.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_5.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_6.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_7.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_8.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_9.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_0.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_5.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_6.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_7.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_8.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_9.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "neg0.png",
+      "width": 16,
+      "height": 27
+    },
+    {
+      "name": "pct0.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "strip/s0.png",
+      "width": 54,
+      "height": 2904
+    },
+    {
+      "name": "sunrise.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "sunset.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "tap.png",
+      "width": 1,
+      "height": 1
+    },
+    {
+      "name": "tapzone-b.png",
+      "width": 92,
+      "height": 114
+    },
+    {
+      "name": "ticks/t0.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "weather/w00.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w01.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w02.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w03.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w04.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w05.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w06.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w07.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w08.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w09.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w10.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w11.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w12.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w13.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w14.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w15.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w16.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w17.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w18.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w19.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w20.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w21.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w22.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w23.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w24.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w25.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w26.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w27.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "weather/w28.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat0__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat1__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat2__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat3__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat4__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat5__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat6__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat7__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat8__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat9__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "cdisc0__t1.png",
+      "width": 88,
+      "height": 88
+    },
+    {
+      "name": "col0__t1.png",
+      "width": 10,
+      "height": 27
+    },
+    {
+      "name": "deg0__t1.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_0__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_1__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_2__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_3__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_4__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_5__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_6__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_7__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_8__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_9__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_0__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_1__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_2__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_3__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_4__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_5__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_6__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_7__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_8__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_9__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_3_0__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_1__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_2__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_3__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_4__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_5__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_6__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_7__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_8__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_9__t1.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "neg0__t1.png",
+      "width": 16,
+      "height": 27
+    },
+    {
+      "name": "pct0__t1.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "strip/s0__t1.png",
+      "width": 54,
+      "height": 2904
+    },
+    {
+      "name": "sunrise__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "sunset__t1.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "ticks/t0__t1.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "bat0__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat1__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat2__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat3__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat4__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat5__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat6__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat7__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat8__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat9__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "cdisc0__t2.png",
+      "width": 88,
+      "height": 88
+    },
+    {
+      "name": "col0__t2.png",
+      "width": 10,
+      "height": 27
+    },
+    {
+      "name": "deg0__t2.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_0__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_1__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_2__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_3__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_4__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_5__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_6__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_7__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_8__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_9__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_0__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_1__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_2__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_3__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_4__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_5__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_6__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_7__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_8__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_9__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_3_0__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_1__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_2__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_3__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_4__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_5__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_6__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_7__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_8__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_9__t2.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "neg0__t2.png",
+      "width": 16,
+      "height": 27
+    },
+    {
+      "name": "pct0__t2.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "strip/s0__t2.png",
+      "width": 54,
+      "height": 2904
+    },
+    {
+      "name": "sunrise__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "sunset__t2.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "ticks/t0__t2.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "bat0__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat1__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat2__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat3__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat4__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat5__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat6__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat7__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat8__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat9__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "cdisc0__t3.png",
+      "width": 88,
+      "height": 88
+    },
+    {
+      "name": "col0__t3.png",
+      "width": 10,
+      "height": 27
+    },
+    {
+      "name": "deg0__t3.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_0__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_1__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_2__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_3__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_4__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_5__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_6__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_7__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_8__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_9__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_0__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_1__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_2__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_3__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_4__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_5__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_6__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_7__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_8__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_9__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_3_0__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_1__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_2__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_3__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_4__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_5__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_6__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_7__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_8__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_9__t3.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "neg0__t3.png",
+      "width": 16,
+      "height": 27
+    },
+    {
+      "name": "pct0__t3.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "strip/s0__t3.png",
+      "width": 54,
+      "height": 2904
+    },
+    {
+      "name": "sunrise__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "sunset__t3.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "ticks/t0__t3.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "bat0__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat1__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat2__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat3__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat4__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat5__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat6__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat7__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat8__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "bat9__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "cdisc0__t4.png",
+      "width": 88,
+      "height": 88
+    },
+    {
+      "name": "col0__t4.png",
+      "width": 10,
+      "height": 27
+    },
+    {
+      "name": "deg0__t4.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_0__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_1__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_2__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_3__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_4__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_5__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_6__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_7__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_8__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_12_9__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_0__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_1__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_2__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_3__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_4__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_5__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_6__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_7__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_8__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_13_9__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "font_3_0__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_1__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_2__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_3__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_4__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_5__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_6__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_7__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_8__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "font_3_9__t4.png",
+      "width": 75,
+      "height": 94
+    },
+    {
+      "name": "neg0__t4.png",
+      "width": 16,
+      "height": 27
+    },
+    {
+      "name": "pct0__t4.png",
+      "width": 22,
+      "height": 27
+    },
+    {
+      "name": "strip/s0__t4.png",
+      "width": 54,
+      "height": 2904
+    },
+    {
+      "name": "sunrise__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "sunset__t4.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "ticks/t0__t4.png",
+      "width": 390,
+      "height": 450
+    }
+  ],
+  "savePath": null,
+  "userCode": "{\n  // the seconds scroll: one tall strip pushed down inside its box with pos_y, 20 times a second (a picture swap would reset the box, so the window size is sent every time)\n  const OFF = 50 - 22, WIN = { w: pxv(54), h: pxv(100) };\n  const tick = () => {\n    const d = new Date();\n    const t = d.getSeconds() + d.getMilliseconds() / 1000, s = Math.floor(t);\n    W.reel.setProperty(ui.prop.MORE, { w: WIN.w, h: WIN.h, pos_y: Math.round(OFF - (62 - s) * 44 + (t - s) * 44) });\n  };\n  // a colour-theme switch rebuilds the whole face and runs this block again: keep one timer and one screen-on/off delegate for the whole session\n  const G = globalThis;\n  try { if (G.__halfTm) clearInterval(G.__halfTm); } catch (e) {}\n  G.__halfTick = tick;\n  const start = () => { try { if (G.__halfTm) clearInterval(G.__halfTm); } catch (e) {} G.__halfTick(); G.__halfTm = setInterval(() => G.__halfTick(), 50); };\n  const stop = () => { try { if (G.__halfTm) clearInterval(G.__halfTm); } catch (e) {} G.__halfTm = 0; };\n  start();\n  if (!G.__halfDel) { G.__halfDel = 1; ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start }); }\n}",
+  "optimizePng": 16,
+  "userImports": "",
+  "themes": {
+    "accent": "#8ab4f8",
+    "list": [
+      {
+        "name": "Violet",
+        "color": "#b090ff"
+      },
+      {
+        "name": "Emerald",
+        "color": "#50dea6"
+      },
+      {
+        "name": "Amber",
+        "color": "#ffb858"
+      },
+      {
+        "name": "Rose",
+        "color": "#ff78a0"
+      }
+    ],
+    "recolored": [
+      "bat0.png",
+      "bat1.png",
+      "bat2.png",
+      "bat3.png",
+      "bat4.png",
+      "bat5.png",
+      "bat6.png",
+      "bat7.png",
+      "bat8.png",
+      "bat9.png",
+      "cdisc0.png",
+      "col0.png",
+      "deg0.png",
+      "font_12_0.png",
+      "font_12_1.png",
+      "font_12_2.png",
+      "font_12_3.png",
+      "font_12_4.png",
+      "font_12_5.png",
+      "font_12_6.png",
+      "font_12_7.png",
+      "font_12_8.png",
+      "font_12_9.png",
+      "font_13_0.png",
+      "font_13_1.png",
+      "font_13_2.png",
+      "font_13_3.png",
+      "font_13_4.png",
+      "font_13_5.png",
+      "font_13_6.png",
+      "font_13_7.png",
+      "font_13_8.png",
+      "font_13_9.png",
+      "font_3_0.png",
+      "font_3_1.png",
+      "font_3_2.png",
+      "font_3_3.png",
+      "font_3_4.png",
+      "font_3_5.png",
+      "font_3_6.png",
+      "font_3_7.png",
+      "font_3_8.png",
+      "font_3_9.png",
+      "neg0.png",
+      "pct0.png",
+      "strip/s0.png",
+      "sunrise.png",
+      "sunset.png",
+      "ticks/t0.png"
+    ],
+    "baseName": "Blue"
+  }
+}

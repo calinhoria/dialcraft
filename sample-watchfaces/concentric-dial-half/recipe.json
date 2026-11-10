@@ -1,0 +1,11 @@
+{
+ "name": "Concentric Dial Half",
+ "device": "bip-6",
+ "open": "project",
+ "optimizePng": 16,
+ "preview": "preview.png",
+ "previewAod": "preview-aod.png",
+ "out": "out/concentric-dial-half",
+ "userImports": "",
+ "description": "Half a concentric dial: the whole tick ring melts away to the left, with a seconds reel (one tall strip scrolled with pos_y, soft fade top and bottom) and the hour and minute side by side. Tap the seconds to switch between 5 colour themes: the hour, the big ticks and the seconds take the accent. Pictures are made by bake.py."
+}
