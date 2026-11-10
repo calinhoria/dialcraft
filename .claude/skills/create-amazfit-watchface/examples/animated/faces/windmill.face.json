@@ -1,0 +1,63 @@
+{
+ "name": "Cloud Windmill",
+ "slug": "windmill",
+ "language": "en-US",
+ "fonts": [
+  [
+   "fredoka-600.ttf",
+   "Fredoka"
+  ]
+ ],
+ "presets": [
+  "bg",
+  "clock",
+  "temp"
+ ],
+ "bg": "#000000",
+ "optimizePng": "lossless",
+ "styles": [
+  [
+   "Hour",
+   {
+    "size": 100,
+    "color": "#ffffff"
+   },
+   {
+    "zero": 1
+   }
+  ],
+  [
+   "Minute",
+   {
+    "size": 100,
+    "color": "#ffffff"
+   },
+   {
+    "zero": 1
+   }
+  ],
+  [
+   "Colon",
+   {
+    "size": 100,
+    "color": "#ffffff"
+   }
+  ],
+  [
+   "Temperature",
+   {
+    "font": "Fredoka",
+    "size": 42,
+    "weight": 700,
+    "color": "#ffffff",
+    "shadowColor": "#0b3a73",
+    "shadowX": 0,
+    "shadowY": 2,
+    "shadowBlur": 3
+   },
+   {
+    "alignH": "RIGHT"
+   }
+  ]
+ ]
+}
