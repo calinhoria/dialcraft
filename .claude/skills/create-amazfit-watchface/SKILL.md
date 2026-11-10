@@ -22,7 +22,7 @@ recipe, previews and output in a scratch folder (not in the repo).
    **Always ask a multiple-choice question before you start building** about which elements to include
    (multi-select: date / weekday, battery, temperature / weather, steps, heart rate, calories, distance, …),
    even when the request names a few; offer the sensible ones for the theme and let the user pick. Do not start
-   the recipe until it is answered.
+   the recipe until it is answered. For art assets also ask how they are made (house rule *Ask how the art assets are made*).
 2. **Write the recipe** — format in [references/recipe.md](references/recipe.md), a working one in
    [examples/neon-pulse.json](examples/neon-pulse.json). Order matters: **add every layer first (presets),
    then style and position them** — digit sets are shared between layers until one is restyled.
@@ -67,6 +67,29 @@ recipe, previews and output in a scratch folder (not in the repo).
 
 ## House rules (always follow)
 
+- **Ask how the art assets are made, before making any (mandatory).** Any face that needs pictures beyond plain native layers and
+  simple shapes (a scenery, painted digits, sprites, props, icons) starts with one multiple-choice question (`AskUserQuestion`):
+  1. **External (recommended for painted looks):** the user generates the assets in their own tool (Gemini / Nano Banana, Midjourney …)
+     from prompts you write; they send the image files back.
+  2. **The model:** you draw them yourself in code (canvas / PIL / the toolkit's drawing helpers) or through an image API when a working key
+     is supplied (check it with one request first: a key can be valid and still have a free-tier quota of 0 for image models).
+  3. **Mixed:** external for the hero art (scene, digits), the model for utility pieces (rain, glows, veils, covers, shapes).
+  Remember the answer for the whole session and for later changes to the same face. This is the one question the owner wants asked; the
+  elements quiz stays off (see the next steps). When the choice is **external**:
+  - **Do not draw missing assets yourself.** List what is missing, give a prompt for each, and build everything else meanwhile.
+  - Write prompts for **still images** and never use the words animation, frames, sequence or video: the image app then offers a paid
+    video instead of the picture. Ask for a **sheet of separate illustrations** (grid, same cell size, same layout for every digit).
+  - Ask for **one flat chroma-key background and no cell panels or borders**. Use magenta `#FF00FF`, or green `#00FF00` when the art
+    itself is pink / magenta (neon, cyberpunk). Say which colour in the prompt; tell the user to attach their reference image for style.
+  - Digits: one sheet 0-9 in a fixed grid (4 + 4 + 2). Glitch / state variants of digits must be **the same sheet edited**, with the same
+    layout and positions ("edit the attached image, keep everything the same"), one image per state; I register them by cell.
+  - Match colours to the scene (attach the scene as the colour reference) or the pieces look fake (water, glow).
+  - Ask for the **file paths**. A picture pasted into the chat is only usable once it is saved as a file (the image list shows
+    `images/N.png`); if it is not on disk, say so and ask the user to save or re-paste it on its own.
+  - Never ask for more than needed: count the images, reuse sheets (3 sprites in one sheet), and say what each will be used for.
+  - **Write the prompts for the owner to paste:** take them from [references/asset-prompts.md](references/asset-prompts.md) (scene, digits, digit
+    state variants, colon, props, effect sheets, billboards), fill in the face's own words, and give **each prompt in its own code block**, with
+    a line saying which image to attach and what the image is for.
 - **Group related components and name the group.** The clock (hour, colon, minute), the date row (weekday, day,
   month), a reading with its icon, the fish slots, a scene's decor … each become one named group
   (`Clock`, `Date`, `Steps`, …), not loose layers. In a recipe, add a `script` step after the layers exist:
