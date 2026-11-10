@@ -1,0 +1,17 @@
+{
+  "name": "Water Basin",
+  "slug": "basin",
+  "language": "en-US",
+  "fonts": [["fredoka-600.ttf", "Fredoka"]],
+  "presets": ["bg", "clock", "weekday", "day", "temp"],
+  "bg": "#000000",
+  "optimizePng": "lossless",
+  "styles": [
+    ["Hour", {"size": 100, "color": "#ffffff"}, {"zero": 1}],
+    ["Minute", {"size": 100, "color": "#ffffff"}, {"zero": 1}],
+    ["Colon", {"size": 100, "color": "#ffffff"}],
+    ["Weekday", {"font": "Fredoka", "size": 38, "color": "#f2fff8", "shadowColor": "#0b2e2a", "shadowX": 0, "shadowY": 2, "shadowBlur": 3}, {"labelForm": "short", "labelCase": "upper", "labelAlign": "right"}],
+    ["Day", {"font": "Fredoka", "size": 38, "color": "#f2fff8", "shadowColor": "#0b2e2a", "shadowX": 0, "shadowY": 2, "shadowBlur": 3}],
+    ["Temperature", {"font": "Fredoka", "size": 38, "weight": 700, "color": "#ffffff", "shadowColor": "#0b2e2a", "shadowX": 0, "shadowY": 2, "shadowBlur": 3}, {"alignH": "RIGHT"}]
+  ]
+}

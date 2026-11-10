@@ -1,0 +1,98 @@
+{
+ "name": "Neon Street",
+ "slug": "cyber",
+ "language": "en-US",
+ "fonts": [
+  [
+   "orbitron-700.ttf",
+   "Orbitron"
+  ]
+ ],
+ "presets": [
+  "bg",
+  "clock",
+  "weekday",
+  "day",
+  "temp"
+ ],
+ "bg": "#000000",
+ "optimizePng": "lossless",
+ "styles": [
+  [
+   "Hour",
+   {
+    "size": 100,
+    "color": "#ffffff"
+   },
+   {
+    "zero": 1
+   }
+  ],
+  [
+   "Minute",
+   {
+    "size": 100,
+    "color": "#ffffff"
+   },
+   {
+    "zero": 1
+   }
+  ],
+  [
+   "Colon",
+   {
+    "font": "Orbitron",
+    "size": 92,
+    "color": "#ff7ad9",
+    "shadowColor": "#ff2fb5",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 8
+   }
+  ],
+  [
+   "Weekday",
+   {
+    "font": "Orbitron",
+    "size": 36,
+    "color": "#7df9ff",
+    "shadowColor": "#00c8ff",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 6
+   },
+   {
+    "labelForm": "short",
+    "labelCase": "upper",
+    "labelAlign": "right"
+   }
+  ],
+  [
+   "Day",
+   {
+    "font": "Orbitron",
+    "size": 36,
+    "color": "#7df9ff",
+    "shadowColor": "#00c8ff",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 6
+   }
+  ],
+  [
+   "Temperature",
+   {
+    "font": "Orbitron",
+    "size": 36,
+    "color": "#ff8ad8",
+    "shadowColor": "#ff2fb5",
+    "shadowX": 0,
+    "shadowY": 0,
+    "shadowBlur": 6
+   },
+   {
+    "alignH": "RIGHT"
+   }
+  ]
+ ]
+}

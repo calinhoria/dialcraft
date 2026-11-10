@@ -1,0 +1,1044 @@
+{
+  "version": 1,
+  "name": "Water Basin",
+  "device": "bip-6",
+  "appId": 2130911,
+  "vender": "dialcraft",
+  "description": "A mossy stone basin under a leaf: painted water digits for the time, and a drop that lands on every minute change with a painted splash and spreading rings.",
+  "font": "Fredoka",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "fredoka-600.ttf",
+      "family": "Fredoka"
+    }
+  ],
+  "groups": {
+    "gmw9xy7h6qq": "Clock",
+    "gmw9xy89lnq": "Clock AOD",
+    "gDate": "Date",
+    "gWater": "Water"
+  },
+  "elements": [
+    {
+      "id": "elmw9xy7fg1zj",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmw9xy81z4yn",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene_basin.png"
+    },
+    {
+      "id": "elmw9xy7jc49q",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 232,
+      "y": 393,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 190,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -9,
+      "alignH": "RIGHT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Fredoka",
+        "size": 38,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2e2a",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "aidPad": 5
+    },
+    {
+      "id": "elmw9xy86w436",
+      "kind": "IMG",
+      "name": "Ripple 1",
+      "x": 166,
+      "y": 322,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWater",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/rip_006.png",
+      "images": [
+        "sp/rip_006.png",
+        "sp/rip_001.png",
+        "sp/rip_002.png",
+        "sp/rip_003.png",
+        "sp/rip_004.png",
+        "sp/rip_005.png",
+        "sp/rip_000.png"
+      ],
+      "handle": "ripA"
+    },
+    {
+      "id": "elmw9xy8784cn",
+      "kind": "IMG",
+      "name": "Ripple 2",
+      "x": 166,
+      "y": 322,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWater",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/rip_006.png",
+      "images": [
+        "sp/rip_006.png",
+        "sp/rip_001.png",
+        "sp/rip_002.png",
+        "sp/rip_003.png",
+        "sp/rip_004.png",
+        "sp/rip_005.png",
+        "sp/rip_000.png"
+      ],
+      "handle": "ripB"
+    },
+    {
+      "id": "elmw9xy87x2q4",
+      "kind": "IMG",
+      "name": "Splash",
+      "x": 191,
+      "y": 292,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWater",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/splash_015.png",
+      "images": [
+        "sp/splash_015.png",
+        "sp/splash_008.png",
+        "sp/splash_009.png",
+        "sp/splash_010.png",
+        "sp/splash_011.png",
+        "sp/splash_012.png",
+        "sp/splash_013.png",
+        "sp/splash_014.png",
+        "sp/splash_007.png"
+      ],
+      "handle": "splash"
+    },
+    {
+      "id": "elmw9xy88h3tj",
+      "kind": "IMG",
+      "name": "Drop",
+      "x": 241,
+      "y": 178,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWater",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/drop_019.png",
+      "images": [
+        "sp/drop_019.png",
+        "sp/drop_017.png",
+        "sp/drop_018.png",
+        "sp/drop_016.png",
+        "sp/drop_020.png"
+      ],
+      "handle": "drop"
+    },
+    {
+      "id": "elmw9xy7h6552",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 49,
+      "y": 118,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9xy7h6qq",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 3,
+      "images": [
+        "water/d_0.png",
+        "water/d_1.png",
+        "water/d_2.png",
+        "water/d_3.png",
+        "water/d_4.png",
+        "water/d_5.png",
+        "water/d_6.png",
+        "water/d_7.png",
+        "water/d_8.png",
+        "water/d_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "CENTER_H"
+    },
+    {
+      "id": "elmw9xy7h66ox",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 49,
+      "y": 14,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9xy7h6qq",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 3,
+      "images": [
+        "water/d_0.png",
+        "water/d_1.png",
+        "water/d_2.png",
+        "water/d_3.png",
+        "water/d_4.png",
+        "water/d_5.png",
+        "water/d_6.png",
+        "water/d_7.png",
+        "water/d_8.png",
+        "water/d_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null,
+      "alignH": "CENTER_H"
+    },
+    {
+      "id": "elmw9xy89l538",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 128,
+      "y": 257,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9xy89lnq",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Fredoka",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#7fd6d0",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#7fd6d0",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2e2a",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      }
+    },
+    {
+      "id": "elmw9xy89l5tr",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 122,
+      "y": 107,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmw9xy89lnq",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Fredoka",
+        "size": 96,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#7fd6d0",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#7fd6d0",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2e2a",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      }
+    },
+    {
+      "id": "elmw9xy7ho87",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 29,
+      "y": 385,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Fredoka",
+        "size": 38,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#f2fff8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2e2a",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "right",
+      "aidPad": 5
+    },
+    {
+      "id": "elmw9xy7io94",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 119,
+      "y": 393,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -10,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Fredoka",
+        "size": 38,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#f2fff8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#0b2e2a",
+        "shadowX": 0,
+        "shadowY": 2,
+        "shadowBlur": 3
+      },
+      "aidPad": 5
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "colon.png",
+      "width": 9,
+      "height": 20
+    },
+    {
+      "name": "week_w1.png",
+      "width": 100,
+      "height": 63
+    },
+    {
+      "name": "week_w2.png",
+      "width": 100,
+      "height": 63
+    },
+    {
+      "name": "week_w3.png",
+      "width": 100,
+      "height": 63
+    },
+    {
+      "name": "week_w4.png",
+      "width": 100,
+      "height": 63
+    },
+    {
+      "name": "week_w5.png",
+      "width": 100,
+      "height": 63
+    },
+    {
+      "name": "week_w6.png",
+      "width": 100,
+      "height": 63
+    },
+    {
+      "name": "week_w7.png",
+      "width": 100,
+      "height": 63
+    },
+    {
+      "name": "degree.png",
+      "width": 29,
+      "height": 45
+    },
+    {
+      "name": "negative.png",
+      "width": 30,
+      "height": 44
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 62,
+      "height": 81
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 25,
+      "height": 56
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 37,
+      "height": 44
+    },
+    {
+      "name": "scene_basin.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "water/d_0.png",
+      "width": 68,
+      "height": 104
+    },
+    {
+      "name": "water/d_1.png",
+      "width": 48,
+      "height": 104
+    },
+    {
+      "name": "water/d_2.png",
+      "width": 58,
+      "height": 104
+    },
+    {
+      "name": "water/d_3.png",
+      "width": 60,
+      "height": 104
+    },
+    {
+      "name": "water/d_4.png",
+      "width": 70,
+      "height": 104
+    },
+    {
+      "name": "water/d_5.png",
+      "width": 69,
+      "height": 104
+    },
+    {
+      "name": "water/d_6.png",
+      "width": 70,
+      "height": 104
+    },
+    {
+      "name": "water/d_7.png",
+      "width": 72,
+      "height": 104
+    },
+    {
+      "name": "water/d_8.png",
+      "width": 67,
+      "height": 104
+    },
+    {
+      "name": "water/d_9.png",
+      "width": 69,
+      "height": 104
+    },
+    {
+      "name": "sp/rip_000.png",
+      "width": 170,
+      "height": 66
+    },
+    {
+      "name": "sp/rip_001.png",
+      "width": 170,
+      "height": 66
+    },
+    {
+      "name": "sp/rip_002.png",
+      "width": 170,
+      "height": 66
+    },
+    {
+      "name": "sp/rip_003.png",
+      "width": 170,
+      "height": 66
+    },
+    {
+      "name": "sp/rip_004.png",
+      "width": 170,
+      "height": 66
+    },
+    {
+      "name": "sp/rip_005.png",
+      "width": 170,
+      "height": 66
+    },
+    {
+      "name": "sp/rip_006.png",
+      "width": 170,
+      "height": 66
+    },
+    {
+      "name": "sp/splash_007.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/splash_008.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/splash_009.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/splash_010.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/splash_011.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/splash_012.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/splash_013.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/splash_014.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/splash_015.png",
+      "width": 120,
+      "height": 72
+    },
+    {
+      "name": "sp/drop_016.png",
+      "width": 20,
+      "height": 34
+    },
+    {
+      "name": "sp/drop_017.png",
+      "width": 20,
+      "height": 34
+    },
+    {
+      "name": "sp/drop_018.png",
+      "width": 20,
+      "height": 34
+    },
+    {
+      "name": "sp/drop_019.png",
+      "width": 20,
+      "height": 34
+    },
+    {
+      "name": "sp/drop_020.png",
+      "width": 20,
+      "height": 34
+    },
+    {
+      "name": "colon_2.png",
+      "width": 23,
+      "height": 44
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 68,
+      "height": 86
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 68,
+      "height": 86
+    }
+  ],
+  "savePath": null,
+  "optimizePng": "lossless",
+  "userCode": "{\n  // Water Basin: every 6 s a drop forms on the leaf tip, falls, and splashes into the basin; two rings spread out and fade.\n  // The impact is on every multiple of 6 seconds, so a drop lands exactly as the minute changes.\n  const MS = 90;\n  const V = {\"ripA\":{\"__blank\":0,\"r1\":1,\"r2\":2,\"r3\":3,\"r4\":4,\"r5\":5,\"r0\":6},\"ripB\":{\"__blank\":0,\"r1\":1,\"r2\":2,\"r3\":3,\"r4\":4,\"r5\":5,\"r0\":6},\"splash\":{\"__blank\":0,\"s1\":1,\"s2\":2,\"s3\":3,\"s4\":4,\"s5\":5,\"s6\":6,\"s7\":7,\"s0\":8},\"drop\":{\"f\":0,\"b2\":1,\"b3\":2,\"b1\":3,\"__blank\":4}};\n  const P = 6, TI = 2.6;               // cycle length, the moment of impact in the cycle\n  const FALL0 = 1.8, TIP_Y = 96, WATER_Y = 338, DX = 241, RX = 166, RY = 322;\n  const tick = () => {\n    const d = new Date(), t = d.getSeconds() + d.getMilliseconds() / 1000;\n    const c = (t + TI) % P;            // c in [0,P): the drop is at the tip from c = 0 and lands at c = TI, i.e. when t is a multiple of 6\n    // the drop\n    if (c < FALL0) slot('drop')(DX, TIP_Y, V.drop[c < 0.6 ? 'b1' : c < 1.2 ? 'b2' : 'b3']);\n    else if (c < TI) { const q = (c - FALL0) / (TI - FALL0); slot('drop')(DX, Math.round(TIP_Y + 8 + (WATER_Y - TIP_Y - 8) * q * q), V.drop.f); }\n    else slot('drop').hide();\n    // the splash and the rings after the impact (age = seconds since impact)\n    const age = c >= TI ? c - TI : -1;\n    if (age >= 0 && age < 0.88) slot('splash')(191, 292, V.splash['s' + Math.min(7, Math.floor(age / 0.11))]); else slot('splash').hide();\n    const ring = (h, a) => { if (a >= 0 && a < 2.4) slot(h)(RX, RY, V[h]['r' + Math.min(5, Math.floor(a / 0.4))]); else slot(h).hide(); };\n    ring('ripA', age);\n    ring('ripB', age >= 0 ? age - 0.7 : -1);\n  };\n    // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { try { tick(); } catch (e) { /* a bad frame must not stop the loop */ } };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n\n}\n",
+  "userImports": ""
+}
