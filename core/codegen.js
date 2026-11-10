@@ -897,6 +897,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
         const list = /const (variants_\d+) = /.exec(chunk.join('\n'));
         if (named) chunk.push(`  W.${el.handle} = ${named[1]}`);
         else if (/(^|\n)\s*ui\.createWidget\(/.test(last)) chunk[chunk.length - 1] = last.replace(/(^|\n)(\s*)ui\.createWidget\(/, `$1$2W.${el.handle} = ui.createWidget(`);
+        else if (/(^|\n)\s*((?:sun|when)_\d+) = ui\.createWidget\(/.test(last)) chunk.push(`  W.${el.handle} = ${/(?:^|\n)\s*((?:sun|when)_\d+) = ui\.createWidget\(/.exec(last)[1]}`);   // a layer the sun / hour logic already holds in a variable
         else ctx.warnings.push(`${el.name}: code handle "${el.handle}" skipped — this layer's widget cannot be named`);
         if (list) chunk.push(`  F.${el.handle} = ${list[1]}`);
       }

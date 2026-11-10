@@ -1909,7 +1909,11 @@ function drawElement(c, e) {
         // widget box — a 400-px background in a 390-px box loses its right edge
         // instead of being squeezed (which would shift everything painted in it)
         const im = imgFor(pictureOf(e));
-        if (im) {
+        if (im && (+e.posX || +e.posY)) {
+          // pos_x / pos_y push the picture inside the box (overflow hidden): a tall strip scrolled by code
+          c.save(); c.beginPath(); c.rect(b.x, b.y, b.w, b.h); c.clip();
+          c.drawImage(im, b.x + (+e.posX || 0), b.y + (+e.posY || 0)); c.restore();
+        } else if (im) {
           const sw = Math.min(im.width, b.w), sh = Math.min(im.height, b.h);
           c.drawImage(im, 0, 0, sw, sh, b.x, b.y, sw, sh);
         } else drawMissing(c, b.x, b.y, b.w, b.h);
@@ -7091,6 +7095,10 @@ function cv_scale() {
 let drag = null;
 $('cv').addEventListener('mousedown', (ev) => {
   if (!project) return;
+  if (codeRun && codeRun.buttons && codeRun.buttons.length) {
+    const q = eventDevPos(ev), b = codeRun.buttons.find((bt) => q.x >= bt.x && q.x <= bt.x + bt.w && q.y >= bt.y && q.y <= bt.y + bt.h);
+    if (b) { b.fn(); ev.preventDefault(); return; }
+  }
   const handle = ev.altKey ? null : handleAt(ev);
   const p = eventDevPos(ev);
   if (handle === 'space' && selEl()) {
@@ -7392,7 +7400,7 @@ function syncThemeSel() {
   sel.hidden = !(t && t.list && t.list.length);
   if (sel.hidden) { themeIdx = 0; return; }
   sel.innerHTML = '';
-  ['Original', ...t.list.map((x) => x.name)].forEach((name, i) => {
+  [t.baseName || 'Original', ...t.list.map((x) => x.name)].forEach((name, i) => {
     const o = document.createElement('option'); o.value = String(i); o.textContent = `Theme: ${name}`; sel.appendChild(o);
   });
   themeIdx = Math.min(themeIdx, t.list.length);
@@ -7512,7 +7520,7 @@ for (const id of ['codeImports', 'codeBody']) $(id).addEventListener('keydown', 
 // It is the user's own code running in the editor, so it only starts on a click; Stop puts every layer back as it was, and
 // nothing that runs here is ever saved or exported.
 let codeRun = null;          // { touched: Map(element → {key: original}), picks: Map(id → picture), timers: Set, raf }
-const CODE_PROPS = { X: 'x', Y: 'y', W: 'w', H: 'h', ALPHA: 'alpha' };
+const CODE_PROPS = { X: 'x', Y: 'y', W: 'w', H: 'h', ALPHA: 'alpha', ANGLE: 'angle', POS_Y: 'posY' };
 function codeRunPick(e) { return codeRun && codeRun.picks.has(e.id) ? codeRun.picks.get(e.id) : undefined; }
 function codeRunTouch(e, key) {
   let t = codeRun.touched.get(e);
@@ -7579,6 +7587,8 @@ function codeRunImports(src) {
     if (m) return `const { ${m[1].split(',').map((s) => s.trim()).filter(Boolean).map((s) => s.replace(/\s+as\s+/, ': ')).join(', ')} } = __mod(${JSON.stringify(m[2])});`;
     m = /^\s*import\s+([\w$]+)\s+from\s*['"]([^'"]+)['"]\s*;?\s*$/.exec(line);
     if (m) return `const ${m[1]} = __mod(${JSON.stringify(m[2])});`;
+    m = /^\s*import\s*\*\s*as\s+([\w$]+)\s+from\s*['"]([^'"]+)['"]\s*;?\s*$/.exec(line);   // import * as ns from 'mod'
+    if (m) return `const ${m[1]} = __mod(${JSON.stringify(m[2])});`;
     return line;
   }).join('\n');
 }
@@ -7586,7 +7596,7 @@ function startCodeRun() {
   if (!project || codeRun) return;
   const code = project.userCode || '';
   if (!code.trim()) { status('There is no code to run: add some under Watchface ▸ Code of your own…', true); return; }
-  codeRun = { touched: new Map(), picks: new Map(), timers: new Set(), made: new Set(), raf: 0 };
+  codeRun = { touched: new Map(), picks: new Map(), timers: new Set(), made: new Set(), buttons: [], raf: 0 };
   const run = codeRun;
   const report = (where, e) => { status(`Code (${where}): ${e && e.message ? e.message : e}`, true); try { console.error('[code]', where, e); } catch (x) { /* no console */ } };
   const guard = (f, where) => (...a) => { if (codeRun !== run) return; try { return f(...a); } catch (e) { report(where, e); } };
@@ -7605,6 +7615,8 @@ function startCodeRun() {
     event: names({}), data_type: names({}), text_style: names({}), system_status: names({}), edit_type: names({}),
     createWidget(type, opts) {
       if (type === 'WIDGET_DELEGATE' && opts) { setTimeout(guard(() => opts.resume_call && opts.resume_call(), 'resume_call'), 0); return codeRunStub(null); }
+      // a tap zone / button: remember where it is, a click on the preview runs its click_func
+      if (type === 'BUTTON' && opts && opts.click_func) { run.buttons.push({ x: +opts.x || 0, y: +opts.y || 0, w: +opts.w || 0, h: +opts.h || 0, fn: guard(opts.click_func, 'click_func') }); return codeRunStub(null); }
       // a picture the code makes itself (a game's tiles and sprites) is drawn as a temporary layer on top, gone again on Stop
       if (type === 'IMG' && opts && opts.src) {
         const e = newElement('IMG', { name: 'Code picture', x: Math.round(+opts.x || 0), y: Math.round(+opts.y || 0), src: String(opts.src).replace(/^images\//, ''), codeMade: true });
