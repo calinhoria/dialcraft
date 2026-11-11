@@ -98,12 +98,16 @@ const KINDS = [
     defaults: { w: 215, h: 69, colorDeep: '#708eae', colorLight: '#212c35', colorRem: '#8cb0d8', colorWake: '#44556b' },
   },
   {
+    id: 'PAI_CHART', label: 'PAI chart (7 days)', group: 'Data', docs: 'GROUP', box: 'wh',
+    defaults: { w: 215, h: 80, color: '#84a6cd', colorToday: '#ff8a3d', labels: true, labelColor: '#c8d2e0', labelSize: 18 },
+  },
+  {
     id: 'POLYLINE', label: 'Line chart (heart / sleep)', group: 'Data', docs: 'GRADKIENT_POLYLINE', box: 'wh',
     defaults: { w: 200, h: 80, dataType: 'HEART' },
   },
   {
     id: 'EDIT_SLOT', label: 'Complication slot', group: 'Data', docs: 'WATCHFACE_EDIT_GROUP', box: 'wh',
-    defaults: { editId: 1, w: 54, h: 29, defaultType: 'STEP', optionalTypes: [], selectImage: '', unSelectImage: '', tipsBg: '', tipsX: 0, tipsY: 0, tipsWidth: 0, tipsMargin: 10 },
+    defaults: { editId: 1, w: 54, h: 29, defaultType: 'STEP', optionalTypes: [], selectImage: '', unSelectImage: '', tipsBg: '', tipsX: 0, tipsY: 0, tipsWidth: 0, tipsMargin: 10, tipsFontSize: 32, tipsAlign: 'LEFT' },
   },
   {
     id: 'TAP', label: 'Tap zone', group: 'Data', docs: 'BUTTON', box: 'wh',

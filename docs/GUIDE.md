@@ -164,6 +164,7 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | Text | `TEXT` | multiline, size, alignment, live font, **Overflow** (`text_style`: none / wrap / ellipsis), solid/gradient/outline fill, bold + italic |
 | Line chart | `GRADKIENT_POLYLINE` | the firmware-drawn heart-rate or sleep line chart (the widget is spelled that way in the docs) |
 | Sleep chart | `GROUP` | last night's stages, filled by a small reader in the generated code |
+| PAI chart | `GROUP` | the last 7 days of PAI as bars (oldest left, today right) with weekday initials, read with `Pai.getLastWeek()` (needs the `data:user.hd.pai` permission, which the export adds; checked on a Bip 6); shows the error in red on the watch if the sensor fails |
 | Progress bar | `FILL_RECT` | a linear bar that follows a reading (`FILL_RECT` + a sensor updater) |
 | Complication slot | `WATCHFACE_EDIT_GROUP` | an editable slot: the wearer picks what it shows; see *Complication slots* |
 | Tap zone / button | `BUTTON` | an invisible tap zone, or a visible button with a label and colours; see *Variants and tap zones* |

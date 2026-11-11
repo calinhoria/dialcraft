@@ -207,6 +207,42 @@ function emitElement(el, ctx, out) {
       out.push(`  } catch (e) {}`);
       break;
     }
+    case 'PAI_CHART': {
+      // A GROUP the face fills with one FILL_RECT per day: the last 7 PAI values, oldest left, today right.
+      // getLastWeek() is index 0 = today; a missing API leaves the group empty rather than stopping the face.
+      ctx.sensors.add('Pai');
+      const k = ctx.paiCharts = (ctx.paiCharts || 0) + 1;
+      const v = `paiChart_${k}`;
+      const hex = (c) => `0x${hexToNum(c).toString(16).padStart(6, '0')}`;
+      const W = num(el.w) || 215, Hh = num(el.h) || 80;
+      const ls = Math.max(8, num(el.labelSize) || 18);
+      const lh = el.labels === false ? 0 : ls + 4;
+      kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y)); kv(L, 'w', p(W)); kv(L, 'h', p(Hh));
+      kv(L, 'show_level', showLevel(el.show));
+      out.push(`  const ${v} = ui.createWidget(ui.widget.GROUP, {\n${L.join('\n')}\n  })`);
+      out.push(`  try {`);
+      out.push(`    const pai = new Pai()`);
+      out.push(`    let vals = []`);
+      out.push(`    try { vals = pai.getLastWeek ? pai.getLastWeek() : [] } catch (e1) { vals = [] }`);
+      out.push(`    if (!vals || !vals.length) vals = [pai.getToday()]`);
+      out.push(`    vals = Array.prototype.slice.call(vals || []).slice(0, 7)`);
+      out.push(`    while (vals.length < 7) vals.push(0)`);
+      out.push(`    const max = Math.max(10, ...vals)`);
+      out.push(`    const slot = px(${W}) / 7, bw = Math.max(2, slot * 0.6), ch = px(${Hh - lh})`);
+      out.push(`    const today = new Date().getDay()`);
+      out.push(`    for (let i = 0; i < 7; i++) {`);
+      out.push(`      const val = Math.max(0, +vals[6 - i] || 0)`);
+      out.push(`      const bh = Math.max(2, Math.round(ch * val / max))`);
+      out.push(`      ${v}.createWidget(ui.widget.FILL_RECT, { x: Math.round(i * slot + (slot - bw) / 2), y: ch - bh, w: Math.round(bw), h: bh, radius: Math.min(6, Math.round(bw / 2)), color: i === 6 ? ${hex(el.colorToday)} : ${hex(el.color)} })`);
+      if (lh) {
+        out.push(`      try { ${v}.createWidget(ui.widget.TEXT, { x: Math.round(i * slot), y: ch + px(2), w: Math.round(slot), h: px(${lh}), text: 'SMTWTFS'.charAt((today - (6 - i) + 14) % 7), text_size: px(${ls}), color: ${hex(el.labelColor)}, align_h: ui.align.CENTER_H }) } catch (e3) {}`);
+      }
+      out.push(`    }`);
+      out.push(`  } catch (e) {`);
+      out.push(`    try { ${v}.createWidget(ui.widget.TEXT, { x: 0, y: 0, w: px(${W}), h: px(${Hh}), text: 'PAI: ' + (e && e.message ? e.message : e), text_size: px(16), color: 0xff5555, align_h: ui.align.CENTER_H, text_style: ui.text_style.WRAP }) } catch (e2) {}`);
+      out.push(`  }`);
+      break;
+    }
     case 'BAR': {
       // The Maker's "linear scale": a FILL_RECT the code resizes with the reading (there is no
       // framework binding for it, so a sensor updater sets its length, like the arcs' LEVEL).
@@ -749,6 +785,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   for (const el of els) {
     if (el.kind === 'BAR') { const dt = dataType(el.dataType); if (dt && dt.reader) ctx.sensors.add(dt.reader.cls); }
     else if (el.kind === 'SLEEP_CHART') ctx.sensors.add('Sleep');
+    else if (el.kind === 'PAI_CHART') ctx.sensors.add('Pai');
   }
   for (const el of els) {
     if (el.kind !== 'ARC_PROGRESS') continue;
@@ -926,7 +963,7 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     kv(Ls, 'default_type', ty(slot.defaultType || (opts[0] && opts[0].type) || 'STEP'));
     kv(Ls, 'optional_types', `[${opts.map((o) => `{ type: ${ty(o.type)}${o.preview ? `, preview: ${A(o.preview)}` : ''} }`).join(', ')}]`);
     kv(Ls, 'count', opts.length);
-    kv(Ls, 'select_list', '{ title_font_size: px(34), title_align_h: H.align.CENTER_H, list_item_vspace: px(8), list_tips_text_font_size: px(32), list_tips_text_align_h: H.align.LEFT }');
+    kv(Ls, 'select_list', '{ title_font_size: px(34), title_align_h: H.align.CENTER_H, list_item_vspace: px(8), list_tips_text_font_size: px(' + (num(slot.tipsFontSize) || 32) + '), list_tips_text_align_h: H.align.' + (['LEFT', 'CENTER_H', 'RIGHT'].includes(slot.tipsAlign) ? slot.tipsAlign : 'LEFT') + ' }');
     if (slot.tipsBg) {
       kv(Ls, 'tips_BG', A(slot.tipsBg)); kv(Ls, 'tips_x', p(slot.tipsX)); kv(Ls, 'tips_y', p(slot.tipsY));
       kv(Ls, 'tips_width', p(slot.tipsWidth || slot.w)); kv(Ls, 'tips_margin', p(slot.tipsMargin || 10));
@@ -1082,7 +1119,8 @@ function generateAppJson(project, device, opts = {}) {
       vender: opts.vender || 'dialcraft',
       description: (project.description || `${project.name || 'watchface'} watchface`).slice(0, 120),
     },
-    permissions: [],
+    // reading the PAI sensor needs its permission (the PAI chart failed with "permission denied" without it)
+    permissions: (project.elements || []).some((e) => e.visible !== false && (e.kind === 'PAI_CHART' || /^PAI_/.test(e.dataType || ''))) ? ['data:user.hd.pai'] : [],
     runtime: { apiVersion: apiVersionFor(device.api), type: 0 },
     targets: {
       [device.target]: {

@@ -85,7 +85,7 @@ const CENTER_KINDS = new Set(['CIRCLE', 'ARC_PROGRESS', 'TIME_POINTER', 'DATE_PO
 // kinds whose box is driven by the w/h fields (resizable from the corners)
 // (not IMG_POINTER: the watch draws the pointer at its image size, pivoting on
 // its own x/y — see pointerBox)
-const WH_KINDS = new Set(['EDIT_SLOT', 'SLEEP_CHART', 'POLYLINE', 'TAP', 'IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_ANIM',
+const WH_KINDS = new Set(['EDIT_SLOT', 'SLEEP_CHART', 'PAI_CHART', 'POLYLINE', 'TAP', 'IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_ANIM',
   'IMG_STATUS', 'IMG_CLICK', 'TEXT', 'FILL_RECT', 'STROKE_RECT', 'ARC']);
 // kinds that draw digit images and therefore take an image array + metrics
 const SET_KINDS = new Set(['IMG_TIME', 'IMG_WEEK', 'IMG_DATE', 'TEXT_IMG', 'IMG_LEVEL', 'IMG_PROGRESS']);
@@ -1876,6 +1876,28 @@ function drawElement(c, e) {
         c.beginPath();
         if (c.roundRect) c.roundRect(x, y, w, rh, 5); else c.rect(x, y, w, rh);
         c.fill();
+      }
+      break;
+    }
+    case 'PAI_CHART': {
+      // sample week: 7 bars, oldest left, today (right) in its own colour
+      const b = elBox(e);
+      const vals = [42, 65, 20, 88, 51, 30, 74];
+      const lh = e.labels === false ? 0 : (+e.labelSize || 18) + 4;
+      const ch = Math.max(2, b.h - lh), slot = b.w / 7, bw = Math.max(2, slot * 0.6), max = Math.max(10, ...vals);
+      const dayIdx = REF_DATE.weekday % 7;   // 0 = Sunday, like Date.getDay()
+      for (let i = 0; i < 7; i++) {
+        const bh = Math.max(2, Math.round(ch * vals[i] / max));
+        c.fillStyle = hexOrWhite(i === 6 ? e.colorToday : e.color);
+        c.beginPath();
+        const x = b.x + i * slot + (slot - bw) / 2, y = b.y + ch - bh, r = Math.min(6, bw / 2);
+        if (c.roundRect) c.roundRect(x, y, bw, bh, r); else c.rect(x, y, bw, bh);
+        c.fill();
+        if (lh) {
+          c.fillStyle = hexOrWhite(e.labelColor); c.font = `${+e.labelSize || 18}px sans-serif`;
+          c.textAlign = 'center'; c.textBaseline = 'top';
+          c.fillText('SMTWTFS'.charAt((dayIdx - (6 - i) + 14) % 7), b.x + (i + 0.5) * slot, b.y + ch + 2);
+        }
       }
       break;
     }
@@ -4988,6 +5010,8 @@ function propsKind(e) {
       img('Tips background', 'tipsBg');
       add('Tips X', ctlNum(e, 'tipsX')); add('Tips Y', ctlNum(e, 'tipsY'));
       add('Tips width', ctlNum(e, 'tipsWidth', { min: 0 })); add('Tips margin', ctlNum(e, 'tipsMargin', { min: 0 }));
+      add('Tips text size', ctlNum(e, 'tipsFontSize', { min: 8, max: 80 }));
+      add('Tips text align', ctlSelect(e.tipsAlign || 'LEFT', [{ value: 'LEFT', label: 'Left' }, { value: 'CENTER_H', label: 'Centre' }, { value: 'RIGHT', label: 'Right' }], (v) => { e.tipsAlign = v; }));
       break;
     }
     case 'POLYLINE':
@@ -4999,6 +5023,12 @@ function propsKind(e) {
       add('Deep', ctlColor(e, 'colorDeep')); add('Light', ctlColor(e, 'colorLight'));
       add('REM', ctlColor(e, 'colorRem')); add('Awake', ctlColor(e, 'colorWake'));
       frag.appendChild(propNote('The watch fills this box with the night\'s sleep stages (awake on the top row, deep sleep at the bottom). The preview shows a sample night.'));
+      break;
+    case 'PAI_CHART':
+      add('Bars', ctlColor(e, 'color')); add('Today', ctlColor(e, 'colorToday'));
+      add('Weekday labels', ctlCheck(e, 'labels', 'Show'));
+      add('Label colour', ctlColor(e, 'labelColor')); add('Label size', ctlNum(e, 'labelSize', { min: 8, max: 60 }));
+      frag.appendChild(propNote('The watch draws the last 7 days of PAI (oldest left, today right) from the PAI sensor. Labels are weekday initials. The preview shows sample values.'));
       break;
     case 'TAP': {
       add('Action', ctlSelect(e.action || 'none', [
@@ -6245,6 +6275,7 @@ const PRESETS = [
   { id: 'arcprogress', label: 'Step progress arc', sub: 'ARC_PROGRESS' },
   { id: 'bar', label: 'Progress bar', sub: 'linear, follows a reading' },
   { id: 'sleepchart', label: 'Sleep chart', sub: 'last night, by stage' },
+  { id: 'paichart', label: 'PAI chart', sub: 'last 7 days, daily bars' },
   { id: 'polyline', label: 'Line chart', sub: 'heart rate / sleep, gradient' },
   { id: 'editslot', label: 'Complication slot', sub: 'the wearer picks what it shows' },
   { id: 'editbackdrop', label: 'Watch placeholder (Edit screen)', sub: 'the face, dimmed, behind the complications · apply again to refresh' },
@@ -6415,6 +6446,12 @@ async function applyPreset(id) {
     case 'sleepchart': {
       pushHistory();
       const e = newElement('SLEEP_CHART', { show: 'normal', x: cx - 108, y: cy + 60, w: 215, h: 69, name: 'Sleep chart' });
+      project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+      break;
+    }
+    case 'paichart': {
+      pushHistory();
+      const e = newElement('PAI_CHART', { show: 'normal', x: cx - 108, y: cy + 60, w: 215, h: 80, name: 'PAI chart' });
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
       break;
     }

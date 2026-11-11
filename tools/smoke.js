@@ -2496,6 +2496,44 @@ app.whenReady().then(async () => {
         && /ui\.widget\.GROUP/.test(jsM) && /new Sleep\(\)/.test(jsM) && /catch \(e\) \{\}/.test(jsM) && synM,
         'FILL_RECT + MORE updater, TEXT_FONT type, GROUP + Sleep in try/catch');
     }
+    // PAI chart: exports (guarded, Pai import, permission in app.json) and a Dialcraft face's chart imports back
+    {
+      const gen = require(path.join(__dirname, '..', 'core', 'codegen'));
+      const dev = require(path.join(__dirname, '..', 'core', 'devices')).deviceByKey(TARGET);
+      const paiEl = { id: 'pai1', kind: 'PAI_CHART', name: 'PAI chart', show: 'normal', x: 20, y: 200, w: 215, h: 80,
+        color: '#84a6cd', colorToday: '#ff8a3d', labels: true, labelColor: '#c8d2e0', labelSize: 18 };
+      const paiProj = { name: 'pai', elements: [paiEl] };
+      const jsP = gen.generateWatchface(paiProj, dev).code;
+      let synP = true;
+      try { new Function(jsP.replace(/^import .*$/gm, '').replace(/WatchFace\(\{/, 'const _w = ({')); } catch (e) { synP = false; }
+      const appP = JSON.parse(gen.generateAppJson(paiProj, dev));
+      const appNo = JSON.parse(gen.generateAppJson({ name: 'x', elements: [] }, dev));
+      check('PAI chart exports: Pai import, getLastWeek with fallback, error shown on screen, permission in app.json, valid syntax',
+        /import \{[^}]*\bPai\b[^}]*\} from '@zos\/sensor'/.test(jsP) && /getLastWeek/.test(jsP) && /vals = \[pai\.getToday\(\)\]/.test(jsP)
+        && /text: 'PAI: '/.test(jsP) && appP.permissions.includes('data:user.hd.pai') && !appNo.permissions.length && synP,
+        `permissions ${JSON.stringify(appP.permissions)} · plain face ${JSON.stringify(appNo.permissions)}`);
+      const dirP = path.join(SCRATCH, 'paichart');
+      fs.cpSync(v2Dir, dirP, { recursive: true });
+      fs.writeFileSync(path.join(dirP, 'watchface', 'index.js'), `
+        DeviceRuntimeCore.WatchFace({
+          build() {
+            const paiChart_1 = hmUI.createWidget(hmUI.widget.GROUP, { x: 20, y: 200, w: 215, h: 80, show_level: hmUI.show_level.ONLY_NORMAL });
+            try {
+              paiChart_1.createWidget(hmUI.widget.FILL_RECT, { x: 1, y: 1, w: 5, h: 5, radius: 3, color: i === 6 ? 0xff8a3d : 0x84a6cd });
+              try { paiChart_1.createWidget(hmUI.widget.TEXT, { x: 0, y: 0, w: 30, h: 22, text: 'SMTWTFS'.charAt(0), text_size: px(20), color: 0xc8d2e0, align_h: hmUI.align.CENTER_H }) } catch (e3) {}
+            } catch (e) {}
+          },
+        });
+      `);
+      const { importFaceDir } = require(path.join(__dirname, '..', 'core', 'importface'));
+      const impP = importFaceDir(dirP);
+      const elsP = impP.project ? impP.project.elements : [];
+      const pc = elsP.find((e) => e.kind === 'PAI_CHART');
+      check('a Dialcraft PAI chart imports back as a PAI chart (not a sleep chart), with its colours and labels',
+        !impP.error && !!pc && !elsP.some((e) => e.kind === 'SLEEP_CHART') && pc.w === 215 && pc.h === 80
+        && pc.color === '#84a6cd' && pc.colorToday === '#ff8a3d' && pc.labels === true && pc.labelSize === 20 && pc.labelColor === '#c8d2e0',
+        impP.error || (pc ? `${pc.color} / ${pc.colorToday} · labels ${pc.labels} ${pc.labelSize}` : 'no PAI chart; kinds ' + elsP.map((e) => e.kind).join(',')));
+    }
     // digits the face sets from the clock every minute (IMG + setProperty MORE) are the Digital time layers
     {
       const dirC = path.join(SCRATCH, 'clockdigits');

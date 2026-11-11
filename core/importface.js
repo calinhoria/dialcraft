@@ -761,6 +761,7 @@ function importFaceDir(dir) {
     }
   }
   if (ctx.editSlots) notes.push(`${ctx.editSlots} editable complication slot${ctx.editSlots === 1 ? '' : 's'} imported (Complication layers) with ${ctx.editChildren || 0} layer${ctx.editChildren === 1 ? '' : 's'} that appear for one choice only — the wearer picks the type on the watch; preview each choice with the Complication selector`);
+  if (ctx.paiCharts) notes.push(`${ctx.paiCharts} PAI chart${ctx.paiCharts === 1 ? '' : 's'} imported as PAI chart layers (the watch draws the last 7 days of PAI)`);
   if (ctx.sleepCharts) notes.push(`${ctx.sleepCharts} sleep chart${ctx.sleepCharts === 1 ? '' : 's'} imported as Sleep chart layers (the watch fills them from last night's sleep stages)`);
   if (ctx.bars) notes.push(`${ctx.bars} linear scale${ctx.bars === 1 ? '' : 's'} came in as Progress bar layers (the Maker keeps their settings in a comment; the face's code resizes them at runtime)`);
   if (ctx.emptyWidgets) notes.push(`${ctx.emptyWidgets} empty widget${ctx.emptyWidgets === 1 ? '' : 's'} left out (no parameters — placeholders the face's code fills in at runtime, such as the Maker's linear scale bars)`);
@@ -953,6 +954,23 @@ function mapWidget(type, p, ctx, skipped, sensor) {
       return el('POLYLINE', { name: dt === 'SLEEP' ? 'Sleep line chart' : 'Heart-rate chart', ...box, dataType: dt });
     }
     case 'GROUP': {
+      // Dialcraft's own PAI chart: a group named paiChart_N that the code fills with 7 bars
+      const seq = ctx.groupSeq = (ctx.groupSeq || 0) + 1;
+      const names = [...(ctx.code || '').matchAll(/(?:(\w+)\s*=\s*)?(?:hmUI|ui)\.createWidget\(\s*(?:hmUI|ui)\.widget\.GROUP\b/g)].map((g) => g[1] || '');
+      const gname = names[seq - 1] || '';
+      const hasSleep = /new Sleep\s*\(/.test(ctx.code || '');
+      if (/^paiChart/.test(gname) || (!gname && !hasSleep && /getLastWeek/.test(ctx.code || ''))) {
+        const code = ctx.code || '';
+        const col = /color:\s*i\s*===\s*6\s*\?\s*(0x[0-9a-f]+)\s*:\s*(0x[0-9a-f]+)/i.exec(code);
+        const hx = (s) => '#' + (Number(s) & 0xffffff).toString(16).padStart(6, '0');
+        const lab = /text:\s*'SMTWTFS'[\s\S]{0,120}?text_size:\s*px\((\d+)\)\s*,\s*color:\s*(0x[0-9a-f]+)/i.exec(code);
+        ctx.paiCharts = (ctx.paiCharts || 0) + 1;
+        return el('PAI_CHART', clean({
+          name: 'PAI chart', ...box,
+          color: col ? hx(col[2]) : undefined, colorToday: col ? hx(col[1]) : undefined,
+          labels: !!lab, labelSize: lab ? +lab[1] : undefined, labelColor: lab ? hx(lab[2]) : undefined,
+        }));
+      }
       // the Maker's sleep chart: an empty group the face's code fills with a bar per sleep stage
       const m = /sleepColors\s*=\s*\[([^\]]*)\]/.exec(ctx.code || '');
       const cols = m ? m[1].split(',').map((t) => Number(t.trim())).filter(Number.isFinite).map((n) => '#' + (n & 0xffffff).toString(16).padStart(6, '0')) : [];
