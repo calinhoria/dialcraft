@@ -74,6 +74,7 @@ function storeForm(project, device) {
   for (const t of texts) {
     L.push(`=== ${t.label} (${t.code}) ===`);
     L.push(`Watch Face Name: ${t.name}`);
+    L.push(`Watch Face Preview: preview-${device.w}x${device.h}${t.code === defaultCode(project) ? '' : '-' + t.code}.png`);
     L.push(`Watch Face Description (${t.description.length}/${DESC_MAX}):`);
     L.push(t.description, '');
   }

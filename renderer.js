@@ -8519,6 +8519,14 @@ $('btnBuild').onclick = async () => {
   openLogModal('Zeus build', '', 'running the Zeus CLI…');
   appendLog('Exporting the project first…');
   const payload = { project: projectForCode(), images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64(), storePreviewBase64: composePreviewB64(true), storeShotBase64: composeStoreShotB64() };
+  // one store preview per language: the weekday / month names and translated texts in that language, at the reference time
+  if (extraLanguages().length) {
+    payload.langPreviews = {};
+    const keepLang = previewLang;
+    try {
+      for (const c of extraLanguages()) { previewLang = c; payload.langPreviews[c] = composePreviewB64(true); }
+    } finally { previewLang = keepLang; }
+  }
   // an animated face (code, or frame animations) also gets a GIF of it moving, for the store folder
   if ((project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false)) {
     try {

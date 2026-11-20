@@ -888,6 +888,13 @@ function writeStoreFolder(outDir, payload, device) {
     fs.writeFileSync(path.join(dir, name), png);
     written.push(name + (png.length > 1024 * 1024 ? ' (over the 1 MB limit)' : ''));
   }
+  for (const [code, b64] of Object.entries(payload.langPreviews || {})) {   // the same picture in each other language
+    if (!/^[A-Za-z]{2,3}-[A-Za-z0-9]{2,4}$/.test(code)) continue;
+    const png = Buffer.from(b64, 'base64');
+    const name = `preview-${device.w}x${device.h}-${code}.png`;
+    fs.writeFileSync(path.join(dir, name), png);
+    written.push(name + (png.length > 1024 * 1024 ? ' (over the 1 MB limit)' : ''));
+  }
   if (payload.storeShotBase64) {
     const name = 'screenshot-360x360.png';   // Zepp app introduction screenshot: transparent, screen-shaped
     fs.writeFileSync(path.join(dir, name), Buffer.from(payload.storeShotBase64, 'base64'));
