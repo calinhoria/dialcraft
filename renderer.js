@@ -2556,6 +2556,45 @@ function gifEncode(frames, w, h, delayMs) {
   out.push(0x3B);
   return Uint8Array.from(out);
 }
+// The recorder behind showcase.gif, the one store GIF. A scene is { start: Date (the virtual clock when it begins), warm: ms the face's own code and
+// animations run before the first frame, frames: how many, dt: ms between them, view: what composePreviewCanvas overrides (clock, date, language,
+// theme, picks, data), restart: run the code afresh }. The code runs for real on a virtual clock (timers and Date are replaced while recording), so a
+// game, a custom sensor or a frame animation shows what it does on the watch, not a still.
+function recordScenes(scenes) {
+  const d = dev();
+  const hasCode = !!(project.userCode || '').trim();
+  const RD = Date, rs = window.setTimeout, ri = window.setInterval, rc = window.clearTimeout, rci = window.clearInterval;
+  let vt = 0, q = [], nid = 0;
+  class VD extends RD { constructor(...a) { if (a.length) super(...a); else super(vt); } static now() { return vt; } }
+  window.Date = VD;
+  window.setTimeout = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + (ms || 0) }); return id; };
+  window.setInterval = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + ms, rep: ms }); return id; };
+  window.clearTimeout = window.clearInterval = (id) => { q = q.filter((t) => t.id !== id); };
+  const pump = (target) => {
+    for (;;) { q.sort((a, b) => a.at - b.at); const n = q[0]; if (!n || n.at > target) break; vt = n.at; if (n.rep) n.at += n.rep; else q.shift(); try { n.f(); } catch (e) { /* the code's own errors show in the status bar */ } }
+    vt = target;
+  };
+  const frames = [];
+  try {
+    scenes.forEach((sc, i) => {
+      if (hasCode && (sc.restart || i === 0)) { stopCodeRun(); q = []; }
+      vt = sc.start.getTime();
+      const t0 = vt;
+      if (hasCode && (sc.restart || i === 0)) startCodeRun();
+      for (let j = 0; j < sc.frames; j++) {
+        const el = (sc.warm || 0) + j * sc.dt;
+        gifTick = (el / 1000) * 30;
+        pump(t0 + el);
+        frames.push(composePreviewCanvas(true, sc.view).getContext('2d').getImageData(0, 0, d.w, d.h));
+      }
+    });
+  } finally {
+    gifTick = null;
+    stopCodeRun();
+    window.Date = RD; window.setTimeout = rs; window.setInterval = ri; window.clearTimeout = rc; window.clearInterval = rci;
+  }
+  return frames;
+}
 // is anything on the face moving by itself (code, frame animations)?
 function faceMoves() { return !!(project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false); }
 function fitGif(frames, dt, firstKeep = 8) {
