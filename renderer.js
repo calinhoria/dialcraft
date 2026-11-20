@@ -2496,7 +2496,7 @@ function composeStoreShotB64() {
   return out.toDataURL('image/png').split(',')[1];
 }
 
-// ---- animated store preview: the face's own code on a virtual clock, written as a GIF ----
+// ---- the store GIF (showcase.gif): the face's own code on a virtual clock, written as a GIF ----
 // One shared palette (exact when the frames use <= 255 colours, otherwise the most used 4-bit colours), index 255 is transparent, and a pixel
 // that did not change since the last frame is left transparent, so a face where little moves stays small.
 function gifLzw(idx, minCode) {
@@ -2556,45 +2556,8 @@ function gifEncode(frames, w, h, delayMs) {
   out.push(0x3B);
   return Uint8Array.from(out);
 }
-// how long one loop of the face's frame animations is, so the GIF closes without a jump (at most 12 s, else 6 s)
-function storeLoopSeconds() {
-  const gcd = (a, b) => (b ? gcd(b, a % b) : a);
-  let l = 0;
-  for (const e of elements()) {
-    if (e.kind !== 'IMG_ANIM' || e.visible === false || (e.frames || []).length < 2) continue;
-    const t = Math.round(10 * e.frames.length / Math.max(1, +e.fps || 30));   // period in tenths of a second
-    if (t > 0) l = l ? (l / gcd(l, t)) * t : t;
-    if (l > 120) return 6;
-  }
-  return l ? Math.max(l / 10, 2) : 6;
-}
-async function captureStoreGif(secs = storeLoopSeconds(), fps = 10) {
-  const d = dev(), N = Math.round(secs * fps), dt = 1000 / fps;
-  const hasCode = !!(project.userCode || '').trim();
-  const RD = Date, rs = window.setTimeout, ri = window.setInterval, rc = window.clearTimeout, rci = window.clearInterval;
-  let vt = new RD(2026, 9, 24, 10, 9, 0).getTime(), q = [], nid = 0;
-  class VD extends RD { constructor(...a) { if (a.length) super(...a); else super(vt); } static now() { return vt; } }
-  window.Date = VD;
-  window.setTimeout = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + (ms || 0) }); return id; };
-  window.setInterval = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + ms, rep: ms }); return id; };
-  window.clearTimeout = window.clearInterval = (id) => { q = q.filter((t) => t.id !== id); };
-  const frames = [], t0 = vt;
-  try {
-    if (hasCode) startCodeRun();
-    for (let i = 0; i < N; i++) {
-      const target = t0 + i * dt;
-      gifTick = (i * dt / 1000) * 30;
-      for (;;) { q.sort((a, b) => a.at - b.at); const n = q[0]; if (!n || n.at > target) break; vt = n.at; if (n.rep) n.at += n.rep; else q.shift(); try { n.f(); } catch (e) { /* the code's own errors show in the status bar */ } }
-      vt = target;
-      frames.push(composePreviewCanvas(true).getContext('2d').getImageData(0, 0, d.w, d.h));
-    }
-  } finally {
-    gifTick = null;
-    stopCodeRun();
-    window.Date = RD; window.setTimeout = rs; window.setInterval = ri; window.clearTimeout = rc; window.clearInterval = rci;
-  }
-  return fitGif(frames, dt);
-}
+// is anything on the face moving by itself (code, frame animations)?
+function faceMoves() { return !!(project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false); }
 function fitGif(frames, dt, firstKeep = 8) {
   const d = dev();
   let use = frames, delay = dt, gif = gifEncode(use, d.w, d.h, delay);
@@ -2676,11 +2639,16 @@ function showcaseScenes() {
   }
   return out;
 }
-function captureShowcaseGif(delayMs = 1300) {
-  const d = dev();
-  const frames = showcaseScenes().map((sc) => composePreviewCanvas(true, sc).getContext('2d').getImageData(0, 0, d.w, d.h));
-  const g = fitGif(frames, delayMs, frames.length);
-  return g;
+// The showcase: every scene (time of day, date, theme, language, complication choices, readings) runs the face's own code for a couple of seconds
+// on its own virtual clock and contributes a few frames; a face that does not move contributes one still per scene.
+function captureShowcaseGif(sceneMs = 1300) {
+  const moving = faceMoves();
+  const per = moving ? 3 : 1, dt = sceneMs / per, warm = moving ? 2000 : 0;
+  const scenes = showcaseScenes().map((view) => ({
+    start: new Date(view.date.year, view.date.month - 1, view.date.day, view.clock.h, view.clock.m, view.clock.s),
+    warm, frames: per, dt, restart: true, view,
+  }));
+  return fitGif(recordScenes(scenes), dt, scenes.length * per);
 }
 
 // ----------------------------------------------------------------- layers --
@@ -8613,15 +8581,6 @@ $('btnBuild').onclick = async () => {
     try {
       for (const c of extraLanguages()) { previewLang = c; payload.langPreviews[c] = composePreviewB64(true); }
     } finally { previewLang = keepLang; }
-  }
-  // an animated face (code, or frame animations) also gets a GIF of it moving, for the store folder
-  if ((project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false)) {
-    try {
-      appendLog('Recording the animated store preview…');
-      const g = await captureStoreGif();
-      payload.gifBase64 = g.base64;
-      appendLog(`  ${g.frames} frames, ${Math.round(g.bytes / 1024)} KB`);
-    } catch (err) { appendLog('  could not record it: ' + (err && err.message ? err.message : err)); }
   }
   try {   // the feature showcase: times of day, themes, languages, complications
     appendLog('Recording the showcase GIF…');

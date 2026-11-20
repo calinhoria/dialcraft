@@ -881,9 +881,9 @@ ipcMain.handle('build-zeus', async (_e, payload) => {
   return res;
 });
 
-// The Zepp console asks for a non-AOD preview at the screen size (png or gif, under 1 MB) and a description: they are written next to the
+// The Zepp console asks for a non-AOD preview at the screen size (png or gif, under 1 MB; showcase.gif is the one GIF) and a description: they are written next to the
 // package, in <outDir>/store, so a release is one folder. The preview is the normal state at the reference time 10:09:36, the same picture the app
-// uses as the face's own preview. For an animated face (code or frame animations) the renderer also sends a GIF of it moving, written beside it.
+// uses as the face's own preview. Beside it goes showcase.gif, the one GIF: the face running its own code at different times of day, themes, languages and complications.
 // amazfitwatchfaces.com takes the device.zip that sits inside the .zab (.zab → .zpk → device.zip), renamed to a .zip. Checked on a Bip 6: the Zepp
 // app installs it from a zpkd1:// QR like the site's own.
 function writeSiteZip(zabPath, destDir, name) {
@@ -925,12 +925,6 @@ function writeStoreFolder(outDir, payload, device) {
     const name = 'screenshot-360x360.png';   // Zepp app introduction screenshot: transparent, screen-shaped
     fs.writeFileSync(path.join(dir, name), Buffer.from(payload.storeShotBase64, 'base64'));
     written.push(name);
-  }
-  if (payload.gifBase64) {
-    const gif = Buffer.from(payload.gifBase64, 'base64');
-    const name = `preview-${device.w}x${device.h}.gif`;
-    fs.writeFileSync(path.join(dir, name), gif);
-    written.push(name + (gif.length > 1024 * 1024 ? ' (over the 1 MB limit)' : ''));
   }
   if (payload.showcaseBase64) {   // the face's features in a loop: times of day, colour themes, languages, complications
     const gif = Buffer.from(payload.showcaseBase64, 'base64');
