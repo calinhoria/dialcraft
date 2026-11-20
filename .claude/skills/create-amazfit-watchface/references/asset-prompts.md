@@ -9,6 +9,7 @@ All of these were used on real faces and worked.
   Ask for "a sheet of separate illustrations".
 - **Chroma key:** magenta `#FF00FF`, or green `#00FF00` when the art is pink / magenta (neon). One flat colour, **no cell panels, borders,
   grid lines or text**. If the tool adds panels: "same image, the whole background one single flat colour, no panels".
+- **Screen shape and aspect:** write the real screen into every prompt that draws a dial, scene or background ("portrait 390:450, rounded-rectangle screen, corner radius 86 px, the picture fills the whole canvas edge to edge"; for a round watch "circular screen, fills the whole circle"). Take size and shape from `devices.md`. A round dial drawn for a square screen leaves black bands.
 - **Style:** attach the owner's reference image and say "use it as the STYLE reference only" (and "COLOUR reference" for water / glow pieces).
 - **Layouts that can be cut out:** grids with the same cell size, the drawing centred and not touching the cell edges. Ten digits are always
   **4 + 4 + 2** (0 1 2 3 / 4 5 6 7 / 8 9). Ask for ≤ 9 drawings per image; if the tool breaks the layout, ask for 0-4 and 5-9 in two images.

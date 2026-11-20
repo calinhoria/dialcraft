@@ -187,6 +187,14 @@ recipe, previews and output in a scratch folder (not in the repo).
   toolkit does it from measurements of all seven names. Check the row for every weekday, not just the reference one.
 - **Rounded corners are part of the layout.** The Bip 6 screen is a rounded rectangle (radius 86); baked pills, bars and frames count too,
   not only layers. Measure the outline of every baked shape against the corner (the toolkit's checks do) and keep ≥ 2 px clearance.
+- **Respect the watch's physical form, always (mandatory).** Design for the real screen, never a generic one: take the size, aspect and outline
+  from [references/devices.md](references/devices.md) (round = a circle; square = a rounded rectangle, e.g. the Bip 6 is 390×450 portrait with
+  86 px corners). Art and backgrounds are **full-bleed**: they fill the whole visible shape. A round dial, ring or scene on a square screen
+  leaves black bands and corners (the first Midnight Gold analog did and had to be redone): extend the background to the screen edge, or draw the
+  piece in the screen's own shape. Layouts follow the shape too (ring and orbit decorations on round screens; rows, edges and corner space on
+  square ones), and every baked piece keeps clear of the corner arcs. When the art comes from an image app, **say the screen shape and aspect in
+  the prompt** ("portrait 390:450 rounded rectangle, corner radius 86 px, fill the whole canvas") and ask for the dial / scene in that shape. Look
+  at the preview for empty bands or black corners before hand-over; if there are any, the design is not finished.
 - **Don't invent widgets.** Only the kinds in [references/kinds.md](references/kinds.md) exist; for anything
   else, say it is not supported rather than faking it. Coverage and known gaps: `docs/ZEPP_COVERAGE.md`.
 - **Don't overwrite** a user's existing project: write to a new `out` / `save` folder.

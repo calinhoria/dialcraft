@@ -1,0 +1,1 @@
+Inter - SIL Open Font License 1.1 (fonts.google.com). Used only to draw digit and numeral images; no font is shipped in the watchface.

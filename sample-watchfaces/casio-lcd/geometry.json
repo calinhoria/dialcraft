@@ -1,0 +1,157 @@
+{
+ "names": {
+  "b": [
+   "lcd/b0.png",
+   "lcd/b1.png",
+   "lcd/b2.png",
+   "lcd/b3.png",
+   "lcd/b4.png",
+   "lcd/b5.png",
+   "lcd/b6.png",
+   "lcd/b7.png",
+   "lcd/b8.png",
+   "lcd/b9.png"
+  ],
+  "s": [
+   "lcd/s0.png",
+   "lcd/s1.png",
+   "lcd/s2.png",
+   "lcd/s3.png",
+   "lcd/s4.png",
+   "lcd/s5.png",
+   "lcd/s6.png",
+   "lcd/s7.png",
+   "lcd/s8.png",
+   "lcd/s9.png"
+  ],
+  "t": [
+   "lcd/t0.png",
+   "lcd/t1.png",
+   "lcd/t2.png",
+   "lcd/t3.png",
+   "lcd/t4.png",
+   "lcd/t5.png",
+   "lcd/t6.png",
+   "lcd/t7.png",
+   "lcd/t8.png",
+   "lcd/t9.png"
+  ],
+  "a": [
+   "lcd/a0.png",
+   "lcd/a1.png",
+   "lcd/a2.png",
+   "lcd/a3.png",
+   "lcd/a4.png",
+   "lcd/a5.png",
+   "lcd/a6.png",
+   "lcd/a7.png",
+   "lcd/a8.png",
+   "lcd/a9.png"
+  ],
+  "w": [
+   "lcd/w0.png",
+   "lcd/w1.png",
+   "lcd/w2.png",
+   "lcd/w3.png",
+   "lcd/w4.png",
+   "lcd/w5.png",
+   "lcd/w6.png"
+  ]
+ },
+ "size": {
+  "b": [
+   60,
+   89
+  ],
+  "s": [
+   33,
+   50
+  ],
+  "t": [
+   21,
+   31
+  ],
+  "a": [
+   60,
+   89
+  ],
+  "colon": [
+   24,
+   89
+  ],
+  "dot": [
+   11,
+   50
+  ],
+  "minus": [
+   21,
+   31
+  ],
+  "degree": [
+   10,
+   31
+  ],
+  "w": [
+   66,
+   61
+  ]
+ },
+ "pos": {
+  "hour": [
+   26,
+   169
+  ],
+  "colon": [
+   146,
+   169
+  ],
+  "minute": [
+   170,
+   169
+  ],
+  "second": [
+   298,
+   207
+  ],
+  "month": [
+   205,
+   50
+  ],
+  "dot": [
+   271,
+   50
+  ],
+  "day": [
+   282,
+   50
+  ],
+  "week": [
+   70,
+   45
+  ],
+  "info_y": 330,
+  "info": {
+   "BATT": [
+    79.85955056179775,
+    "BATTERY"
+   ],
+   "STEP": [
+    195.0,
+    "STEP"
+   ],
+   "TEMP": [
+    310.14044943820227,
+    "WEATHER_CURRENT"
+   ]
+  },
+  "info_w": 108
+ },
+ "rules": [
+  137.8,
+  288.9,
+  308.3,
+  383.0,
+  136.7,
+  253.3
+ ]
+}

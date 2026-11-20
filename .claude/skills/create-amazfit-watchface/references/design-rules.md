@@ -7,6 +7,7 @@ the app's *Check* (the `lint` list of a run).
   widest one (e.g. 20:48) — digit boxes are as wide as the data can get.
 - **Safe edge:** keep 2 px (the app draws it amber) free on every side; on round screens nothing important in
   the corners — the visible shape is the circle (or the rounded square on square watches).
+- **Physical form:** design for the real outline (size, aspect, corner radius, from devices.md) and fill all of it: no round dial, ring or scene floating on black bands on a square screen, and no square art on a round one.
 - **Background:** black. AMOLED pixels that are black are off: it is the look and the battery.
 - **AOD (always-on):** an AOD face must be **sparse and dim** — only the time and perhaps one or two readings;
   lit pixels under ~10 % of the screen; **no second hand, no animation**; no large bright areas. Put the layers that
