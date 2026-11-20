@@ -902,6 +902,13 @@ function writeStoreFolder(outDir, payload, device) {
   const p = payload.project || {};
   fs.writeFileSync(path.join(dir, 'description.txt'), `${p.name || 'Watchface'}\n\n${p.description || ''}\n`);
   written.push('description.txt');
+  // the console's release form: name + description per language, and the English review notes
+  try {
+    const si = require('./core/storeinfo');
+    fs.writeFileSync(path.join(dir, 'release-form.txt'), si.storeForm(p, device));
+    fs.writeFileSync(path.join(dir, 'review-notes.txt'), si.reviewNotes(p, device) + '\n');
+    written.push('release-form.txt', 'review-notes.txt');
+  } catch (e) { buildLog('Could not write the release form: ' + String((e && e.message) || e)); }
   buildLog('Store folder: ' + dir + ' (' + written.join(', ') + ')');
   return dir;
 }
