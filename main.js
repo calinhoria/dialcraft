@@ -906,6 +906,11 @@ function writeStoreFolder(outDir, payload, device) {
     fs.writeFileSync(path.join(dir, name), gif);
     written.push(name + (gif.length > 1024 * 1024 ? ' (over the 1 MB limit)' : ''));
   }
+  if (payload.showcaseBase64) {   // the face's features in a loop: times of day, colour themes, languages, complications
+    const gif = Buffer.from(payload.showcaseBase64, 'base64');
+    fs.writeFileSync(path.join(dir, 'showcase.gif'), gif);
+    written.push('showcase.gif' + (gif.length > 1024 * 1024 ? ' (over the 1 MB limit)' : ''));
+  }
   const p = payload.project || {};
   fs.writeFileSync(path.join(dir, 'description.txt'), `${p.name || 'Watchface'}\n\n${p.description || ''}\n`);
   written.push('description.txt');

@@ -2449,15 +2449,23 @@ $('btnGrid').onclick = () => {
 
 // compose the saved preview: black background, normal state, no editor overlay
 let gifTick = null;   // set while the store GIF is recorded: the animation clock in 1/30 s units (null: layers show their default frame)
-function composePreviewCanvas(shaped) {
+function composePreviewCanvas(shaped, scene) {
   const d = dev();
   const cv = document.createElement('canvas');
   cv.width = d.w; cv.height = d.h;
   const prev = exportRender;
   // the store preview and app icon always read 10:09:36 (the design spec's
   // reference time), whatever the live clock in the editor shows
-  const keep = { clock, dateParts };
+  const keep = { clock, dateParts, previewLang, themeIdx, editPick };
   clock = { ...REF_CLOCK }; dateParts = { ...REF_DATE };
+  // a showcase scene: another time of day, date, language, colour theme and complication choices
+  if (scene) {
+    if (scene.clock) clock = { ...scene.clock };
+    if (scene.date) dateParts = { ...scene.date };
+    if (scene.lang !== undefined) previewLang = scene.lang;
+    if (scene.theme !== undefined) themeIdx = scene.theme;
+    if (scene.picks) editPick = { ...scene.picks };
+  }
   exportRender = true;
   try {
     const cx = cv.getContext('2d', { willReadFrequently: true });
@@ -2465,7 +2473,7 @@ function composePreviewCanvas(shaped) {
     if (shaped) { cx.beginPath(); cx.roundRect(0, 0, d.w, d.h, Math.min(d.radius || 0, d.w / 2, d.h / 2)); cx.clip(); }
     drawScene(cx, d.w, d.h, 'normal', false);
   }
-  finally { exportRender = prev; clock = keep.clock; dateParts = keep.dateParts; }
+  finally { exportRender = prev; clock = keep.clock; dateParts = keep.dateParts; previewLang = keep.previewLang; themeIdx = keep.themeIdx; editPick = keep.editPick; }
   return cv;
 }
 function composePreviewB64(shaped) {
@@ -2584,16 +2592,51 @@ async function captureStoreGif(secs = storeLoopSeconds(), fps = 10) {
     stopCodeRun();
     window.Date = RD; window.setTimeout = rs; window.setInterval = ri; window.clearTimeout = rc; window.clearInterval = rci;
   }
+  return fitGif(frames, dt);
+}
+function fitGif(frames, dt, firstKeep = 8) {
+  const d = dev();
   let use = frames, delay = dt, gif = gifEncode(use, d.w, d.h, delay);
   // the console takes at most 1 MB: drop every other frame (down to 8), then posterize the colours (fewer distinct colours compress far better
   // and keep the frame-to-frame "unchanged" pixels identical), then keep dropping frames (down to 4)
   const LIM = 1000 * 1024;
-  while (gif.length > LIM && use.length > 8) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
+  while (gif.length > LIM && use.length > firstKeep) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
   const poster = (fs, mask) => fs.map((f) => { const o = new ImageData(new Uint8ClampedArray(f.data), f.width, f.height); const a = o.data; for (let i = 0; i < a.length; i += 4) { a[i] &= mask; a[i + 1] &= mask; a[i + 2] &= mask; } return o; });
   for (const mask of [0xF8, 0xF0, 0xE0, 0xC0]) { if (gif.length <= LIM) break; use = poster(use, mask); gif = gifEncode(use, d.w, d.h, delay); }
   while (gif.length > LIM && use.length > 4) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
   let s = ''; for (let i = 0; i < gif.length; i += 0x8000) s += String.fromCharCode.apply(null, gif.subarray(i, i + 0x8000));
   return { base64: btoa(s), frames: use.length, bytes: gif.length };
+}
+
+// ---- showcase GIF: the face's features in a loop: times of day, dates, colour themes, languages, complication choices ----
+// Every frame is a scene; the dimensions advance together, so a face with 5 themes and 6 languages shows each of them once within ~10 frames.
+const SHOWCASE_TIMES = [{ h: 6, m: 42, s: 10 }, { h: 9, m: 15, s: 20 }, { h: 12, m: 30, s: 30 }, { h: 15, m: 48, s: 40 }, { h: 18, m: 27, s: 50 }, { h: 21, m: 5, s: 15 }, { h: 23, m: 58, s: 25 }];
+function showcaseScenes() {
+  const themes = project.themes && Array.isArray(project.themes.list) ? project.themes.list.length : 0;
+  const langs = extraLanguages();
+  const slots = elements().filter((e) => e.kind === 'EDIT_SLOT' && e.visible !== false && (e.optionalTypes || []).length > 1);
+  const n = Math.max(6, Math.min(12, Math.max(themes + 1, langs.length + 1, ...slots.map((x) => x.optionalTypes.length))));
+  const langCycle = ['', ...langs];
+  const out = [];
+  for (let k = 0; k < n; k++) {
+    const picks = {};
+    for (const sl of slots) picks[sl.editId] = sl.optionalTypes[k % sl.optionalTypes.length].type;
+    const day = 17 + k;
+    out.push({
+      clock: SHOWCASE_TIMES[k % SHOWCASE_TIMES.length],
+      date: { day: ((day - 1) % 28) + 1, month: REF_DATE.month, year: REF_DATE.year, weekday: ((REF_DATE.weekday - 1 + k) % 7) + 1 },
+      lang: langCycle[k % langCycle.length],
+      theme: themes ? k % (themes + 1) : 0,
+      picks,
+    });
+  }
+  return out;
+}
+function captureShowcaseGif(delayMs = 1300) {
+  const d = dev();
+  const frames = showcaseScenes().map((sc) => composePreviewCanvas(true, sc).getContext('2d').getImageData(0, 0, d.w, d.h));
+  const g = fitGif(frames, delayMs, frames.length);
+  return g;
 }
 
 // ----------------------------------------------------------------- layers --
@@ -8536,6 +8579,12 @@ $('btnBuild').onclick = async () => {
       appendLog(`  ${g.frames} frames, ${Math.round(g.bytes / 1024)} KB`);
     } catch (err) { appendLog('  could not record it: ' + (err && err.message ? err.message : err)); }
   }
+  try {   // the feature showcase: times of day, themes, languages, complications
+    appendLog('Recording the showcase GIF…');
+    const g = captureShowcaseGif();
+    payload.showcaseBase64 = g.base64;
+    appendLog(`  ${g.frames} scenes, ${Math.round(g.bytes / 1024)} KB`);
+  } catch (err) { appendLog('  could not record the showcase: ' + (err && err.message ? err.message : err)); }
   const res = await API.buildZeus(payload);
   lastLogPath = res.outDir || null;
   if (res.error && res.error !== 'cancelled') {
