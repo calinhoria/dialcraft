@@ -870,12 +870,12 @@ ipcMain.handle('build-zeus', async (_e, payload) => {
   const res = await runZeusBuild(outDir, payload, { apiLevel: zeusApiLevel(device.api) });
   if (res.ok) {
     try { res.storeDir = writeStoreFolder(outDir, payload, device); } catch (err) { buildLog('Could not write the store folder: ' + String((err && err.message) || err)); }
-    // the same face for amazfitwatchfaces.com and the Amazfit apps: the plain-source package of the older runtime (Watchface Maker layout)
+    // the upload file for amazfitwatchfaces.com: the device.zip inside the .zab (.zab → .zpk → device.zip), named <name>.zip
     if (res.storeDir) {
       try {
-        const zipPath = require('./core/legacy').writeAmazfitPackage(outDir, device, res.storeDir, payload.project && payload.project.name, (res.artifacts || []).find((f) => /\.zab$/i.test(f)));
-        buildLog('Amazfit package: ' + zipPath + ' (plain-source, for amazfitwatchfaces.com; not yet tried on a watch)');
-      } catch (err) { buildLog('Could not write the Amazfit package: ' + String((err && err.message) || err)); }
+        const out = writeSiteZip((res.artifacts || []).find((f) => /\.zab$/i.test(f)), res.storeDir, payload.project && payload.project.name);
+        buildLog(out ? 'Upload file for amazfitwatchfaces.com: ' + out : 'Could not find device.zip inside the .zab');
+      } catch (err) { buildLog('Could not write the site zip: ' + String((err && err.message) || err)); }
     }
   }
   return res;
@@ -884,6 +884,25 @@ ipcMain.handle('build-zeus', async (_e, payload) => {
 // The Zepp console asks for a non-AOD preview at the screen size (png or gif, under 1 MB) and a description: they are written next to the
 // package, in <outDir>/store, so a release is one folder. The preview is the normal state at the reference time 10:09:36, the same picture the app
 // uses as the face's own preview. For an animated face (code or frame animations) the renderer also sends a GIF of it moving, written beside it.
+// amazfitwatchfaces.com takes the device.zip that sits inside the .zab (.zab → .zpk → device.zip), renamed to a .zip. Checked on a Bip 6: the Zepp
+// app installs it from a zpkd1:// QR like the site's own.
+function writeSiteZip(zabPath, destDir, name) {
+  if (!zabPath) return null;
+  const { extractZip } = require('./core/zip');
+  const tmp = fs.mkdtempSync(path.join(require('os').tmpdir(), 'dialcraft-site-'));
+  try {
+    extractZip(zabPath, path.join(tmp, 'zab'));
+    const zpk = fs.readdirSync(path.join(tmp, 'zab')).find((f) => /\.zpk$/i.test(f));
+    if (!zpk) return null;
+    extractZip(path.join(tmp, 'zab', zpk), path.join(tmp, 'zpk'));
+    const dz = path.join(tmp, 'zpk', 'device.zip');
+    if (!fs.existsSync(dz)) return null;
+    const out = path.join(destDir, `${slugName(name)}.zip`);
+    fs.copyFileSync(dz, out);
+    return out;
+  } finally { try { fs.rmSync(tmp, { recursive: true, force: true }); } catch (e) { /* temp */ } }
+}
+
 function writeStoreFolder(outDir, payload, device) {
   const dir = path.join(outDir, 'store');
   fs.rmSync(dir, { recursive: true, force: true });
