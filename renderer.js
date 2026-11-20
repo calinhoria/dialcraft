@@ -2456,7 +2456,7 @@ function composePreviewCanvas(shaped, scene) {
   const prev = exportRender;
   // the store preview and app icon always read 10:09:36 (the design spec's
   // reference time), whatever the live clock in the editor shows
-  const keep = { clock, dateParts, previewLang, themeIdx, editPick };
+  const keep = { clock, dateParts, previewLang, themeIdx, editPick, testData };
   clock = { ...REF_CLOCK }; dateParts = { ...REF_DATE };
   // a showcase scene: another time of day, date, language, colour theme and complication choices
   if (scene) {
@@ -2465,6 +2465,7 @@ function composePreviewCanvas(shaped, scene) {
     if (scene.lang !== undefined) previewLang = scene.lang;
     if (scene.theme !== undefined) themeIdx = scene.theme;
     if (scene.picks) editPick = { ...scene.picks };
+    if (scene.data) testData = { ...testData, ...scene.data };
   }
   exportRender = true;
   try {
@@ -2473,7 +2474,7 @@ function composePreviewCanvas(shaped, scene) {
     if (shaped) { cx.beginPath(); cx.roundRect(0, 0, d.w, d.h, Math.min(d.radius || 0, d.w / 2, d.h / 2)); cx.clip(); }
     drawScene(cx, d.w, d.h, 'normal', false);
   }
-  finally { exportRender = prev; clock = keep.clock; dateParts = keep.dateParts; previewLang = keep.previewLang; themeIdx = keep.themeIdx; editPick = keep.editPick; }
+  finally { exportRender = prev; clock = keep.clock; dateParts = keep.dateParts; previewLang = keep.previewLang; themeIdx = keep.themeIdx; editPick = keep.editPick; testData = keep.testData; }
   return cv;
 }
 function composePreviewB64(shaped) {
@@ -2611,6 +2612,46 @@ function fitGif(frames, dt, firstKeep = 8) {
 // ---- showcase GIF: the face's features in a loop: times of day, dates, colour themes, languages, complication choices ----
 // Every frame is a scene; the dimensions advance together, so a face with 5 themes and 6 languages shows each of them once within ~10 frames.
 const SHOWCASE_TIMES = [{ h: 6, m: 42, s: 10 }, { h: 9, m: 15, s: 20 }, { h: 12, m: 30, s: 30 }, { h: 15, m: 48, s: 40 }, { h: 18, m: 27, s: 50 }, { h: 21, m: 5, s: 15 }, { h: 23, m: 58, s: 25 }];
+// Plausible readings for a time of day, the same on every build (seeded by the scene number): steps and calories grow through the day, the heart
+// rate is calm at night, the battery drains, the temperature follows the day's curve, the sun times belong to the scene's date and place.
+function showcaseData(k, clk, date) {
+  let a = (k + 1) * 0x9E3779B9 >>> 0;
+  const rnd = () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const between = (lo, hi) => lo + (hi - lo) * rnd();
+  const minutes = clk.h * 60 + clk.m, hours = minutes / 60;
+  const day = Math.min(1, Math.max(0, (hours - 6) / 17));            // 0 at 06:00, 1 at 23:00
+  const sun = solarTimes(new Date(date.year, date.month - 1, date.day, 12), sunPlace.lat, sunPlace.lon);
+  const night = sun ? (minutes < sun.rise || minutes >= sun.set) : (hours < 6.5 || hours >= 20);
+  const d = {};
+  const steps = Math.round(Math.min(13500, (150 + 12000 * day) * between(0.85, 1.15)) / 10) * 10;
+  d.STEP = steps;
+  d.CAL = Math.round(steps * between(0.036, 0.046));
+  d.DISTANCE = Math.round(steps * 0.00072 * 10) / 10;
+  d.STAND = Math.min(12, Math.max(0, Math.floor(hours - 7 + between(0, 1.2))));
+  d.FLOOR = Math.round(steps / between(900, 1500));
+  d.HEART = Math.round(night ? between(54, 68) : between(64, 112));
+  d.SPO2 = Math.round(between(95, 99));
+  d.STRESS = Math.round(night ? between(10, 28) : between(18, 72));
+  d.PAI_DAILY = Math.round(Math.min(100, day * between(60, 110)));
+  d.BATTERY = Math.max(9, Math.round(100 - 84 * day + between(-3, 3)));
+  const temp = 9 + 10 * Math.max(0, Math.sin(((hours - 8.5) / 14) * Math.PI)) + between(-1, 1);   // 9° at dawn, ~19° mid-afternoon
+  d.WEATHER_CURRENT = Math.round(temp);
+  d.WEATHER_LOW = Math.round(8 + between(-1, 1));
+  d.WEATHER_HIGH = Math.round(19 + between(-1, 2));
+  d.HUMIDITY = Math.round(Math.min(95, Math.max(30, 90 - 3.2 * temp + between(-6, 6))));
+  d.UVI = night ? 0 : Math.round(Math.max(0, 7 * Math.sin(((hours - 7) / 12) * Math.PI)));
+  d.AQI = Math.round(between(14, 58));
+  d.WIND = Math.round(between(1, 6));
+  const dayIcons = [3, 3, 0, 4, 5, 1], nightIcons = [28, 28, 26];
+  d.WEATHER = night ? nightIcons[Math.floor(rnd() * nightIcons.length)] : dayIcons[Math.floor(rnd() * dayIcons.length)];
+  const t = sun;
+  if (t) {
+    const fmt = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+    d.SUN_RISE = fmt(t.rise); d.SUN_SET = fmt(t.set);
+    d.SUN_CURRENT = minutes >= t.rise && minutes < t.set ? fmt(t.set) : fmt(t.rise);
+  }
+  return d;
+}
 function showcaseScenes() {
   const themes = project.themes && Array.isArray(project.themes.list) ? project.themes.list.length : 0;
   const langs = extraLanguages();
@@ -2622,9 +2663,12 @@ function showcaseScenes() {
     const picks = {};
     for (const sl of slots) picks[sl.editId] = sl.optionalTypes[k % sl.optionalTypes.length].type;
     const day = 17 + k;
+    const clk = SHOWCASE_TIMES[k % SHOWCASE_TIMES.length];
+    const date = { day: ((day - 1) % 28) + 1, month: REF_DATE.month, year: REF_DATE.year, weekday: ((REF_DATE.weekday - 1 + k) % 7) + 1 };
     out.push({
-      clock: SHOWCASE_TIMES[k % SHOWCASE_TIMES.length],
-      date: { day: ((day - 1) % 28) + 1, month: REF_DATE.month, year: REF_DATE.year, weekday: ((REF_DATE.weekday - 1 + k) % 7) + 1 },
+      clock: clk,
+      date,
+      data: showcaseData(k, clk, date),
       lang: langCycle[k % langCycle.length],
       theme: themes ? k % (themes + 1) : 0,
       picks,
