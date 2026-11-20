@@ -651,6 +651,24 @@ async function writeZeusProject(outDir, payload) {
   // fails the whole build (exit 7) if the file is missing. Always write one.
   const previewBuf = payload.previewBase64 ? Buffer.from(payload.previewBase64, 'base64') : null;
   fs.writeFileSync(path.join(imgDir, 'preview.png'), appIconPng(previewBuf, deviceByKey(project.device)));
+  // black corner pieces of a rounded-rectangle screen (see generateWatchface): one quarter-disc cut-out per corner
+  {
+    const dv = deviceByKey(project.device);
+    if (dv && dv.shape !== 'r' && dv.radius > 0 && project.roundCorners !== false) {
+      const { PNG } = require('pngjs');
+      const r = Math.round(dv.radius);
+      for (const [n, fx, fy] of [['tl', 1, 1], ['tr', 0, 1], ['bl', 1, 0], ['br', 0, 0]]) {
+        const png = new PNG({ width: r, height: r });
+        for (let y = 0; y < r; y++) for (let x = 0; x < r; x++) {
+          // distance from the corner's circle centre (inside the piece, at the side facing the screen)
+          const cx = fx ? r : 0, cy = fy ? r : 0;
+          const cov = Math.max(0, Math.min(1, Math.hypot(x + 0.5 - cx, y + 0.5 - cy) - r + 0.5));   // 1 outside the circle = black
+          png.data[(y * r + x) * 4 + 3] = Math.round(cov * 255);
+        }
+        fs.writeFileSync(path.join(imgDir, `corner_${n}.png`), PNG.sync.write(png));
+      }
+    }
+  }
   // Tap zones are BUTTON widgets, which need a picture: a transparent 1×1 one (what the Maker ships too)
   if ((project.elements || []).some((e) => e && e.kind === 'TAP')) {
     const { PNG } = require('pngjs');

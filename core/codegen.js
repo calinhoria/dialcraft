@@ -64,11 +64,11 @@ const langId = (c) => LANGUAGES.find((l) => l.code === c).id;
 // app.json `i18n`: with one language it stays as it always was; with more, one entry per language (the store name and description)
 const i18nFor = (project) => {
   const name = project.name || 'Watchface';
-  if (!hasLanguages(project)) return { 'en-US': { appName: name } };
+  if (!hasLanguages(project)) return { 'en-US': { appName: name, icon: 'images/preview.png' } };
   const meta = (project.i18n && project.i18n.meta) || {};
   const out = {};
   for (const c of [defaultLangCode(project), ...langList(project).filter((x) => x !== defaultLangCode(project))]) {
-    const e = { appName: ((meta.appName || {})[c] || name) };
+    const e = { appName: ((meta.appName || {})[c] || name), icon: 'images/preview.png' };
     const d = (meta.description || {})[c];
     if (d) e.description = String(d).slice(0, 120);
     out[c] = e;
@@ -360,8 +360,10 @@ function emitElement(el, ctx, out) {
       if (el.h) kv(L, 'h', p(el.h));
       if (el.posX) kv(L, 'pos_x', p(el.posX));
       if (el.posY) kv(L, 'pos_y', p(el.posY));
-      if (el.angle) {
-        kv(L, 'angle', num(el.angle));
+      // A turned picture needs its pivot written. A picture the code turns later (angle 0 now, a pivot set) needs it too: without a
+      // pivot the watch picks its own and a turned picture wanders around the dial (measured on a Bip 6 with the ANIM angle probe).
+      if (el.angle || el.centerX || el.centerY) {
+        if (el.angle) kv(L, 'angle', num(el.angle));
         kv(L, 'center_x', p(el.centerX));
         kv(L, 'center_y', p(el.centerY));
       }
@@ -1090,6 +1092,16 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('    const pxv = (n) => Math.round(n * px(1000) / 1000)');
     out.push(project.userCode.trim().split('\n').map((l) => (l ? '    ' + l : l)).join('\n'));
   }
+  // Rounded-rectangle screens: the face switcher shows the live face, drawn square, for a moment. Four black corner pieces on top (the screen's own
+  // rounding, so nothing is lost on the watch itself) make that card rounded too. Round screens are covered by the system's own circle.
+  if (device && device.shape !== 'r' && device.radius > 0 && project.roundCorners !== false) {
+    const r = Math.round(device.radius), W = device.w, H = device.h;
+    out.push('');
+    out.push('    // ---- screen corners (the face switcher draws the live face square) ----');
+    for (const [n, x, y] of [['tl', 0, 0], ['tr', W - r, 0], ['bl', 0, H - r], ['br', W - r, H - r]]) {
+      out.push(`    ui.createWidget(ui.widget.IMG, { x: ${p(x)}, y: ${p(y)}, w: ${p(r)}, h: ${p(r)}, src: A('corner_${n}.png'), show_level: ui.show_level.ONLY_NORMAL | ui.show_level.ONLY_AOD })`);
+    }
+  }
   out.push('  },');
   out.push('');
   out.push('  build() {');
@@ -1116,6 +1128,8 @@ function generateAppJson(project, device, opts = {}) {
       appType: 'watchface',
       version: { code: 1, name: '1.0.0' },
       icon: 'images/preview.png',
+      // the Watchface Maker lists the preview as the face's cover too; store faces use it in the face switcher
+      cover: ['images/preview.png'],
       vender: opts.vender || 'dialcraft',
       description: (project.description || `${project.name || 'watchface'} watchface`).slice(0, 120),
     },
