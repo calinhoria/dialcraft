@@ -45,7 +45,7 @@ function createZip(entries, opts = {}) {
     if (!name || name.endsWith('/')) continue;
     const raw = Buffer.isBuffer(entry.data) ? entry.data : Buffer.from(String(entry.data), 'utf8');
     const crc = crc32(raw);
-    const store = STORE_EXT.test(name);
+    const store = !opts.deflateAll && STORE_EXT.test(name);
     const body = store ? raw : zlib.deflateRawSync(raw, { level: 9 });
     const method = store ? 0 : 8;
     const nameBuf = Buffer.from(name, 'utf8');

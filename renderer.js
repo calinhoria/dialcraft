@@ -2597,18 +2597,27 @@ function recordScenes(scenes) {
 }
 // is anything on the face moving by itself (code, frame animations)?
 function faceMoves() { return !!(project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false); }
-function fitGif(frames, dt, firstKeep = 8) {
+function fitGif(frames, dt, firstKeep = 8, per = 1) {
   const d = dev();
   let use = frames, delay = dt, gif = gifEncode(use, d.w, d.h, delay);
-  // the console takes at most 1 MB: drop every other frame (down to 8), then posterize the colours (fewer distinct colours compress far better
-  // and keep the frame-to-frame "unchanged" pixels identical), then keep dropping frames (down to 4)
-  const LIM = 1000 * 1024;
-  while (gif.length > LIM && use.length > firstKeep) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
+  const LIM = 1000 * 1024;   // the console takes at most 1 MB
   const poster = (fs, mask) => fs.map((f) => { const o = new ImageData(new Uint8ClampedArray(f.data), f.width, f.height); const a = o.data; for (let i = 0; i < a.length; i += 4) { a[i] &= mask; a[i + 1] &= mask; a[i + 2] &= mask; } return o; });
+  if (per > 1) {
+    // A moving face keeps its frame rate (smooth motion is the point of the GIF): fewer colours first (they compress far better and keep the
+    // frame-to-frame "unchanged" pixels identical), then each scene gets shorter (its first frames only), never a coarser step between frames.
+    let mask = 0xFF, n = per;
+    const pick = (k) => frames.filter((_, i) => i % per < k);
+    const enc = () => { use = poster(pick(n), mask); gif = gifEncode(use, d.w, d.h, delay); };
+    for (const m of [0xF8, 0xF0, 0xE0]) { if (gif.length <= LIM) break; mask = m; enc(); }
+    while (gif.length > LIM && n > 8) { n = Math.max(8, Math.floor(n * 0.75)); enc(); }
+    if (gif.length > LIM) { mask = 0xC0; enc(); }
+  }
+  // the last resort (and the whole path for stills): drop every other frame (down to firstKeep), then posterize, then keep dropping (down to 4)
+  while (gif.length > LIM && use.length > firstKeep) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
   for (const mask of [0xF8, 0xF0, 0xE0, 0xC0]) { if (gif.length <= LIM) break; use = poster(use, mask); gif = gifEncode(use, d.w, d.h, delay); }
   while (gif.length > LIM && use.length > 4) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
   let s = ''; for (let i = 0; i < gif.length; i += 0x8000) s += String.fromCharCode.apply(null, gif.subarray(i, i + 0x8000));
-  return { base64: btoa(s), frames: use.length, bytes: gif.length };
+  return { base64: btoa(s), frames: use.length, bytes: gif.length, delay };
 }
 
 // ---- showcase GIF: the face's features in a loop: times of day, dates, colour themes, languages, complication choices ----
@@ -2678,16 +2687,16 @@ function showcaseScenes() {
   }
   return out;
 }
-// The showcase: every scene (time of day, date, theme, language, complication choices, readings) runs the face's own code for a couple of seconds
-// on its own virtual clock and contributes a few frames; a face that does not move contributes one still per scene.
-function captureShowcaseGif(sceneMs = 1300) {
+// The showcase: every scene (time of day, date, theme, language, complication choices, readings) runs the face's own code on its own virtual clock
+// and contributes a short smooth clip (about 13 fps, so motion reads as motion, not as a slideshow); a face that does not move contributes one still.
+function captureShowcaseGif(sceneMs = 1500) {
   const moving = faceMoves();
-  const per = moving ? 3 : 1, dt = sceneMs / per, warm = moving ? 2000 : 0;
+  const dt = moving ? 75 : sceneMs, per = moving ? Math.round(sceneMs / dt) : 1, warm = moving ? 2000 : 0;
   const scenes = showcaseScenes().map((view) => ({
     start: new Date(view.date.year, view.date.month - 1, view.date.day, view.clock.h, view.clock.m, view.clock.s),
     warm, frames: per, dt, restart: true, view,
   }));
-  return fitGif(recordScenes(scenes), dt, scenes.length * per);
+  return fitGif(recordScenes(scenes), dt, scenes.length * per, per);
 }
 
 // ----------------------------------------------------------------- layers --

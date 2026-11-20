@@ -1,0 +1,808 @@
+{
+  "version": 1,
+  "name": "Pixel Cocktail",
+  "device": "bip-6",
+  "appId": 1133670,
+  "vender": "dialcraft",
+  "description": "An animated LED-matrix cocktail bar: a martini with a bobbing olive and a sliding glint, pulsing bar lights and a blinking colon. The time, weekday, day and temperature are cells on the same pixel lattice.",
+  "font": "Inter",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [],
+  "groups": {
+    "gmwpijqih1t": "Clock",
+    "gmwpijqkz4l": "Clock 2",
+    "gClockAod": "Clock AOD",
+    "gInfo": "Info",
+    "gFire": "Martini"
+  },
+  "elements": [
+    {
+      "id": "elmwpijqcb5ko",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwpijqg773g",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "scene.png"
+    },
+    {
+      "id": "elmwpijqr46c5",
+      "kind": "IMG",
+      "name": "Martini",
+      "x": 27,
+      "y": 195,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFire",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fz/mt_0.png",
+      "handle": "mt"
+    },
+    {
+      "id": "elmwpijqqu18u",
+      "kind": "IMG",
+      "name": "Bar lights",
+      "x": 219,
+      "y": 183,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gFire",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fz/bk_0.png",
+      "handle": "bk"
+    },
+    {
+      "id": "elmwpijqih7k9",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 231,
+      "y": 87,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwpijqih1t",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 12,
+      "images": [
+        "px/h_0.png",
+        "px/h_1.png",
+        "px/h_2.png",
+        "px/h_3.png",
+        "px/h_4.png",
+        "px/h_5.png",
+        "px/h_6.png",
+        "px/h_7.png",
+        "px/h_8.png",
+        "px/h_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null
+    },
+    {
+      "id": "elmwpijqih2qi",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 39,
+      "y": 87,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwpijqih1t",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 12,
+      "images": [
+        "px/h_0.png",
+        "px/h_1.png",
+        "px/h_2.png",
+        "px/h_3.png",
+        "px/h_4.png",
+        "px/h_5.png",
+        "px/h_6.png",
+        "px/h_7.png",
+        "px/h_8.png",
+        "px/h_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null
+    },
+    {
+      "id": "elmwpijqiu5hn",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 191,
+      "y": 192,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gInfo",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Pixel Lattice",
+        "size": 100,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ff46aa",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelForm": "short",
+      "labelCase": "upper",
+      "labelAlign": "left"
+    },
+    {
+      "id": "elmwpijqjv3ja",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 195,
+      "y": 279,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gInfo",
+      "alpha": 255,
+      "images": [
+        "px/d_0.png",
+        "px/d_1.png",
+        "px/d_2.png",
+        "px/d_3.png",
+        "px/d_4.png",
+        "px/d_5.png",
+        "px/d_6.png",
+        "px/d_7.png",
+        "px/d_8.png",
+        "px/d_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 12,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": null
+    },
+    {
+      "id": "elmwpijqkgw7",
+      "kind": "TEXT_IMG",
+      "name": "Temperature",
+      "x": 156,
+      "y": 351,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gInfo",
+      "alpha": 255,
+      "dataType": "WEATHER_CURRENT",
+      "images": [
+        "px/t_0.png",
+        "px/t_1.png",
+        "px/t_2.png",
+        "px/t_3.png",
+        "px/t_4.png",
+        "px/t_5.png",
+        "px/t_6.png",
+        "px/t_7.png",
+        "px/t_8.png",
+        "px/t_9.png"
+      ],
+      "hSpace": 12,
+      "alignH": "RIGHT",
+      "unit": "px/unit.png",
+      "dot": "",
+      "negative": "px/minus.png",
+      "glyph": null
+    },
+    {
+      "id": "elmwpijqkz1uy",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 39,
+      "y": 87,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAod",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 12,
+      "images": [
+        "px/a_0.png",
+        "px/a_1.png",
+        "px/a_2.png",
+        "px/a_3.png",
+        "px/a_4.png",
+        "px/a_5.png",
+        "px/a_6.png",
+        "px/a_7.png",
+        "px/a_8.png",
+        "px/a_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null
+    },
+    {
+      "id": "elmwpijqkz4k6",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 231,
+      "y": 87,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAod",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 12,
+      "images": [
+        "px/a_0.png",
+        "px/a_1.png",
+        "px/a_2.png",
+        "px/a_3.png",
+        "px/a_4.png",
+        "px/a_5.png",
+        "px/a_6.png",
+        "px/a_7.png",
+        "px/a_8.png",
+        "px/a_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": null
+    },
+    {
+      "id": "elmwpijqnc307",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 183,
+      "y": 87,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "px/colon.png",
+      "handle": "col"
+    },
+    {
+      "id": "elmwpijqnm5zx",
+      "kind": "IMG",
+      "name": "Colon Aod",
+      "x": 183,
+      "y": 87,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAod",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "px/a_colon.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "px/h_0.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_1.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_2.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_3.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_4.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_5.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_6.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_7.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_8.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/h_9.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/colon.png",
+      "width": 24,
+      "height": 84
+    },
+    {
+      "name": "px/a_0.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_1.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_2.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_3.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_4.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_5.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_6.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_7.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_8.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_9.png",
+      "width": 60,
+      "height": 84
+    },
+    {
+      "name": "px/a_colon.png",
+      "width": 24,
+      "height": 84
+    },
+    {
+      "name": "px/d_0.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_1.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_2.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_3.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_4.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_5.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_6.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_7.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_8.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/d_9.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_0.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_1.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_2.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_3.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_4.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_5.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_6.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_7.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_8.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/t_9.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "px/unit.png",
+      "width": 72,
+      "height": 60
+    },
+    {
+      "name": "px/minus.png",
+      "width": 36,
+      "height": 60
+    },
+    {
+      "name": "fz/blank.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "fz/mt_0.png",
+      "width": 155,
+      "height": 215
+    },
+    {
+      "name": "fz/mt_1.png",
+      "width": 155,
+      "height": 215
+    },
+    {
+      "name": "fz/mt_2.png",
+      "width": 155,
+      "height": 215
+    },
+    {
+      "name": "fz/mt_3.png",
+      "width": 155,
+      "height": 215
+    },
+    {
+      "name": "fz/mt_4.png",
+      "width": 155,
+      "height": 215
+    },
+    {
+      "name": "fz/mt_5.png",
+      "width": 155,
+      "height": 215
+    },
+    {
+      "name": "fz/mt_6.png",
+      "width": 155,
+      "height": 215
+    },
+    {
+      "name": "fz/mt_7.png",
+      "width": 155,
+      "height": 215
+    },
+    {
+      "name": "fz/bk_0.png",
+      "width": 167,
+      "height": 227
+    },
+    {
+      "name": "fz/bk_1.png",
+      "width": 167,
+      "height": 227
+    },
+    {
+      "name": "fz/bk_2.png",
+      "width": 167,
+      "height": 227
+    },
+    {
+      "name": "fz/bk_3.png",
+      "width": 167,
+      "height": 227
+    },
+    {
+      "name": "fz/bk_4.png",
+      "width": 167,
+      "height": 227
+    },
+    {
+      "name": "fz/bk_5.png",
+      "width": 167,
+      "height": 227
+    },
+    {
+      "name": "fz/bk_6.png",
+      "width": 167,
+      "height": 227
+    },
+    {
+      "name": "fz/bk_7.png",
+      "width": 167,
+      "height": 227
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 34,
+      "height": 43
+    },
+    {
+      "name": "colon.png",
+      "width": 15,
+      "height": 43
+    },
+    {
+      "name": "week_w1.png",
+      "width": 139,
+      "height": 79
+    },
+    {
+      "name": "week_w2.png",
+      "width": 139,
+      "height": 79
+    },
+    {
+      "name": "week_w3.png",
+      "width": 139,
+      "height": 79
+    },
+    {
+      "name": "week_w4.png",
+      "width": 139,
+      "height": 79
+    },
+    {
+      "name": "week_w5.png",
+      "width": 139,
+      "height": 79
+    },
+    {
+      "name": "week_w6.png",
+      "width": 139,
+      "height": 79
+    },
+    {
+      "name": "week_w7.png",
+      "width": 139,
+      "height": 79
+    },
+    {
+      "name": "degree.png",
+      "width": 23,
+      "height": 43
+    },
+    {
+      "name": "negative.png",
+      "width": 22,
+      "height": 43
+    },
+    {
+      "name": "colon_2.png",
+      "width": 15,
+      "height": 43
+    }
+  ],
+  "savePath": null,
+  "userCode": "{\n  // 8 frames of 150 ms as in the reference: the glint slides, the olive bobs, the rim sparkles, the bar lights pulse; the colon blinks (on for the first 4 frames).\n  const C = 12, OX = 3, OY = 3, SH = 5, MS = 80\n  const X = (c) => OX + c * C, Y = (r) => OY + (r + SH) * C\n  const last = {}\n  const put = (k, x, y, src) => {\n    const key = x + '|' + y + '|' + src\n    if (last[k] === key) return\n    last[k] = key\n    W[k].setProperty(ui.prop.MORE, { x: pxv(x), y: pxv(y), src: A(src) })\n  }\n  const tick = () => {\n    const f = Math.floor(Date.now() / 150) % 8\n    put('mt', X(2), Y(11), 'fz/mt_' + f + '.png')\n    put('bk', X(18), Y(10), 'fz/bk_' + f + '.png')\n    put('col', X(15), Y(2), f < 4 ? 'px/colon.png' : 'fz/blank.png')\n  }\n  let id = null\n  const safe = () => { try { tick() } catch (e) {} }\n  const start = () => { if (id === null) { try { id = setInterval(safe, MS) } catch (e) {} } }\n  const stop = () => { if (id !== null) { try { clearInterval(id) } catch (e) {} id = null } }\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n  safe()\n  start()\n}",
+  "optimizePng": true
+}

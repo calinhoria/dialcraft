@@ -135,6 +135,13 @@ app.whenReady().then(async () => {
     fs.writeFileSync(abs(recipe.previewAod), Buffer.from(b64, 'base64'));
     res.previewAod = abs(recipe.previewAod);
   }
+  // the store GIF (showcase.gif): the face's own code on a virtual clock through times of day, themes and languages
+  if (recipe.showcase) {
+    const g = await run(`return captureShowcaseGif();`);
+    fs.mkdirSync(path.dirname(abs(recipe.showcase)), { recursive: true });
+    fs.writeFileSync(abs(recipe.showcase), Buffer.from(g.base64, 'base64'));
+    res.showcase = { path: abs(recipe.showcase), frames: g.frames, bytes: g.bytes, delayMs: g.delay };
+  }
   // the editor's own project file, to reopen and keep editing in the app
   if (recipe.save) {
     const json = await run(`return JSON.stringify({ project, images: project.images.map((i) => ({ name: i.name, dataBase64: imageDataBase64(i) })) });`);

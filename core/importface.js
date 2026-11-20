@@ -539,7 +539,13 @@ function importFaceDir(dir) {
     const found = walk(path.join(root, 'watchface')).filter((f) => /\.js$/.test(f));
     codeFile = found.find((f) => /index\.js$/.test(f)) || found[0] || null;
   }
-  if (!codeFile) { out.error = 'No watchface code found (watchface/**/index.js).'; return out; }
+  if (!codeFile) {
+    const bins = walk(path.join(root, 'watchface')).filter((f) => /\.bin$/.test(f));
+    out.error = bins.length
+      ? 'This is a compiled watchface package (watchface/**/index.bin is bytecode, not source), the kind a store or the Zepp app installs on the watch. Its layers cannot be read back, so it cannot be imported. Import the source version instead (the .zip with watchface/**/index.js, a Zeus project or a Watchface Maker export), or open the original .wfproj.json project.'
+      : 'No watchface code found (watchface/**/index.js).';
+    return out;
+  }
   report.push(`Source: ${path.relative(dir, codeFile) || path.basename(codeFile)}`);
 
   // 3. run the code and collect the widgets
