@@ -211,7 +211,7 @@ See the skill's `references/recipe.md` for the recipe format and `examples/neon-
 | `npm run css` | Rebuild `styles.css` from `styles-src.css` (Tailwind v4) |
 | `npm run smoke` | (run it as `env -u ELECTRON_RUN_AS_NODE npm run smoke` if your shell sets that variable) End-to-end test: drives the app through new face → presets → code → save → export → import → fonts → `zeus build` → LAN install (`SMOKE_BUILD=0` skips the CLI build) |
 | `npm run dist` | Package with electron-builder (`dist-mac` / `dist-win` / `dist-linux`) |
-| release | Push a tag `vX.Y.Z` (matching `package.json`): `.github/workflows/release.yml` builds Windows, Linux and macOS and attaches them to a pre-release |
+| release | Push a tag `vX.Y.Z` (matching `package.json`): `.github/workflows/release.yml` builds Windows, Linux and macOS and attaches them to a stable release (marked latest) |
 | `npm run icon` | Render `build/icon.png` / `build/icon.icns` |
 | `npm run masks` | Regenerate the device display masks |
 | `npm run sample` | Regenerate `samples/sample-digital/` |

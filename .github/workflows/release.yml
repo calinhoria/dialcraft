@@ -61,7 +61,7 @@ jobs:
         with:
           path: out
           merge-multiple: true
-      - name: Create or update the pre-release
+      - name: Create or update the release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
@@ -71,6 +71,6 @@ jobs:
           if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
             gh release upload "$TAG" out/* --repo "$REPO" --clobber
           else
-            gh release create "$TAG" out/* --repo "$REPO" --prerelease --title "Dialcraft ${TAG#v} (beta)" \
-              --notes "Beta release. Windows and macOS builds are not code-signed (SmartScreen / Gatekeeper will warn; on macOS right-click → Open, or run xattr -cr /Applications/Dialcraft.app). See the README."
+            gh release create "$TAG" out/* --repo "$REPO" --latest --title "Dialcraft ${TAG#v}" \
+              --notes "Windows and macOS builds are not code-signed (SmartScreen / Gatekeeper will warn; on macOS right-click → Open, or run xattr -cr /Applications/Dialcraft.app). See the README."
           fi
