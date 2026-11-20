@@ -1,0 +1,3389 @@
+{
+  "version": 1,
+  "name": "Forecast Dial",
+  "device": "bip-6",
+  "appId": 2382085,
+  "vender": "dialcraft",
+  "description": "An analog dial with a digital time, four shortcuts, sunrise and sunset, today's weather, wind and pressure, a five-day forecast and four activity rings.",
+  "font": "Antonio",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "antonio-400.ttf",
+      "family": "Antonio"
+    }
+  ],
+  "groups": {
+    "gmwp4y5ful1": "Clock",
+    "gmwp4y5joq": "Sunrise / sunset"
+  },
+  "elements": [
+    {
+      "id": "elmwp4y5bt3nf",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwp4y5by57f",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 136,
+      "y": 1,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Antonio",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#FFB020",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmwp4y5ew11e",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 188,
+      "y": 9,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Antonio",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5f74u6",
+      "kind": "IMG_DATE",
+      "name": "Month",
+      "x": 220,
+      "y": 1,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "month_m1.png",
+        "month_m2.png",
+        "month_m3.png",
+        "month_m4.png",
+        "month_m5.png",
+        "month_m6.png",
+        "month_m7.png",
+        "month_m8.png",
+        "month_m9.png",
+        "month_m10.png",
+        "month_m11.png",
+        "month_m12.png"
+      ],
+      "part": "month",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": true,
+      "glyph": {
+        "font": "Antonio",
+        "size": 30,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwp4y5fu3ar",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 259,
+      "y": 156,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gmwp4y5ful1",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Antonio",
+        "size": 38,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5fu766",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 252,
+      "y": 163,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gmwp4y5ful1",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Antonio",
+        "size": 38,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#FFB020",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmwp4y5fu2j8",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 216,
+      "y": 156,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gmwp4y5ful1",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Antonio",
+        "size": 38,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5g81fd",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 128,
+      "y": 396,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Antonio",
+        "size": 21,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5go1vr",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 218,
+      "y": 396,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Antonio",
+        "size": 21,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5gy16u",
+      "kind": "TEXT_IMG",
+      "name": "Calories",
+      "x": 293,
+      "y": 396,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "CAL",
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Antonio",
+        "size": 21,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5hc1r5",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 47,
+      "y": 396,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Antonio",
+        "size": 21,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5hn5h",
+      "kind": "TEXT_IMG",
+      "name": "Sunrise",
+      "x": 88,
+      "y": 249,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwp4y5joq",
+      "alpha": 255,
+      "dataType": "SUN_RISE",
+      "images": [
+        "font_9_0.png",
+        "font_9_1.png",
+        "font_9_2.png",
+        "font_9_3.png",
+        "font_9_4.png",
+        "font_9_5.png",
+        "font_9_6.png",
+        "font_9_7.png",
+        "font_9_8.png",
+        "font_9_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "colon_2.png",
+      "negative": "",
+      "glyph": {
+        "font": "Antonio",
+        "size": 22,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5iw6pq",
+      "kind": "TEXT_IMG",
+      "name": "Sunset",
+      "x": 88,
+      "y": 274,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwp4y5joq",
+      "alpha": 255,
+      "dataType": "SUN_SET",
+      "images": [
+        "font_10_0.png",
+        "font_10_1.png",
+        "font_10_2.png",
+        "font_10_3.png",
+        "font_10_4.png",
+        "font_10_5.png",
+        "font_10_6.png",
+        "font_10_7.png",
+        "font_10_8.png",
+        "font_10_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "colon_3.png",
+      "negative": "",
+      "glyph": {
+        "font": "Antonio",
+        "size": 22,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5ka39y",
+      "kind": "TEXT_IMG",
+      "name": "Temp high",
+      "x": 205,
+      "y": 249,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_HIGH",
+      "images": [
+        "font_11_0.png",
+        "font_11_1.png",
+        "font_11_2.png",
+        "font_11_3.png",
+        "font_11_4.png",
+        "font_11_5.png",
+        "font_11_6.png",
+        "font_11_7.png",
+        "font_11_8.png",
+        "font_11_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "degree.png",
+      "dot": "",
+      "negative": "negative.png",
+      "glyph": {
+        "font": "Antonio",
+        "size": 22,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5kv56g",
+      "kind": "TEXT_IMG",
+      "name": "Temp low",
+      "x": 205,
+      "y": 274,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WEATHER_LOW",
+      "images": [
+        "font_12_0.png",
+        "font_12_1.png",
+        "font_12_2.png",
+        "font_12_3.png",
+        "font_12_4.png",
+        "font_12_5.png",
+        "font_12_6.png",
+        "font_12_7.png",
+        "font_12_8.png",
+        "font_12_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "degree_2.png",
+      "dot": "",
+      "negative": "negative_2.png",
+      "glyph": {
+        "font": "Antonio",
+        "size": 22,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5lb5hu",
+      "kind": "TEXT_IMG",
+      "name": "Wind",
+      "x": 284,
+      "y": 249,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "WIND_SPEED",
+      "images": [
+        "font_13_0.png",
+        "font_13_1.png",
+        "font_13_2.png",
+        "font_13_3.png",
+        "font_13_4.png",
+        "font_13_5.png",
+        "font_13_6.png",
+        "font_13_7.png",
+        "font_13_8.png",
+        "font_13_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "mps.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Antonio",
+        "size": 22,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y5lt57q",
+      "kind": "TEXT_IMG",
+      "name": "Pressure",
+      "x": 284,
+      "y": 274,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "ALTIMETER",
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "LEFT",
+      "unit": "hpa.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Antonio",
+        "size": 22,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#F4F4F4",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwp4y67d1qq",
+      "kind": "IMG",
+      "name": "Dial dots",
+      "x": 101,
+      "y": 44,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "dial_dots.png"
+    },
+    {
+      "id": "elmwp4y67u374",
+      "kind": "TIME_POINTER",
+      "name": "Analog clock",
+      "x": 0,
+      "y": 0,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "centerX": 205,
+      "centerY": 148,
+      "hour": "hand_hour.png",
+      "hourPivotX": 3,
+      "hourPivotY": 68,
+      "minute": "hand_minute.png",
+      "minutePivotX": 2,
+      "minutePivotY": 94,
+      "second": "",
+      "secondPivotX": 0,
+      "secondPivotY": 0,
+      "cover": "hand_cap.png",
+      "coverX": 196,
+      "coverY": 139
+    },
+    {
+      "id": "elmwp4y6au2jr",
+      "kind": "IMG",
+      "name": "Shortcut World clock",
+      "x": 23,
+      "y": 44,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sc_ring0.png"
+    },
+    {
+      "id": "elmwp4y6b6244",
+      "kind": "TAP",
+      "name": "Tap World clock",
+      "x": 23,
+      "y": 44,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 48,
+      "h": 48,
+      "action": "sysapp",
+      "appUrl": "",
+      "note": "",
+      "sysApp": "SYSTEM_APP_WORLD_CLOCK"
+    },
+    {
+      "id": "elmwp4y6bi2m5",
+      "kind": "IMG",
+      "name": "Shortcut Workout",
+      "x": 23,
+      "y": 98,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sc_ring1.png"
+    },
+    {
+      "id": "elmwp4y6bs7di",
+      "kind": "TAP",
+      "name": "Tap Workout",
+      "x": 23,
+      "y": 98,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 48,
+      "h": 48,
+      "action": "sysapp",
+      "appUrl": "",
+      "note": "",
+      "sysApp": "SYSTEM_APP_SPORT"
+    },
+    {
+      "id": "elmwp4y6c3ef",
+      "kind": "IMG",
+      "name": "Shortcut Compass",
+      "x": 23,
+      "y": 152,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sc_ring2.png"
+    },
+    {
+      "id": "elmwp4y6ce77g",
+      "kind": "TAP",
+      "name": "Tap Compass",
+      "x": 23,
+      "y": 152,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 48,
+      "h": 48,
+      "action": "sysapp",
+      "appUrl": "",
+      "note": "",
+      "sysApp": "SYSTEM_APP_COMPASS"
+    },
+    {
+      "id": "elmwp4y6cp4dn",
+      "kind": "IMG",
+      "name": "Shortcut Sun & moon",
+      "x": 23,
+      "y": 206,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sc_ring3.png"
+    },
+    {
+      "id": "elmwp4y6d162j",
+      "kind": "TAP",
+      "name": "Tap Sun & moon",
+      "x": 23,
+      "y": 206,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 48,
+      "h": 48,
+      "action": "sysapp",
+      "appUrl": "",
+      "note": "",
+      "sysApp": "SYSTEM_APP_SUN_AND_MOON"
+    },
+    {
+      "id": "elmwp4y6dq4oo",
+      "kind": "IMG",
+      "name": "Sunrise arrow",
+      "x": 73,
+      "y": 255,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "arrow_up_FFB020.png"
+    },
+    {
+      "id": "elmwp4y6fa2ia",
+      "kind": "IMG",
+      "name": "Sunset arrow",
+      "x": 73,
+      "y": 280,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "arrow_dn_FFB020.png"
+    },
+    {
+      "id": "elmwp4y6gqeu",
+      "kind": "IMG",
+      "name": "Temp high arrow",
+      "x": 190,
+      "y": 256,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "arrow_up_FFB020.png"
+    },
+    {
+      "id": "elmwp4y6i51bi",
+      "kind": "IMG",
+      "name": "Temp low arrow",
+      "x": 190,
+      "y": 281,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "arrow_dn_FFB020.png"
+    },
+    {
+      "id": "elmwp4y6jn7p5",
+      "kind": "FILL_RECT",
+      "name": "Forecast line 74",
+      "x": 74,
+      "y": 300,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 1,
+      "h": 71,
+      "color": "#2B2F36",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwp4y6jz20",
+      "kind": "FILL_RECT",
+      "name": "Forecast line 148",
+      "x": 148,
+      "y": 300,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 1,
+      "h": 71,
+      "color": "#2B2F36",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwp4y6kc7kj",
+      "kind": "FILL_RECT",
+      "name": "Forecast line 222",
+      "x": 222,
+      "y": 300,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 1,
+      "h": 71,
+      "color": "#2B2F36",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwp4y6ko20c",
+      "kind": "FILL_RECT",
+      "name": "Forecast line 296",
+      "x": 296,
+      "y": 300,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 1,
+      "h": 71,
+      "color": "#2B2F36",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwp4y6l27a5",
+      "kind": "IMG",
+      "name": "Battery ring track",
+      "x": 35,
+      "y": 370,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ring_track_BATTERY.png"
+    },
+    {
+      "id": "elmwp4y6lg34f",
+      "kind": "ARC_PROGRESS",
+      "name": "Battery ring",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "centerX": 75,
+      "centerY": 410,
+      "radius": 32,
+      "startAngle": 135,
+      "endAngle": 405,
+      "lineWidth": 6,
+      "color": "#FFB020",
+      "dataType": "BATTERY",
+      "bg": "",
+      "level": 0
+    },
+    {
+      "id": "elmwp4y6m53e0",
+      "kind": "IMG",
+      "name": "Steps ring track",
+      "x": 115,
+      "y": 370,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ring_track_STEP.png"
+    },
+    {
+      "id": "elmwp4y6mi2ho",
+      "kind": "ARC_PROGRESS",
+      "name": "Steps ring",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "centerX": 155,
+      "centerY": 410,
+      "radius": 32,
+      "startAngle": 135,
+      "endAngle": 405,
+      "lineWidth": 6,
+      "color": "#FFB020",
+      "dataType": "STEP",
+      "bg": "",
+      "level": 0
+    },
+    {
+      "id": "elmwp4y6n6194",
+      "kind": "IMG",
+      "name": "Heart rate ring track",
+      "x": 195,
+      "y": 370,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ring_track_HEART.png"
+    },
+    {
+      "id": "elmwp4y6nj7c9",
+      "kind": "ARC_PROGRESS",
+      "name": "Heart rate ring",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "centerX": 235,
+      "centerY": 410,
+      "radius": 32,
+      "startAngle": 135,
+      "endAngle": 405,
+      "lineWidth": 6,
+      "color": "#FFB020",
+      "dataType": "HEART",
+      "bg": "",
+      "level": 0
+    },
+    {
+      "id": "elmwp4y6o65hv",
+      "kind": "IMG",
+      "name": "Calories ring track",
+      "x": 275,
+      "y": 370,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ring_track_CAL.png"
+    },
+    {
+      "id": "elmwp4y6ok4dw",
+      "kind": "ARC_PROGRESS",
+      "name": "Calories ring",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "centerX": 315,
+      "centerY": 410,
+      "radius": 32,
+      "startAngle": 135,
+      "endAngle": 405,
+      "lineWidth": 6,
+      "color": "#FFB020",
+      "dataType": "CAL",
+      "bg": "",
+      "level": 0
+    },
+    {
+      "id": "elmwp4y6pk4zv",
+      "kind": "IMG",
+      "name": "Icon World clock",
+      "x": 32,
+      "y": 53,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sc_globe.png"
+    },
+    {
+      "id": "elmwp4y6q72om",
+      "kind": "IMG",
+      "name": "Icon Workout",
+      "x": 32,
+      "y": 107,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sc_runner.png"
+    },
+    {
+      "id": "elmwp4y6qu6r",
+      "kind": "IMG",
+      "name": "Icon Compass",
+      "x": 32,
+      "y": 161,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sc_compass.png"
+    },
+    {
+      "id": "elmwp4y6rc61p",
+      "kind": "IMG",
+      "name": "Icon Sun & moon",
+      "x": 32,
+      "y": 215,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sc_moon.png"
+    },
+    {
+      "id": "elmwp4y6s4jk",
+      "kind": "IMG",
+      "name": "Sun icon",
+      "x": 33,
+      "y": 261,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "info_sunrise.png"
+    },
+    {
+      "id": "elmwp4y6su1zt",
+      "kind": "IMG",
+      "name": "Wind icon",
+      "x": 250,
+      "y": 261,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "info_wind.png"
+    },
+    {
+      "id": "elmwp4y6th2n7",
+      "kind": "IMG",
+      "name": "Battery icon",
+      "x": 66,
+      "y": 428,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ring_bolt.png"
+    },
+    {
+      "id": "elmwp4y6u43o6",
+      "kind": "IMG",
+      "name": "Steps icon",
+      "x": 146,
+      "y": 428,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ring_steps.png"
+    },
+    {
+      "id": "elmwp4y6us25y",
+      "kind": "IMG",
+      "name": "Heart rate icon",
+      "x": 226,
+      "y": 428,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ring_heart.png"
+    },
+    {
+      "id": "elmwp4y6vm55w",
+      "kind": "IMG",
+      "name": "Calories icon",
+      "x": 306,
+      "y": 428,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "ring_flame.png"
+    },
+    {
+      "id": "elmwp4y6ye6qu",
+      "kind": "IMG_LEVEL",
+      "name": "Weather icon",
+      "x": 149,
+      "y": 258,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "images": [
+        "wx_wx_cloudy.png",
+        "wx_wx_shower.png",
+        "wx_wx_snow_shower.png",
+        "wx_wx_sunny.png",
+        "wx_wx_overcast.png",
+        "wx_wx_rain_light.png",
+        "wx_wx_snow_light.png",
+        "wx_wx_rain_mod.png",
+        "wx_wx_snow_mod.png",
+        "wx_wx_snow_heavy.png",
+        "wx_wx_rain_heavy.png",
+        "wx_wx_sandstorm.png",
+        "wx_wx_sleet.png",
+        "wx_wx_fog.png",
+        "wx_wx_haze.png",
+        "wx_wx_thundershower.png",
+        "wx_wx_snowstorm.png",
+        "wx_wx_dust.png",
+        "wx_wx_rain_extreme.png",
+        "wx_wx_rain_hail.png",
+        "wx_wx_thunder_hail.png",
+        "wx_wx_rainstorm_heavy.png",
+        "wx_wx_sand_blowing.png",
+        "wx_wx_sandstorm_strong.png",
+        "wx_wx_rainstorm.png",
+        "wx_wx_unknown.png",
+        "wx_wx_night_cloudy.png",
+        "wx_wx_night_rain.png",
+        "wx_wx_night_clear.png"
+      ],
+      "w": 0,
+      "h": 0,
+      "dataType": "WEATHER",
+      "level": 0
+    },
+    {
+      "id": "elmwp4y70y75k",
+      "kind": "TEXT",
+      "name": "Forecast day 1",
+      "x": 20,
+      "y": 302,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "SAT",
+      "color": "#FFB020",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc0_d",
+      "w": 54,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y71h2j9",
+      "kind": "IMG",
+      "name": "Forecast icon 1",
+      "x": 37,
+      "y": 326,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fc_wx_sunny.png",
+      "handle": "fc0_ic",
+      "images": [
+        "fc_wx_cloudy.png",
+        "fc_wx_shower.png",
+        "fc_wx_snow_shower.png",
+        "fc_wx_sunny.png",
+        "fc_wx_overcast.png",
+        "fc_wx_rain_light.png",
+        "fc_wx_snow_light.png",
+        "fc_wx_rain_mod.png",
+        "fc_wx_snow_mod.png",
+        "fc_wx_snow_heavy.png",
+        "fc_wx_rain_heavy.png",
+        "fc_wx_sandstorm.png",
+        "fc_wx_sleet.png",
+        "fc_wx_fog.png",
+        "fc_wx_haze.png",
+        "fc_wx_thundershower.png",
+        "fc_wx_snowstorm.png",
+        "fc_wx_dust.png",
+        "fc_wx_rain_extreme.png",
+        "fc_wx_rain_hail.png",
+        "fc_wx_thunder_hail.png",
+        "fc_wx_rainstorm_heavy.png",
+        "fc_wx_sand_blowing.png",
+        "fc_wx_sandstorm_strong.png",
+        "fc_wx_rainstorm.png",
+        "fc_wx_unknown.png",
+        "fc_wx_night_cloudy.png",
+        "fc_wx_night_rain.png",
+        "fc_wx_night_clear.png"
+      ]
+    },
+    {
+      "id": "elmwp4y71y3jq",
+      "kind": "TEXT",
+      "name": "Forecast temp 1",
+      "x": 20,
+      "y": 349,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "7/17",
+      "color": "#F4F4F4",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc0_t",
+      "w": 54,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y72e1h6",
+      "kind": "TEXT",
+      "name": "Forecast day 2",
+      "x": 75,
+      "y": 302,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "SUN",
+      "color": "#8D939C",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc1_d",
+      "w": 73,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y72w1fd",
+      "kind": "IMG",
+      "name": "Forecast icon 2",
+      "x": 102,
+      "y": 326,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fc_wx_cloudy.png",
+      "handle": "fc1_ic",
+      "images": [
+        "fc_wx_cloudy.png",
+        "fc_wx_shower.png",
+        "fc_wx_snow_shower.png",
+        "fc_wx_sunny.png",
+        "fc_wx_overcast.png",
+        "fc_wx_rain_light.png",
+        "fc_wx_snow_light.png",
+        "fc_wx_rain_mod.png",
+        "fc_wx_snow_mod.png",
+        "fc_wx_snow_heavy.png",
+        "fc_wx_rain_heavy.png",
+        "fc_wx_sandstorm.png",
+        "fc_wx_sleet.png",
+        "fc_wx_fog.png",
+        "fc_wx_haze.png",
+        "fc_wx_thundershower.png",
+        "fc_wx_snowstorm.png",
+        "fc_wx_dust.png",
+        "fc_wx_rain_extreme.png",
+        "fc_wx_rain_hail.png",
+        "fc_wx_thunder_hail.png",
+        "fc_wx_rainstorm_heavy.png",
+        "fc_wx_sand_blowing.png",
+        "fc_wx_sandstorm_strong.png",
+        "fc_wx_rainstorm.png",
+        "fc_wx_unknown.png",
+        "fc_wx_night_cloudy.png",
+        "fc_wx_night_rain.png",
+        "fc_wx_night_clear.png"
+      ]
+    },
+    {
+      "id": "elmwp4y73d3jq",
+      "kind": "TEXT",
+      "name": "Forecast temp 2",
+      "x": 75,
+      "y": 349,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "9/18",
+      "color": "#F4F4F4",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc1_t",
+      "w": 73,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y73u617",
+      "kind": "TEXT",
+      "name": "Forecast day 3",
+      "x": 149,
+      "y": 302,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "MON",
+      "color": "#8D939C",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc2_d",
+      "w": 73,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y74c6vh",
+      "kind": "IMG",
+      "name": "Forecast icon 3",
+      "x": 176,
+      "y": 326,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fc_wx_overcast.png",
+      "handle": "fc2_ic",
+      "images": [
+        "fc_wx_cloudy.png",
+        "fc_wx_shower.png",
+        "fc_wx_snow_shower.png",
+        "fc_wx_sunny.png",
+        "fc_wx_overcast.png",
+        "fc_wx_rain_light.png",
+        "fc_wx_snow_light.png",
+        "fc_wx_rain_mod.png",
+        "fc_wx_snow_mod.png",
+        "fc_wx_snow_heavy.png",
+        "fc_wx_rain_heavy.png",
+        "fc_wx_sandstorm.png",
+        "fc_wx_sleet.png",
+        "fc_wx_fog.png",
+        "fc_wx_haze.png",
+        "fc_wx_thundershower.png",
+        "fc_wx_snowstorm.png",
+        "fc_wx_dust.png",
+        "fc_wx_rain_extreme.png",
+        "fc_wx_rain_hail.png",
+        "fc_wx_thunder_hail.png",
+        "fc_wx_rainstorm_heavy.png",
+        "fc_wx_sand_blowing.png",
+        "fc_wx_sandstorm_strong.png",
+        "fc_wx_rainstorm.png",
+        "fc_wx_unknown.png",
+        "fc_wx_night_cloudy.png",
+        "fc_wx_night_rain.png",
+        "fc_wx_night_clear.png"
+      ]
+    },
+    {
+      "id": "elmwp4y74v3sh",
+      "kind": "TEXT",
+      "name": "Forecast temp 3",
+      "x": 149,
+      "y": 349,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "8/16",
+      "color": "#F4F4F4",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc2_t",
+      "w": 73,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y75c2jm",
+      "kind": "TEXT",
+      "name": "Forecast day 4",
+      "x": 223,
+      "y": 302,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "TUE",
+      "color": "#8D939C",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc3_d",
+      "w": 73,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y75u1zc",
+      "kind": "IMG",
+      "name": "Forecast icon 4",
+      "x": 250,
+      "y": 326,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fc_wx_rain_light.png",
+      "handle": "fc3_ic",
+      "images": [
+        "fc_wx_cloudy.png",
+        "fc_wx_shower.png",
+        "fc_wx_snow_shower.png",
+        "fc_wx_sunny.png",
+        "fc_wx_overcast.png",
+        "fc_wx_rain_light.png",
+        "fc_wx_snow_light.png",
+        "fc_wx_rain_mod.png",
+        "fc_wx_snow_mod.png",
+        "fc_wx_snow_heavy.png",
+        "fc_wx_rain_heavy.png",
+        "fc_wx_sandstorm.png",
+        "fc_wx_sleet.png",
+        "fc_wx_fog.png",
+        "fc_wx_haze.png",
+        "fc_wx_thundershower.png",
+        "fc_wx_snowstorm.png",
+        "fc_wx_dust.png",
+        "fc_wx_rain_extreme.png",
+        "fc_wx_rain_hail.png",
+        "fc_wx_thunder_hail.png",
+        "fc_wx_rainstorm_heavy.png",
+        "fc_wx_sand_blowing.png",
+        "fc_wx_sandstorm_strong.png",
+        "fc_wx_rainstorm.png",
+        "fc_wx_unknown.png",
+        "fc_wx_night_cloudy.png",
+        "fc_wx_night_rain.png",
+        "fc_wx_night_clear.png"
+      ]
+    },
+    {
+      "id": "elmwp4y76d1c5",
+      "kind": "TEXT",
+      "name": "Forecast temp 4",
+      "x": 223,
+      "y": 349,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "6/13",
+      "color": "#F4F4F4",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc3_t",
+      "w": 73,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y76w50j",
+      "kind": "TEXT",
+      "name": "Forecast day 5",
+      "x": 297,
+      "y": 302,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "WED",
+      "color": "#8D939C",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc4_d",
+      "w": 73,
+      "h": 24
+    },
+    {
+      "id": "elmwp4y77f1om",
+      "kind": "IMG",
+      "name": "Forecast icon 5",
+      "x": 324,
+      "y": 326,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fc_wx_cloudy.png",
+      "handle": "fc4_ic",
+      "images": [
+        "fc_wx_cloudy.png",
+        "fc_wx_shower.png",
+        "fc_wx_snow_shower.png",
+        "fc_wx_sunny.png",
+        "fc_wx_overcast.png",
+        "fc_wx_rain_light.png",
+        "fc_wx_snow_light.png",
+        "fc_wx_rain_mod.png",
+        "fc_wx_snow_mod.png",
+        "fc_wx_snow_heavy.png",
+        "fc_wx_rain_heavy.png",
+        "fc_wx_sandstorm.png",
+        "fc_wx_sleet.png",
+        "fc_wx_fog.png",
+        "fc_wx_haze.png",
+        "fc_wx_thundershower.png",
+        "fc_wx_snowstorm.png",
+        "fc_wx_dust.png",
+        "fc_wx_rain_extreme.png",
+        "fc_wx_rain_hail.png",
+        "fc_wx_thunder_hail.png",
+        "fc_wx_rainstorm_heavy.png",
+        "fc_wx_sand_blowing.png",
+        "fc_wx_sandstorm_strong.png",
+        "fc_wx_rainstorm.png",
+        "fc_wx_unknown.png",
+        "fc_wx_night_cloudy.png",
+        "fc_wx_night_rain.png",
+        "fc_wx_night_clear.png"
+      ]
+    },
+    {
+      "id": "elmwp4y77y2dj",
+      "kind": "TEXT",
+      "name": "Forecast temp 5",
+      "x": 297,
+      "y": 349,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "8/15",
+      "color": "#F4F4F4",
+      "size": 21,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "antonio-400.ttf",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "handle": "fc4_t",
+      "w": 73,
+      "h": 24
+    }
+  ],
+  "images": [
+    {
+      "name": "week_w1.png",
+      "width": 50,
+      "height": 50
+    },
+    {
+      "name": "week_w2.png",
+      "width": 50,
+      "height": 50
+    },
+    {
+      "name": "week_w3.png",
+      "width": 50,
+      "height": 50
+    },
+    {
+      "name": "week_w4.png",
+      "width": 50,
+      "height": 50
+    },
+    {
+      "name": "week_w5.png",
+      "width": 50,
+      "height": 50
+    },
+    {
+      "name": "week_w6.png",
+      "width": 50,
+      "height": 50
+    },
+    {
+      "name": "week_w7.png",
+      "width": 50,
+      "height": 50
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "colon.png",
+      "width": 9,
+      "height": 27
+    },
+    {
+      "name": "bpm.png",
+      "width": 39,
+      "height": 29
+    },
+    {
+      "name": "percent.png",
+      "width": 25,
+      "height": 26
+    },
+    {
+      "name": "colon_2.png",
+      "width": 9,
+      "height": 27
+    },
+    {
+      "name": "sunup_icon.png",
+      "width": 44,
+      "height": 34
+    },
+    {
+      "name": "colon_3.png",
+      "width": 9,
+      "height": 27
+    },
+    {
+      "name": "sundown_icon.png",
+      "width": 44,
+      "height": 34
+    },
+    {
+      "name": "degree.png",
+      "width": 14,
+      "height": 27
+    },
+    {
+      "name": "negative.png",
+      "width": 11,
+      "height": 27
+    },
+    {
+      "name": "degree_2.png",
+      "width": 14,
+      "height": 27
+    },
+    {
+      "name": "negative_2.png",
+      "width": 11,
+      "height": 27
+    },
+    {
+      "name": "mps.png",
+      "width": 36,
+      "height": 27
+    },
+    {
+      "name": "hpa.png",
+      "width": 33,
+      "height": 27
+    },
+    {
+      "name": "month_m1.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m2.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m3.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m4.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m5.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m6.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m7.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m8.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m9.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m10.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m11.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "month_m12.png",
+      "width": 49,
+      "height": 50
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 17,
+      "height": 34
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 20,
+      "height": 41
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 11,
+      "height": 31
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 14,
+      "height": 26
+    },
+    {
+      "name": "font_9_0.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_1.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_2.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_3.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_4.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_5.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_6.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_7.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_8.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_9_9.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_0.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_1.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_2.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_3.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_4.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_5.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_6.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_7.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_8.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_10_9.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_0.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_1.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_2.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_3.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_4.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_5.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_6.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_7.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_8.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_11_9.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_0.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_1.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_2.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_3.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_4.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_5.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_6.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_7.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_8.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_12_9.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_0.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_1.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_2.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_3.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_4.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_5.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_6.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_7.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_8.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "font_13_9.png",
+      "width": 15,
+      "height": 27
+    },
+    {
+      "name": "dial_dots.png",
+      "width": 208,
+      "height": 208
+    },
+    {
+      "name": "hand_hour.png",
+      "width": 7,
+      "height": 74
+    },
+    {
+      "name": "hand_minute.png",
+      "width": 5,
+      "height": 100
+    },
+    {
+      "name": "hand_cap.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "name": "sc_ring0.png",
+      "width": 48,
+      "height": 48
+    },
+    {
+      "name": "sc_ring1.png",
+      "width": 48,
+      "height": 48
+    },
+    {
+      "name": "sc_ring2.png",
+      "width": 48,
+      "height": 48
+    },
+    {
+      "name": "sc_ring3.png",
+      "width": 48,
+      "height": 48
+    },
+    {
+      "name": "arrow_up_FFB020.png",
+      "width": 12,
+      "height": 14
+    },
+    {
+      "name": "arrow_dn_FFB020.png",
+      "width": 12,
+      "height": 14
+    },
+    {
+      "name": "ring_track_BATTERY.png",
+      "width": 80,
+      "height": 80
+    },
+    {
+      "name": "ring_track_STEP.png",
+      "width": 80,
+      "height": 80
+    },
+    {
+      "name": "ring_track_HEART.png",
+      "width": 80,
+      "height": 80
+    },
+    {
+      "name": "ring_track_CAL.png",
+      "width": 80,
+      "height": 80
+    },
+    {
+      "name": "sc_globe.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "sc_runner.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "sc_compass.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "sc_moon.png",
+      "width": 30,
+      "height": 30
+    },
+    {
+      "name": "info_sunrise.png",
+      "width": 28,
+      "height": 28
+    },
+    {
+      "name": "info_wind.png",
+      "width": 28,
+      "height": 28
+    },
+    {
+      "name": "ring_bolt.png",
+      "width": 19,
+      "height": 19
+    },
+    {
+      "name": "ring_steps.png",
+      "width": 19,
+      "height": 19
+    },
+    {
+      "name": "ring_heart.png",
+      "width": 19,
+      "height": 19
+    },
+    {
+      "name": "ring_flame.png",
+      "width": 19,
+      "height": 19
+    },
+    {
+      "name": "wx_wx_cloudy.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_shower.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_snow_shower.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_sunny.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_overcast.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_rain_light.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_snow_light.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_rain_mod.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_snow_mod.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_snow_heavy.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_rain_heavy.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_sandstorm.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_sleet.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_fog.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_haze.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_thundershower.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_snowstorm.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_dust.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_rain_extreme.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_rain_hail.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_thunder_hail.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_rainstorm_heavy.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_sand_blowing.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_sandstorm_strong.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_rainstorm.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_unknown.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_night_cloudy.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_night_rain.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "wx_wx_night_clear.png",
+      "width": 34,
+      "height": 34
+    },
+    {
+      "name": "fc_wx_cloudy.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_shower.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_snow_shower.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_sunny.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_overcast.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_rain_light.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_snow_light.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_rain_mod.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_snow_mod.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_snow_heavy.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_rain_heavy.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_sandstorm.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_sleet.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_fog.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_haze.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_thundershower.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_snowstorm.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_dust.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_rain_extreme.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_rain_hail.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_thunder_hail.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_rainstorm_heavy.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_sand_blowing.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_sandstorm_strong.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_rainstorm.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_unknown.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_night_cloudy.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_night_rain.png",
+      "width": 20,
+      "height": 20
+    },
+    {
+      "name": "fc_wx_night_clear.png",
+      "width": 20,
+      "height": 20
+    }
+  ],
+  "savePath": null,
+  "userImports": "import { Weather as DCWeather } from '@zos/sensor'",
+  "userCode": "{\n  // Five-day forecast: the day names, the weather picture and low/high for each day, from the watch's own weather data.\n  // Without data (no weather yet, or no permission) the labels and pictures from the editor stay.\n  const DN = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];\n  const IC = [[47, 326], [112, 326], [186, 326], [260, 326], [334, 326]];\n  const apply = () => {\n    let list = [];\n    try {\n      const wx = new DCWeather();\n      const f = wx.getForecastWeather ? wx.getForecastWeather() : wx.getForecast();\n      list = (f && f.forecastData && f.forecastData.data) || [];\n    } catch (e) { /* no weather on this watch */ }\n    const d0 = new Date().getDay();\n    for (let i = 0; i < 5; i++) {\n      try { W['fc' + i + '_d'].setProperty(ui.prop.TEXT, DN[(d0 + i) % 7]) } catch (e) {}\n      const it = list[i];\n      if (!it) continue;\n      try { if (it.low !== undefined && it.high !== undefined) W['fc' + i + '_t'].setProperty(ui.prop.TEXT, Math.round(it.low) + '/' + Math.round(it.high)) } catch (e) {}\n      try { const k = +it.index; if (k >= 0 && k < 29) W['fc' + i + '_ic'].setProperty(ui.prop.MORE, { x: pxv(IC[i][0] - 10), y: pxv(IC[i][1]), src: F['fc' + i + '_ic'][k] }) } catch (e) {}\n    }\n  };\n  apply();\n  setInterval(apply, 600000);\n}\n"
+}

@@ -1,0 +1,145 @@
+[
+ [
+  "Weekday",
+  {
+   "size": 30,
+   "color": "#FFB020"
+  }
+ ],
+ [
+  "Day",
+  {
+   "size": 30,
+   "color": "#F4F4F4"
+  }
+ ],
+ [
+  "Month",
+  {
+   "size": 30,
+   "color": "#F4F4F4"
+  }
+ ],
+ [
+  "Hour",
+  {
+   "size": 38,
+   "color": "#F4F4F4"
+  }
+ ],
+ [
+  "Minute",
+  {
+   "size": 38,
+   "color": "#F4F4F4"
+  }
+ ],
+ [
+  "Colon",
+  {
+   "size": 38,
+   "color": "#FFB020"
+  }
+ ],
+ [
+  "Steps",
+  {
+   "size": 21,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -4
+  }
+ ],
+ [
+  "Heart rate",
+  {
+   "size": 21,
+   "color": "#F4F4F4"
+  },
+  {
+   "unit": "",
+   "hSpace": -4
+  }
+ ],
+ [
+  "Calories",
+  {
+   "size": 21,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -4
+  }
+ ],
+ [
+  "Battery",
+  {
+   "size": 21,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -4
+  }
+ ],
+ [
+  "Sunrise",
+  {
+   "size": 22,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -3
+  }
+ ],
+ [
+  "Sunset",
+  {
+   "size": 22,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -3
+  }
+ ],
+ [
+  "Temp high",
+  {
+   "size": 22,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -3
+  }
+ ],
+ [
+  "Temp low",
+  {
+   "size": 22,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -3
+  }
+ ],
+ [
+  "Wind",
+  {
+   "size": 22,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -3
+  }
+ ],
+ [
+  "Pressure",
+  {
+   "size": 22,
+   "color": "#F4F4F4"
+  },
+  {
+   "hSpace": -3
+  }
+ ]
+]
