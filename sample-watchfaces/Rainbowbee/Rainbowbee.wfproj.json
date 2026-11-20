@@ -4,7 +4,7 @@
   "device": "bip-6",
   "appId": 1137343,
   "vender": "zepp",
-  "description": "Rainbowbee: a bold, bee-style digital face with a big stacked hour and minute, the date and weekday, heart rate and battery. Two editable complications (steps or sunrise/sunset, calories or temperature) and five colour themes: tap the face to switch between them. Includes an always-on display design.",
+  "description": "Rainbowbee: a bold, bee-style digital face with a big stacked hour and minute, date and weekday, heart rate and battery. Two editable complications (steps or sunrise/sunset, calories or temperature), five colour themes (tap the face to switch) and an always-on display. Weekday names and store text in English, Romanian, Spanish, French, German, Italian and Portuguese (Brazil).",
   "font": "Orbitron",
   "language": "en-US",
   "groups": {},
