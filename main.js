@@ -870,6 +870,13 @@ ipcMain.handle('build-zeus', async (_e, payload) => {
   const res = await runZeusBuild(outDir, payload, { apiLevel: zeusApiLevel(device.api) });
   if (res.ok) {
     try { res.storeDir = writeStoreFolder(outDir, payload, device); } catch (err) { buildLog('Could not write the store folder: ' + String((err && err.message) || err)); }
+    // the same face for amazfitwatchfaces.com and the Amazfit apps: the plain-source package of the older runtime (Watchface Maker layout)
+    if (res.storeDir) {
+      try {
+        const zipPath = require('./core/legacy').writeAmazfitPackage(outDir, device, res.storeDir, payload.project && payload.project.name, (res.artifacts || []).find((f) => /\.zab$/i.test(f)));
+        buildLog('Amazfit package: ' + zipPath + ' (plain-source, for amazfitwatchfaces.com; not yet tried on a watch)');
+      } catch (err) { buildLog('Could not write the Amazfit package: ' + String((err && err.message) || err)); }
+    }
   }
   return res;
 });
