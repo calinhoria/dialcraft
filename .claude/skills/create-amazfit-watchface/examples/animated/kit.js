@@ -218,10 +218,20 @@ const OFFX = -600;
 const dateRow = async (cx, cy, gap) => {
   const W7 = []; for (let wd = 1; wd <= 7; wd++) W7.push(await inkBox(['Weekday'], 'normal', wd));
   const dB = await inkBox(['Day']);
-  const mw = W7.reduce((s, b) => s + b.w, 0) / 7, avgR = W7.reduce((s, b) => s + b.r, 0) / 7, U0 = Math.min(...W7.map((b) => b.y));
+  const mw = W7.reduce((s, b) => s + b.w, 0) / 7, maxR = Math.max(...W7.map((b) => b.r)), U0 = Math.min(...W7.map((b) => b.y));
   const Bn = W7.map((b) => b.b).sort((a, b) => a - b)[3]; const hRow = Math.max(Bn - U0, dB.h);
   const pivot = cx - (mw + gap + dB.w) / 2 + mw, base = cy + hRow / 2;
-  shift(['Weekday'], Math.round(pivot - avgR), Math.round(base - Bn)); await align(['Day'], { l: pivot + gap, b: base });
+  // the weekday's right edge is its WIDEST name (WED), not the average: the gap is the smallest one the row will ever show
+  shift(['Weekday'], Math.round(pivot - maxR), Math.round(base - Bn)); await align(['Day'], { b: base });
+  // the day starts after the right-most ink of all seven weekday pictures plus the gap, minus the smallest left bearing of all ten digits
+  // (from the cells themselves, so a 1 or a 2 never runs into WED)
+  const w = E('Weekday'), d = E('Day'), gw = w.glyph || {}, gd = d.glyph || {};
+  const inkR = Math.max(...labelPics(w).filter(Boolean).map((n) => (inkWidth(n) || { right: -1e9 }).right));
+  const inkL = Math.min(...(d.images || []).filter(Boolean).map((n) => (inkWidth(n) || { left: 1e9 }).left));
+  d.alignH = 'LEFT'; d.x = Math.round(w.x + inkR + 1 + gap - inkL);
+  // same font and size: the weekday and day pictures share one cell and baseline (the app's DATE_METRICS), so the exact line is the
+  // weekday's own Y; measured ink is a pixel loose when a font's digits are shorter than its capitals
+  if (gw.font && gw.font === gd.font && +gw.size === +gd.size && (+gw.weight || 400) === (+gd.weight || 400)) d.y = w.y;
 };
 
 // ---- segmented progress bar: native IMG_PROGRESS (data-bound, nothing to run); pictures[i] shows at pos[i] once the reading reaches i/N ----

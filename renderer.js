@@ -3924,9 +3924,13 @@ const MONTH_FILE_RE = /^month\d*_m\d+\.png$/;
 const LABEL_FILE_RE = { week: /^(week\d*)_w\d+\.png$/, month: /^(month\d*)_m\d+\.png$/ };
 const DIGIT_METRICS = ['0123456789'];
 // weekday and month pictures reserve room for the tallest accent and the deepest tail any language needs, so the
-// layer keeps one height when the language changes (SÂM, ŞTE … would otherwise make the box taller)
+// layer keeps one height when the language changes (SÂM, ŞTE … would otherwise make the box taller).
+// The date numbers (day, month as digits) use the very same metrics: at the same font size every date picture then has one
+// cell height and one baseline, so a weekday and a day placed at the same Y line up in any font (SAT 17 no longer sits a pixel
+// or more apart). Time digits keep DIGIT_METRICS, so existing clocks do not move.
+const DATE_METRICS = ['ÂÉÖÜ', 'ÇȘȚ', 'âéöÜ', 'çșțgjpqy', '0123456789'];
 function labelMetrics(e) {
-  return labelCaseOf(e) === 'upper' ? ['ÂÉÖÜ', 'ÇȘȚ'] : ['âéöÜ', 'çșțgjpqy'];
+  return DATE_METRICS;
 }
 const WEEK_CHARS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const SEPARATOR_CHARS = { colon: ':', dot: '.', percent: '%', negative: '-', degree: '°', slash: '/', am: 'A', pm: 'P' };
@@ -4540,6 +4544,129 @@ const COLOR_PALETTES = [
 // A digit set shared with a layer we are *not* restyling is copied first (the
 // reference does the same): the other layers keep the glyphs they were drawn
 // with, this one gets a set of its own.
+// ---- presets place layers on their INK, measured over every picture of a set, never on boxes or one sample --------------------
+// A picture cell carries padding (side bearings, right-aligned names, the reserved accent room), so laying layers out on their boxes
+// or on one sample value leaves the long names glued to the numbers (WED25) and colons off the digits' middle. The placed layer keeps
+// a link (e.link) and is placed again whenever one of the layers is restyled; a horizontal move by hand ends the link, except that a
+// clock colon is always kept centred vertically on its digits.
+const inkRectCache = new Map();
+function inkRect(name) {   // painted columns and rows of one picture: { l, r, t, b } (inclusive), null when blank / not loaded
+  const im = imgFor(name);
+  if (!im || !im.width) return null;
+  const k = `${name}:${im.width}x${im.height}:${im.src && im.src.length}`;
+  if (inkRectCache.has(k)) return inkRectCache.get(k);
+  const cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height;
+  const c = cv.getContext('2d'); c.drawImage(im, 0, 0);
+  let l = 1e9, r = -1, t = 1e9, b = -1;
+  try {
+    const d = c.getImageData(0, 0, im.width, im.height).data;
+    for (let y = 0; y < im.height; y++) for (let x = 0; x < im.width; x++) if (d[(y * im.width + x) * 4 + 3] > 40) { if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y; }
+  } catch (err) { return null; }
+  const out = r >= 0 ? { l, r, t, b } : null;
+  inkRectCache.set(k, out);
+  return out;
+}
+// the ink a layer can ever show, relative to its x / y: every weekday name, every digit; a digit layer adds its cells before the last
+function layerPics(e) {
+  if (e.kind === 'IMG_WEEK' || (e.kind === 'IMG_DATE' && e.isCharacter)) return labelPics(e).filter(Boolean);
+  if (e.kind === 'IMG' || e.kind === 'IMG_CLICK' || e.kind === 'IMG_STATUS') return [pictureOf(e)].filter(Boolean);
+  if (e.kind === 'IMG_ANIM') return (e.frames || []).filter(Boolean).slice(0, 1);
+  return (e.images || []).filter(Boolean);
+}
+function layerInk(e) {
+  const rs = layerPics(e).map(inkRect).filter(Boolean);
+  if (!rs.length) return null;
+  const u = { l: Math.min(...rs.map((q) => q.l)), r: Math.max(...rs.map((q) => q.r)), t: Math.min(...rs.map((q) => q.t)), b: Math.max(...rs.map((q) => q.b)) };
+  // a digit layer: the left digit starts at x, the last one sits n-1 cells further (the time always shows its zero, a day may not)
+  if (e.kind === 'IMG_TIME' || (e.kind === 'IMG_DATE' && !e.isCharacter)) {
+    const cell = imgMeta(layerPics(e)[0]); const n = e.kind === 'IMG_TIME' ? 2 : 2;
+    if (cell) u.r += (n - 1) * (cell.width + (+e.space || 0));
+  }
+  return u;
+}
+const sameGlyph = (a, b) => { const x = a.glyph || {}, y = b.glyph || {}; return !!x.font && x.font === y.font && +x.size === +y.size && (+x.weight || 400) === (+y.weight || 400); };
+function rowGap(a) { return Math.max(6, Math.round((+((a.glyph || {}).size) || 40) * 0.25)); }
+// e beside anchor on one line: 'after' = right of it, 'before' = left of it; the visible gap is the smallest the row will ever show
+function placeBeside(e, a, side, gap = rowGap(a)) {
+  const ia = layerInk(a), ie = layerInk(e);
+  if (!ia || !ie) return false;
+  if (e.kind === 'IMG_DATE') e.alignH = 'LEFT';                       // the run starts at x, so a one-digit day keeps the gap
+  e.x = Math.round(side === 'after' ? (+a.x || 0) + ia.r + 1 + gap - ie.l : (+a.x || 0) + ia.l - 1 - gap - ie.r);
+  // the same font and size share one cell and baseline (DATE_METRICS): the same Y is the exact line; otherwise the ink bottoms meet
+  e.y = Math.round(sameGlyph(e, a) ? +a.y || 0 : (+a.y || 0) + ia.b - ie.b);
+  e.link = { kind: 'beside', id: a.id, side, gap, x: e.x, y: e.y };
+  return true;
+}
+// a colon (or an icon) centred between two layers: vertically on their ink middle, horizontally halfway between their facing ink edges
+// With `relayout` (a clock restyled) the row is laid out again around its centre: colon `gap` after a, b `gap` after the colon, so
+// bigger digits never run over the colon.
+function placeBetween(e, a, b, { horiz = true, relayout = false, gap = null } = {}) {
+  const ia = layerInk(a), ib = layerInk(b), ie = layerInk(e);
+  if (!ia || !ib || !ie) return false;
+  if (horiz && relayout && gap != null) {
+    const mid = ((+a.x || 0) + ia.l + (+b.x || 0) + ib.r) / 2;                 // keep the row's centre where it was
+    const w = (ia.r - ia.l + 1) + gap + (ie.r - ie.l + 1) + gap + (ib.r - ib.l + 1);
+    // the middle of a chain (the minute of h:m:s) was placed by the colon before it: it stays, the row grows to the right
+    const chained = elements().some((o) => o !== e && o.link && o.link.kind === 'between' && o.link.b === a.id);
+    if (!chained) a.x = Math.round(mid - w / 2) - ia.l;
+    e.x = Math.round(a.x + ia.r + 1 + gap - ie.l);
+    b.x = Math.round(e.x + ie.r + 1 + gap - ib.l);
+  }
+  const top = Math.min((+a.y || 0) + ia.t, (+b.y || 0) + ib.t), bot = Math.max((+a.y || 0) + ia.b, (+b.y || 0) + ib.b);
+  e.y = Math.round((top + bot) / 2 - (ie.t + ie.b) / 2);
+  if (horiz && !relayout) e.x = Math.round(((+a.x || 0) + ia.r + (+b.x || 0) + ib.l) / 2 - (ie.l + ie.r) / 2);
+  const g = gap != null ? gap : Math.round(((+b.x || 0) + ib.l - ((+a.x || 0) + ia.r) - (ie.r - ie.l + 1)) / 2) - 1;
+  e.link = { kind: 'between', a: a.id, b: b.id, gap: g, x: e.x, y: e.y };
+  return true;
+}
+// an icon left of its reading, on the reading's ink middle
+function placeIcon(ic, e, gap) {
+  const ie = layerInk(e), ii = layerInk(ic);
+  if (!ie || !ii) return false;
+  ic.x = Math.round((+e.x || 0) + ie.l - 1 - gap - ii.r);
+  ic.y = Math.round((+e.y || 0) + (ie.t + ie.b) / 2 - (ii.t + ii.b) / 2);
+  ic.link = { kind: 'icon', id: e.id, gap, x: ic.x, y: ic.y };
+  return true;
+}
+// after a restyle: place the linked layers again, in chain order (weekday → day → month), so a row follows its first member
+function replaceLinked(list) {
+  const ids = new Set(list.map((t) => t.id));
+  const done = new Set();
+  let n = 0;
+  for (let pass = 0; pass < 3; pass++) {
+    for (const d of elements().slice().sort((p, q) => (+p.x || 0) - (+q.x || 0))) {   // left to right: a row follows its first member
+      const L = d.link;
+      if (!L) continue;
+      const refs = L.kind === 'between' ? [L.a, L.b] : [L.id];
+      const others = refs.map(elementById);
+      if (others.some((o) => !o)) { delete d.link; continue; }
+      const touched = ids.has(d.id) || refs.some((r) => ids.has(r));
+      if (!touched || done.has(d.id)) continue;
+      done.add(d.id);
+      const movedX = +d.x !== L.x, movedY = +d.y !== L.y;
+      if (L.kind === 'between') {   // the colon stays centred vertically on its digits always; across (and the row), unless moved by hand
+        const hand = movedX && L.x != null;
+        if (placeBetween(d, others[0], others[1], { horiz: !hand, relayout: !hand && L.gap != null, gap: L.gap })) {
+          if (hand) d.link.x = null;
+          ids.add(d.id); ids.add(L.b); n++;
+        }
+        continue;
+      }
+      if (movedX || movedY) { delete d.link; continue; }                  // moved by hand: the user's place wins
+      const ok = L.kind === 'beside' ? placeBeside(d, others[0], L.side, L.gap) : placeIcon(d, others[0], L.gap);
+      if (ok) { ids.add(d.id); n++; }
+    }
+  }
+  return n;
+}
+// the clock's colons: each one between the digit layers either side of it (hour : minute, minute : second)
+function centreClockColons(els) {
+  const parts = els.filter((x) => x.kind === 'IMG_TIME').sort((p, q) => (+p.x || 0) - (+q.x || 0));
+  for (const c of els.filter((x) => x.kind !== 'IMG_TIME')) {
+    const a = parts.filter((p) => (+p.x || 0) < (+c.x || 0)).pop(), b = parts.find((p) => (+p.x || 0) > (+c.x || 0));
+    if (a && b) placeBetween(c, a, b);
+  }
+}
 async function regenerateGlyphs(e, { targets = [e] } = {}) {
   if (isTintLayer(e)) return regenerateTint(e, targets);
   const spec = glyphSpecForLayer(e);
@@ -4574,7 +4701,7 @@ async function regenerateGlyphs(e, { targets = [e] } = {}) {
     spec.map((g) => ({ tag: g.tag, char: g.char, name: (fork || !g.name) ? `${pre}_${g.tag}.png` : g.name })),
     { prefix: pre, mono: spec.length > 1, replace: true, size: st.size,
       family: st.font, weight: st.weight, variations: st.variations, style: st,
-      metricsRef: labelKind(e) ? labelMetrics(e) : digitLike ? DIGIT_METRICS : null,
+      metricsRef: labelKind(e) || e.kind === 'IMG_DATE' ? DATE_METRICS : digitLike ? DIGIT_METRICS : null,
       align: e.labelAlign || 'center' },
   );
   if (e.kind === 'IMG') e.src = names[0];
@@ -4599,7 +4726,7 @@ async function regenerateGlyphs(e, { targets = [e] } = {}) {
     // ° high and its − at the digits' mid-height, so they land where the
     // typeface designer put them next to these digits
     const [n] = await genGlyphImages([{ tag: g.tag, char: g.char, name: g.name }],
-      { prefix: g.tag, mono: false, replace: true, size: st.size, metricsRef: DIGIT_METRICS,
+      { prefix: g.tag, mono: false, replace: true, size: st.size, metricsRef: e.kind === 'IMG_DATE' ? DATE_METRICS : DIGIT_METRICS,
         family: st.font, weight: st.weight, variations: st.variations, style: st });
     e[key] = n;
   }
@@ -4632,6 +4759,7 @@ async function rerenderGlyphLayers(targets, { quiet } = {}) {
     return 0;
   }
   await loadAllImages();
+  replaceLinked(list);
   withFocusKept(() => refreshPanels());
   render(); scheduleCode();
   status(`Re-rendered ${done} image layer${done === 1 ? '' : 's'} at the new size / colour.`);
@@ -6508,6 +6636,20 @@ async function applyPreset(id) {
       const digits = await ensureDigitNames();
       const e = newElement('IMG_DATE', { part: id, images: digits, zero: 0, show: 'normal', x: cx - 30, y: cy, name: id === 'month' ? 'Month' : 'Day' });
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+      // beside a weekday: the weekday's style (font, size, colour) and its Y, right after it. Date pictures share one cell and
+      // baseline (DATE_METRICS), so the day lands on the weekday's line in any font instead of a pixel or more off
+      // after the last layer of a date row already on the face (weekday, day …): its style, its line, a gap measured on the ink
+      const row = elements().filter((x) => x !== e && x.glyph && (x.kind === 'IMG_WEEK' || x.kind === 'IMG_DATE'));
+      const tail = row.sort((p, q) => (+p.x || 0) - (+q.x || 0)).pop();
+      if (tail) {
+        e.glyph = { ...tail.glyph };
+        // weekday names right-aligned in their cell: every name then ends where the day starts, one gap for all seven days
+        if (tail.kind === 'IMG_WEEK' && tail.labelAlign !== 'right') { tail.labelAlign = 'right'; await regenerateGlyphs(tail); }
+        await regenerateGlyphs(e);
+        await loadAllImages();
+        placeBeside(e, tail, 'after');
+        refreshPanels(); render(); scheduleCode();
+      }
       break;
     }
     case 'steps': return dataTextPreset('STEP', 'Steps', null);
@@ -6644,6 +6786,8 @@ async function sunPreset(dataType = 'SUN_CURRENT', name = 'Sun time', arrow = nu
   const cell = imgMeta((e.images || []).find(Boolean));
   const ic = newElement('IMG', { src: icon.name, show: 'normal', w: 0, h: 0, x: (+e.x || 0) - 54, y: (+e.y || 0) + Math.round(((cell ? cell.height : 44) - 34) / 2), name: `${name} icon` });
   project.elements.push(ic);
+  await loadAllImages();
+  placeIcon(ic, e, Math.max(6, Math.round((cell ? cell.height : 44) * 0.15)));   // on the reading's ink middle, a measured gap before it
   if (group) groupElements([ic, e], arrow ? name : 'Sunrise / sunset');
   selectedId = e.id; multiSel = new Set([e.id, ic.id]);
   refreshPanels(); render(); scheduleCode();
@@ -6655,7 +6799,7 @@ async function sunTimesPreset() {
   pushHistory();
   const rise = await sunPreset('SUN_RISE', 'Sunrise', 'up', false);
   const set = await sunPreset('SUN_SET', 'Sunset', 'down', false);
-  set.e.x = rise.e.x; set.e.y = rise.e.y; set.ic.x = rise.ic.x; set.ic.y = rise.ic.y;
+  set.e.x = rise.e.x; set.e.y = rise.e.y; set.ic.x = rise.ic.x; set.ic.y = rise.ic.y; placeIcon(set.ic, set.e, set.ic.link ? set.ic.link.gap : 8);
   for (const l of [rise.e, rise.ic]) l.showWhen = 'sunrise';
   for (const l of [set.e, set.ic]) l.showWhen = 'sunset';
   groupElements([rise.ic, rise.e, set.ic, set.e], 'Sunrise / sunset');
@@ -6695,6 +6839,9 @@ async function clockPreset(withSeconds) {
   }
   // the layers panel lists the top layer first, so the parts go in last-to-first to read hour, colon, minute from top to bottom
   project.elements.push(...els.slice().reverse());
+  // the colon on the digits' ink: centred vertically on them and halfway between the hour's and the minute's facing edges
+  await loadAllImages();
+  centreClockColons(els);
   groupElements(els, 'Clock');
   selectedId = els[0].id; multiSel = new Set(els.map((e) => e.id));
   status(`Added a digital clock from ${glyphFont} glyphs.`);
@@ -6717,6 +6864,9 @@ async function blinkColonPreset() {
     x: Math.round((d.w - (m ? m.width : 20)) / 2), y: Math.round((d.h - (m ? m.height : 60)) / 2),
   });
   project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+  // with an hour and a minute on the face: between them, centred vertically on the digits' ink
+  const hr = elements().find((x) => x.kind === 'IMG_TIME' && x.part === 'hour'), mi = elements().find((x) => x.kind === 'IMG_TIME' && x.part === 'minute');
+  if (hr && mi) { await loadAllImages(); placeBetween(e, hr, mi); }
   status(`Added a blinking colon (${style.font}): flashes every 500 ms; turn Blink off in Properties to keep it lit.`);
   refreshPanels(); render(); scheduleCode();
 }
@@ -6819,10 +6969,17 @@ async function weekdayPreset() {
   const d = dev();
   const e = newElement('IMG_WEEK', { images: [], show: 'normal', y: Math.round(d.h * 0.2), name: 'Weekday' });
   rememberGlyphStyle(e, 40);
+  // a day / month already on the face: the weekday takes its style and goes left of it, names right-aligned so the gap holds
+  const head = elements().filter((x) => x.kind === 'IMG_DATE' && x.glyph).sort((p, q) => (+p.x || 0) - (+q.x || 0))[0];
+  if (head) { e.glyph = { ...head.glyph }; e.labelAlign = 'right'; }
   e.images = await genLabelSet(e, 'week');
   const m = imgMeta(e.images[0]);
   e.x = Math.round(d.w / 2) - (m ? Math.round(m.width / 2) : 30);
   project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
+  if (head) {
+    await loadAllImages();
+    if (placeBeside(e, head, 'before')) { e.link = null; delete e.link; placeBeside(head, e, 'after'); }   // the day follows the weekday from now on
+  }
   refreshPanels(); render(); scheduleCode();
 }
 async function dataTextPreset(dataType, label, unit, negative, useDot) {
