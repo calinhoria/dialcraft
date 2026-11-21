@@ -1,4 +1,4 @@
-# Builds Dialcraft on Windows, Linux and macOS and attaches the installers to a GitHub pre-release.
+# Builds Dialcraft on Windows, Linux and macOS and attaches the installers to a GitHub release, published as stable (Latest).
 #
 #   git tag v0.2.1 && git push origin v0.2.1
 #

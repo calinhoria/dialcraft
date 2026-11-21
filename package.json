@@ -83,7 +83,7 @@
         "provider": "github",
         "owner": "calinhoria",
         "repo": "dialcraft",
-        "releaseType": "prerelease"
+        "releaseType": "release"
       }
     ],
     "asarUnpack": [

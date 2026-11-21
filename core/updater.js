@@ -47,7 +47,7 @@ function createUpdater({ autoUpdater, currentVersion, platform, env, isPackaged,
   if (autoUpdater && mode !== 'off') {
     autoUpdater.autoDownload = false;            // the wearer decides; nothing downloads in the background
     autoUpdater.autoInstallOnAppQuit = false;
-    autoUpdater.allowPrerelease = true;          // the releases are published as pre-releases while this is a beta
+    autoUpdater.allowPrerelease = false;         // stable releases only: every tag is published as the Latest release
     autoUpdater.allowDowngrade = false;
     autoUpdater.on('checking-for-update', () => set({ status: 'checking', error: null }));
     autoUpdater.on('update-available', (info) => {
