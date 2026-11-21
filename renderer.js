@@ -2472,7 +2472,7 @@ function composePreviewCanvas(shaped, scene) {
     const cx = cv.getContext('2d', { willReadFrequently: true });
     // shaped: the screen's own outline (round / rounded rectangle) with a transparent outside, for the store pictures
     if (shaped) { cx.beginPath(); cx.roundRect(0, 0, d.w, d.h, Math.min(d.radius || 0, d.w / 2, d.h / 2)); cx.clip(); }
-    drawScene(cx, d.w, d.h, 'normal', false);
+    drawScene(cx, d.w, d.h, (scene && scene.state) || 'normal', false);
   }
   finally { exportRender = prev; clock = keep.clock; dateParts = keep.dateParts; previewLang = keep.previewLang; themeIdx = keep.themeIdx; editPick = keep.editPick; testData = keep.testData; }
   return cv;
@@ -2538,9 +2538,9 @@ function gifEncode(frames, w, h, delayMs) {
   const out = [71, 73, 70, 56, 57, 97, w & 255, w >> 8, h & 255, h >> 8, 0xF7, 0, 0];
   for (let i = 0; i < 256; i++) out.push(...(pr[i] || [0, 0, 0]));
   out.push(0x21, 0xFF, 11, ...[...'NETSCAPE2.0'].map((c) => c.charCodeAt(0)), 3, 1, 0, 0, 0);
-  const delay = Math.max(2, Math.round(delayMs / 10));
   let prev = null;
   for (const f of frames) {
+    const delay = Math.max(2, Math.round((f.delayMs || delayMs) / 10));   // 1/100 s
     const p = f.data, idx = new Uint8Array(w * h), now = new Uint8Array(w * h);
     for (let i = 0, j = 0; j < w * h; i += 4, j++) {
       now[j] = p[i + 3] < 128 ? 255 : nearest(p[i], p[i + 1], p[i + 2]);   // outside the screen shape: transparent
@@ -2597,27 +2597,48 @@ function recordScenes(scenes) {
 }
 // is anything on the face moving by itself (code, frame animations)?
 function faceMoves() { return !!(project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false); }
-function fitGif(frames, dt, firstKeep = 8, per = 1) {
-  const d = dev();
-  let use = frames, delay = dt, gif = gifEncode(use, d.w, d.h, delay);
-  const LIM = 1000 * 1024;   // the console takes at most 1 MB
-  const poster = (fs, mask) => fs.map((f) => { const o = new ImageData(new Uint8ClampedArray(f.data), f.width, f.height); const a = o.data; for (let i = 0; i < a.length; i += 4) { a[i] &= mask; a[i + 1] &= mask; a[i + 2] &= mask; } return o; });
-  if (per > 1) {
-    // A moving face keeps its frame rate (smooth motion is the point of the GIF): fewer colours first (they compress far better and keep the
-    // frame-to-frame "unchanged" pixels identical), then each scene gets shorter (its first frames only), never a coarser step between frames.
-    let mask = 0xFF, n = per;
-    const pick = (k) => frames.filter((_, i) => i % per < k);
-    const enc = () => { use = poster(pick(n), mask); gif = gifEncode(use, d.w, d.h, delay); };
-    for (const m of [0xF8, 0xF0, 0xE0]) { if (gif.length <= LIM) break; mask = m; enc(); }
-    while (gif.length > LIM && n > 8) { n = Math.max(8, Math.floor(n * 0.75)); enc(); }
-    if (gif.length > LIM) { mask = 0xC0; enc(); }
-  }
-  // the last resort (and the whole path for stills): drop every other frame (down to firstKeep), then posterize, then keep dropping (down to 4)
+// frames: the scenes' frames, `per` of them per scene. fx: { fade: cross-fade steps between scenes, fadeMs: length of the whole fade, aod: the always-on frame
+// (shown last, held holdMs), loop: also fade from the last frame back to the first }. A fade step is a blend of two neighbouring frames, so it
+// costs a whole frame: when the GIF is over the console's 1 MB the ladder gives up colours first, then fade steps, then the length of each clip.
+function fitGif(frames, dt, firstKeep = 8, per = 1, fx = {}) {
+  const d = dev(), LIM = 1000 * 1024, F = fx.fade || 0;
+  const clone = (f, mask) => {
+    const o = new ImageData(new Uint8ClampedArray(f.data), f.width, f.height), a = o.data;
+    if (mask !== 0xFF) for (let i = 0; i < a.length; i += 4) { a[i] &= mask; a[i + 1] &= mask; a[i + 2] &= mask; }
+    if (f.delayMs) o.delayMs = f.delayMs;
+    return o;
+  };
+  const blend = (x, y, t, ms) => { const o = new ImageData(x.width, x.height), X = x.data, Y = y.data, O = o.data; for (let i = 0; i < O.length; i++) O[i] = X[i] + (Y[i] - X[i]) * t; o.delayMs = ms; return o; };
+  // the final sequence: n frames of every scene, a cross-fade between neighbours, the always-on frame last
+  const assemble = (n, fadeN, mask) => {
+    const clips = [];
+    for (let s = 0; s * per < frames.length; s++) clips.push(frames.slice(s * per, s * per + Math.min(n, per)).map((f) => clone(f, mask)));
+    if (fx.aod) { const a = clone(fx.aod, mask); a.delayMs = fx.holdMs || dt; clips.push([a]); }
+    const out = [];
+    clips.forEach((c, i) => {
+      out.push(...c);
+      if (fadeN && (i + 1 < clips.length || fx.loop)) {
+        const nxt = clips[(i + 1) % clips.length];
+        for (let k = 1; k <= fadeN; k++) out.push(blend(c[c.length - 1], nxt[0], k / (fadeN + 1), Math.round((fx.fadeMs || 240) / fadeN)));   // the whole fade takes fadeMs, in however many steps fit
+      }
+    });
+    return out;
+  };
+  let use = null, gif = null, delay = dt;
+  const enc = (n, fadeN, mask) => { use = assemble(n, fadeN, mask); gif = gifEncode(use, d.w, d.h, delay); return gif.length <= LIM; };
+  // What gives way first, in this order: some colours (down to 4 bits), then the length of each clip of a moving face (its first frames only, never a
+  // coarser step), then fade steps (3, 2, 1), then more colours, and the fade only last. The fade and the always-on frame are what was asked for.
+  let n = per, ok = enc(per, F, 0xFF);
+  for (const m of [0xF8, 0xF0]) if (!ok) ok = enc(per, F, m);
+  while (!ok && per > 1 && n > 10) { n = Math.max(10, Math.floor(n * 0.8)); ok = enc(n, F, 0xF0); }
+  for (const fn of [...new Set([Math.min(F, 2), Math.min(F, 1)])]) if (!ok && fn < F) ok = enc(n, fn, 0xF0);
+  for (const m of [0xE0, 0xC0]) if (!ok) ok = enc(n, Math.min(F, 1), m);
+  if (!ok) ok = enc(n, 0, 0xC0);
+  // the last resort (stills): drop every other frame (down to firstKeep), then keep dropping (down to 4)
   while (gif.length > LIM && use.length > firstKeep) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
-  for (const mask of [0xF8, 0xF0, 0xE0, 0xC0]) { if (gif.length <= LIM) break; use = poster(use, mask); gif = gifEncode(use, d.w, d.h, delay); }
   while (gif.length > LIM && use.length > 4) { use = use.filter((_, i) => i % 2 === 0); delay *= 2; gif = gifEncode(use, d.w, d.h, delay); }
   let s = ''; for (let i = 0; i < gif.length; i += 0x8000) s += String.fromCharCode.apply(null, gif.subarray(i, i + 0x8000));
-  return { base64: btoa(s), frames: use.length, bytes: gif.length, delay };
+  return { base64: btoa(s), frames: use.length, bytes: gif.length, delay, fade: F, aod: !!fx.aod };
 }
 
 // ---- showcase GIF: the face's features in a loop: times of day, dates, colour themes, languages, complication choices ----
@@ -2696,7 +2717,11 @@ function captureShowcaseGif(sceneMs = 1500) {
     start: new Date(view.date.year, view.date.month - 1, view.date.day, view.clock.h, view.clock.m, view.clock.s),
     warm, frames: per, dt, restart: true, view,
   }));
-  return fitGif(recordScenes(scenes), dt, scenes.length * per, per);
+  const frames = recordScenes(scenes);
+  // a face with its own always-on design ends with it (the last scene's time and data), so the loop shows what the watch dims to
+  const d = dev(), hasAod = elements().some((e) => e.visible !== false && (e.show === 'aod' || e.show === 'both'));
+  const aod = hasAod ? composePreviewCanvas(true, { ...scenes[scenes.length - 1].view, state: 'aod' }).getContext('2d').getImageData(0, 0, d.w, d.h) : null;
+  return fitGif(frames, dt, scenes.length * per, per, { fade: 3, fadeMs: 240, aod, holdMs: sceneMs, loop: true });
 }
 
 // ----------------------------------------------------------------- layers --
