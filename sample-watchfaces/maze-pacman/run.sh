@@ -1,0 +1,2 @@
+cd /Volumes/Projects/Projects/dialcraft/sample-watchfaces/maze-pacman && SEED=3 CH=0.6 node gen.js && cd /Volumes/Projects/Projects/dialcraft && env -u ELECTRON_RUN_AS_NODE node_modules/.bin/electron tools/face-cli.js sample-watchfaces/maze-pacman/recipe.json 2>&1 | tail -1 | python3 -c "
+import json,sys; d=json.loads(sys.stdin.read()); print(d['ok']); print([l for l in d['log'] if 'fail' in l]); print(d['layers']); print(d['lint']); print(d['export'])"

@@ -1,0 +1,1085 @@
+{
+  "version": 1,
+  "name": "Fortune Wheel",
+  "device": "bip-6",
+  "appId": 1133670,
+  "vender": "dialcraft",
+  "description": "A glossy wheel of answers behind the time: every time the watch wakes up it spins once, speeds up, slows down and stops on a random answer.",
+  "font": "Open Sans Regular",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [],
+  "groups": {
+    "gmwqxg8edlk": "Clock",
+    "gmwqxg8ezii": "Clock 2",
+    "gClockAod": "Clock AOD",
+    "gClock": "Clock",
+    "gDate": "Date",
+    "gPower": "Power",
+    "gWheel": "Wheel"
+  },
+  "elements": [
+    {
+      "id": "elmwqxg8992y6",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwqxg8au32b",
+      "kind": "IMG",
+      "name": "Wheel",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWheel",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 15,
+      "posX": 0,
+      "posY": 0,
+      "src": "fw/wheel.png",
+      "handle": "wheel",
+      "centerX": 195,
+      "centerY": 225
+    },
+    {
+      "id": "elmwqxg8bslx",
+      "kind": "IMG",
+      "name": "Cover",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWheel",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fw/cover.png"
+    },
+    {
+      "id": "elmwqxg8cm593",
+      "kind": "IMG",
+      "name": "Centre plate",
+      "x": 155,
+      "y": 185,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWheel",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fw/plate.png"
+    },
+    {
+      "id": "elmwqxg8dj4t3",
+      "kind": "IMG",
+      "name": "Dial",
+      "x": 149,
+      "y": 179,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gWheel",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fw/dial.png"
+    },
+    {
+      "id": "elmwqxg8ed4i8",
+      "kind": "IMG_TIME",
+      "name": "Minute Aod",
+      "x": 16,
+      "y": 226,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAod",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_5_0.png",
+        "font_5_1.png",
+        "font_5_2.png",
+        "font_5_3.png",
+        "font_5_4.png",
+        "font_5_5.png",
+        "font_5_6.png",
+        "font_5_7.png",
+        "font_5_8.png",
+        "font_5_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 112,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8c8c8c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "alignH": "CENTER_H"
+    },
+    {
+      "id": "elmwqxg8ed3s",
+      "kind": "IMG_TIME",
+      "name": "Hour Aod",
+      "x": 16,
+      "y": 132,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAod",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_4_0.png",
+        "font_4_1.png",
+        "font_4_2.png",
+        "font_4_3.png",
+        "font_4_4.png",
+        "font_4_5.png",
+        "font_4_6.png",
+        "font_4_7.png",
+        "font_4_8.png",
+        "font_4_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 112,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#8c8c8c",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "alignH": "CENTER_H"
+    },
+    {
+      "id": "elmwqxg8ez13a",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 16,
+      "y": 226,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 112,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "alignH": "CENTER_H"
+    },
+    {
+      "id": "elmwqxg8ez4y6",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 16,
+      "y": 132,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 112,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "alignH": "CENTER_H"
+    },
+    {
+      "id": "elmwqxg8fb4om",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 64,
+      "y": 69,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -4,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwqxg8fl4bm",
+      "kind": "IMG_DATE",
+      "name": "Month",
+      "x": 21,
+      "y": 91,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "month_m1.png",
+        "month_m2.png",
+        "month_m3.png",
+        "month_m4.png",
+        "month_m5.png",
+        "month_m6.png",
+        "month_m7.png",
+        "month_m8.png",
+        "month_m9.png",
+        "month_m10.png",
+        "month_m11.png",
+        "month_m12.png"
+      ],
+      "part": "month",
+      "zero": 0,
+      "follow": 0,
+      "space": 0,
+      "unit": "",
+      "isCharacter": true,
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwqxg8fv4j0",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 84,
+      "y": 91,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwqxg8gzd9",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 57,
+      "y": 354,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPower",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "hSpace": -4,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 28,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "space": -4
+    },
+    {
+      "id": "elmwqxg8nu4di",
+      "kind": "IMG",
+      "name": "Slash",
+      "x": 80,
+      "y": 93,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fw/Slash.png"
+    },
+    {
+      "id": "elmwqxg8odea",
+      "kind": "IMG",
+      "name": "Power",
+      "x": 33,
+      "y": 322,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPower",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fw/Power.png"
+    }
+  ],
+  "images": [
+    {
+      "name": "fw/wheel.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fw/cover.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "fw/plate.png",
+      "width": 80,
+      "height": 80
+    },
+    {
+      "name": "fw/dial.png",
+      "width": 93,
+      "height": 93
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 32,
+      "height": 42
+    },
+    {
+      "name": "colon.png",
+      "width": 12,
+      "height": 42
+    },
+    {
+      "name": "colon_2.png",
+      "width": 12,
+      "height": 42
+    },
+    {
+      "name": "week_w1.png",
+      "width": 69,
+      "height": 40
+    },
+    {
+      "name": "week_w2.png",
+      "width": 69,
+      "height": 40
+    },
+    {
+      "name": "week_w3.png",
+      "width": 69,
+      "height": 40
+    },
+    {
+      "name": "week_w4.png",
+      "width": 69,
+      "height": 40
+    },
+    {
+      "name": "week_w5.png",
+      "width": 69,
+      "height": 40
+    },
+    {
+      "name": "week_w6.png",
+      "width": 69,
+      "height": 40
+    },
+    {
+      "name": "week_w7.png",
+      "width": 69,
+      "height": 40
+    },
+    {
+      "name": "percent.png",
+      "width": 41,
+      "height": 42
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_0.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_1.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_2.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_3.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_4.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_5.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_6.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_7.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_8.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_5_9.png",
+      "width": 68,
+      "height": 92
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 21,
+      "height": 28
+    },
+    {
+      "name": "fw/Slash.png",
+      "width": 15,
+      "height": 40
+    },
+    {
+      "name": "fw/Power.png",
+      "width": 102,
+      "height": 40
+    },
+    {
+      "name": "month_m1.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m2.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m3.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m4.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m5.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m6.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m7.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m8.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m9.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m10.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m11.png",
+      "width": 63,
+      "height": 40
+    },
+    {
+      "name": "month_m12.png",
+      "width": 63,
+      "height": 40
+    }
+  ],
+  "savePath": null,
+  "userCode": "{\n  // Fortune wheel. Every time the watch wakes up the wheel spins ONCE: it speeds up (1 s), slows down (3.8 s) and stops with a random card centred\n  // under the pointer at 3 o'clock, then stays still until the next wake-up. The watch turns the picture itself (anim_steps on prop.ANGLE, like the\n  // smooth second hand preset); the landing angle is chosen first, so the wheel always stops exactly on a card centre. The running animation is stopped\n  // (ANIM_STATUS) before a new one starts and when the screen goes off, and the wheel is then set straight to its landing angle.\n  const CEN = [15,45,75,105,135,165,195,225,255,285,315,345], PTR = 90\n  let aid = null, timer = null, rest = 15\n  const kill = () => {\n    try { if (aid != null && W.wheel && ui.anim_status) W.wheel.setProperty(ui.prop.ANIM_STATUS, { anim_id: aid, anim_status: ui.anim_status.STOP }) } catch (e) {}\n    aid = null\n    if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null }\n  }\n  const spin = () => {\n    const h = W.wheel; if (!h) return\n    kill()\n    const k = Math.floor(Math.random() * CEN.length)\n    const target = (((PTR - CEN[k]) % 360) + 360) % 360\n    const total = ((target - rest) % 360 + 360) % 360 + 360 * (3 + Math.floor(Math.random() * 2))\n    const a0 = rest, a1 = rest + total * 0.2, a2 = rest + total\n    rest = target\n    try {\n      if (!ui.prop.ANIM) throw new Error('no ANIM')\n      aid = h.setProperty(ui.prop.ANIM, { anim_steps: [\n        { anim_prop: ui.prop.ANGLE, anim_from: a0, anim_to: a1, anim_rate: 'easein', anim_duration: 1000, anim_offset: 0 },\n        { anim_prop: ui.prop.ANGLE, anim_from: a1, anim_to: a2, anim_rate: 'easeout', anim_duration: 3800, anim_offset: 1000 } ], anim_fps: 25, anim_repeat: 0 })\n    } catch (e) { try { h.setProperty(ui.prop.ANGLE, target) } catch (e2) {} }\n    timer = setTimeout(() => { timer = null; aid = null; try { h.setProperty(ui.prop.ANGLE, target) } catch (e) {} }, 4850)\n  }\n  const stop = () => { kill(); try { W.wheel.setProperty(ui.prop.ANGLE, rest) } catch (e) {} }\n  const start = () => { try { spin() } catch (e) {} }\n  start()\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })\n}",
+  "optimizePng": 64
+}
