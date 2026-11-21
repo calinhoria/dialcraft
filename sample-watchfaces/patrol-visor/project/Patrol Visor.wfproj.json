@@ -1,0 +1,1309 @@
+{
+  "version": 1,
+  "name": "Patrol Visor",
+  "device": "bip-6",
+  "appId": 2246710,
+  "vender": "dialcraft",
+  "description": "UNIT 0900 · Patrol Visor. An armoured patrol helmet; the time burns in the visor. A scan beam sweeps it every 6 s, a reticle hunts and locks on the time once a minute, the minute digits recalibrate at each new minute, and the status light pulses. Engraved date, heart rate, steps (with a bar), battery (with cells). Dim visor clock in always-on mode.",
+  "font": "Chakra Petch",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "chakra-petch-700.ttf",
+      "family": "Chakra Petch"
+    }
+  ],
+  "groups": {
+    "gClock": "Clock",
+    "gClockAOD": "Clock AOD",
+    "gDate": "Date",
+    "gVitals": "Vitals",
+    "gPatrol": "Patrol",
+    "gPowercell": "Power cell",
+    "gVisorFX": "Visor FX"
+  },
+  "elements": [
+    {
+      "id": "elmwqpdlg075d",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwqpdlnp509",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/scene.png"
+    },
+    {
+      "id": "elmwqpdlo81r",
+      "kind": "IMG",
+      "name": "Heart icon",
+      "x": 96,
+      "y": 312,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gVitals",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/icon_heart.png"
+    },
+    {
+      "id": "elmwqpdlor44j",
+      "kind": "IMG",
+      "name": "Battery shell",
+      "x": 256,
+      "y": 313,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPowercell",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/icon_bat.png"
+    },
+    {
+      "id": "elmwqpdm5t4ep",
+      "kind": "IMG_PROGRESS",
+      "name": "Steps bar",
+      "x": 157,
+      "y": 324,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPatrol",
+      "alpha": 255,
+      "images": [
+        "rc/seg_s.png",
+        "rc/seg_s.png",
+        "rc/seg_s.png",
+        "rc/seg_s.png",
+        "rc/seg_s.png",
+        "rc/seg_s.png",
+        "rc/seg_s.png",
+        "rc/seg_s.png",
+        "rc/seg_s.png",
+        "rc/seg_s.png"
+      ],
+      "dataType": "STEP",
+      "level": 0,
+      "spread": 24,
+      "glyph": {
+        "font": "Chakra Petch",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      },
+      "positions": [
+        [
+          157,
+          324
+        ],
+        [
+          165,
+          324
+        ],
+        [
+          173,
+          324
+        ],
+        [
+          181,
+          324
+        ],
+        [
+          189,
+          324
+        ],
+        [
+          197,
+          324
+        ],
+        [
+          204,
+          324
+        ],
+        [
+          212,
+          324
+        ],
+        [
+          220,
+          324
+        ],
+        [
+          228,
+          324
+        ]
+      ]
+    },
+    {
+      "id": "elmwqpdm6srb",
+      "kind": "IMG_PROGRESS",
+      "name": "Battery cells",
+      "x": 262,
+      "y": 320,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPowercell",
+      "alpha": 255,
+      "images": [
+        "rc/seg_b.png",
+        "rc/seg_b.png",
+        "rc/seg_b.png",
+        "rc/seg_b.png",
+        "rc/seg_b.png"
+      ],
+      "dataType": "BATTERY",
+      "level": 0,
+      "spread": 24,
+      "glyph": {
+        "font": "Chakra Petch",
+        "size": 18,
+        "color": "#ffffff",
+        "weight": 400,
+        "variations": "",
+        "fill": "solid"
+      },
+      "positions": [
+        [
+          262,
+          320
+        ],
+        [
+          269,
+          320
+        ],
+        [
+          276,
+          320
+        ],
+        [
+          282,
+          320
+        ],
+        [
+          289,
+          320
+        ]
+      ]
+    },
+    {
+      "id": "elmwqpdlje3tq",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 83,
+      "y": 357,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gVitals",
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "rc/r0.png",
+        "rc/r1.png",
+        "rc/r2.png",
+        "rc/r3.png",
+        "rc/r4.png",
+        "rc/r5.png",
+        "rc/r6.png",
+        "rc/r7.png",
+        "rc/r8.png",
+        "rc/r9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": ""
+    },
+    {
+      "id": "elmwqpdlis55n",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 147,
+      "y": 357,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPatrol",
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "rc/r0.png",
+        "rc/r1.png",
+        "rc/r2.png",
+        "rc/r3.png",
+        "rc/r4.png",
+        "rc/r5.png",
+        "rc/r6.png",
+        "rc/r7.png",
+        "rc/r8.png",
+        "rc/r9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": ""
+    },
+    {
+      "id": "elmwqpdljub5",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 250,
+      "y": 357,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gPowercell",
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "rc/r0.png",
+        "rc/r1.png",
+        "rc/r2.png",
+        "rc/r3.png",
+        "rc/r4.png",
+        "rc/r5.png",
+        "rc/r6.png",
+        "rc/r7.png",
+        "rc/r8.png",
+        "rc/r9.png"
+      ],
+      "hSpace": -2,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": ""
+    },
+    {
+      "id": "elmwqpdlg51ju",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 123,
+      "y": 40,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Chakra Petch",
+        "size": 38,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#121317",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmwqpdlij2y4",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 208,
+      "y": 48,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gDate",
+      "alpha": 255,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -5,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Chakra Petch",
+        "size": 38,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#121317",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwqpdlkp7nb",
+      "kind": "IMG_TIME",
+      "name": "Minute AOD",
+      "x": 209,
+      "y": 161,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAOD",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -6,
+      "images": [
+        "rc/n0.png",
+        "rc/n1.png",
+        "rc/n2.png",
+        "rc/n3.png",
+        "rc/n4.png",
+        "rc/n5.png",
+        "rc/n6.png",
+        "rc/n7.png",
+        "rc/n8.png",
+        "rc/n9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmwqpdlkp10f",
+      "kind": "IMG",
+      "name": "Colon AOD",
+      "x": 179,
+      "y": 161,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAOD",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/ncolon.png"
+    },
+    {
+      "id": "elmwqpdlkp6rg",
+      "kind": "IMG_TIME",
+      "name": "Hour AOD",
+      "x": 49,
+      "y": 161,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gClockAOD",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -6,
+      "images": [
+        "rc/n0.png",
+        "rc/n1.png",
+        "rc/n2.png",
+        "rc/n3.png",
+        "rc/n4.png",
+        "rc/n5.png",
+        "rc/n6.png",
+        "rc/n7.png",
+        "rc/n8.png",
+        "rc/n9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmwqpdlk7yr",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 209,
+      "y": 161,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -6,
+      "images": [
+        "rc/d0.png",
+        "rc/d1.png",
+        "rc/d2.png",
+        "rc/d3.png",
+        "rc/d4.png",
+        "rc/d5.png",
+        "rc/d6.png",
+        "rc/d7.png",
+        "rc/d8.png",
+        "rc/d9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmwqpdlk7105",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 179,
+      "y": 161,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/colon.png"
+    },
+    {
+      "id": "elmwqpdlk74fz",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 49,
+      "y": 161,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gClock",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -6,
+      "images": [
+        "rc/d0.png",
+        "rc/d1.png",
+        "rc/d2.png",
+        "rc/d3.png",
+        "rc/d4.png",
+        "rc/d5.png",
+        "rc/d6.png",
+        "rc/d7.png",
+        "rc/d8.png",
+        "rc/d9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmwqpdmbe5k9",
+      "kind": "IMG",
+      "name": "Recalibrate cover",
+      "x": 210,
+      "y": 157,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gVisorFX",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/blank_cover.png",
+      "images": [
+        "rc/blank_cover.png",
+        "rc/cover.png"
+      ],
+      "handle": "cover"
+    },
+    {
+      "id": "elmwqpdmg22d0",
+      "kind": "IMG",
+      "name": "Glitch minute tens",
+      "x": 209,
+      "y": 161,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gVisorFX",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/blank_g.png",
+      "images": [
+        "rc/blank_g.png",
+        "rc/g0.png",
+        "rc/g1.png",
+        "rc/g2.png",
+        "rc/g3.png",
+        "rc/g4.png",
+        "rc/g5.png",
+        "rc/g6.png",
+        "rc/g7.png",
+        "rc/g8.png",
+        "rc/g9.png"
+      ],
+      "handle": "gM1"
+    },
+    {
+      "id": "elmwqpdmgp18o",
+      "kind": "IMG",
+      "name": "Glitch minute ones",
+      "x": 272,
+      "y": 161,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gVisorFX",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/blank_g.png",
+      "images": [
+        "rc/blank_g.png",
+        "rc/g0.png",
+        "rc/g1.png",
+        "rc/g2.png",
+        "rc/g3.png",
+        "rc/g4.png",
+        "rc/g5.png",
+        "rc/g6.png",
+        "rc/g7.png",
+        "rc/g8.png",
+        "rc/g9.png"
+      ],
+      "handle": "gM2"
+    },
+    {
+      "id": "elmwqpdmhh3xl",
+      "kind": "IMG",
+      "name": "Scan beam",
+      "x": 17,
+      "y": 200,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gVisorFX",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/blank_beam.png",
+      "images": [
+        "rc/blank_beam.png",
+        "rc/beam.png"
+      ],
+      "handle": "beam"
+    },
+    {
+      "id": "elmwqpdmja1tk",
+      "kind": "IMG",
+      "name": "Reticle",
+      "x": 197,
+      "y": 133,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gVisorFX",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/ret2.png",
+      "images": [
+        "rc/ret2.png",
+        "rc/ret0.png",
+        "rc/ret1.png",
+        "rc/blank_ret.png"
+      ],
+      "handle": "ret"
+    },
+    {
+      "id": "elmwqpdmko5z4",
+      "kind": "IMG",
+      "name": "Status light",
+      "x": 108,
+      "y": 23,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gVisorFX",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "rc/led_on.png",
+      "images": [
+        "rc/led_on.png",
+        "rc/led_dim.png",
+        "rc/led_off.png"
+      ],
+      "handle": "led"
+    }
+  ],
+  "images": [
+    {
+      "name": "week_w1.png",
+      "width": 86,
+      "height": 55
+    },
+    {
+      "name": "week_w2.png",
+      "width": 86,
+      "height": 55
+    },
+    {
+      "name": "week_w3.png",
+      "width": 86,
+      "height": 55
+    },
+    {
+      "name": "week_w4.png",
+      "width": 86,
+      "height": 55
+    },
+    {
+      "name": "week_w5.png",
+      "width": 86,
+      "height": 55
+    },
+    {
+      "name": "week_w6.png",
+      "width": 86,
+      "height": 55
+    },
+    {
+      "name": "week_w7.png",
+      "width": 86,
+      "height": 55
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "bpm.png",
+      "width": 42,
+      "height": 23
+    },
+    {
+      "name": "percent.png",
+      "width": 21,
+      "height": 19
+    },
+    {
+      "name": "colon.png",
+      "width": 9,
+      "height": 19
+    },
+    {
+      "name": "colon_2.png",
+      "width": 9,
+      "height": 19
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 28,
+      "height": 33
+    },
+    {
+      "name": "rc/scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "rc/icon_heart.png",
+      "width": 32,
+      "height": 30
+    },
+    {
+      "name": "rc/icon_bat.png",
+      "width": 46,
+      "height": 27
+    },
+    {
+      "name": "rc/d0.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d1.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d2.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d3.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d4.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d5.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d6.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d7.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d8.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/d9.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n0.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n1.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n2.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n3.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n4.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n5.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n6.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n7.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n8.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/n9.png",
+      "width": 69,
+      "height": 100
+    },
+    {
+      "name": "rc/colon.png",
+      "width": 32,
+      "height": 100
+    },
+    {
+      "name": "rc/ncolon.png",
+      "width": 32,
+      "height": 100
+    },
+    {
+      "name": "rc/r0.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r1.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r2.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r3.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r4.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r5.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r6.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r7.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r8.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/r9.png",
+      "width": 21,
+      "height": 31
+    },
+    {
+      "name": "rc/seg_s.png",
+      "width": 7,
+      "height": 12
+    },
+    {
+      "name": "rc/seg_b.png",
+      "width": 7,
+      "height": 13
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_0.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_1.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_2.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_3.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_4.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_5.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_6.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_7.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_8.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "font_4_9.png",
+      "width": 17,
+      "height": 19
+    },
+    {
+      "name": "rc/blank_cover.png",
+      "width": 145,
+      "height": 108
+    },
+    {
+      "name": "rc/cover.png",
+      "width": 145,
+      "height": 108
+    },
+    {
+      "name": "rc/blank_g.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g0.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g1.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g2.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g3.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g4.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g5.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g6.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g7.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g8.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/g9.png",
+      "width": 77,
+      "height": 100
+    },
+    {
+      "name": "rc/blank_beam.png",
+      "width": 356,
+      "height": 35
+    },
+    {
+      "name": "rc/beam.png",
+      "width": 356,
+      "height": 35
+    },
+    {
+      "name": "rc/ret2.png",
+      "width": 156,
+      "height": 156
+    },
+    {
+      "name": "rc/ret0.png",
+      "width": 156,
+      "height": 156
+    },
+    {
+      "name": "rc/ret1.png",
+      "width": 156,
+      "height": 156
+    },
+    {
+      "name": "rc/blank_ret.png",
+      "width": 156,
+      "height": 156
+    },
+    {
+      "name": "rc/led_on.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "rc/led_dim.png",
+      "width": 24,
+      "height": 24
+    },
+    {
+      "name": "rc/led_off.png",
+      "width": 24,
+      "height": 24
+    }
+  ],
+  "savePath": null,
+  "userCode": "{\n  const G = {\"HX\": 49, \"CX\": 179, \"MX\": 209, \"Y\": 161, \"DW\": 69, \"SP\": -6, \"CV\": [210, 157, 355, 265], \"RS\": 156, \"BEAM\": [356, 35]};\n  // picture indexes, per slot (the order the build gave them)\n  const GL = { off: 0 }, RET = { lock: 0, search: 1, close: 2, off: 3 }, LED = { on: 0, dim: 1, off: 2 };\n  const HW = 2 * G.DW + G.SP;\n  const S = {};\n  const put = (h, x, y, i) => {\n    const k = x + '|' + y + '|' + i;\n    if (S[h] === k) return;\n    S[h] = k;\n    W[h].setProperty(ui.prop.MORE, { x: pxv(x), y: pxv(y), src: F[h][i] });\n  };\n  const hide = (h, x, y, off) => put(h, x, y, off);\n  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);\n\n  const tick = () => {\n    const now = Date.now(), d = new Date(now);\n    const s = d.getSeconds() + (now % 1000) / 1000, mm = d.getMinutes();\n    let busy = false;\n\n    // 1. new minute: the minute digits recalibrate for 0.7 s (cover the real ones, show the sliced pair, jitter)\n    if (s < 0.7) {\n      busy = true;\n      const j = s < 0.25 ? 3 : s < 0.5 ? -2 : 1;\n      put('cover', G.CV[0], G.CV[1], 1);\n      put('gM1', G.MX + j, G.Y, 1 + Math.floor(mm / 10));\n      put('gM2', G.MX + G.DW + G.SP - j, G.Y, 1 + (mm % 10));\n    } else {\n      hide('cover', G.CV[0], G.CV[1], 0);\n      hide('gM1', G.MX, G.Y, GL.off);\n      hide('gM2', G.MX + G.DW + G.SP, G.Y, GL.off);\n    }\n\n    // 2. scan beam: sweeps the visor top to bottom every 6 s\n    const ph = (now / 1000) % 6, bx = Math.round(195 - G.BEAM[0] / 2);\n    if (ph < 1.4) {\n      busy = true;\n      put('beam', bx, Math.round(150 + (ph / 1.4) * 122 - G.BEAM[1] / 2), 1);\n    } else hide('beam', bx, 200, 0);\n\n    // 3. target lock, seconds 18-31: search the visor, close in, lock on the hour or the minutes, blink out\n    const t = s - 18, R2 = G.RS / 2;\n    let lock = false;\n    if (t >= 0 && t < 13) {\n      busy = true;\n      const tx = (mm % 2 ? G.MX : G.HX) + HW / 2, ty = G.Y + 50;\n      const sx = (u) => 195 + 110 * Math.sin(u * 1.7 + 0.5), sy = (u) => G.Y + 50 + 22 * Math.sin(u * 2.9);\n      if (t < 5) put('ret', Math.round(sx(t) - R2), Math.round(sy(t) - R2), RET.search);\n      else if (t < 6) {\n        const k = ease(t - 5), x0 = sx(5), y0 = sy(5);\n        put('ret', Math.round(x0 + (tx - x0) * k - R2), Math.round(y0 + (ty - y0) * k - R2), RET.close);\n      } else {\n        lock = true;\n        const on = t < 11 || Math.floor(t * 8) % 2 === 0;\n        put('ret', Math.round(tx - R2), Math.round(ty - R2), on ? RET.lock : RET.off);\n      }\n    } else hide('ret', 127, 143, RET.off);\n\n    // 4. status light: a double pulse, fast while locked\n    let ledOn;\n    if (lock) ledOn = Math.floor(now / 125) % 2 === 0;\n    else { const m = now % 2400; ledOn = m < 160 || (m >= 320 && m < 480); }\n    put('led', 108, 23, ledOn ? LED.on : LED.dim);\n\n    return busy || (s > 17.6 && s < 18) || s > 59.8 || ph > 5.85 ? 80 : 150;\n  };\n\n  let gen = 0, run = false;\n  const loop = (g) => {\n    if (!run || g !== gen) return;\n    let ms = 150;\n    try { ms = tick(); } catch (e) { /* a bad frame must not stop the loop */ }\n    try { setTimeout(() => loop(g), ms); } catch (e) {}\n  };\n  const start = () => { gen++; run = true; loop(gen); };\n  const stop = () => { run = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n}\n",
+  "optimizePng": 256
+}
