@@ -176,6 +176,8 @@ recipe, previews and output in a scratch folder (not in the repo).
   system fallback) and register them in a `script` step with `registerCustomFont(...)` — see [references/fonts.md](references/fonts.md),
   which also lists which families really cover Romanian. A saved project needs the font files in `project/fonts/` and a `fonts` list,
   which face-cli's `save` does not write; `publish_sample.py` does it.
+- **Canvas** (drawing in code): read [references/canvas.md](references/canvas.md) first: measured limits and frame rates.
+  Use only measured fps numbers; otherwise say "not measured".
 - **Data bindings are native:** `TEXT_IMG`, `IMG_LEVEL`, `IMG_POINTER` take a `dataType`; the watch updates them.
   `ARC_PROGRESS` / `BAR` get a small reader only for the data types listed in `docs/ZEPP_COVERAGE.md`.
 - **Custom code** (animation that follows the clock, games, timers): [references/custom-code.md](references/custom-code.md) has the

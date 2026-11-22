@@ -73,6 +73,7 @@ app.whenReady().then(async () => {
     }
     if (R.userImports) project.userImports = R.userImports;
     if (R.userCode) project.userCode = R.userCode;
+    if (R.userCodeBefore) project.userCodeBefore = R.userCodeBefore;
     if (R.optimizePng === true || R.optimizePng === 'lossless' || (Number.isInteger(R.optimizePng) && R.optimizePng >= 2 && R.optimizePng <= 256)) project.optimizePng = R.optimizePng;
     if (R.description) project.description = R.description;
     for (const [i, s] of (R.steps || []).entries()) {

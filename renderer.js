@@ -196,7 +196,7 @@ function restoreHistory(json) {
   project.groups = p.groups || {};
   project.name = p.name; project.description = p.description;
   project.appId = p.appId; project.font = p.font; project.fontChosen = p.fontChosen;
-  project.userImports = p.userImports; project.userCode = p.userCode;
+  project.userImports = p.userImports; project.userCode = p.userCode; project.userCodeBefore = p.userCodeBefore;
   project.language = p.language || project.language;
   project.i18n = p.i18n || { languages: [], names: {}, strings: {}, meta: {} };
   project.images = p.images || project.images;
@@ -2370,6 +2370,7 @@ function drawScene(c, W, H, mode, overlay) {
   c.clearRect(0, 0, W, H);
   c.fillStyle = '#000000';
   c.fillRect(0, 0, W, H);
+  if (codeRun) codeRunOverlays(c, true, mode);      // widgets made by userCodeBefore sit under the layers (as on the watch)
   for (const e of elements()) {
     if (e.visible === false) continue;
     if (backdropRender && editRelated(e)) continue;
@@ -2379,6 +2380,7 @@ function drawScene(c, W, H, mode, overlay) {
     try { drawElement(c, e); } catch (err) { /* never let one widget break the preview */ }
     c.restore();
   }
+  if (codeRun) codeRunOverlays(c, false, mode);     // other widgets the code made, on top (live preview, showcase GIF)
   c.restore();
   if (overlay) drawOverlay(c, W, H);
 }
@@ -2562,16 +2564,17 @@ function gifEncode(frames, w, h, delayMs) {
 // game, a custom sensor or a frame animation shows what it does on the watch, not a still.
 function recordScenes(scenes) {
   const d = dev();
-  const hasCode = !!(project.userCode || '').trim();
+  const hasCode = !!((project.userCode || '').trim() || (project.userCodeBefore || '').trim());
   const RD = Date, rs = window.setTimeout, ri = window.setInterval, rc = window.clearTimeout, rci = window.clearInterval;
   let vt = 0, q = [], nid = 0;
   class VD extends RD { constructor(...a) { if (a.length) super(...a); else super(vt); } static now() { return vt; } }
   window.Date = VD;
-  window.setTimeout = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + (ms || 0) }); return id; };
-  window.setInterval = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + ms, rep: ms }); return id; };
+  // on the virtual clock a 0 ms timer would run forever at the same instant (a draw loop's setTimeout(tick, 0)): at least one frame (16 ms)
+  window.setTimeout = (f, ms) => { const id = ++nid; q.push({ id, f, at: vt + Math.max(16, +ms || 0) }); return id; };
+  window.setInterval = (f, ms) => { const id = ++nid; const r = Math.max(16, +ms || 0); q.push({ id, f, at: vt + r, rep: r }); return id; };
   window.clearTimeout = window.clearInterval = (id) => { q = q.filter((t) => t.id !== id); };
   const pump = (target) => {
-    for (;;) { q.sort((a, b) => a.at - b.at); const n = q[0]; if (!n || n.at > target) break; vt = n.at; if (n.rep) n.at += n.rep; else q.shift(); try { n.f(); } catch (e) { /* the code's own errors show in the status bar */ } }
+    for (let guard = 0; guard < 20000; guard++) { q.sort((a, b) => a.at - b.at); const n = q[0]; if (!n || n.at > target) break; vt = n.at; if (n.rep) n.at += n.rep; else q.shift(); try { n.f(); } catch (e) { /* the code's own errors show in the status bar */ } }
     vt = target;
   };
   const frames = [];
@@ -2596,7 +2599,7 @@ function recordScenes(scenes) {
   return frames;
 }
 // is anything on the face moving by itself (code, frame animations)?
-function faceMoves() { return !!(project.userCode || '').trim() || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false); }
+function faceMoves() { return !!((project.userCode || '').trim() || (project.userCodeBefore || '').trim()) || elements().some((e) => e.kind === 'IMG_ANIM' && e.visible !== false); }
 // frames: the scenes' frames, `per` of them per scene. fx: { fade: cross-fade steps between scenes, fadeMs: length of the whole fade, aod: the always-on frame
 // (shown last, held holdMs), loop: also fade from the last frame back to the first }. A fade step is a blend of two neighbouring frames, so it
 // costs a whole frame: when the GIF is over the console's 1 MB the ladder gives up colours first, then fade steps, then the length of each clip.
@@ -7492,7 +7495,7 @@ $('cv').addEventListener('mousedown', (ev) => {
   if (!project) return;
   if (codeRun && codeRun.buttons && codeRun.buttons.length) {
     const q = eventDevPos(ev), b = codeRun.buttons.find((bt) => q.x >= bt.x && q.x <= bt.x + bt.w && q.y >= bt.y && q.y <= bt.y + bt.h);
-    if (b) { b.fn(); ev.preventDefault(); return; }
+    if (b) { b.fn({ x: Math.round(q.x), y: Math.round(q.y) }); ev.preventDefault(); return; }
   }
   const handle = ev.altKey ? null : handleAt(ev);
   const p = eventDevPos(ev);
@@ -7988,14 +7991,82 @@ function codeRunStub(e) {
     if (e && up === 'SRC') return e.src;
     return store[String(k)];
   };
-  return {
+  const w = {
     setProperty: apply,
     getProperty: read,
+    // widget.setAlpha (API 2.1+): the opacity for widgets without an alpha property, e.g. a CANVAS (blends on a real Bip 6)
+    setAlpha(v) { apply('ALPHA', v); },
     addEventListener() {},
     removeEventListener() {},
     createWidget(type, opts) { return codeRunStub(null); },
     __layer: e,
   };
+  // anything else the code calls on a widget (a CANVAS's drawRect / drawPoly / clear / setPaint …) is accepted and does nothing here:
+  // the editor does not draw widgets made in code, but the code must keep running past them
+  return new Proxy(w, { get: (t, k) => (k in t ? t[k] : typeof k === 'string' && k !== 'then' && k !== 'toJSON' ? () => undefined : undefined) });
+}
+// ---- code-made CANVAS and TEXT widgets, drawn over the preview while the code runs ----
+// The canvas follows what was measured on a real Bip 6: fills and strokes, clear() makes a transparent hole, widget.setAlpha blends the
+// whole canvas, setProperty(ALPHA) and ARGB colours stay opaque, no transform / rotation. Taps (CLICK_UP / CLICK_DOWN) reach the code.
+function codeRunHex(c) { return '#' + ('00000' + ((+c || 0) & 0xffffff).toString(16)).slice(-6); }
+function codeRunCanvas(run, opts, guard) {
+  const ov = { under: run.phase === 'before', kind: 'canvas', x: +opts.x || 0, y: +opts.y || 0, w: Math.max(1, +opts.w || 1), h: Math.max(1, +opts.h || 1), alpha: 1, visible: true };
+  ov.c = document.createElement('canvas'); ov.c.width = ov.w; ov.c.height = ov.h; const g = ov.c.getContext('2d');
+  (run.overlays = run.overlays || []).push(ov);
+  let paint = { color: 0xffffff, line_width: 1 };
+  const poly = (o) => { const p = (o && o.data_array) || []; g.beginPath(); p.forEach((q, i) => (i ? g.lineTo(q.x, q.y) : g.moveTo(q.x, q.y))); g.closePath(); };
+  const done = (f) => (o) => { f(o || {}); codeRunRender(); };
+  const w = {
+    setPaint: (p) => { paint = { ...paint, ...(p || {}) }; },
+    drawRect: done((o) => { g.fillStyle = codeRunHex(o.color); g.fillRect(o.x1, o.y1, o.x2 - o.x1, o.y2 - o.y1); }),
+    strokeRect: done((o) => { g.strokeStyle = codeRunHex(o.color != null ? o.color : paint.color); g.lineWidth = paint.line_width; g.strokeRect(o.x1, o.y1, o.x2 - o.x1, o.y2 - o.y1); }),
+    drawCircle: done((o) => { g.fillStyle = codeRunHex(o.color); g.beginPath(); g.arc(o.center_x, o.center_y, Math.max(0, o.radius), 0, Math.PI * 2); g.fill(); }),
+    strokeCircle: done((o) => { g.strokeStyle = codeRunHex(o.color != null ? o.color : paint.color); g.lineWidth = paint.line_width; g.beginPath(); g.arc(o.center_x, o.center_y, Math.max(0, o.radius), 0, Math.PI * 2); g.stroke(); }),
+    drawLine: done((o) => { g.strokeStyle = codeRunHex(o.color != null ? o.color : paint.color); g.lineWidth = paint.line_width; g.lineCap = 'butt'; g.beginPath(); g.moveTo(o.x1, o.y1); g.lineTo(o.x2, o.y2); g.stroke(); }),
+    drawPoly: done((o) => { g.fillStyle = codeRunHex(o.color); poly(o); g.fill(); }),
+    strokePoly: done((o) => { g.strokeStyle = codeRunHex(o.color != null ? o.color : paint.color); g.lineWidth = paint.line_width; poly(o); g.stroke(); }),
+    clear: done((o) => { g.clearRect(o.x || 0, o.y || 0, o.w || ov.w, o.h || ov.h); }),
+    setAlpha: (v) => { ov.alpha = Math.max(0, Math.min(255, +v || 0)) / 255; codeRunRender(); },
+    setProperty: (k, v) => {
+      const up = String(k).toUpperCase();
+      if (up === 'MORE' && v && typeof v === 'object') { for (const key of Object.keys(v)) w.setProperty(key, v[key]); return; }
+      if (up === 'X' || up === 'Y') ov[up.toLowerCase()] = +v || 0;
+      else if (up === 'VISIBLE') ov.visible = !!v;              // (ALPHA via setProperty stays opaque on the watch: ignored here too)
+      codeRunRender();
+    },
+    getProperty: (k) => { const up = String(k).toUpperCase(); return up === 'X' ? ov.x : up === 'Y' ? ov.y : up === 'W' ? ov.w : up === 'H' ? ov.h : undefined; },
+    addEventListener: (ev, fn) => { if (typeof fn === 'function' && /CLICK/.test(String(ev))) run.buttons.push({ get x() { return ov.x; }, get y() { return ov.y; }, w: ov.w, h: ov.h, fn: guard(fn, 'canvas tap') }); },
+    removeEventListener() {},
+  };
+  return new Proxy(w, { get: (t, k) => (k in t ? t[k] : typeof k === 'string' && k !== 'then' && k !== 'toJSON' ? () => undefined : undefined) });
+}
+function codeRunText(run, opts) {
+  const ov = { under: run.phase === 'before', kind: 'text', x: +opts.x || 0, y: +opts.y || 0, w: +opts.w || 100, h: +opts.h || 30, text: String(opts.text == null ? '' : opts.text),
+    color: +opts.color || 0xffffff, size: +opts.text_size || 24, align: String(opts.align_h || ''), visible: true };
+  (run.overlays = run.overlays || []).push(ov);
+  const w = {
+    setProperty: (k, v) => {
+      const up = String(k).toUpperCase();
+      if (up === 'MORE' && v && typeof v === 'object') { for (const key of Object.keys(v)) w.setProperty(key, v[key]); return; }
+      if (up === 'TEXT') ov.text = String(v); else if (up === 'X' || up === 'Y') ov[up.toLowerCase()] = +v || 0; else if (up === 'VISIBLE') ov.visible = !!v; else if (up === 'COLOR') ov.color = +v || 0;
+      codeRunRender();
+    },
+    getProperty: (k) => (String(k).toUpperCase() === 'TEXT' ? ov.text : undefined),
+    addEventListener() {}, removeEventListener() {},
+  };
+  return new Proxy(w, { get: (t, k) => (k in t ? t[k] : typeof k === 'string' && k !== 'then' && k !== 'toJSON' ? () => undefined : undefined) });
+}
+function codeRunOverlays(ctx, under, mode) {
+  const run = codeRun; if (!run || !run.overlays || !run.overlays.length || (mode || previewMode) !== 'normal') return;
+  for (const ov of run.overlays) {
+    if (!ov.visible || !!ov.under !== !!under) continue;
+    if (ov.kind === 'canvas') { ctx.save(); ctx.globalAlpha = ov.alpha; ctx.drawImage(ov.c, ov.x, ov.y); ctx.restore(); continue; }
+    ctx.save(); ctx.fillStyle = codeRunHex(ov.color); ctx.font = `${ov.size}px system-ui, sans-serif`; ctx.textBaseline = 'top';
+    const c = /CENTER/.test(ov.align), r = /RIGHT/.test(ov.align);
+    ctx.textAlign = c ? 'center' : r ? 'right' : 'left';
+    ctx.fillText(ov.text, ov.x + (c ? ov.w / 2 : r ? ov.w : 0), ov.y + Math.max(0, (ov.h - ov.size * 1.2) / 2));
+    ctx.restore();
+  }
 }
 // what a few watch modules give the code in the editor
 function codeRunModule(name) {
@@ -8024,9 +8095,10 @@ function codeRunImports(src) {
 }
 function startCodeRun() {
   if (!project || codeRun) return;
-  const code = project.userCode || '';
-  if (!code.trim()) { status('There is no code to run: add some under Watchface ▸ Code of your own…', true); return; }
-  codeRun = { touched: new Map(), picks: new Map(), timers: new Set(), made: new Set(), buttons: [], raf: 0 };
+  const before = project.userCodeBefore || '', code = project.userCode || '';
+  if (!code.trim() && !before.trim()) { status('There is no code to run: add some under Watchface ▸ Code of your own…', true); return; }
+  // userCodeBefore runs first on the watch (before the layers), so what it makes is drawn under the layers here too
+  codeRun = { touched: new Map(), picks: new Map(), timers: new Set(), made: new Set(), buttons: [], raf: 0, phase: before.trim() ? 'before' : 'main' };
   const run = codeRun;
   const report = (where, e) => { status(`Code (${where}): ${e && e.message ? e.message : e}`, true); try { console.error('[code]', where, e); } catch (x) { /* no console */ } };
   const guard = (f, where) => (...a) => { if (codeRun !== run) return; try { return f(...a); } catch (e) { report(where, e); } };
@@ -8047,6 +8119,9 @@ function startCodeRun() {
       if (type === 'WIDGET_DELEGATE' && opts) { setTimeout(guard(() => opts.resume_call && opts.resume_call(), 'resume_call'), 0); return codeRunStub(null); }
       // a tap zone / button: remember where it is, a click on the preview runs its click_func
       if (type === 'BUTTON' && opts && opts.click_func) { run.buttons.push({ x: +opts.x || 0, y: +opts.y || 0, w: +opts.w || 0, h: +opts.h || 0, fn: guard(opts.click_func, 'click_func') }); return codeRunStub(null); }
+      // a CANVAS or TEXT the code makes itself is drawn on top of the preview (render ▸ codeRunOverlays), gone again on Stop
+      if (type === 'CANVAS' && opts) return codeRunCanvas(run, opts, guard);
+      if (type === 'TEXT' && opts) return codeRunText(run, opts);
       // a picture the code makes itself (a game's tiles and sprites) is drawn as a temporary layer on top, gone again on Stop
       if (type === 'IMG' && opts && opts.src) {
         const e = newElement('IMG', { name: 'Code picture', x: Math.round(+opts.x || 0), y: Math.round(+opts.y || 0), src: String(opts.src).replace(/^images\//, ''), codeMade: true });
@@ -8080,9 +8155,10 @@ function startCodeRun() {
   };
   const codeConsole = { log: say('log'), info: say('log'), warn: say('warn'), error: say('error') };
   try {
-    const body = codeRunImports(project.userImports) + '\n' + code;
-    const fn = new Function('ui', 'px', 'pxv', 'A', 'W', 'F', 'setInterval', 'setTimeout', 'clearInterval', 'clearTimeout', '__mod', 'timer', 'hmUI', 'console', body);
-    fn(ui, px, pxv, A, W, F, timers.setInterval, timers.setTimeout, timers.clearInterval, timers.clearTimeout, codeRunModule, undefined, undefined, codeConsole);
+    // wrapped in its own function: the code may declare any name (e.g. its own `timer`) without clashing with the stand-ins passed in
+    const body = '(function () {\n' + codeRunImports(project.userImports) + '\n' + (before.trim() ? before + '\n;__dcMain();\n' : '') + code + '\n})()';
+    const fn = new Function('ui', 'px', 'pxv', 'A', 'W', 'F', 'setInterval', 'setTimeout', 'clearInterval', 'clearTimeout', '__mod', 'timer', 'hmUI', 'console', '__dcMain', body);
+    fn(ui, px, pxv, A, W, F, timers.setInterval, timers.setTimeout, timers.clearInterval, timers.clearTimeout, codeRunModule, undefined, undefined, codeConsole, () => { run.phase = 'main'; });
   } catch (e) { report('start', e); }
   syncRunButton();
   status('Code is running in the preview. Stop it to get your layers back as they were.');
@@ -8101,7 +8177,7 @@ function stopCodeRun() {
 function syncRunButton() {
   const b = $('btnRunCode');
   if (!b) return;
-  const has = !!(project && (project.userCode || '').trim());
+  const has = !!(project && ((project.userCode || '').trim() || (project.userCodeBefore || '').trim()));
   b.disabled = !has && !codeRun;
   b.classList.toggle('on', !!codeRun);
   b.textContent = codeRun ? '■ Stop code' : '▶ Run code';

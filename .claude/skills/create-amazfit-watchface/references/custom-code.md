@@ -69,3 +69,5 @@ choice is the right Bip 6). Then filter the log, e.g. `grep "\[mytag\]" bridge.l
 - Install replaces an installed face with the same app id; there is no need to uninstall first.
 - A build plus install takes about a minute; wait for `Install watchface result: success`.
 - Never leave debug text on the face you hand over: set `DEBUG = false` and remove on-screen status widgets.
+
+CANVAS limits and measured frame rates on the Bip 6: [canvas.md](canvas.md).

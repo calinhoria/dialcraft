@@ -878,6 +878,19 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   }
   out.push('WatchFace({');
   out.push('  initView() {');
+  // project.userCodeBefore runs FIRST, before any layer is made, so what it creates (e.g. CANVAS widgets) sits UNDER the layers
+  // (widgets stack in creation order). Same scope as project.userCode, which can use what it made.
+  const hasBefore = typeof project.userCodeBefore === 'string' && project.userCodeBefore.trim();
+  const hasUser = typeof project.userCode === 'string' && project.userCode.trim();
+  if (hasBefore || hasUser) {
+    out.push('    // px() only takes a literal number (the build replaces it, there is no px at run time); pxv() scales a computed one');
+    out.push('    const pxv = (n) => Math.round(n * px(1000) / 1000)');
+  }
+  if (hasBefore) {
+    out.push('    // ---- user code, before the layers (project.userCodeBefore): what it creates sits under every layer ----');
+    out.push(project.userCodeBefore.trim().split('\n').map((l) => (l ? '    ' + l : l)).join('\n'));
+    out.push('');
+  }
   const whenVars = [];
   const sunVars = [];
   if (!els.length) {
@@ -1088,8 +1101,6 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
   if (typeof project.userCode === 'string' && project.userCode.trim()) {
     out.push('');
     out.push('    // ---- user code (project.userCode) ----');
-    out.push('    // px() only takes a literal number (the build replaces it, there is no px at run time); pxv() scales a computed one');
-    out.push('    const pxv = (n) => Math.round(n * px(1000) / 1000)');
     out.push(project.userCode.trim().split('\n').map((l) => (l ? '    ' + l : l)).join('\n'));
   }
   // Rounded-rectangle screens: the face switcher shows the live face, drawn square, for a moment. Four black corner pieces on top (the screen's own
@@ -1133,8 +1144,15 @@ function generateAppJson(project, device, opts = {}) {
       vender: opts.vender || 'dialcraft',
       description: (project.description || `${project.name || 'watchface'} watchface`).slice(0, 120),
     },
-    // reading the PAI sensor needs its permission (the PAI chart failed with "permission denied" without it)
-    permissions: (project.elements || []).some((e) => e.visible !== false && (e.kind === 'PAI_CHART' || /^PAI_/.test(e.dataType || ''))) ? ['data:user.hd.pai'] : [],
+    // reading the PAI sensor needs its permission (the PAI chart failed with "permission denied" without it); custom code that uses the
+    // motion sensors needs theirs (Accelerometer / Gyroscope from @zos/sensor, checked on a Bip 6 with these permissions, Nov 2026)
+    permissions: (() => {
+      const p = [], code = `${project.userImports || ''}\n${project.userCodeBefore || ''}\n${project.userCode || ''}`;
+      if ((project.elements || []).some((e) => e.visible !== false && (e.kind === 'PAI_CHART' || /^PAI_/.test(e.dataType || '')))) p.push('data:user.hd.pai');
+      if (/\bAccelerometer\b/.test(code)) p.push('device:os.accelerometer');
+      if (/\bGyroscope\b/.test(code)) p.push('device:os.gyroscope');
+      return p;
+    })(),
     runtime: { apiVersion: apiVersionFor(device.api), type: 0 },
     targets: {
       [device.target]: {
