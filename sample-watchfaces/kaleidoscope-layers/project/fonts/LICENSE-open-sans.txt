@@ -1,0 +1,1 @@
+Open Sans Regular (open-sans-400.ttf) - SIL Open Font License 1.1, from Fontsource (fonts.google.com). Used only to draw the digit and weekday pictures; no font is shipped in the watchface.
