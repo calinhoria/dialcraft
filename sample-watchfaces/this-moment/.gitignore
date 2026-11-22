@@ -1,7 +1,0 @@
-# local only: the Facer reference screenshot (someone else's artwork), the old photo-based prep and fonts tried but not used
-build/original-preview.png
-build/dseg7-modern-700.ttf
-build/iceland-400.ttf
-build/michroma-400.ttf
-build/seven-segment.ttf
-prep_photo_old.py
