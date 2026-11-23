@@ -4,7 +4,7 @@
   "device": "bip-6",
   "appId": 1133691,
   "vender": "dialcraft",
-  "description": "A digital face over a shape kaleidoscope the watch draws live on four see-through canvas layers: every wake or tap brings new colours and shapes that fly in, turn and settle.",
+  "description": "A digital face over a shape kaleidoscope the watch draws live on three see-through canvas layers: every wake or tap brings new colours and shapes that fly in, turn and settle.",
   "font": "Open Sans Regular",
   "language": "en-US",
   "i18n": {
@@ -20,12 +20,12 @@
     }
   ],
   "groups": {
-    "gmws3kuoynf": "Clock",
+    "gmwsiij618b": "Clock",
     "gDate": "Date"
   },
   "elements": [
     {
-      "id": "elmws3kumn4lg",
+      "id": "elmwsiij3w7ei",
       "kind": "IMG",
       "name": "Kaleidoscope (preview)",
       "x": 0,
@@ -44,7 +44,52 @@
       "previewOnly": true
     },
     {
-      "id": "elmws3kuoi79z",
+      "id": "elmwsiij492kp",
+      "kind": "CANVAS",
+      "name": "Kaleidoscope canvas 1",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "handle": "k1"
+    },
+    {
+      "id": "elmwsiij4c3is",
+      "kind": "CANVAS",
+      "name": "Kaleidoscope canvas 2",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "handle": "k2"
+    },
+    {
+      "id": "elmwsiij4g6jj",
+      "kind": "CANVAS",
+      "name": "Kaleidoscope canvas 3",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "handle": "k3"
+    },
+    {
+      "id": "elmwsiij5l6ut",
       "kind": "IMG_TIME",
       "name": "Minute",
       "x": 199,
@@ -52,7 +97,7 @@
       "show": "both",
       "visible": true,
       "locked": false,
-      "group": "gmws3kuoynf",
+      "group": "gmwsiij618b",
       "alpha": 255,
       "part": "minute",
       "zero": 1,
@@ -102,7 +147,7 @@
       "alignH": "LEFT"
     },
     {
-      "id": "elmws3kuoi26y",
+      "id": "elmwsiij5l2op",
       "kind": "IMG",
       "name": "Colon",
       "x": 181,
@@ -110,7 +155,7 @@
       "show": "both",
       "visible": true,
       "locked": false,
-      "group": "gmws3kuoynf",
+      "group": "gmwsiij618b",
       "alpha": 255,
       "w": 0,
       "h": 0,
@@ -142,8 +187,8 @@
       },
       "link": {
         "kind": "between",
-        "a": "elmws3kuoi4i2",
-        "b": "elmws3kuoi79z",
+        "a": "elmwsiij5ldp",
+        "b": "elmwsiij5l6ut",
         "gap": 13,
         "x": 209,
         "y": 211
@@ -154,7 +199,7 @@
       }
     },
     {
-      "id": "elmws3kuoi4i2",
+      "id": "elmwsiij5ldp",
       "kind": "IMG_TIME",
       "name": "Hour",
       "x": 71,
@@ -162,7 +207,7 @@
       "show": "both",
       "visible": true,
       "locked": false,
-      "group": "gmws3kuoynf",
+      "group": "gmwsiij618b",
       "alpha": 255,
       "part": "hour",
       "zero": 1,
@@ -212,7 +257,7 @@
       "alignH": "RIGHT"
     },
     {
-      "id": "elmws3kupb6d1",
+      "id": "elmwsiij6e6t8",
       "kind": "IMG_WEEK",
       "name": "Weekday",
       "x": 108,
@@ -256,7 +301,7 @@
       "labelAlign": "right"
     },
     {
-      "id": "elmws3kuq47bb",
+      "id": "elmwsiij802lk",
       "kind": "IMG_DATE",
       "name": "Day",
       "x": 208,
@@ -309,12 +354,44 @@
       "alignH": "LEFT",
       "link": {
         "kind": "beside",
-        "id": "elmws3kupb6d1",
+        "id": "elmwsiij6e6t8",
         "side": "after",
         "gap": 10,
         "x": 244,
         "y": 90
       }
+    },
+    {
+      "id": "elmwsiijad76y",
+      "kind": "TEXT",
+      "name": "Tap for a new pattern",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "",
+      "color": "#ffffff",
+      "size": 32,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "w": 390,
+      "h": 450,
+      "handle": "tap"
     }
   ],
   "images": [
@@ -520,7 +597,6 @@
     }
   ],
   "savePath": null,
-  "userCode": "try { const tap = ui.createWidget(ui.widget.TEXT, { x: 0, y: 0, w: 390, h: 450, text: '', color: 0xffffff, text_size: 12, show_level: ui.show_level.ONLY_NORMAL }); tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }",
-  "userCodeBefore": "// ---- VET: the shape kaleidoscope (watch-portable: drawCircle, strokeCircle, drawLine + setPaint, drawPoly, strokePoly only) ----\n// A pattern = 4 shapes, each on its OWN canvas layer with its own widget.setAlpha (20-80%), 4 different solid types\n// (outline shapes stuttered on the watch, so none). Each shape lives in one wedge and is drawn turned / mirrored into every slice (the maths does the turning).\n// Shapes (after a kaleidoscope design guide): sharp shards, petals / teardrops, crescents, thin rods, dots, stars, hexagons, octagons.\nvar VET = (function () {\n  var PALS = [{\"name\":\"The Roarin' 80's\",\"src\":\"lospec\",\"colors\":[\"#ff2153\",\"#f9eb0f\",\"#65d1f8\",\"#3a67cc\",\"#cc7bd8\"],\"bg\":\"#000000\"},{\"name\":\"toxic tumblr\",\"src\":\"lospec\",\"colors\":[\"#dee9ff\",\"#fe371b\",\"#f0d922\",\"#7a4eff\"],\"bg\":\"#000000\"},{\"name\":\"High Energy\",\"src\":\"web\",\"colors\":[\"#ff5a36\",\"#ffbe0b\",\"#3a0ca3\",\"#00f5d4\"],\"bg\":\"#000000\"},{\"name\":\"SECAM\",\"src\":\"lospec\",\"colors\":[\"#f03c79\",\"#7fffff\",\"#ffff3f\",\"#ffffff\"],\"bg\":\"#000000\"},{\"name\":\"Vibrant Banana 8\",\"src\":\"lospec\",\"colors\":[\"#4c391a\",\"#ef3434\",\"#5e96ff\",\"#fff9ba\",\"#57f954\",\"#7242ed\"],\"bg\":\"#000000\"},{\"name\":\"FunkyFuture 8\",\"src\":\"lospec\",\"colors\":[\"#ff4f69\",\"#fff7f8\",\"#ff8142\",\"#ffda45\",\"#3368dc\",\"#49e7ec\"],\"bg\":\"#000000\"},{\"name\":\"neonscape\",\"src\":\"lospec\",\"colors\":[\"#fe1951\",\"#ffc144\",\"#0b294b\"],\"bg\":\"#000000\"},{\"name\":\"Discord 2021\",\"src\":\"lospec\",\"colors\":[\"#ed4245\",\"#fee75c\",\"#57f287\",\"#5865f2\",\"#ffffff\"],\"bg\":\"#000000\"},{\"name\":\"gems in the  forrest\",\"src\":\"lospec\",\"colors\":[\"#ff3282\",\"#5b1284\",\"#3171ee\",\"#4ff5fc\",\"#aefdd5\"],\"bg\":\"#000000\"},{\"name\":\"Sunset 8\",\"src\":\"lospec\",\"colors\":[\"#ffff78\",\"#ffd647\",\"#ffc247\",\"#ffa936\",\"#ff8b6f\",\"#e67595\",\"#9a6390\",\"#464678\"],\"bg\":\"#000000\"},{\"name\":\"Neon Night Drive\",\"src\":\"web\",\"colors\":[\"#ff2a6d\",\"#05d9e8\",\"#d1f7ff\",\"#711c91\"],\"bg\":\"#000000\"},{\"name\":\"NEO-5\",\"src\":\"lospec\",\"colors\":[\"#5433be\",\"#3df9ea\",\"#effafa\"],\"bg\":\"#000000\"},{\"name\":\"Endesga 8\",\"src\":\"lospec\",\"colors\":[\"#fdfdf8\",\"#d32734\",\"#da7d22\",\"#e6da29\",\"#2d93dd\",\"#7b53ad\"],\"bg\":\"#000000\"},{\"name\":\"CIRCUS TWITTER\",\"src\":\"lospec\",\"colors\":[\"#ffffff\",\"#5b7083\",\"#279ee8\",\"#764cba\",\"#d1285c\",\"#e65f2a\",\"#f7ac2c\"],\"bg\":\"#000000\"},{\"name\":\"Apple II Hi-Res\",\"src\":\"lospec\",\"colors\":[\"#b63dff\",\"#ea5d15\",\"#10a4e3\",\"#ffffff\"],\"bg\":\"#000000\"},{\"name\":\"MF-8\",\"src\":\"lospec\",\"colors\":[\"#fcf8ea\",\"#fdd156\",\"#1ac1fe\",\"#32a75c\",\"#e04113\",\"#a7763e\"],\"bg\":\"#000000\"},{\"name\":\"haretro8\",\"src\":\"lospec\",\"colors\":[\"#ffe6d2\",\"#32b4ff\",\"#cc66cc\",\"#c73b32\",\"#995f3d\"],\"bg\":\"#000000\"},{\"name\":\"Superb 8\",\"src\":\"lospec\",\"colors\":[\"#f6faff\",\"#eeea18\",\"#edc495\",\"#3d9c09\",\"#0891cd\",\"#776b7d\",\"#e62800\"],\"bg\":\"#000000\"},{\"name\":\"Lagoon\",\"src\":\"lospec\",\"colors\":[\"#26798e\",\"#63caa7\",\"#ffc172\",\"#ffe383\"],\"bg\":\"#000000\"},{\"name\":\"Laying in the Shade\",\"src\":\"lospec\",\"colors\":[\"#6184d8\",\"#4fc2b7\",\"#9aed5d\",\"#f1f465\"],\"bg\":\"#000000\"},{\"name\":\"Water Lemon\",\"src\":\"lospec\",\"colors\":[\"#3ba711\",\"#f8c15a\",\"#fefefe\",\"#fa2e42\"],\"bg\":\"#000000\"},{\"name\":\"[blank] canvas\",\"src\":\"lospec\",\"colors\":[\"#ffffff\",\"#f44336\",\"#4caf50\",\"#ba68c8\"],\"bg\":\"#000000\"},{\"name\":\"BoomBoom\",\"src\":\"lospec\",\"colors\":[\"#ffffff\",\"#be2633\",\"#44891a\",\"#31a2f2\"],\"bg\":\"#000000\"},{\"name\":\"Firestorm\",\"src\":\"lospec\",\"colors\":[\"#f95e3e\",\"#fd4b35\",\"#ec6756\",\"#ff845f\",\"#ffa15f\",\"#fdde85\",\"#ffecb3\"],\"bg\":\"#000000\"}]\n  var SOLID = ['dot', 'shard', 'petal', 'crescent', 'hex', 'oct'],      // needles and stars removed (owner's choice)\n      OUTLINE = ['ring', 'shardline', 'petalline', 'crescentline', 'starline', 'hexline', 'octline']\n  // ms per draw: dot .6, rod .7 (thick line), shard 1.0 (triangle) measured; the rest estimated (polygons ~1-1.7, outlines ~1.5)\n  var COST = { dot: 0.6, rod: 0.7, shard: 1.0, petal: 1.3, crescent: 1.3, star: 1.4, hex: 1.7, oct: 1.7, ring: 1.5, shardline: 1.2, petalline: 1.5, crescentline: 1.5, starline: 1.6, hexline: 1.5, octline: 1.6 }\n  var MEASURED = { dot: 1, rod: 1, shard: 1, hex: 1 }\n  var RECIPES = [{ name: 'Random mix', note: '4 different solid shapes', random: true }]\n  var SHADES = [0.8, 0.5, 0.2]\n  function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6d2b79f5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 } }\n  function hx(s) { return parseInt(s.slice(1), 16) }\n  function lum(c) { var f = function (v) { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4) }; return 0.2126 * f((c >> 16) & 255) + 0.7152 * f((c >> 8) & 255) + 0.0722 * f(c & 255) }\n  function contrast(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05) }\n  function mix(c, bg, a) { var r = ((c >> 16) & 255) * a + ((bg >> 16) & 255) * (1 - a), g = ((c >> 8) & 255) * a + ((bg >> 8) & 255) * (1 - a), b = (c & 255) * a + (bg & 255) * (1 - a); return (Math.round(r) << 16) | (Math.round(g) << 8) | Math.round(b) }\n  // the outline of each polygon shape in its own units (size 1, pointing along +x); stars / octagons etc. are regular\n  function outlinePts(base, r) {\n    var p = [], j, t, u\n    if (base === 'shard') { var a1 = 2.0 + r() * 0.5, a2 = -1.8 - r() * 0.6; p = [[0.75, 0], [Math.cos(a1) * (0.25 + r() * 0.2), Math.sin(a1) * (0.25 + r() * 0.2)], [Math.cos(a2) * (0.35 + r() * 0.25), Math.sin(a2) * (0.35 + r() * 0.25)]] }\n    else if (base === 'petal') { for (j = 0; j <= 7; j++) { u = -1 + j * 2 / 7; p.push([u * 0.6, 0.26 * Math.pow(1 - u * u, 0.7) * (1 - 0.45 * u)]) } for (j = 6; j >= 1; j--) { u = -1 + j * 2 / 7; p.push([u * 0.6, -0.26 * Math.pow(1 - u * u, 0.7) * (1 - 0.45 * u)]) } }\n    else if (base === 'crescent') { for (j = 0; j <= 7; j++) { t = -1.9 + j * 3.8 / 7; p.push([Math.cos(t) * 0.5, Math.sin(t) * 0.5]) } for (j = 6; j >= 1; j--) { t = -1.55 + j * 3.1 / 7; p.push([0.17 + Math.cos(t) * 0.4, Math.sin(t) * 0.4]) } }\n    else { var nv = base === 'hex' ? 6 : base === 'oct' ? 8 : 10; for (j = 0; j < nv; j++) { t = j * Math.PI * 2 / nv; var rj = base === 'star' && j % 2 ? 0.22 : 0.5; p.push([Math.cos(t) * rj, Math.sin(t) * rj]) } }\n    return p\n  }\n  // opt: {pal: index or -1 random, arms: number or 0, cx, cy}\n  // 3 or 4 arms (6 or 8 slices)\n  function make(seed, opt) {\n    var r = rng(seed), pick = function (a) { return a[Math.floor(r() * a.length)] }\n    var pi = opt.pal >= 0 ? opt.pal : Math.floor(r() * PALS.length), P = PALS[pi], R = RECIPES[0]\n    var arms = opt.arms || pick([3, 4]), SEG = 2 * arms, W = Math.PI * 2 / SEG\n    // background: black unless the colours are too dark to see on it (median contrast < 3:1), then the darkest grey that works\n    var cols = P.colors.map(hx), bg = 0x000000, tries = [0x000000, 0x2a2a2e, 0x55555c, 0x8a8a92]\n    for (var bi = 0; bi < tries.length; bi++) { var cc = cols.map(function (k) { return contrast(k, tries[bi]) }).sort(function (a, b) { return a - b }); bg = tries[bi]; if (cc[Math.floor(cc.length / 2)] >= 3) break }\n    // 4 different types: one outline, one solid, two more from the rest\n    // 4 different SOLID types (outlines removed: strokePoly / strokeCircle stuttered on the watch)\n    var types = [], rest = SOLID.slice()\n    while (types.length < 4) types.push(rest.splice(Math.floor(r() * rest.length), 1)[0])\n    for (var q = types.length - 1; q > 0; q--) { var z = Math.floor(r() * (q + 1)), tt = types[q]; types[q] = types[z]; types[z] = tt }      // shuffle: any type at any radius\n    var shapes = [], cost = 0, usedCol = []\n    for (var i = 0; i < 4; i++) {\n      var type = types[i], base = type.replace('line', ''), u = (i + 0.3 + r() * 0.5) / 4, rad = 25 + 275 * u\n      var size = (50 + r() * 70) * (r() < 0.5 ? 0.5 + r() * 0.5 : 1 + r())\n      if (type === 'rod') size *= 1.3\n      var col = pick(cols); if (usedCol.indexOf(col) >= 0) col = pick(cols); usedCol.push(col)\n      shapes.push({ type: type, base: base, outline: type !== base, r: rad, phi: W * (0.1 + r() * 0.8), s: size, rot: r() * Math.PI * 2, col: col, layer: i,\n        pts: (base === 'dot' || base === 'ring' || base === 'rod') ? null : outlinePts(base, r), dspin: (r() - 0.5) * 4, da: (r() - 0.5) * 0.8 })\n      cost += COST[type] * SEG\n    }\n    var ALPHA = shapes.map(function () { return 0.2 + r() * 0.6 }); ALPHA[Math.floor(r() * 4)] = 0.8        // each 20-80%, one at 80%\n    var POLY = shapes.map(function (sh) { var a = []; if (sh.pts) for (var j = 0; j <= sh.pts.length; j++) a.push({ x: 0, y: 0 }); return { data_array: a, color: sh.col } })\n    return { ALPHA: ALPHA, seed: seed, P: P, R: { name: 'Random mix: ' + types.join(' + '), note: R.note, types: types }, pi: pi, ri: 0, arms: arms, SEG: SEG, W: W, bg: bg, shapes: shapes, cost: cost, draws: 4 * SEG,\n      C: { center_x: 0, center_y: 0, radius: 1, color: 0 }, L: { x1: 0, y1: 0, x2: 0, y2: 0, color: 0 }, PAINT: { color: 0, line_width: 1 }, POLY: POLY, cx: opt.cx, cy: opt.cy }\n  }\n  // D: the 4 layer canvases. M: {spin, flow} from the wake motion.\n  function frame(V, M, D) {\n    var TRAVEL = 280, i, k, j\n    for (i = 0; i < V.shapes.length; i++) {\n      var sh = V.shapes[i], d = D[sh.layer], rr = sh.r + M.flow * TRAVEL * (0.6 + 0.4 * sh.r / 300), phi = sh.phi + M.flow * sh.da, rot = sh.rot + M.flow * sh.dspin, s = sh.s\n      for (k = 0; k < V.SEG; k++) {\n        var odd = k % 2 === 1, a = M.spin + (odd ? (k + 1) * V.W - phi : k * V.W + phi) - Math.PI / 2\n        var x = V.cx + rr * Math.cos(a), y = V.cy + rr * Math.sin(a), o = a + (odd ? -rot : rot), m = odd ? -1 : 1\n        if (x < -90 || y < -90 || x > 480 || y > 540) continue\n        if (sh.base === 'dot' || sh.base === 'ring') {\n          var C = V.C; C.center_x = Math.round(x); C.center_y = Math.round(y); C.radius = Math.round(s * 0.5); C.color = sh.col\n          if (sh.base === 'ring') { V.PAINT.color = sh.col; V.PAINT.line_width = Math.max(3, Math.round(s * 0.1)); d.setPaint(V.PAINT); d.strokeCircle(C) } else d.drawCircle(C)\n        } else if (sh.base === 'rod') {          // thin needle\n          var hx2 = Math.cos(o) * s * 0.6, hy2 = Math.sin(o) * s * 0.6, L = V.L\n          L.x1 = Math.round(x - hx2); L.y1 = Math.round(y - hy2); L.x2 = Math.round(x + hx2); L.y2 = Math.round(y + hy2); L.color = sh.col\n          V.PAINT.color = sh.col; V.PAINT.line_width = Math.max(3, Math.round(s * 0.05)); d.setPaint(V.PAINT); d.drawLine(L)\n        } else {                                   // polygon: the shape's own outline, mirrored in odd slices, turned to o\n          var PP = V.POLY[i], pts = PP.data_array, n = sh.pts.length, co = Math.cos(o), so = Math.sin(o)\n          for (j = 0; j <= n; j++) { var q = sh.pts[j % n], px = q[0] * s, py = q[1] * s * m; pts[j].x = Math.round(x + px * co - py * so); pts[j].y = Math.round(y + px * so + py * co) }\n          if (sh.outline) { V.PAINT.color = sh.col; V.PAINT.line_width = Math.max(3, Math.round(s * 0.06)); d.setPaint(V.PAINT); d.strokePoly(PP) } else d.drawPoly(PP)\n        }\n      }\n    }\n  }\n  return { contrast: contrast, make: make, frame: frame, COST: COST, MEASURED: MEASURED, PALS: PALS, RECIPES: RECIPES, SHADES: SHADES, mix: mix, hx: hx }\n})()\n\n// wake motion: flow-in 2 s while turning steadily, then a 1 s drift to rest. The turn always lands at exactly 0 (a mirror line\n// straight up: the pattern upright and left-right symmetric): it starts TURN back, TURN = the whole number of slices nearest 60 deg\nconst FLOW = 2000, DRIFT = 1000, S_END = (FLOW + DRIFT / 2) / 1000\nconst motion = (ms, W) => { const t = Math.max(0, ms); let s; if (t < FLOW) s = t / 1000; else { const u = Math.min(t - FLOW, DRIFT); s = (FLOW + u - u * u / (2 * DRIFT)) / 1000 }\n  const TURN = Math.max(1, Math.round((Math.PI / 3) / W)) * W\n  const e = Math.min(1, t / FLOW); return { spin: -TURN * (1 - s / S_END), flow: Math.pow(1 - e, 3), done: t >= FLOW + DRIFT } }\nconst say = (m) => { console.log('[kl] ' + m) }       // bridge log only\nconst L = []\nfor (let i = 0; i < 4; i++) { try { L.push(ui.createWidget(ui.widget.CANVAS, { x: 0, y: 0, w: 390, h: 450, show_level: ui.show_level.ONLY_NORMAL })) } catch (e) { say('canvas ' + i + ': ' + e) } }\nlet V = null, timer = null, t0 = 0, frames = 0\nconst tick = () => {\n  timer = null\n  const ms = Date.now() - t0, M = motion(ms, V.W)\n  try { L.forEach((c) => c.clear({ x: 0, y: 0, w: 390, h: 450 })); VET.frame(V, M, L) } catch (e) { say('draw: ' + e); return }\n  frames++\n  if (!M.done) timer = setTimeout(tick, 0)\n  else say(Math.round(frames * 1000 / ms) + ' fps, ' + V.draws + ' draws, ' + V.SEG + ' slices, ' + V.R.types.join(' ') + ', ' + V.P.name)\n}\nconst stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }\nconst start = () => {\n  stop()\n  const seed = ((Date.now() & 0x7fffffff) ^ Math.floor(Math.random() * 0x7fffffff)) >>> 0\n  try { V = VET.make(seed, { pal: -1, arms: 0, cx: 195, cy: 225 }); L.forEach((c, i) => c.setAlpha(Math.round(255 * (V.ALPHA[i] || 1)))) } catch (e) { say('make: ' + e); return }\n  t0 = Date.now(); frames = 0; tick()\n}\ntry { L[3].addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }\nui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })\nstart()",
+  "userCode": "// ---- VET: the shape kaleidoscope (watch-portable: drawCircle, strokeCircle, drawLine + setPaint, drawPoly, strokePoly only) ----\n// A pattern = 3 shapes, each on its OWN canvas layer with its own widget.setAlpha (20-80%), 3 different solid types\n// (outline shapes stuttered on the watch, so none). Each shape lives in one wedge and is drawn turned / mirrored into every slice (the maths does the turning).\n// Shapes (after a kaleidoscope design guide): sharp shards, petals / teardrops, crescents, thin rods, dots, stars, hexagons, octagons.\nvar VET = (function () {\n  var PALS = [{\"name\":\"The Roarin' 80's\",\"src\":\"lospec\",\"colors\":[\"#ff2153\",\"#f9eb0f\",\"#65d1f8\",\"#3a67cc\",\"#cc7bd8\"],\"bg\":\"#000000\"},{\"name\":\"toxic tumblr\",\"src\":\"lospec\",\"colors\":[\"#dee9ff\",\"#fe371b\",\"#f0d922\",\"#7a4eff\"],\"bg\":\"#000000\"},{\"name\":\"High Energy\",\"src\":\"web\",\"colors\":[\"#ff5a36\",\"#ffbe0b\",\"#3a0ca3\",\"#00f5d4\"],\"bg\":\"#000000\"},{\"name\":\"SECAM\",\"src\":\"lospec\",\"colors\":[\"#f03c79\",\"#7fffff\",\"#ffff3f\",\"#ffffff\"],\"bg\":\"#000000\"},{\"name\":\"Vibrant Banana 8\",\"src\":\"lospec\",\"colors\":[\"#4c391a\",\"#ef3434\",\"#5e96ff\",\"#fff9ba\",\"#57f954\",\"#7242ed\"],\"bg\":\"#000000\"},{\"name\":\"FunkyFuture 8\",\"src\":\"lospec\",\"colors\":[\"#ff4f69\",\"#fff7f8\",\"#ff8142\",\"#ffda45\",\"#3368dc\",\"#49e7ec\"],\"bg\":\"#000000\"},{\"name\":\"neonscape\",\"src\":\"lospec\",\"colors\":[\"#fe1951\",\"#ffc144\",\"#0b294b\"],\"bg\":\"#000000\"},{\"name\":\"Discord 2021\",\"src\":\"lospec\",\"colors\":[\"#ed4245\",\"#fee75c\",\"#57f287\",\"#5865f2\",\"#ffffff\"],\"bg\":\"#000000\"},{\"name\":\"gems in the  forrest\",\"src\":\"lospec\",\"colors\":[\"#ff3282\",\"#5b1284\",\"#3171ee\",\"#4ff5fc\",\"#aefdd5\"],\"bg\":\"#000000\"},{\"name\":\"Sunset 8\",\"src\":\"lospec\",\"colors\":[\"#ffff78\",\"#ffd647\",\"#ffc247\",\"#ffa936\",\"#ff8b6f\",\"#e67595\",\"#9a6390\",\"#464678\"],\"bg\":\"#000000\"},{\"name\":\"Neon Night Drive\",\"src\":\"web\",\"colors\":[\"#ff2a6d\",\"#05d9e8\",\"#d1f7ff\",\"#711c91\"],\"bg\":\"#000000\"},{\"name\":\"NEO-5\",\"src\":\"lospec\",\"colors\":[\"#5433be\",\"#3df9ea\",\"#effafa\"],\"bg\":\"#000000\"},{\"name\":\"Endesga 8\",\"src\":\"lospec\",\"colors\":[\"#fdfdf8\",\"#d32734\",\"#da7d22\",\"#e6da29\",\"#2d93dd\",\"#7b53ad\"],\"bg\":\"#000000\"},{\"name\":\"CIRCUS TWITTER\",\"src\":\"lospec\",\"colors\":[\"#ffffff\",\"#5b7083\",\"#279ee8\",\"#764cba\",\"#d1285c\",\"#e65f2a\",\"#f7ac2c\"],\"bg\":\"#000000\"},{\"name\":\"Apple II Hi-Res\",\"src\":\"lospec\",\"colors\":[\"#b63dff\",\"#ea5d15\",\"#10a4e3\",\"#ffffff\"],\"bg\":\"#000000\"},{\"name\":\"MF-8\",\"src\":\"lospec\",\"colors\":[\"#fcf8ea\",\"#fdd156\",\"#1ac1fe\",\"#32a75c\",\"#e04113\",\"#a7763e\"],\"bg\":\"#000000\"},{\"name\":\"haretro8\",\"src\":\"lospec\",\"colors\":[\"#ffe6d2\",\"#32b4ff\",\"#cc66cc\",\"#c73b32\",\"#995f3d\"],\"bg\":\"#000000\"},{\"name\":\"Superb 8\",\"src\":\"lospec\",\"colors\":[\"#f6faff\",\"#eeea18\",\"#edc495\",\"#3d9c09\",\"#0891cd\",\"#776b7d\",\"#e62800\"],\"bg\":\"#000000\"},{\"name\":\"Lagoon\",\"src\":\"lospec\",\"colors\":[\"#26798e\",\"#63caa7\",\"#ffc172\",\"#ffe383\"],\"bg\":\"#000000\"},{\"name\":\"Laying in the Shade\",\"src\":\"lospec\",\"colors\":[\"#6184d8\",\"#4fc2b7\",\"#9aed5d\",\"#f1f465\"],\"bg\":\"#000000\"},{\"name\":\"Water Lemon\",\"src\":\"lospec\",\"colors\":[\"#3ba711\",\"#f8c15a\",\"#fefefe\",\"#fa2e42\"],\"bg\":\"#000000\"},{\"name\":\"[blank] canvas\",\"src\":\"lospec\",\"colors\":[\"#ffffff\",\"#f44336\",\"#4caf50\",\"#ba68c8\"],\"bg\":\"#000000\"},{\"name\":\"BoomBoom\",\"src\":\"lospec\",\"colors\":[\"#ffffff\",\"#be2633\",\"#44891a\",\"#31a2f2\"],\"bg\":\"#000000\"},{\"name\":\"Firestorm\",\"src\":\"lospec\",\"colors\":[\"#f95e3e\",\"#fd4b35\",\"#ec6756\",\"#ff845f\",\"#ffa15f\",\"#fdde85\",\"#ffecb3\"],\"bg\":\"#000000\"}]\n  var SOLID = ['dot', 'shard', 'petal', 'crescent', 'hex', 'oct'],      // needles and stars removed (owner's choice)\n      OUTLINE = ['ring', 'shardline', 'petalline', 'crescentline', 'starline', 'hexline', 'octline']\n  // ms per draw: dot .6, rod .7 (thick line), shard 1.0 (triangle) measured; the rest estimated (polygons ~1-1.7, outlines ~1.5)\n  var COST = { dot: 0.6, rod: 0.7, shard: 1.0, petal: 1.3, crescent: 1.3, star: 1.4, hex: 1.7, oct: 1.7, ring: 1.5, shardline: 1.2, petalline: 1.5, crescentline: 1.5, starline: 1.6, hexline: 1.5, octline: 1.6 }\n  var MEASURED = { dot: 1, rod: 1, shard: 1, hex: 1 }\n  var RECIPES = [{ name: 'Random mix', note: '3 different solid shapes', random: true }]\n  var SHADES = [0.8, 0.5, 0.2]\n  function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6d2b79f5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 } }\n  function hx(s) { return parseInt(s.slice(1), 16) }\n  function lum(c) { var f = function (v) { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4) }; return 0.2126 * f((c >> 16) & 255) + 0.7152 * f((c >> 8) & 255) + 0.0722 * f(c & 255) }\n  function contrast(a, b) { var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05) }\n  function mix(c, bg, a) { var r = ((c >> 16) & 255) * a + ((bg >> 16) & 255) * (1 - a), g = ((c >> 8) & 255) * a + ((bg >> 8) & 255) * (1 - a), b = (c & 255) * a + (bg & 255) * (1 - a); return (Math.round(r) << 16) | (Math.round(g) << 8) | Math.round(b) }\n  // the outline of each polygon shape in its own units (size 1, pointing along +x); stars / octagons etc. are regular\n  function outlinePts(base, r) {\n    var p = [], j, t, u\n    if (base === 'shard') { var a1 = 2.0 + r() * 0.5, a2 = -1.8 - r() * 0.6; p = [[0.75, 0], [Math.cos(a1) * (0.25 + r() * 0.2), Math.sin(a1) * (0.25 + r() * 0.2)], [Math.cos(a2) * (0.35 + r() * 0.25), Math.sin(a2) * (0.35 + r() * 0.25)]] }\n    else if (base === 'petal') { for (j = 0; j <= 7; j++) { u = -1 + j * 2 / 7; p.push([u * 0.6, 0.26 * Math.pow(1 - u * u, 0.7) * (1 - 0.45 * u)]) } for (j = 6; j >= 1; j--) { u = -1 + j * 2 / 7; p.push([u * 0.6, -0.26 * Math.pow(1 - u * u, 0.7) * (1 - 0.45 * u)]) } }\n    else if (base === 'crescent') { for (j = 0; j <= 7; j++) { t = -1.9 + j * 3.8 / 7; p.push([Math.cos(t) * 0.5, Math.sin(t) * 0.5]) } for (j = 6; j >= 1; j--) { t = -1.55 + j * 3.1 / 7; p.push([0.17 + Math.cos(t) * 0.4, Math.sin(t) * 0.4]) } }\n    else { var nv = base === 'hex' ? 6 : base === 'oct' ? 8 : 10; for (j = 0; j < nv; j++) { t = j * Math.PI * 2 / nv; var rj = base === 'star' && j % 2 ? 0.22 : 0.5; p.push([Math.cos(t) * rj, Math.sin(t) * rj]) } }\n    return p\n  }\n  // opt: {pal: index or -1 random, arms: number or 0, cx, cy}\n  // 3 or 4 arms (6 or 8 slices)\n  var N = 3        // shapes = Canvas layers\n  function make(seed, opt) {\n    var r = rng(seed), pick = function (a) { return a[Math.floor(r() * a.length)] }\n    var pi = opt.pal >= 0 ? opt.pal : Math.floor(r() * PALS.length), P = PALS[pi], R = RECIPES[0]\n    var arms = opt.arms || pick([3, 4]), SEG = 2 * arms, W = Math.PI * 2 / SEG\n    // background: black unless the colours are too dark to see on it (median contrast < 3:1), then the darkest grey that works\n    var cols = P.colors.map(hx), bg = 0x000000, tries = [0x000000, 0x2a2a2e, 0x55555c, 0x8a8a92]\n    for (var bi = 0; bi < tries.length; bi++) { var cc = cols.map(function (k) { return contrast(k, tries[bi]) }).sort(function (a, b) { return a - b }); bg = tries[bi]; if (cc[Math.floor(cc.length / 2)] >= 3) break }\n    // 4 different types: one outline, one solid, two more from the rest\n    // 4 different SOLID types (outlines removed: strokePoly / strokeCircle stuttered on the watch)\n    var types = [], rest = SOLID.slice()\n    while (types.length < N) types.push(rest.splice(Math.floor(r() * rest.length), 1)[0])\n    for (var q = types.length - 1; q > 0; q--) { var z = Math.floor(r() * (q + 1)), tt = types[q]; types[q] = types[z]; types[z] = tt }      // shuffle: any type at any radius\n    var shapes = [], cost = 0, usedCol = []\n    for (var i = 0; i < N; i++) {\n      var type = types[i], base = type.replace('line', ''), u = (i + 0.3 + r() * 0.5) / N, rad = 25 + 275 * u\n      var size = (50 + r() * 70) * (r() < 0.5 ? 0.5 + r() * 0.5 : 1 + r())\n      if (type === 'rod') size *= 1.3\n      var col = pick(cols); if (usedCol.indexOf(col) >= 0) col = pick(cols); usedCol.push(col)\n      shapes.push({ type: type, base: base, outline: type !== base, r: rad, phi: W * (0.1 + r() * 0.8), s: size, rot: r() * Math.PI * 2, col: col, layer: i,\n        pts: (base === 'dot' || base === 'ring' || base === 'rod') ? null : outlinePts(base, r), dspin: (r() - 0.5) * 4, da: (r() - 0.5) * 0.8 })\n      cost += COST[type] * SEG\n    }\n    var ALPHA = shapes.map(function () { return 0.2 + r() * 0.6 }); ALPHA[Math.floor(r() * N)] = 0.8        // each 20-80%, one at 80%\n    var POLY = shapes.map(function (sh) { var a = []; if (sh.pts) for (var j = 0; j <= sh.pts.length; j++) a.push({ x: 0, y: 0 }); return { data_array: a, color: sh.col } })\n    return { ALPHA: ALPHA, seed: seed, P: P, R: { name: 'Random mix: ' + types.join(' + '), note: R.note, types: types }, pi: pi, ri: 0, arms: arms, SEG: SEG, W: W, bg: bg, shapes: shapes, cost: cost, draws: 4 * SEG,\n      C: { center_x: 0, center_y: 0, radius: 1, color: 0 }, L: { x1: 0, y1: 0, x2: 0, y2: 0, color: 0 }, PAINT: { color: 0, line_width: 1 }, POLY: POLY, cx: opt.cx, cy: opt.cy }\n  }\n  // D: the 3 layer canvases. M: {spin, flow} from the wake motion.\n  function frame(V, M, D) {\n    var TRAVEL = 280, i, k, j\n    for (i = 0; i < V.shapes.length; i++) {\n      var sh = V.shapes[i], d = D[sh.layer], rr = sh.r + M.flow * TRAVEL * (0.6 + 0.4 * sh.r / 300), phi = sh.phi + M.flow * sh.da, rot = sh.rot + M.flow * sh.dspin, s = sh.s\n      for (k = 0; k < V.SEG; k++) {\n        var odd = k % 2 === 1, a = M.spin + (odd ? (k + 1) * V.W - phi : k * V.W + phi) - Math.PI / 2\n        var x = V.cx + rr * Math.cos(a), y = V.cy + rr * Math.sin(a), o = a + (odd ? -rot : rot), m = odd ? -1 : 1\n        if (x < -90 || y < -90 || x > 480 || y > 540) continue\n        if (sh.base === 'dot' || sh.base === 'ring') {\n          var C = V.C; C.center_x = Math.round(x); C.center_y = Math.round(y); C.radius = Math.round(s * 0.5); C.color = sh.col\n          if (sh.base === 'ring') { V.PAINT.color = sh.col; V.PAINT.line_width = Math.max(3, Math.round(s * 0.1)); d.setPaint(V.PAINT); d.strokeCircle(C) } else d.drawCircle(C)\n        } else if (sh.base === 'rod') {          // thin needle\n          var hx2 = Math.cos(o) * s * 0.6, hy2 = Math.sin(o) * s * 0.6, L = V.L\n          L.x1 = Math.round(x - hx2); L.y1 = Math.round(y - hy2); L.x2 = Math.round(x + hx2); L.y2 = Math.round(y + hy2); L.color = sh.col\n          V.PAINT.color = sh.col; V.PAINT.line_width = Math.max(3, Math.round(s * 0.05)); d.setPaint(V.PAINT); d.drawLine(L)\n        } else {                                   // polygon: the shape's own outline, mirrored in odd slices, turned to o\n          var PP = V.POLY[i], pts = PP.data_array, n = sh.pts.length, co = Math.cos(o), so = Math.sin(o)\n          for (j = 0; j <= n; j++) { var q = sh.pts[j % n], px = q[0] * s, py = q[1] * s * m; pts[j].x = Math.round(x + px * co - py * so); pts[j].y = Math.round(y + px * so + py * co) }\n          if (sh.outline) { V.PAINT.color = sh.col; V.PAINT.line_width = Math.max(3, Math.round(s * 0.06)); d.setPaint(V.PAINT); d.strokePoly(PP) } else d.drawPoly(PP)\n        }\n      }\n    }\n  }\n  return { contrast: contrast, make: make, frame: frame, COST: COST, MEASURED: MEASURED, PALS: PALS, RECIPES: RECIPES, SHADES: SHADES, mix: mix, hx: hx }\n})()\n\n// wake motion: flow-in 2 s while turning steadily, then a 1 s drift to rest. The turn always lands at exactly 0 (a mirror line\n// straight up: the pattern upright and left-right symmetric): it starts TURN back, TURN = the whole number of slices nearest 60 deg\nconst FLOW = 2000, DRIFT = 1000, S_END = (FLOW + DRIFT / 2) / 1000\nconst motion = (ms, W) => { const t = Math.max(0, ms); let s; if (t < FLOW) s = t / 1000; else { const u = Math.min(t - FLOW, DRIFT); s = (FLOW + u - u * u / (2 * DRIFT)) / 1000 }\n  const TURN = Math.max(1, Math.round((Math.PI / 3) / W)) * W\n  const e = Math.min(1, t / FLOW); return { spin: -TURN * (1 - s / S_END), flow: Math.pow(1 - e, 3), done: t >= FLOW + DRIFT } }\nconst DEBUG = false                                      // true: log to the developer bridge\nconst say = (m) => { if (DEBUG) console.log('[kl] ' + m) }\nconst L = [W.k1, W.k2, W.k3]       // the three Canvas layers of the layout (code handles k1..k3), see the layer list\nlet V = null, timer = null, t0 = 0, frames = 0\nconst tick = () => {\n  timer = null\n  const ms = Date.now() - t0, M = motion(ms, V.W)\n  try { L.forEach((c) => c.clear({ x: 0, y: 0, w: 390, h: 450 })); VET.frame(V, M, L) } catch (e) { say('draw: ' + e); return }\n  frames++\n  if (!M.done) timer = setTimeout(tick, 0)\n  else say(Math.round(frames * 1000 / ms) + ' fps, ' + V.draws + ' draws, ' + V.SEG + ' slices, ' + V.R.types.join(' ') + ', ' + V.P.name)\n}\nconst stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }\nconst start = () => {\n  stop()\n  const seed = ((Date.now() & 0x7fffffff) ^ Math.floor(Math.random() * 0x7fffffff)) >>> 0\n  try { V = VET.make(seed, { pal: -1, arms: 0, cx: 195, cy: 225 }); L.forEach((c, i) => c.setAlpha(Math.round(255 * (V.ALPHA[i] || 1)))) } catch (e) { say('make: ' + e); return }\n  t0 = Date.now(); frames = 0; tick()\n}\ntry { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)\nui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })\nstart()",
   "optimizePng": "lossless"
 }

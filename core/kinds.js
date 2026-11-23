@@ -115,6 +115,10 @@ const KINDS = [
   },
   // ---------------------------------------------------------------- shapes --
   {
+    id: 'CANVAS', label: 'Canvas (drawn by code)', group: 'Shape', docs: 'CANVAS', box: 'wh',
+    defaults: { w: 100, h: 100 },
+  },
+  {
     id: 'FILL_RECT', label: 'Filled rectangle', group: 'Shape', docs: 'FILL_RECT', box: 'wh',
     defaults: { w: 100, h: 100, color: '#101522', radius: 0, angle: 0 },
   },

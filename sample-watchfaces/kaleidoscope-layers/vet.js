@@ -1,5 +1,5 @@
 // ---- VET: the shape kaleidoscope (watch-portable: drawCircle, strokeCircle, drawLine + setPaint, drawPoly, strokePoly only) ----
-// A pattern = 4 shapes, each on its OWN canvas layer with its own widget.setAlpha (20-80%), 4 different solid types
+// A pattern = 3 shapes, each on its OWN canvas layer with its own widget.setAlpha (20-80%), 3 different solid types
 // (outline shapes stuttered on the watch, so none). Each shape lives in one wedge and is drawn turned / mirrored into every slice (the maths does the turning).
 // Shapes (after a kaleidoscope design guide): sharp shards, petals / teardrops, crescents, thin rods, dots, stars, hexagons, octagons.
 var VET = (function () {
@@ -9,7 +9,7 @@ var VET = (function () {
   // ms per draw: dot .6, rod .7 (thick line), shard 1.0 (triangle) measured; the rest estimated (polygons ~1-1.7, outlines ~1.5)
   var COST = { dot: 0.6, rod: 0.7, shard: 1.0, petal: 1.3, crescent: 1.3, star: 1.4, hex: 1.7, oct: 1.7, ring: 1.5, shardline: 1.2, petalline: 1.5, crescentline: 1.5, starline: 1.6, hexline: 1.5, octline: 1.6 }
   var MEASURED = { dot: 1, rod: 1, shard: 1, hex: 1 }
-  var RECIPES = [{ name: 'Random mix', note: '4 different solid shapes', random: true }]
+  var RECIPES = [{ name: 'Random mix', note: '3 different solid shapes', random: true }]
   var SHADES = [0.8, 0.5, 0.2]
   function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6d2b79f5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 } }
   function hx(s) { return parseInt(s.slice(1), 16) }
@@ -27,6 +27,7 @@ var VET = (function () {
   }
   // opt: {pal: index or -1 random, arms: number or 0, cx, cy}
   // 3 or 4 arms (6 or 8 slices)
+  var N = 3        // shapes = Canvas layers
   function make(seed, opt) {
     var r = rng(seed), pick = function (a) { return a[Math.floor(r() * a.length)] }
     var pi = opt.pal >= 0 ? opt.pal : Math.floor(r() * PALS.length), P = PALS[pi], R = RECIPES[0]
@@ -37,11 +38,11 @@ var VET = (function () {
     // 4 different types: one outline, one solid, two more from the rest
     // 4 different SOLID types (outlines removed: strokePoly / strokeCircle stuttered on the watch)
     var types = [], rest = SOLID.slice()
-    while (types.length < 4) types.push(rest.splice(Math.floor(r() * rest.length), 1)[0])
+    while (types.length < N) types.push(rest.splice(Math.floor(r() * rest.length), 1)[0])
     for (var q = types.length - 1; q > 0; q--) { var z = Math.floor(r() * (q + 1)), tt = types[q]; types[q] = types[z]; types[z] = tt }      // shuffle: any type at any radius
     var shapes = [], cost = 0, usedCol = []
-    for (var i = 0; i < 4; i++) {
-      var type = types[i], base = type.replace('line', ''), u = (i + 0.3 + r() * 0.5) / 4, rad = 25 + 275 * u
+    for (var i = 0; i < N; i++) {
+      var type = types[i], base = type.replace('line', ''), u = (i + 0.3 + r() * 0.5) / N, rad = 25 + 275 * u
       var size = (50 + r() * 70) * (r() < 0.5 ? 0.5 + r() * 0.5 : 1 + r())
       if (type === 'rod') size *= 1.3
       var col = pick(cols); if (usedCol.indexOf(col) >= 0) col = pick(cols); usedCol.push(col)
@@ -49,12 +50,12 @@ var VET = (function () {
         pts: (base === 'dot' || base === 'ring' || base === 'rod') ? null : outlinePts(base, r), dspin: (r() - 0.5) * 4, da: (r() - 0.5) * 0.8 })
       cost += COST[type] * SEG
     }
-    var ALPHA = shapes.map(function () { return 0.2 + r() * 0.6 }); ALPHA[Math.floor(r() * 4)] = 0.8        // each 20-80%, one at 80%
+    var ALPHA = shapes.map(function () { return 0.2 + r() * 0.6 }); ALPHA[Math.floor(r() * N)] = 0.8        // each 20-80%, one at 80%
     var POLY = shapes.map(function (sh) { var a = []; if (sh.pts) for (var j = 0; j <= sh.pts.length; j++) a.push({ x: 0, y: 0 }); return { data_array: a, color: sh.col } })
     return { ALPHA: ALPHA, seed: seed, P: P, R: { name: 'Random mix: ' + types.join(' + '), note: R.note, types: types }, pi: pi, ri: 0, arms: arms, SEG: SEG, W: W, bg: bg, shapes: shapes, cost: cost, draws: 4 * SEG,
       C: { center_x: 0, center_y: 0, radius: 1, color: 0 }, L: { x1: 0, y1: 0, x2: 0, y2: 0, color: 0 }, PAINT: { color: 0, line_width: 1 }, POLY: POLY, cx: opt.cx, cy: opt.cy }
   }
-  // D: the 4 layer canvases. M: {spin, flow} from the wake motion.
+  // D: the 3 layer canvases. M: {spin, flow} from the wake motion.
   function frame(V, M, D) {
     var TRAVEL = 280, i, k, j
     for (i = 0; i < V.shapes.length; i++) {

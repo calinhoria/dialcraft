@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_i79z = [
+const img_Minute_l6ut = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -27,7 +27,7 @@ const img_Minute_i79z = [
   A('font_1_9.png'),
 ]
 
-const img_Hour_i4i2 = [
+const img_Hour_5ldp = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -40,7 +40,7 @@ const img_Hour_i4i2 = [
   A('font_3_9.png'),
 ]
 
-const img_Weekday_b6d1 = [
+const img_Weekday_e6t8 = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -50,7 +50,7 @@ const img_Weekday_b6d1 = [
   A('week_w7.png'),
 ]
 
-const img_Day_47bb = [
+const img_Day_02lk = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -67,9 +67,169 @@ WatchFace({
   initView() {
     // px() only takes a literal number (the build replaces it, there is no px at run time); pxv() scales a computed one
     const pxv = (n) => Math.round(n * px(1000) / 1000)
-    // ---- user code, before the layers (project.userCodeBefore): what it creates sits under every layer ----
+    // layers with a code handle: W.<handle> is the widget, F.<handle> the picture list of a variants layer
+    const W = {}
+    const F = {}
+    // Kaleidoscope canvas 1 (CANVAS)
+    const canvas_1 = ui.createWidget(ui.widget.CANVAS, {
+      x: px(0),
+      y: px(0),
+      w: px(390),
+      h: px(450),
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+    W.k1 = canvas_1
+
+    // Kaleidoscope canvas 2 (CANVAS)
+    const canvas_2 = ui.createWidget(ui.widget.CANVAS, {
+      x: px(0),
+      y: px(0),
+      w: px(390),
+      h: px(450),
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+    W.k2 = canvas_2
+
+    // Kaleidoscope canvas 3 (CANVAS)
+    const canvas_3 = ui.createWidget(ui.widget.CANVAS, {
+      x: px(0),
+      y: px(0),
+      w: px(390),
+      h: px(450),
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+    W.k3 = canvas_3
+
+    // Minute (IMG_TIME) — normal state
+    ui.createWidget(ui.widget.IMG_TIME, {
+      minute_startX: px(199),
+      minute_startY: px(194),
+      minute_zero: 1,
+      minute_space: px(0),
+      minute_align: ui.align.LEFT,
+      minute_array: img_Minute_l6ut,
+      minute_follow: 0,
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+
+    // Minute (IMG_TIME) — AOD (screen-off)
+    ui.createWidget(ui.widget.IMG_TIME, {
+      minute_startX: px(199),
+      minute_startY: px(194),
+      minute_zero: 1,
+      minute_space: px(0),
+      minute_align: ui.align.LEFT,
+      minute_array: img_Minute_l6ut,
+      minute_follow: 0,
+      show_level: ui.show_level.ONLY_AOD,
+    })
+
+    // Colon (IMG) — normal state
+    ui.createWidget(ui.widget.IMG, {
+      x: px(181),
+      y: px(201),
+      src: A('symbol_u003a.png'),
+      show_level: ui.show_level.ONLY_NORMAL
+    })
+
+    // Colon (IMG) — AOD (screen-off)
+    ui.createWidget(ui.widget.IMG, {
+      x: px(181),
+      y: px(201),
+      src: A('symbol_u003a.png'),
+      show_level: ui.show_level.ONLY_AOD
+    })
+
+    // Hour (IMG_TIME) — normal state
+    ui.createWidget(ui.widget.IMG_TIME, {
+      hour_startX: px(71),
+      hour_startY: px(194),
+      hour_zero: 1,
+      hour_space: px(0),
+      hour_align: ui.align.RIGHT,
+      hour_array: img_Hour_5ldp,
+      hour_follow: 0,
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+
+    // Hour (IMG_TIME) — AOD (screen-off)
+    ui.createWidget(ui.widget.IMG_TIME, {
+      hour_startX: px(71),
+      hour_startY: px(194),
+      hour_zero: 1,
+      hour_space: px(0),
+      hour_align: ui.align.RIGHT,
+      hour_array: img_Hour_5ldp,
+      hour_follow: 0,
+      show_level: ui.show_level.ONLY_AOD,
+    })
+
+    // Weekday (IMG_WEEK) — normal state
+    ui.createWidget(ui.widget.IMG_WEEK, {
+      x: px(108),
+      y: px(121),
+      week_en: img_Weekday_e6t8,
+      week_sc: img_Weekday_e6t8,
+      week_tc: img_Weekday_e6t8,
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+
+    // Weekday (IMG_WEEK) — AOD (screen-off)
+    ui.createWidget(ui.widget.IMG_WEEK, {
+      x: px(108),
+      y: px(121),
+      week_en: img_Weekday_e6t8,
+      week_sc: img_Weekday_e6t8,
+      week_tc: img_Weekday_e6t8,
+      show_level: ui.show_level.ONLY_AOD,
+    })
+
+    // Day (IMG_DATE) — normal state
+    ui.createWidget(ui.widget.IMG_DATE, {
+      day_startX: px(208),
+      day_startY: px(121),
+      day_zero: 0,
+      day_space: px(0),
+      day_align: ui.align.LEFT,
+      day_follow: 0,
+      day_en_array: img_Day_02lk,
+      day_sc_array: img_Day_02lk,
+      day_tc_array: img_Day_02lk,
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+
+    // Day (IMG_DATE) — AOD (screen-off)
+    ui.createWidget(ui.widget.IMG_DATE, {
+      day_startX: px(208),
+      day_startY: px(121),
+      day_zero: 0,
+      day_space: px(0),
+      day_align: ui.align.LEFT,
+      day_follow: 0,
+      day_en_array: img_Day_02lk,
+      day_sc_array: img_Day_02lk,
+      day_tc_array: img_Day_02lk,
+      show_level: ui.show_level.ONLY_AOD,
+    })
+
+    // Tap for a new pattern (TEXT)
+    W.tap = ui.createWidget(ui.widget.TEXT, {
+      x: px(0),
+      y: px(0),
+      w: px(390),
+      h: px(450),
+      color: 0xffffff,
+      text_size: px(32),
+      align_h: ui.align.CENTER_H,
+      align_v: ui.align.CENTER_V,
+      text: "",
+      show_level: ui.show_level.ONLY_NORMAL,
+    })
+
+
+    // ---- user code (project.userCode) ----
     // ---- VET: the shape kaleidoscope (watch-portable: drawCircle, strokeCircle, drawLine + setPaint, drawPoly, strokePoly only) ----
-    // A pattern = 4 shapes, each on its OWN canvas layer with its own widget.setAlpha (20-80%), 4 different solid types
+    // A pattern = 3 shapes, each on its OWN canvas layer with its own widget.setAlpha (20-80%), 3 different solid types
     // (outline shapes stuttered on the watch, so none). Each shape lives in one wedge and is drawn turned / mirrored into every slice (the maths does the turning).
     // Shapes (after a kaleidoscope design guide): sharp shards, petals / teardrops, crescents, thin rods, dots, stars, hexagons, octagons.
     var VET = (function () {
@@ -79,7 +239,7 @@ WatchFace({
       // ms per draw: dot .6, rod .7 (thick line), shard 1.0 (triangle) measured; the rest estimated (polygons ~1-1.7, outlines ~1.5)
       var COST = { dot: 0.6, rod: 0.7, shard: 1.0, petal: 1.3, crescent: 1.3, star: 1.4, hex: 1.7, oct: 1.7, ring: 1.5, shardline: 1.2, petalline: 1.5, crescentline: 1.5, starline: 1.6, hexline: 1.5, octline: 1.6 }
       var MEASURED = { dot: 1, rod: 1, shard: 1, hex: 1 }
-      var RECIPES = [{ name: 'Random mix', note: '4 different solid shapes', random: true }]
+      var RECIPES = [{ name: 'Random mix', note: '3 different solid shapes', random: true }]
       var SHADES = [0.8, 0.5, 0.2]
       function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6d2b79f5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 } }
       function hx(s) { return parseInt(s.slice(1), 16) }
@@ -97,6 +257,7 @@ WatchFace({
       }
       // opt: {pal: index or -1 random, arms: number or 0, cx, cy}
       // 3 or 4 arms (6 or 8 slices)
+      var N = 3        // shapes = Canvas layers
       function make(seed, opt) {
         var r = rng(seed), pick = function (a) { return a[Math.floor(r() * a.length)] }
         var pi = opt.pal >= 0 ? opt.pal : Math.floor(r() * PALS.length), P = PALS[pi], R = RECIPES[0]
@@ -107,11 +268,11 @@ WatchFace({
         // 4 different types: one outline, one solid, two more from the rest
         // 4 different SOLID types (outlines removed: strokePoly / strokeCircle stuttered on the watch)
         var types = [], rest = SOLID.slice()
-        while (types.length < 4) types.push(rest.splice(Math.floor(r() * rest.length), 1)[0])
+        while (types.length < N) types.push(rest.splice(Math.floor(r() * rest.length), 1)[0])
         for (var q = types.length - 1; q > 0; q--) { var z = Math.floor(r() * (q + 1)), tt = types[q]; types[q] = types[z]; types[z] = tt }      // shuffle: any type at any radius
         var shapes = [], cost = 0, usedCol = []
-        for (var i = 0; i < 4; i++) {
-          var type = types[i], base = type.replace('line', ''), u = (i + 0.3 + r() * 0.5) / 4, rad = 25 + 275 * u
+        for (var i = 0; i < N; i++) {
+          var type = types[i], base = type.replace('line', ''), u = (i + 0.3 + r() * 0.5) / N, rad = 25 + 275 * u
           var size = (50 + r() * 70) * (r() < 0.5 ? 0.5 + r() * 0.5 : 1 + r())
           if (type === 'rod') size *= 1.3
           var col = pick(cols); if (usedCol.indexOf(col) >= 0) col = pick(cols); usedCol.push(col)
@@ -119,12 +280,12 @@ WatchFace({
             pts: (base === 'dot' || base === 'ring' || base === 'rod') ? null : outlinePts(base, r), dspin: (r() - 0.5) * 4, da: (r() - 0.5) * 0.8 })
           cost += COST[type] * SEG
         }
-        var ALPHA = shapes.map(function () { return 0.2 + r() * 0.6 }); ALPHA[Math.floor(r() * 4)] = 0.8        // each 20-80%, one at 80%
+        var ALPHA = shapes.map(function () { return 0.2 + r() * 0.6 }); ALPHA[Math.floor(r() * N)] = 0.8        // each 20-80%, one at 80%
         var POLY = shapes.map(function (sh) { var a = []; if (sh.pts) for (var j = 0; j <= sh.pts.length; j++) a.push({ x: 0, y: 0 }); return { data_array: a, color: sh.col } })
         return { ALPHA: ALPHA, seed: seed, P: P, R: { name: 'Random mix: ' + types.join(' + '), note: R.note, types: types }, pi: pi, ri: 0, arms: arms, SEG: SEG, W: W, bg: bg, shapes: shapes, cost: cost, draws: 4 * SEG,
           C: { center_x: 0, center_y: 0, radius: 1, color: 0 }, L: { x1: 0, y1: 0, x2: 0, y2: 0, color: 0 }, PAINT: { color: 0, line_width: 1 }, POLY: POLY, cx: opt.cx, cy: opt.cy }
       }
-      // D: the 4 layer canvases. M: {spin, flow} from the wake motion.
+      // D: the 3 layer canvases. M: {spin, flow} from the wake motion.
       function frame(V, M, D) {
         var TRAVEL = 280, i, k, j
         for (i = 0; i < V.shapes.length; i++) {
@@ -157,9 +318,9 @@ WatchFace({
     const motion = (ms, W) => { const t = Math.max(0, ms); let s; if (t < FLOW) s = t / 1000; else { const u = Math.min(t - FLOW, DRIFT); s = (FLOW + u - u * u / (2 * DRIFT)) / 1000 }
       const TURN = Math.max(1, Math.round((Math.PI / 3) / W)) * W
       const e = Math.min(1, t / FLOW); return { spin: -TURN * (1 - s / S_END), flow: Math.pow(1 - e, 3), done: t >= FLOW + DRIFT } }
-    const say = (m) => { console.log('[kl] ' + m) }       // bridge log only
-    const L = []
-    for (let i = 0; i < 4; i++) { try { L.push(ui.createWidget(ui.widget.CANVAS, { x: 0, y: 0, w: 390, h: 450, show_level: ui.show_level.ONLY_NORMAL })) } catch (e) { say('canvas ' + i + ': ' + e) } }
+    const DEBUG = false                                      // true: log to the developer bridge
+    const say = (m) => { if (DEBUG) console.log('[kl] ' + m) }
+    const L = [W.k1, W.k2, W.k3]       // the three Canvas layers of the layout (code handles k1..k3), see the layer list
     let V = null, timer = null, t0 = 0, frames = 0
     const tick = () => {
       timer = null
@@ -176,125 +337,9 @@ WatchFace({
       try { V = VET.make(seed, { pal: -1, arms: 0, cx: 195, cy: 225 }); L.forEach((c, i) => c.setAlpha(Math.round(255 * (V.ALPHA[i] || 1)))) } catch (e) { say('make: ' + e); return }
       t0 = Date.now(); frames = 0; tick()
     }
-    try { L[3].addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }
+    try { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)
     ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })
     start()
-
-    // Minute (IMG_TIME) — normal state
-    ui.createWidget(ui.widget.IMG_TIME, {
-      minute_startX: px(199),
-      minute_startY: px(194),
-      minute_zero: 1,
-      minute_space: px(0),
-      minute_align: ui.align.LEFT,
-      minute_array: img_Minute_i79z,
-      minute_follow: 0,
-      show_level: ui.show_level.ONLY_NORMAL,
-    })
-
-    // Minute (IMG_TIME) — AOD (screen-off)
-    ui.createWidget(ui.widget.IMG_TIME, {
-      minute_startX: px(199),
-      minute_startY: px(194),
-      minute_zero: 1,
-      minute_space: px(0),
-      minute_align: ui.align.LEFT,
-      minute_array: img_Minute_i79z,
-      minute_follow: 0,
-      show_level: ui.show_level.ONLY_AOD,
-    })
-
-    // Colon (IMG) — normal state
-    ui.createWidget(ui.widget.IMG, {
-      x: px(181),
-      y: px(201),
-      src: A('symbol_u003a.png'),
-      show_level: ui.show_level.ONLY_NORMAL
-    })
-
-    // Colon (IMG) — AOD (screen-off)
-    ui.createWidget(ui.widget.IMG, {
-      x: px(181),
-      y: px(201),
-      src: A('symbol_u003a.png'),
-      show_level: ui.show_level.ONLY_AOD
-    })
-
-    // Hour (IMG_TIME) — normal state
-    ui.createWidget(ui.widget.IMG_TIME, {
-      hour_startX: px(71),
-      hour_startY: px(194),
-      hour_zero: 1,
-      hour_space: px(0),
-      hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_i4i2,
-      hour_follow: 0,
-      show_level: ui.show_level.ONLY_NORMAL,
-    })
-
-    // Hour (IMG_TIME) — AOD (screen-off)
-    ui.createWidget(ui.widget.IMG_TIME, {
-      hour_startX: px(71),
-      hour_startY: px(194),
-      hour_zero: 1,
-      hour_space: px(0),
-      hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_i4i2,
-      hour_follow: 0,
-      show_level: ui.show_level.ONLY_AOD,
-    })
-
-    // Weekday (IMG_WEEK) — normal state
-    ui.createWidget(ui.widget.IMG_WEEK, {
-      x: px(108),
-      y: px(121),
-      week_en: img_Weekday_b6d1,
-      week_sc: img_Weekday_b6d1,
-      week_tc: img_Weekday_b6d1,
-      show_level: ui.show_level.ONLY_NORMAL,
-    })
-
-    // Weekday (IMG_WEEK) — AOD (screen-off)
-    ui.createWidget(ui.widget.IMG_WEEK, {
-      x: px(108),
-      y: px(121),
-      week_en: img_Weekday_b6d1,
-      week_sc: img_Weekday_b6d1,
-      week_tc: img_Weekday_b6d1,
-      show_level: ui.show_level.ONLY_AOD,
-    })
-
-    // Day (IMG_DATE) — normal state
-    ui.createWidget(ui.widget.IMG_DATE, {
-      day_startX: px(208),
-      day_startY: px(121),
-      day_zero: 0,
-      day_space: px(0),
-      day_align: ui.align.LEFT,
-      day_follow: 0,
-      day_en_array: img_Day_47bb,
-      day_sc_array: img_Day_47bb,
-      day_tc_array: img_Day_47bb,
-      show_level: ui.show_level.ONLY_NORMAL,
-    })
-
-    // Day (IMG_DATE) — AOD (screen-off)
-    ui.createWidget(ui.widget.IMG_DATE, {
-      day_startX: px(208),
-      day_startY: px(121),
-      day_zero: 0,
-      day_space: px(0),
-      day_align: ui.align.LEFT,
-      day_follow: 0,
-      day_en_array: img_Day_47bb,
-      day_sc_array: img_Day_47bb,
-      day_tc_array: img_Day_47bb,
-      show_level: ui.show_level.ONLY_AOD,
-    })
-
-
-    // ---- user code (project.userCode) ----
-    try { const tap = ui.createWidget(ui.widget.TEXT, { x: 0, y: 0, w: 390, h: 450, text: '', color: 0xffffff, text_size: 12, show_level: ui.show_level.ONLY_NORMAL }); tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }
 
     // ---- screen corners (the face switcher draws the live face square) ----
     ui.createWidget(ui.widget.IMG, { x: px(0), y: px(0), w: px(86), h: px(86), src: A('corner_tl.png'), show_level: ui.show_level.ONLY_NORMAL | ui.show_level.ONLY_AOD })

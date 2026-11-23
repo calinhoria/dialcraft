@@ -640,6 +640,17 @@ function emitElement(el, ctx, out) {
       out.push(`  ui.createWidget(ui.widget.CIRCLE, {\n${L.join('\n')}\n  })`);
       break;
     }
+    case 'CANVAS': {
+      // an empty see-through drawing surface: the user code draws on it through its code handle (W.<handle>.drawRect / drawPoly / clear …).
+      // The layer's opacity is the canvas's setAlpha (a CANVAS has no alpha property); it is a normal-screen widget only.
+      if (el.show === 'aod') break;
+      kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y)); kv(L, 'w', p(el.w)); kv(L, 'h', p(el.h));
+      kv(L, 'show_level', showLevel('normal'));
+      const cv = `canvas_${ctx.canvasN = (ctx.canvasN || 0) + 1}`;
+      out.push(`  const ${cv} = ui.createWidget(ui.widget.CANVAS, {\n${L.join('\n')}\n  })`);
+      if (el.alpha != null && el.alpha < 255) out.push(`  ${cv}.setAlpha(${Math.max(0, Math.round(+el.alpha))})`);
+      break;
+    }
     case 'FILL_RECT': {
       kv(L, 'x', p(el.x)); kv(L, 'y', p(el.y)); kv(L, 'w', p(el.w)); kv(L, 'h', p(el.h));
       if (el.radius) kv(L, 'radius', p(el.radius));

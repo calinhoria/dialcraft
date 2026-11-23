@@ -86,7 +86,7 @@ const CENTER_KINDS = new Set(['CIRCLE', 'ARC_PROGRESS', 'TIME_POINTER', 'DATE_PO
 // (not IMG_POINTER: the watch draws the pointer at its image size, pivoting on
 // its own x/y — see pointerBox)
 const WH_KINDS = new Set(['EDIT_SLOT', 'SLEEP_CHART', 'PAI_CHART', 'POLYLINE', 'TAP', 'IMG', 'IMG_LEVEL', 'IMG_PROGRESS', 'IMG_ANIM',
-  'IMG_STATUS', 'IMG_CLICK', 'TEXT', 'FILL_RECT', 'STROKE_RECT', 'ARC']);
+  'IMG_STATUS', 'IMG_CLICK', 'TEXT', 'FILL_RECT', 'STROKE_RECT', 'ARC', 'CANVAS']);
 // kinds that draw digit images and therefore take an image array + metrics
 const SET_KINDS = new Set(['IMG_TIME', 'IMG_WEEK', 'IMG_DATE', 'TEXT_IMG', 'IMG_LEVEL', 'IMG_PROGRESS']);
 // text styling is only written to Text layers when a group/multi selection is used
@@ -2022,6 +2022,12 @@ function drawElement(c, e) {
       if (!e.src) break;
       const b = elBox(e);
       put(c, e.src, b.x, b.y, b.w, b.h);
+      break;
+    }
+    case 'CANVAS': {
+      // what the code draws on it while Run code runs (nothing at design time: the Preview-only still shows the result)
+      const ov = codeRun && codeRun.layerCanvases && codeRun.layerCanvases.get(e);
+      if (ov && ov.visible) { c.globalAlpha *= ov.alpha; c.drawImage(ov.c, ov.x, ov.y); }
       break;
     }
     case 'FILL_RECT': {
@@ -6540,6 +6546,7 @@ const PRESETS = [
   { id: 'editslot', label: 'Complication slot', sub: 'the wearer picks what it shows' },
   { id: 'editbackdrop', label: 'Watch placeholder (Edit screen)', sub: 'the face, dimmed, behind the complications · apply again to refresh' },
   { id: 'level', label: 'Battery image level', sub: 'IMG_LEVEL' },
+  { id: 'canvas', label: 'Canvas', sub: 'CANVAS — your code draws on it by its code handle' },
   { id: 'rect', label: 'Filled rectangle', sub: 'FILL_RECT' },
   { id: 'stroke', label: 'Stroked rectangle', sub: 'STROKE_RECT' },
   { id: 'circle', label: 'Circle', sub: 'CIRCLE' },
@@ -6684,6 +6691,7 @@ async function applyPreset(id) {
       project.elements.push(e); selectedId = e.id; multiSel = new Set([e.id]);
       break;
     }
+    case 'canvas': await addElement('CANVAS', { x: 0, y: 0, w: d.w, h: d.h, show: 'normal', handle: 'canvas' }); break;
     case 'rect': await addElement('FILL_RECT', { x: cx - 90, y: cy - 30, w: 180, h: 60, color: '#101522', radius: 14, show: 'normal' }); break;
     case 'stroke': await addElement('STROKE_RECT', { x: cx - 90, y: cy - 30, w: 180, h: 60, color: '#5b8cff', radius: 14, lineWidth: 3, show: 'normal' }); break;
     case 'circle': await addElement('CIRCLE', { centerX: cx, centerY: cy, radius: 70, color: '#5b8cff', show: 'normal' }); break;
@@ -8012,7 +8020,8 @@ function codeRunHex(c) { return '#' + ('00000' + ((+c || 0) & 0xffffff).toString
 function codeRunCanvas(run, opts, guard) {
   const ov = { under: run.phase === 'before', kind: 'canvas', x: +opts.x || 0, y: +opts.y || 0, w: Math.max(1, +opts.w || 1), h: Math.max(1, +opts.h || 1), alpha: 1, visible: true };
   ov.c = document.createElement('canvas'); ov.c.width = ov.w; ov.c.height = ov.h; const g = ov.c.getContext('2d');
-  (run.overlays = run.overlays || []).push(ov);
+  if (opts.layer) { ov.layer = opts.layer; (run.layerCanvases = run.layerCanvases || new Map()).set(opts.layer, ov); }   // a Canvas layer: drawn at its place in the stack
+  else (run.overlays = run.overlays || []).push(ov);
   let paint = { color: 0xffffff, line_width: 1 };
   const poly = (o) => { const p = (o && o.data_array) || []; g.beginPath(); p.forEach((q, i) => (i ? g.lineTo(q.x, q.y) : g.moveTo(q.x, q.y))); g.closePath(); };
   const done = (f) => (o) => { f(o || {}); codeRunRender(); };
@@ -8108,7 +8117,7 @@ function startCodeRun() {
   for (const e of elements()) if (e.previewOnly) codeRunSet(e, 'visible', false);
   for (const e of elements()) {
     if (!/^[A-Za-z_$][\w$]*$/.test(e.handle || '') || ['W', 'F'].includes(e.handle)) continue;
-    W[e.handle] = codeRunStub(e);
+    W[e.handle] = e.kind === 'CANVAS' ? codeRunCanvas(run, { x: e.x, y: e.y, w: e.w, h: e.h, layer: e }, guard) : codeRunStub(e);
     const v = variantList(e);
     if (v) F[e.handle] = v.map((n) => `images/${n}`);
   }

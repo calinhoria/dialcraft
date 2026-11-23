@@ -171,6 +171,7 @@ Each entry maps to an `hmUI` widget; `Add ▾` and `Presets ▾` both use them.
 | System status | `IMG_STATUS` | disconnect / DND / … icons |
 | Tap shortcut | `IMG_CLICK` | a picture that opens the watch's own screen for a reading on tap (heart rate, steps, weather, alarm …; **Opens on tap** in Properties) — no code. Marked **TAP** in Layers and outlined with what it opens on the canvas; imported ones are named `Tap: Heart rate` |
 | Filled / stroked rect | `FILL_RECT`, `STROKE_RECT` | corner radius, optional rotation |
+| Canvas | `CANVAS` | a see-through drawing surface that your code draws on through its **code handle** (`W.<handle>.drawRect / drawCircle / drawPoly / drawText …`); the layer's Alpha becomes the canvas's `setAlpha`; it sits in the layer order like any layer, so time and data layers can lie above it; normal screen only (docs: up to three layers stacked) |
 | Circle | `CIRCLE` | filled (alpha via the layer's Alpha) |
 | Arc | `ARC` | static sweep, line width |
 | Arc progress | `ARC_PROGRESS` | data-driven sweep, optional background image |
