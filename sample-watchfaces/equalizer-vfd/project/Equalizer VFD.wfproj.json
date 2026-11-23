@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "name": "Equalizer VFD",
+  "device": "bip-6",
+  "appId": 2024163,
+  "vender": "dialcraft",
+  "description": "A vintage car-stereo display: a cyan 7-segment clock over a spectrum analyzer of 2:1 blocks with peak-hold blocks. It plays for 5 seconds on every wake-up, tap and minute change, then stops. All drawn by the watch on one canvas, no pictures.",
+  "font": "Open Sans",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [],
+  "groups": {
+    "gCanvas": "Canvas"
+  },
+  "elements": [
+    {
+      "id": "elmwtbz5sn14k",
+      "kind": "IMG",
+      "name": "Display (preview)",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "eq/still.png",
+      "previewOnly": true
+    },
+    {
+      "id": "elmwtbz5t14zg",
+      "kind": "CANVAS",
+      "name": "Display canvas",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCanvas",
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "handle": "k1"
+    }
+  ],
+  "images": [
+    {
+      "name": "eq/still.png",
+      "width": 390,
+      "height": 450
+    }
+  ],
+  "savePath": null,
+  "userImports": "import { Time } from '@zos/sensor'",
+  "userCode": "\nconst DEBUG = true                                       // logs to the developer bridge (zeus bridge): frames per second while the display plays\nlet logN = 0\nconst say = (m) => { if (DEBUG) console.log('[eq ' + (++logN) + '] ' + m) }\nconst cv = W.k1\n\nconst segPolys = (x, y, w, h, th, sl) => {\n  const g = 2, P = (pts) => pts.map((p) => [p[0] + (y + h - p[1]) * sl, p[1]])\n  const hs = (cy) => { const xl = x + th * 0.5 + g, xr = x + w - th * 0.5 - g; return P([[xl, cy], [xl + th / 2, cy - th / 2], [xr - th / 2, cy - th / 2], [xr, cy], [xr - th / 2, cy + th / 2], [xl + th / 2, cy + th / 2]]) }\n  const vs = (cx, y0, y1) => { const yt = y0 + g, yb = y1 - g; return P([[cx, yt], [cx + th / 2, yt + th / 2], [cx + th / 2, yb - th / 2], [cx, yb], [cx - th / 2, yb - th / 2], [cx - th / 2, yt + th / 2]]) }\n  const mid = y + h / 2\n  return { a: hs(y + th / 2), g: hs(mid), d: hs(y + h - th / 2), f: vs(x + th / 2, y + th / 2, mid), b: vs(x + w - th / 2, y + th / 2, mid), e: vs(x + th / 2, mid, y + h - th / 2), c: vs(x + w - th / 2, mid, y + h - th / 2) }\n}\nconst SEGS = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' }\nconst XS = [30, 102, 216, 288], DY0 = 46, DW = 60, DH = 118, DTH = 13, DSL = 0.1\nconst BW = 18, BH = 9, PX = 20, PY = 11, NC = 18, NR = 20, AX = 16, AB = 432\nconst tm = new Time()\nconst mixc = (a, b, t) => (Math.round(a[0] + (b[0] - a[0]) * t) << 16) | (Math.round(a[1] + (b[1] - a[1]) * t) << 8) | Math.round(a[2] + (b[2] - a[2]) * t)\nconst BGA = [3, 7, 11], GHA = [7, 30, 40], LITA = [70, 232, 255], COREA = [215, 252, 255]\nconst BG = mixc(BGA, BGA, 0), GHOST = mixc(GHA, GHA, 0)\nconst R1 = { x1: 0, y1: 0, x2: 0, y2: 0, color: 0 }, PP = { data_array: null, color: 0 }\nconst rect = (x1, y1, x2, y2, col) => { R1.x1 = x1; R1.y1 = y1; R1.x2 = x2; R1.y2 = y2; R1.color = col; cv.drawRect(R1) }\nconst poly = (pts, col) => { PP.data_array = pts; PP.color = col; cv.drawPoly(PP) }\n// ---- clock: 4 x 7 segments + the colon ----\nconst SG = []\nfor (let i = 0; i < 4; i++) {\n  const P = segPolys(XS[i], DY0, DW, DH, DTH, DSL)\n  for (const s of 'abcdefg') {\n    const pts = P[s].map((p) => ({ x: Math.round(p[0]), y: Math.round(p[1]) }))\n    let mx = 0, my = 0; pts.forEach((p) => { mx += p.x; my += p.y }); mx /= 6; my /= 6\n    SG.push({ i, s, pts, core: pts.map((p) => ({ x: Math.round(mx + (p.x - mx) * 0.55), y: Math.round(my + (p.y - my) * 0.55) })) })\n  }\n}\nconst NS = SG.length, CCX = Math.round((XS[1] + DW + XS[2]) / 2 + 4)\nconst sl = new Array(NS).fill(0), dl = new Array(NS).fill(-1)\nconst SLV = []; for (let l = 0; l <= 6; l++) SLV.push({ base: mixc(GHA, LITA, l / 6), core: l >= 3 ? mixc(LITA, COREA, 0.45 * l / 6) : mixc(GHA, LITA, l / 6) })\nconst drawSeg = (k, l) => { const g = SG[k]; poly(g.pts, SLV[l].base); if (l >= 3) poly(g.core, SLV[l].core) }\nlet colonOn = -1\nconst drawColon = (on) => { for (const dy of [DY0 + 40, DY0 + 80]) rect(CCX - 7, dy - 7, CCX + 7, dy + 7, on ? SLV[6].base : GHOST); colonOn = on }\nconst timeStr = () => { const h = tm.getHours(), m = tm.getMinutes(); return (h < 10 ? '0' : '') + h + (m < 10 ? '0' : '') + m }\nconst litNow = (str) => { const on = new Array(NS).fill(0); for (let k = 0; k < NS; k++) if (SEGS[str.charAt(SG[k].i)].indexOf(SG[k].s) >= 0) on[k] = 1; return on }\n// ---- analyzer: blocks, 0 = unlit ghost, 1 = lit, 2 = peak ----\nconst ROWC = [], ROWG = []; for (let k = 0; k < NR; k++) { ROWC.push(mixc([30, 170, 255], [110, 240, 255], k / NR)); ROWG.push(mixc(GHA, [18, 100, 150], 0.55)) }\nconst PKC = mixc([225, 252, 255], [225, 252, 255], 0), PKG = mixc(GHA, [60, 170, 220], 0.6)\nconst ds = new Array(NC * NR).fill(0)\nconst blk = (c, k, st) => {\n  const x = AX + c * PX, y = AB - (k + 1) * PY + (PY - BH)\n  rect(x - 1, y - 1, x + BW + 1, y + BH + 1, st === 1 ? ROWG[k] : st === 2 ? PKG : BG)\n  rect(x, y, x + BW, y + BH, st === 1 ? ROWC[k] : st === 2 ? PKC : GHOST)\n}\nconst val = new Array(NC).fill(1), peak = new Array(NC).fill(1), hold = new Array(NC).fill(0)\nconst targets = (t0, ph) => {                      // t0 = seconds since the play started (the fade in / out), ph = a random phase so every play dances differently\n  const t = t0 + ph\n  let g = 1\n  if (t0 < 0.25) g = t0 / 0.25\n  else if (t0 > 4.2) g = Math.max(0, 1 - (t0 - 4.2) / 0.5)\n  const beat = (t * 2.2) % 1 < 0.18 ? 1 : 0, out = []\n  for (let c = 0; c < NC; c++) {\n    const env = 0.55 + 0.45 * Math.sin(c / NC * 3.14159 * 1.15 + 0.25), low = c < 4 ? 1 : 0.6\n    const w1 = 0.5 + 0.5 * Math.sin(t * 2.7 + c * 0.42), w2 = 0.5 + 0.5 * Math.sin(t * 4.3 - c * 0.31 + 1.2), w3 = 0.5 + 0.5 * Math.sin(t * 7.1 + c * 0.9)\n    const h = NR * (0.1 + 0.62 * env * (0.55 * w1 + 0.45 * w2) + 0.1 * w3 * env + 0.3 * beat * low * env)\n    out.push(Math.max(1, Math.min(NR, 1 + (h - 1) * g)))\n  }\n  return out\n}\nlet gap = 0\nconst drawBars = (t, dt) => {\n  const tg = targets(t, PH); gap = 0\n  for (let c = 0; c < NC; c++) {\n    if (tg[c] > val[c]) val[c] += (tg[c] - val[c]) * Math.min(1, dt * 22); else val[c] = Math.max(tg[c], val[c] - dt * 14)\n    if (val[c] >= peak[c]) { peak[c] = val[c]; hold[c] = t + 0.45 } else if (t > hold[c]) peak[c] = Math.max(val[c], peak[c] - dt * (t > 4.2 ? 26 : 7))   // at the end the peaks drop fast onto the bars\n    if (peak[c] - val[c] > gap) gap = peak[c] - val[c]\n    const n = Math.round(val[c]), pk = Math.ceil(peak[c] - 0.001)\n    for (let k = 0; k < NR; k++) {\n      const st = k < n ? 1 : (k === pk - 1 && pk > n) ? 2 : 0\n      if (ds[c * NR + k] !== st) { blk(c, k, st); ds[c * NR + k] = st }\n    }\n  }\n}\nconst drawClock = (dt, blink) => {\n  const on = litNow(timeStr())\n  for (let k = 0; k < NS; k++) {\n    if (on[k]) sl[k] = Math.min(1, sl[k] + dt / 0.15); else sl[k] = Math.max(0, sl[k] - dt / 0.12)\n    const l = Math.round(sl[k] * 6)\n    if (l !== dl[k]) { drawSeg(k, l); dl[k] = l }\n  }\n  const co = blink === null ? 1 : ((blink % 1) < 0.55 ? 1 : 0)\n  if (co !== colonOn) drawColon(co)\n}\n// ---- loop: plays for 5 s, then idles with a once-a-second check of the clock ----\nconst PLAY = 5.0\nlet timer = null, playing = false, P0 = 0, PH = 0, last = 0, lastStr = '', frames = 0, tLog = 0\nconst play = (now) => { playing = true; P0 = now; PH = Math.random() * 10; last = now; frames = 0; tLog = now; lastStr = timeStr(); for (let c = 0; c < NC; c++) { hold[c] = 0 } }\nconst tick = () => {\n  timer = null\n  const now = Date.now()\n  try {\n    if (!playing) { const s = timeStr(); if (s !== lastStr) { play(now); say('minute changed: play') } }\n    if (playing) {\n      const t = (now - P0) / 1000, dt = Math.min(0.1, (now - last) / 1000); last = now\n      lastStr = timeStr()\n      drawBars(t, dt); drawClock(dt, t); frames++\n      if ((t >= PLAY && gap < 0.05) || t >= PLAY + 1.5) { playing = false; drawClock(0, null); say('done: idle') }\n    } else drawClock(0.05, null)                       // idle: a pending fade (after a minute change) finishes, nothing else changes\n  } catch (e) { say('draw: ' + e); return }\n  if (DEBUG && playing && now - tLog >= 2000) { say(Math.round(frames * 1000 / Math.max(1, now - tLog)) + ' fps'); tLog = now; frames = 0 }\n  timer = setTimeout(tick, playing ? Math.max(0, 33 - (Date.now() - now)) : 1000)\n}\nconst stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }\nconst WAKE_GAP = 8000\nlet pausedAt = 0, startedAt = 0\nconst onPause = () => { if (Date.now() - startedAt < 1500) return; pausedAt = Date.now(); stop() }   // switching faces: the watch pauses and resumes the new face right after it loads, so a pause that early must not stop the loop\nconst onResume = () => {\n  const n = Date.now()\n  if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads\n  say('resume after ' + (n - pausedAt) + ' ms' + (n - pausedAt >= WAKE_GAP ? ': play' : ': carry on'))\n  stop()\n  if (n - pausedAt >= WAKE_GAP) play(n); else if (playing) { P0 += n - pausedAt; last = n }\n  tick()\n}\nconst onTap = () => { stop(); play(Date.now()); tick() }\ntry { cv.addEventListener(ui.event.CLICK_UP, onTap) } catch (e) { say('tap: ' + e) }\nui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: onPause, resume_call: onResume })\nrect(0, 0, 390, 450, BG)\nfor (let c = 0; c < NC; c++) for (let k = 0; k < NR; k++) { const x = AX + c * PX, y = AB - (k + 1) * PY + (PY - BH); rect(x, y, x + BW, y + BH, GHOST) }\nfor (let k = 0; k < NS; k++) poly(SG[k].pts, GHOST)\nfor (let c = 0; c < NC; c++) { blk(c, 0, 1); ds[c * NR] = 1 }\ndrawColon(0)\nstartedAt = Date.now(); play(startedAt); tick()",
+  "optimizePng": "lossless"
+}
