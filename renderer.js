@@ -8025,14 +8025,25 @@ function codeRunCanvas(run, opts, guard) {
   let paint = { color: 0xffffff, line_width: 1 };
   const poly = (o) => { const p = (o && o.data_array) || []; g.beginPath(); p.forEach((q, i) => (i ? g.lineTo(q.x, q.y) : g.moveTo(q.x, q.y))); g.closePath(); };
   const done = (f) => (o) => { f(o || {}); codeRunRender(); };
+  const fillCol = (o, def) => codeRunHex(o.color != null ? o.color : def != null ? def : paint.color);     // an omitted colour is the setPaint brush (drawPoly: white), as on the watch
+  const ell = (o, rx, ry) => { g.beginPath(); g.ellipse(o.center_x, o.center_y, Math.max(0, rx), Math.max(0, ry), 0, 0, Math.PI * 2); };
+  const arc = (o, pie) => { const a0 = (+o.start_angle || 0) * Math.PI / 180, a1 = (+o.end_angle || 0) * Math.PI / 180; g.beginPath(); if (pie) g.moveTo(o.center_x, o.center_y); g.ellipse(o.center_x, o.center_y, Math.max(0, o.radius_x), Math.max(0, o.radius_y), 0, a0, a1); if (pie) g.closePath(); };
   const w = {
     setPaint: (p) => { paint = { ...paint, ...(p || {}) }; },
-    drawRect: done((o) => { g.fillStyle = codeRunHex(o.color); g.fillRect(o.x1, o.y1, o.x2 - o.x1, o.y2 - o.y1); }),
+    drawRect: done((o) => { g.fillStyle = fillCol(o); g.fillRect(o.x1, o.y1, o.x2 - o.x1, o.y2 - o.y1); }),
     strokeRect: done((o) => { g.strokeStyle = codeRunHex(o.color != null ? o.color : paint.color); g.lineWidth = paint.line_width; g.strokeRect(o.x1, o.y1, o.x2 - o.x1, o.y2 - o.y1); }),
-    drawCircle: done((o) => { g.fillStyle = codeRunHex(o.color); g.beginPath(); g.arc(o.center_x, o.center_y, Math.max(0, o.radius), 0, Math.PI * 2); g.fill(); }),
+    drawCircle: done((o) => { g.fillStyle = fillCol(o); g.beginPath(); g.arc(o.center_x, o.center_y, Math.max(0, o.radius), 0, Math.PI * 2); g.fill(); }),
     strokeCircle: done((o) => { g.strokeStyle = codeRunHex(o.color != null ? o.color : paint.color); g.lineWidth = paint.line_width; g.beginPath(); g.arc(o.center_x, o.center_y, Math.max(0, o.radius), 0, Math.PI * 2); g.stroke(); }),
     drawLine: done((o) => { g.strokeStyle = codeRunHex(o.color != null ? o.color : paint.color); g.lineWidth = paint.line_width; g.lineCap = 'butt'; g.beginPath(); g.moveTo(o.x1, o.y1); g.lineTo(o.x2, o.y2); g.stroke(); }),
-    drawPoly: done((o) => { g.fillStyle = codeRunHex(o.color); poly(o); g.fill(); }),
+    drawPoly: done((o) => { g.fillStyle = fillCol(o, 0xffffff); poly(o); g.fill(); }),
+    drawPixel: done((o) => { g.fillStyle = fillCol(o); g.fillRect(o.x, o.y, 1, 1); }),
+    drawEllipse: done((o) => { g.fillStyle = fillCol(o); ell(o, o.radius_x, o.radius_y); g.fill(); }),
+    strokeEllipse: done((o) => { g.strokeStyle = fillCol(o); g.lineWidth = paint.line_width; ell(o, o.radius_x, o.radius_y); g.stroke(); }),
+    drawArc: done((o) => { g.fillStyle = fillCol(o); arc(o, true); g.fill(); }),
+    strokeArc: done((o) => { g.strokeStyle = fillCol(o); g.lineWidth = paint.line_width; arc(o, false); g.stroke(); }),
+    // the watch draws a text line from its top-left corner in its sans-serif; the editor uses the computer's
+    drawText: done((o) => { const sz = +o.text_size || 16; g.fillStyle = fillCol(o, 0xffffff); g.font = `${sz}px system-ui, sans-serif`; g.textBaseline = 'top'; g.fillText(String(o.text == null ? '' : o.text), o.x, o.y); }),
+    drawFill: done((o) => { g.fillStyle = fillCol(o); g.fillRect(0, 0, ov.w, ov.h); }),
     strokePoly: done((o) => { g.strokeStyle = codeRunHex(o.color != null ? o.color : paint.color); g.lineWidth = paint.line_width; poly(o); g.stroke(); }),
     clear: done((o) => { g.clearRect(o.x || 0, o.y || 0, o.w || ov.w, o.h || ov.h); }),
     setAlpha: (v) => { ov.alpha = Math.max(0, Math.min(255, +v || 0)) / 255; codeRunRender(); },
