@@ -1,0 +1,415 @@
+{
+  "version": 1,
+  "name": "Spirograph Live",
+  "device": "bip-6",
+  "appId": 2024150,
+  "vender": "dialcraft",
+  "description": "A digital face over spirographs the watch draws live: every wake or tap the pen draws three nested curves in new colours, each on its own see-through canvas layer, and the ink stays on the screen.",
+  "font": "Open Sans Regular",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "open-sans-400.ttf",
+      "family": "Open Sans Regular"
+    }
+  ],
+  "groups": {
+    "gmwsiigxvdc": "Clock",
+    "gCanvas": "Canvas"
+  },
+  "elements": [
+    {
+      "id": "elmwsiigvg3d8",
+      "kind": "IMG",
+      "name": "Spirograph (preview)",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/still.png",
+      "previewOnly": true
+    },
+    {
+      "id": "elmwsiigvu6xe",
+      "kind": "CANVAS",
+      "name": "Spirograph canvas 1",
+      "x": 50,
+      "y": 135,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCanvas",
+      "alpha": 240,
+      "w": 290,
+      "h": 290,
+      "handle": "k1"
+    },
+    {
+      "id": "elmwsiigvy4be",
+      "kind": "CANVAS",
+      "name": "Spirograph canvas 2",
+      "x": 50,
+      "y": 135,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCanvas",
+      "alpha": 195,
+      "w": 290,
+      "h": 290,
+      "handle": "k2"
+    },
+    {
+      "id": "elmwsiigw14w6",
+      "kind": "CANVAS",
+      "name": "Spirograph canvas 3",
+      "x": 50,
+      "y": 135,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gCanvas",
+      "alpha": 150,
+      "w": 290,
+      "h": 290,
+      "handle": "k3"
+    },
+    {
+      "id": "elmwsiigxb1x7",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 196,
+      "y": 39,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gmwsiigxvdc",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": -6,
+      "images": [
+        "font_1_0.png",
+        "font_1_1.png",
+        "font_1_2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 5,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "aidPad": 3,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwsiigxb2iu",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 178,
+      "y": 46,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gmwsiigxvdc",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 5,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "link": {
+        "kind": "between",
+        "a": "elmwsiigxb7ga",
+        "b": "elmwsiigxb1x7",
+        "gap": 13,
+        "x": 206,
+        "y": 208
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 3
+    },
+    {
+      "id": "elmwsiigxb7ga",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 68,
+      "y": 39,
+      "show": "both",
+      "visible": true,
+      "locked": false,
+      "group": "gmwsiigxvdc",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -6,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Open Sans Regular",
+        "size": 92,
+        "weight": 400,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 5,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "aidPad": 3,
+      "alignH": "RIGHT"
+    },
+    {
+      "id": "elmwsiigy829f",
+      "kind": "TEXT",
+      "name": "Tap for a new spirograph",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "text": "",
+      "color": "#ffffff",
+      "size": 32,
+      "alignH": "CENTER_H",
+      "alignV": "CENTER_V",
+      "lineSpace": 0,
+      "charSpace": 0,
+      "fontFile": "",
+      "weight": 400,
+      "fillType": "solid",
+      "color2": "#f0f",
+      "gradAngle": 90,
+      "cssGradient": "linear-gradient(90deg, #ffffff 0%, #7c3aed 100%)",
+      "outlineColor": "#000000",
+      "outlineWidth": 2,
+      "bold": false,
+      "italic": false,
+      "w": 390,
+      "h": 450,
+      "handle": "tap"
+    }
+  ],
+  "images": [
+    {
+      "name": "sp/still.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "colon.png",
+      "width": 15,
+      "height": 42
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 61,
+      "height": 80
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 23,
+      "height": 65
+    }
+  ],
+  "savePath": null,
+  "userCode": "// SP: live spirographs (watch-portable: plain ES5 maths; the watch draws them with drawLine on 3 setAlpha canvases).\n// A curve is a hypotrochoid: a wheel of r teeth rolls inside a ring of R teeth, the pen sits d from the wheel's centre:\n//   x = (R-r) cos t + d cos((R-r)/r t),  y = (R-r) sin t - d sin((R-r)/r t),  closing after n = r / gcd(R, r) turns.\n// All 3 curves of a pattern share the ring R (so they nest) but have their own wheel, pen distance, turn and colour.\nvar SP = (function () {\n  function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6d2b79f5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 } }\n  function hsl(h, sat, l) { h = ((h % 360) + 360) % 360; var a = sat * Math.min(l, 1 - l), f = function (n) { var k = (n + h / 30) % 12, v = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); return Math.round(v * 255) }; return (f(0) << 16) | (f(8) << 8) | f(4) }\n  function gcd(a, b) { return b ? gcd(b, a % b) : a }\n  // seed -> { P: palette name, ring: R, curves: [{ n, P (segments), color, w, pt(i) -> [x, y] }] }\n  function make(seed, opt) {\n    var r = rng(seed), pick = function (a) { return a[Math.floor(r() * a.length)] }\n    var cx = (opt && opt.cx) || 195, cy = (opt && opt.cy) || 225, FIT = (opt && opt.fit) || 182\n    var h0 = r() * 360                   // the rainbow starts at a random hue; the 3 curves are 120 deg apart\n    var curves = [], ph = -Math.PI / 2, donut = r() < 0.5, L = 0\n    // one curve: a hypotrochoid in gear units (ring Rg, wheel rg, pen d), turned by ph, scaled so its reach is `reach` px\n    function curve(Rg, rg, d, reach, hue, P) {\n      var tab = []; for (var q = 0; q < 48; q++) tab.push(hsl(hue + q * 7.5, 1, 0.68))      // one full turn of the colour wheel along the stroke\n      var n = rg / gcd(Rg, rg), s = reach / ((Rg - rg) + d), k = (Rg - rg) / rg\n      return { n: n, P: P, R: Rg, r: rg, d: Math.round(d * 10) / 10, color: tab[0], col: function (i) { return tab[Math.floor(48 * i / P) % 48] }, w: 2,\n        pt: function (i) { var t = Math.PI * 2 * n * i / P, a = (Rg - rg) * Math.cos(t) + d * Math.cos(k * t), b = (Rg - rg) * Math.sin(t) - d * Math.sin(k * t)\n          return [Math.round(cx + s * (a * Math.cos(ph) - b * Math.sin(ph))), Math.round(cy + s * (a * Math.sin(ph) + b * Math.cos(ph)))] } }\n    }\n    if (donut) {\n      // DONUTS (like a spirograph sheet): three concentric dense rings with a hole, each with many lobes (L) and a few turns (n). The hole is\n      // set by the pen distance: inner radius / outer radius = (Rg - rg - d) / (Rg - rg + d). Every ring is L-fold symmetric and mirror-symmetric.\n      var outer = FIT, spec = [[20, 34, 0.55, 0.12], [14, 24, 0.5, 0.12], [9, 15, 0.2, 0.2]]\n      for (var c = 0; c < 3; c++) {\n        var lo = spec[c][0], hi = spec[c][1], Ld, nd, tries = 0\n        // many turns (n about 30-45% of L, coprime with L) so the ring fills with a dense mesh\n        do { Ld = lo + Math.floor(r() * (hi - lo + 1)); nd = Math.max(3, Math.round(Ld * (0.3 + r() * 0.15))); tries++ } while (tries < 200 && gcd(Ld, nd) !== 1)\n        var h = spec[c][2] + r() * spec[c][3], gap = Ld - nd, d = gap * (1 - h) / (1 + h)\n        curves.push(curve(Ld, nd, d, outer, h0 + c * 120, Math.max(420, Math.min(900, Ld * 20))))\n        outer = outer * h - 6; if (c === 0) L = Ld\n      }\n    } else {\n      // LOOPED ROSETTES: one lobe count L for the pattern (ring = L gear units, wheel = n units, n < L and coprime with L, so a curve has\n      // exactly L lobes), mostly one turn, a different pen distance per curve (> 1 wheel: looped petals). All curves start at the same angle\n      // on the +x axis (a mirror axis of every hypotrochoid) and the pattern is turned so a lobe points up: L-fold AND mirror symmetric.\n      L = pick([5, 5, 6, 7, 7, 8])\n      for (var c2 = 0; c2 < 3; c2++) {\n        var n2 = (L % 2 && r() < 0.34) ? 2 : 1, rr = n2 * 16, Rg = L * 16\n        var d2 = rr * (1.1 + (c2 + r() * 0.9) * 0.8)\n        curves.push(curve(Rg, rr, d2, FIT * (c2 === 0 ? 1 : 0.84 + r() * 0.16), h0 + c2 * 120, 600))\n      }\n    }\n    return { seed: seed, L: L, mode: donut ? 'donut' : 'loops', curves: curves, info: (donut ? 'donut' : 'loops') + ' L' + L + ' h' + Math.round(h0) + ' ' + curves.map(function (c) { return c.R + '/' + c.n }).join(' ') }\n  }\n  return { make: make }\n})()\n\nconst DEBUG = false                                      // true: log to the developer bridge\nconst say = (m) => { if (DEBUG) console.log('[sp] ' + m) }\nconst C = [W.k1, W.k2, W.k3]                            // the three Canvas layers of the layout (code handles k1..k3)\nconst DUR = 2500\nconst LN = { x1: 0, y1: 0, x2: 0, y2: 0, color: 0 }, PT = { color: 0, line_width: 2 }\nlet V = null, timer = null, t0 = 0, done = [0, 0, 0], last = [null, null, null], frames = 0\nconst tick = () => {\n  timer = null\n  const ms = Date.now() - t0, prog = Math.min(1, ms / DUR)\n  try {\n    for (let c = 0; c < 3; c++) {\n      const cu = V.curves[c], tgt = Math.floor(prog * cu.P)\n      if (tgt <= done[c]) continue\n      PT.color = cu.color; PT.line_width = cu.w; C[c].setPaint(PT)           // the brush sets the width; each segment gets its own rainbow colour\n      while (done[c] < tgt) {\n        done[c]++\n        const p = cu.pt(done[c]), q = last[c]\n        LN.x1 = q[0]; LN.y1 = q[1]; LN.x2 = p[0]; LN.y2 = p[1]; LN.color = cu.col(done[c])\n        C[c].drawLine(LN); last[c] = p\n      }\n    }\n  } catch (e) { say('draw: ' + e); return }\n  frames++\n  if (prog < 1) timer = setTimeout(tick, 0)\n  else say(Math.round(frames * 1000 / ms) + ' fps, ' + V.info)\n}\nconst stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }\nconst start = () => {\n  stop()\n  const seed = ((Date.now() & 0x7fffffff) ^ Math.floor(Math.random() * 0x7fffffff)) >>> 0\n  try {\n    V = SP.make(seed, { cx: 145, cy: 145, fit: 140 })\n    C.forEach((cv) => cv.clear({ x: 0, y: 0, w: 290, h: 290 }))\n    done = [0, 0, 0]; last = V.curves.map((cu) => cu.pt(0))\n  } catch (e) { say('make: ' + e); return }\n  t0 = Date.now(); frames = 0; tick()\n}\ntry { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)\nui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })\nstart()",
+  "optimizePng": "lossless"
+}
