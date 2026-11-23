@@ -1,0 +1,99 @@
+{
+ "size": {
+  "edge": [
+   336,
+   21
+  ],
+  "reel": [
+   48,
+   48
+  ],
+  "c": [
+   60,
+   65
+  ],
+  "colon": [
+   29,
+   65
+  ],
+  "t": [
+   21,
+   24
+  ],
+  "unit": [
+   160,
+   24
+  ]
+ },
+ "names": {
+  "c": [
+   "pc/c0.png",
+   "pc/c1.png",
+   "pc/c2.png",
+   "pc/c3.png",
+   "pc/c4.png",
+   "pc/c5.png",
+   "pc/c6.png",
+   "pc/c7.png",
+   "pc/c8.png",
+   "pc/c9.png"
+  ],
+  "a": [
+   "pc/a0.png",
+   "pc/a1.png",
+   "pc/a2.png",
+   "pc/a3.png",
+   "pc/a4.png",
+   "pc/a5.png",
+   "pc/a6.png",
+   "pc/a7.png",
+   "pc/a8.png",
+   "pc/a9.png"
+  ],
+  "t": [
+   "pc/t0.png",
+   "pc/t1.png",
+   "pc/t2.png",
+   "pc/t3.png",
+   "pc/t4.png",
+   "pc/t5.png",
+   "pc/t6.png",
+   "pc/t7.png",
+   "pc/t8.png",
+   "pc/t9.png"
+  ]
+ },
+ "edge": [
+  31,
+  283
+ ],
+ "reels": [
+  [
+   97,
+   172
+  ],
+  [
+   244,
+   179
+  ]
+ ],
+ "pos": {
+  "hour": [
+   42,
+   295
+  ],
+  "colon": [
+   180,
+   295
+  ],
+  "minute": [
+   219,
+   295
+  ],
+  "space": 8,
+  "batt": [
+   0,
+   386
+  ]
+ }
+}
