@@ -1,0 +1,129 @@
+// Flicker Bulbs: canvas only. A 13 x 15 grid of round bulbs (30 px cells) on ONE full-screen canvas. Most bulbs are burnt out (a dark glass bulb); a few weak
+// ones now and then blink on in a dull warm white. The time is stacked (HH over MM) in a 3 x 5 bulb font and is lit in ONE colour, red, green or blue, which changes
+// at every minute, on every wake-up and on a tap. The lit bulbs only flicker now and then: most hold for seconds, a few tired bulbs stutter. A wake-up, a minute
+// change and a tap make the number stutter on like a neon sign starting up. Only the bulb whose brightness changes is redrawn (a clear rect and 2-3 circles).
+const fs = require('fs')
+const userImports = "import { Time } from '@zos/sensor'"
+const userCode = String.raw`
+const DEBUG = false                                      // logs to the developer bridge (zeus bridge): ticks and bulb redraws per second
+let logN = 0
+const say = (m) => { if (DEBUG) console.log('[fb ' + (++logN) + '] ' + m) }
+const cv = W.k1
+const TS = 30, COLS = 13, ROWS = 15, N = COLS * ROWS
+const BG = 0x050507, GLASS = 0x1a1a21, WARM = 0xffc680
+const TINT = [0xff2a2a, 0x22ff55, 0x3d7bff]               // red, green, blue
+const LV = [0, 0.15, 0.35, 0.6, 0.8, 1]                   // brightness steps, 0 = out
+const GL = { 0: '111101101101111', 1: '010110010010111', 2: '111001111100111', 3: '111001111001111', 4: '101101111001001',
+  5: '111100111001111', 6: '111100111101111', 7: '111001010010010', 8: '111101111101111', 9: '111101111001111' }
+const DX = [3, 7, 3, 7], DY = [2, 2, 8, 8]                     // top-left bulb of the four digits: HH on top, MM below
+const rnd = (n) => Math.floor(Math.random() * n)
+const tm = new Time()
+const R = { x1: 0, y1: 0, x2: 0, y2: 0, color: 0 }, C = { center_x: 0, center_y: 0, radius: 0, color: 0 }
+const rect = (x1, y1, x2, y2, col) => { R.x1 = x1; R.y1 = y1; R.x2 = x2; R.y2 = y2; R.color = col; cv.drawRect(R) }
+const ball = (cx, cy, r, col) => { C.center_x = cx; C.center_y = cy; C.radius = r; C.color = col; cv.drawCircle(C) }
+const shade = (col, f) => (Math.floor(((col >> 16) & 255) * f) << 16) | (Math.floor(((col >> 8) & 255) * f) << 8) | Math.floor((col & 255) * f)
+const lighten = (col, t) => (Math.floor(((col >> 16) & 255) * (1 - t) + 255 * t) << 16) | (Math.floor(((col >> 8) & 255) * (1 - t) + 255 * t) << 8) | Math.floor((col & 255) * (1 - t) + 255 * t)
+// ---- bulb state ----
+const lit = new Array(N).fill(0), lvl = new Array(N).fill(-1), dcol = new Array(N).fill(0), nxt = new Array(N).fill(0), su = new Array(N).fill(0)
+const bad = [], weak = []
+for (let i = 0; i < N; i++) { bad.push(Math.random() < 0.06 ? 1 : 0); weak.push(Math.random() < 0.05 ? 1 : 0) }
+let tint = rnd(3), redraws = 0
+const drawB = (i, l, col) => {
+  const x = (i % COLS) * TS, y = Math.floor(i / COLS) * TS, cx = x + TS / 2, cy = y + TS / 2
+  rect(x, y, x + TS, y + TS, BG)
+  if (l === 0) { ball(cx, cy, 10, GLASS); return }
+  const v = LV[l]
+  ball(cx, cy, 13, shade(col, 0.2 * v)); ball(cx, cy, 10, shade(col, 0.3 + 0.7 * v))
+  if (l >= 4) ball(cx, cy, 4, lighten(col, 0.55 * v))
+}
+const show = (i, l, col) => { if (l === lvl[i] && (l === 0 || col === dcol[i])) return; drawB(i, l, col); lvl[i] = l; dcol[i] = col; redraws++ }
+const evalB = (i, now) => {
+  let l = 0, wait = 1e9
+  if (now < su[i]) { const r = Math.random(); l = r < 0.2 ? 0 : r < 0.4 ? 3 : 5; wait = 50 + rnd(120) }   // starting up / changing: stutters
+  else if (lit[i]) {
+    const r = Math.random()
+    if (bad[i]) { if (r < 0.25) { l = 2 + rnd(2); wait = 60 + rnd(140) } else { l = 5; wait = 800 + rnd(2500) } }          // a tired bulb stutters
+    else if (r < 0.03) { l = 3 + rnd(2); wait = 60 + rnd(120) } else { l = 5; wait = 1500 + rnd(4000) }               // a healthy one mostly holds and now and then dips
+  } else if (weak[i]) { if (lvl[i] > 0) { l = 0; wait = 3000 + rnd(9000) } else { l = 1 + rnd(3); wait = 150 + rnd(400) } }   // a weak out bulb blinks on briefly
+  nxt[i] = now + wait
+  show(i, l, lit[i] || now < su[i] ? TINT[tint] : WARM)
+}
+const litFor = (str) => {
+  const a = new Array(N).fill(0)
+  for (let k = 0; k < 4; k++) { const g = GL[str.charAt(k)]; for (let j = 0; j < 15; j++) if (g.charAt(j) === '1') a[(DY[k] + Math.floor(j / 3)) * COLS + DX[k] + (j % 3)] = 1 }
+  return a
+}
+const timeStr = () => { const h = tm.getHours(), m = tm.getMinutes(); return (h < 10 ? '0' : '') + h + (m < 10 ? '0' : '') + m }
+let lastStr = ''
+const startUp = (now, all) => {                          // the number (and what it replaces) stutters on, bulb by bulb
+  for (let i = 0; i < N; i++) if (all || lit[i]) { su[i] = now + 300 + rnd(500); nxt[i] = now + rnd(500) }
+}
+const setTime = (str, now) => {
+  const old = lit.slice(), nl = litFor(str)
+  tint = (tint + 1 + rnd(2)) % 3
+  lit.splice(0, N, ...nl)
+  for (let i = 0; i < N; i++) if (old[i] || nl[i]) { su[i] = now + 200 + rnd(400); nxt[i] = now + rnd(400) }
+}
+// ---- loop ----
+let timer = null, ticks = 0, tLog = 0
+const tick = () => {
+  timer = null
+  const now = Date.now()
+  try {
+    const s = timeStr()
+    if (s !== lastStr) { const first = lastStr === ''; lastStr = s; if (!first) setTime(s, now) }
+    for (let i = 0; i < N; i++) if (nxt[i] <= now) evalB(i, now)
+  } catch (e) { say('draw: ' + e); return }
+  ticks++
+  if (DEBUG && now - tLog >= 5000) { say(Math.round(ticks * 1000 / Math.max(1, now - tLog)) + ' ticks/s, ' + Math.round(redraws * 1000 / Math.max(1, now - tLog)) + ' bulb redraws/s'); tLog = now; ticks = 0; redraws = 0 }
+  timer = setTimeout(tick, Math.max(0, 40 - (Date.now() - now)))
+}
+// pause / resume: the notification shade also pauses the face, so a short absence only carries on; a longer one (a real wake-up) starts the number up again in a new colour
+const WAKE_GAP = 8000
+let pausedAt = 0, startedAt = 0
+const stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }
+const start = (fresh) => {
+  stop(); startedAt = Date.now()
+  const now = startedAt
+  lastStr = timeStr(); lit.splice(0, N, ...litFor(lastStr))
+  if (fresh) { rect(0, 0, 390, 450, BG); for (let i = 0; i < N; i++) { lvl[i] = -1; show(i, 0, GLASS); nxt[i] = now + 1e9 } }
+  else tint = (tint + 1 + rnd(2)) % 3
+  for (let i = 0; i < N; i++) if (nxt[i] > now + 5000) nxt[i] = now + rnd(2000)
+  startUp(now, false)
+  tLog = now; ticks = 0; redraws = 0
+  tick()
+}
+const onTap = () => { const now = Date.now(); tint = (tint + 1) % 3; startUp(now, false); if (!timer) tick() }
+try { cv.addEventListener(ui.event.CLICK_UP, onTap) } catch (e) { say('tap: ' + e) }
+const onPause = () => { pausedAt = Date.now(); stop() }
+const onResume = () => {
+  const n = Date.now()
+  if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads
+  say('resume after ' + (n - pausedAt) + ' ms' + (n - pausedAt >= WAKE_GAP ? ': start up' : ': carry on'))
+  if (n - pausedAt >= WAKE_GAP) { start(false); return }
+  tick()
+}
+ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: onPause, resume_call: onResume })
+start(true)`;
+const stillScript = `
+const c = document.createElement('canvas'); c.width = 390; c.height = 450; const g = c.getContext('2d'); g.fillStyle = '#050507'; g.fillRect(0, 0, 390, 450)
+const GL = { 0: '111101101101111', 1: '010110010010111', 2: '111001111100111', 3: '111001111001111', 4: '101101111001001' }
+const DX = [3, 7, 3, 7], DY = [2, 2, 8, 8]; const lit = {}
+'1042'.split('').forEach((ch, k) => { for (let j = 0; j < 15; j++) if (GL[ch][j] === '1') lit[(DY[k] + Math.floor(j / 3)) * 13 + DX[k] + (j % 3)] = 1 })
+let s = 5; const rnd = () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff }
+const ball = (x, y, r, col) => { g.fillStyle = col; g.beginPath(); g.arc(x, y, r, 0, 6.2832); g.fill() }
+for (let i = 0; i < 195; i++) { const x = (i % 13) * 30 + 15, y = Math.floor(i / 13) * 30 + 15
+  if (lit[i]) { const dim = rnd() < 0.15 ? 0.45 : 1; ball(x, y, 13, 'rgb(' + Math.round(7 * dim) + ',' + Math.round(51 * dim) + ',' + Math.round(17 * dim) + ')'); ball(x, y, 10, 'rgb(' + Math.round(10 + 24 * dim) + ',' + Math.round(77 + 178 * dim) + ',' + Math.round(26 + 59 * dim) + ')'); if (dim === 1) ball(x, y, 4, '#aaffc0') }
+  else if (rnd() < 0.05) { ball(x, y, 13, '#2b2012'); ball(x, y, 10, '#8a6a40') } else ball(x, y, 10, '#1a1a21') }
+const n = addProjectImage('fb/still.png', c, {}).name; await loadAllImages()
+const e = await addElement('IMG', { src: n }); Object.assign(e, { name: 'Bulbs (preview)', src: n, x: 0, y: 0, show: 'normal', previewOnly: true }); return n`;
+const steps = [
+  { script: 'project.appId = 2024161; return 1' },
+  { script: stillScript },
+  { script: `let e = await addElement('CANVAS', { x: 0, y: 0, w: 390, h: 450, show: 'normal', handle: 'k1' }); Object.assign(e, { x: 0, y: 0, name: 'Bulb canvas' })
+    project.groups = project.groups || {}; project.groups.gCanvas = 'Canvas'; project.elements.find((x) => x.name === 'Bulb canvas').group = 'gCanvas'; return 1` },
+];
+fs.writeFileSync(__dirname + '/recipe.json', JSON.stringify({ name: 'Flicker Bulbs', device: 'bip-6', language: 'en-US', optimizePng: 'lossless',
+  description: 'A grid of round bulbs, most of them burnt out, with the time lit in red, green or blue and flickering like tired bulbs. The number stutters on at every wake-up, minute and tap. All drawn by the watch on one canvas, no pictures.',
+  preview: 'preview.png', previewAod: 'preview-aod.png', save: 'project', out: 'out/flicker-bulbs', userImports, userCode, steps }, null, 1));
+console.log('recipe.json written');
