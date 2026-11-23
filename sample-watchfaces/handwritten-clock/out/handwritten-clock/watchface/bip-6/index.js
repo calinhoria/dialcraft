@@ -125,10 +125,21 @@ WatchFace({
       } catch (e) { say('draw: ' + e); return }
       timer = setTimeout(tick, jobs.length || puffs.length ? 16 : 1000)
     }
+    // pause / resume: pulling down the notification shade pauses the face just like the screen turning off, so a short absence only carries on; a longer one
+    // (a real wake-up) starts a new drawing
+    const WAKE_GAP = 8000
+    let pausedAt = 0, startedAt = 0
     const stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }
-    const start = () => { stop(); jobs = []; puffs = []; tipX = -1; shown = [null, null, null, null]; cv.clear({ x: 0, y: 0, w: CW, h: CH }); cd.clear({ x: 0, y: 0, w: CW, h: CH }); t0 = Date.now(); tick() }
+    const start = () => { stop(); startedAt = Date.now(); jobs = []; puffs = []; tipX = -1; shown = [null, null, null, null]; cv.clear({ x: 0, y: 0, w: CW, h: CH }); cd.clear({ x: 0, y: 0, w: CW, h: CH }); t0 = Date.now(); tick() }
     try { cv.addEventListener(ui.event.CLICK_UP, start); cd.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }
-    ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })
+    const onPause = () => { pausedAt = Date.now(); stop() }
+    const onResume = () => {
+      const n = Date.now()
+      if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads
+      if (n - pausedAt >= WAKE_GAP) { start(); return }
+      if (jobs.length) t0 += n - pausedAt; tick()                // the pen carries on where it stopped
+    }
+    ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: onPause, resume_call: onResume })
     start()
 
     // ---- screen corners (the face switcher draws the live face square) ----

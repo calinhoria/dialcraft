@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_b1x7 = [
+const img_Minute_y7i6 = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -27,7 +27,7 @@ const img_Minute_b1x7 = [
   A('font_1_9.png'),
 ]
 
-const img_Hour_b7ga = [
+const img_Hour_y2pz = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -87,7 +87,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(-6),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_b1x7,
+      minute_array: img_Minute_y7i6,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -99,7 +99,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(-6),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_b1x7,
+      minute_array: img_Minute_y7i6,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -127,7 +127,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(-6),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_b7ga,
+      hour_array: img_Hour_y2pz,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -139,7 +139,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(-6),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_b7ga,
+      hour_array: img_Hour_y2pz,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -236,9 +236,13 @@ WatchFace({
       if (prog < 1) timer = setTimeout(tick, 0)
       else say(Math.round(frames * 1000 / ms) + ' fps, ' + V.info)
     }
+    // pause / resume: pulling down the notification shade pauses the face just like the screen turning off, so a short absence only carries on; a longer one
+    // (a real wake-up) starts a new drawing
+    const WAKE_GAP = 8000
+    let pausedAt = 0, startedAt = 0
     const stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }
     const start = () => {
-      stop()
+      stop(); startedAt = Date.now()
       const seed = ((Date.now() & 0x7fffffff) ^ Math.floor(Math.random() * 0x7fffffff)) >>> 0
       try {
         V = SP.make(seed, { cx: 145, cy: 145, fit: 140 })
@@ -248,7 +252,14 @@ WatchFace({
       t0 = Date.now(); frames = 0; tick()
     }
     try { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)
-    ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })
+    const onPause = () => { pausedAt = Date.now(); stop() }
+    const onResume = () => {
+      const n = Date.now()
+      if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads
+      if (n - pausedAt >= WAKE_GAP) { start(); return }
+      t0 += n - pausedAt; if (V && done.some((d, i) => d < V.curves[i].P)) tick()                    // a drawing in progress carries on
+    }
+    ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: onPause, resume_call: onResume })
     start()
 
     // ---- screen corners (the face switcher draws the live face square) ----

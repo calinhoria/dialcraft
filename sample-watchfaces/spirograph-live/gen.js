@@ -36,9 +36,13 @@ const tick = () => {
   if (prog < 1) timer = setTimeout(tick, 0)
   else say(Math.round(frames * 1000 / ms) + ' fps, ' + V.info)
 }
+// pause / resume: pulling down the notification shade pauses the face just like the screen turning off, so a short absence only carries on; a longer one
+// (a real wake-up) starts a new drawing
+const WAKE_GAP = 8000
+let pausedAt = 0, startedAt = 0
 const stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }
 const start = () => {
-  stop()
+  stop(); startedAt = Date.now()
   const seed = ((Date.now() & 0x7fffffff) ^ Math.floor(Math.random() * 0x7fffffff)) >>> 0
   try {
     V = SP.make(seed, { cx: ${CV.w / 2}, cy: ${CV.h / 2}, fit: ${FIT} })
@@ -48,7 +52,14 @@ const start = () => {
   t0 = Date.now(); frames = 0; tick()
 }
 try { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)
-ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })
+const onPause = () => { pausedAt = Date.now(); stop() }
+const onResume = () => {
+  const n = Date.now()
+  if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads
+  if (n - pausedAt >= WAKE_GAP) { start(); return }
+  t0 += n - pausedAt; if (V && done.some((d, i) => d < V.curves[i].P)) tick()                    // a drawing in progress carries on
+}
+ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: onPause, resume_call: onResume })
 start()`;
 const FONT = 'Open Sans Regular', fontB64 = fs.readFileSync(B + 'open-sans-400.ttf').toString('base64');
 const glyph = (size) => ({ font: FONT, size, weight: 400, fill: 'solid', color: '#ffffff', borderColor: '#000000', borderWidth: 5 });

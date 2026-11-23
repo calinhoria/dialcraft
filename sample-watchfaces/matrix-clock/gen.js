@@ -81,16 +81,27 @@ const tick = () => {
   if (DEBUG && now - tLog > 6000) { say(Math.round(frames * 1000 / Math.max(1, now - tLog)) + ' fps, ' + COLS + ' cols x ' + ROWS + ' rows'); tLog = now; frames = 0 }
   timer = setTimeout(tick, Math.max(0, 33 - (Date.now() - now)))
 }
+// pause / resume: pulling down the notification shade pauses the face just like the screen turning off, so a short absence only carries on; a longer one
+// (a real wake-up) starts a new drawing
+const WAKE_GAP = 8000
+let pausedAt = 0, startedAt = 0
 const stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }
 const start = () => {
-  stop()
+  stop(); startedAt = Date.now()
   RC.x1 = 0; RC.y1 = 0; RC.x2 = RW; RC.y2 = RH; RC.color = 0; cvR.drawRect(RC); clockBase()
   COL = Array.from({ length: COLS }, mkCol); surgeUntil = 0; lastStr = ''
   last = Date.now(); tLog = last; frames = 0; tick()
 }
 const onTap = () => { startDecode(); surgeUntil = Date.now() + 1500 }
 try { cvR.addEventListener(ui.event.CLICK_UP, onTap); cvC.addEventListener(ui.event.CLICK_UP, onTap) } catch (e) { say('tap: ' + e) }
-ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })
+const onPause = () => { pausedAt = Date.now(); stop() }
+const onResume = () => {
+  const n = Date.now()
+  if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads
+  if (n - pausedAt >= WAKE_GAP) { start(); return }
+  last = n; tick()                                      // the rain, the clock and a decode in progress carry on
+}
+ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: onPause, resume_call: onResume })
 start()`;
 // the editor / store still: katakana rain with a clock panel (hidden on the watch, where the canvases draw)
 const stillScript = `

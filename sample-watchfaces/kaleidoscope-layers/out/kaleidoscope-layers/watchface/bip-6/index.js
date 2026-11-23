@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_l6ut = [
+const img_Minute_04bz = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -27,7 +27,7 @@ const img_Minute_l6ut = [
   A('font_1_9.png'),
 ]
 
-const img_Hour_5ldp = [
+const img_Hour_o0kb = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -40,7 +40,7 @@ const img_Hour_5ldp = [
   A('font_3_9.png'),
 ]
 
-const img_Weekday_e6t8 = [
+const img_Weekday_owkj = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -50,7 +50,7 @@ const img_Weekday_e6t8 = [
   A('week_w7.png'),
 ]
 
-const img_Day_02lk = [
+const img_Day_340h = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -107,7 +107,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_l6ut,
+      minute_array: img_Minute_04bz,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -119,7 +119,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_l6ut,
+      minute_array: img_Minute_04bz,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -147,7 +147,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_5ldp,
+      hour_array: img_Hour_o0kb,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -159,7 +159,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_5ldp,
+      hour_array: img_Hour_o0kb,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -168,9 +168,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(108),
       y: px(121),
-      week_en: img_Weekday_e6t8,
-      week_sc: img_Weekday_e6t8,
-      week_tc: img_Weekday_e6t8,
+      week_en: img_Weekday_owkj,
+      week_sc: img_Weekday_owkj,
+      week_tc: img_Weekday_owkj,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -178,9 +178,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(108),
       y: px(121),
-      week_en: img_Weekday_e6t8,
-      week_sc: img_Weekday_e6t8,
-      week_tc: img_Weekday_e6t8,
+      week_en: img_Weekday_owkj,
+      week_sc: img_Weekday_owkj,
+      week_tc: img_Weekday_owkj,
       show_level: ui.show_level.ONLY_AOD,
     })
 
@@ -192,9 +192,9 @@ WatchFace({
       day_space: px(0),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_02lk,
-      day_sc_array: img_Day_02lk,
-      day_tc_array: img_Day_02lk,
+      day_en_array: img_Day_340h,
+      day_sc_array: img_Day_340h,
+      day_tc_array: img_Day_340h,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -206,9 +206,9 @@ WatchFace({
       day_space: px(0),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_02lk,
-      day_sc_array: img_Day_02lk,
-      day_tc_array: img_Day_02lk,
+      day_en_array: img_Day_340h,
+      day_sc_array: img_Day_340h,
+      day_tc_array: img_Day_340h,
       show_level: ui.show_level.ONLY_AOD,
     })
 
@@ -321,24 +321,36 @@ WatchFace({
     const DEBUG = false                                      // true: log to the developer bridge
     const say = (m) => { if (DEBUG) console.log('[kl] ' + m) }
     const L = [W.k1, W.k2, W.k3]       // the three Canvas layers of the layout (code handles k1..k3), see the layer list
-    let V = null, timer = null, t0 = 0, frames = 0
+    let V = null, timer = null, t0 = 0, frames = 0, finished = false
     const tick = () => {
       timer = null
       const ms = Date.now() - t0, M = motion(ms, V.W)
       try { L.forEach((c) => c.clear({ x: 0, y: 0, w: 390, h: 450 })); VET.frame(V, M, L) } catch (e) { say('draw: ' + e); return }
       frames++
+      finished = M.done
       if (!M.done) timer = setTimeout(tick, 0)
       else say(Math.round(frames * 1000 / ms) + ' fps, ' + V.draws + ' draws, ' + V.SEG + ' slices, ' + V.R.types.join(' ') + ', ' + V.P.name)
     }
+    // pause / resume: pulling down the notification shade pauses the face just like the screen turning off, so a short absence only carries on; a longer one
+    // (a real wake-up) starts a new drawing
+    const WAKE_GAP = 8000
+    let pausedAt = 0, startedAt = 0
     const stop = () => { if (timer) { try { clearTimeout(timer) } catch (e) {} timer = null } }
     const start = () => {
-      stop()
+      stop(); startedAt = Date.now(); finished = false
       const seed = ((Date.now() & 0x7fffffff) ^ Math.floor(Math.random() * 0x7fffffff)) >>> 0
       try { V = VET.make(seed, { pal: -1, arms: 0, cx: 195, cy: 225 }); L.forEach((c, i) => c.setAlpha(Math.round(255 * (V.ALPHA[i] || 1)))) } catch (e) { say('make: ' + e); return }
       t0 = Date.now(); frames = 0; tick()
     }
     try { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)
-    ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start })
+    const onPause = () => { pausedAt = Date.now(); stop() }
+    const onResume = () => {
+      const n = Date.now()
+      if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads
+      if (n - pausedAt >= WAKE_GAP) { start(); return }
+      t0 += n - pausedAt; if (V && !finished) tick()                    // a motion in progress carries on
+    }
+    ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: onPause, resume_call: onResume })
     start()
 
     // ---- screen corners (the face switcher draws the live face square) ----
