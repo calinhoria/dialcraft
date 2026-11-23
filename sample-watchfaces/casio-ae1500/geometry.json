@@ -1,0 +1,302 @@
+{
+ "names": {
+  "b": [
+   "lcd/b0.png",
+   "lcd/b1.png",
+   "lcd/b2.png",
+   "lcd/b3.png",
+   "lcd/b4.png",
+   "lcd/b5.png",
+   "lcd/b6.png",
+   "lcd/b7.png",
+   "lcd/b8.png",
+   "lcd/b9.png"
+  ],
+  "m": [
+   "lcd/m0.png",
+   "lcd/m1.png",
+   "lcd/m2.png",
+   "lcd/m3.png",
+   "lcd/m4.png",
+   "lcd/m5.png",
+   "lcd/m6.png",
+   "lcd/m7.png",
+   "lcd/m8.png",
+   "lcd/m9.png"
+  ],
+  "s": [
+   "lcd/s0.png",
+   "lcd/s1.png",
+   "lcd/s2.png",
+   "lcd/s3.png",
+   "lcd/s4.png",
+   "lcd/s5.png",
+   "lcd/s6.png",
+   "lcd/s7.png",
+   "lcd/s8.png",
+   "lcd/s9.png"
+  ],
+  "w": [
+   "lcd/w0.png",
+   "lcd/w1.png",
+   "lcd/w2.png",
+   "lcd/w3.png",
+   "lcd/w4.png",
+   "lcd/w5.png",
+   "lcd/w6.png"
+  ],
+  "t": [
+   "lcd/t0.png",
+   "lcd/t1.png",
+   "lcd/t2.png",
+   "lcd/t3.png",
+   "lcd/t4.png",
+   "lcd/t5.png",
+   "lcd/t6.png",
+   "lcd/t7.png",
+   "lcd/t8.png",
+   "lcd/t9.png"
+  ],
+  "a": [
+   "lcd/a0.png",
+   "lcd/a1.png",
+   "lcd/a2.png",
+   "lcd/a3.png",
+   "lcd/a4.png",
+   "lcd/a5.png",
+   "lcd/a6.png",
+   "lcd/a7.png",
+   "lcd/a8.png",
+   "lcd/a9.png"
+  ],
+  "bar": [
+   "lcd/bar0.png",
+   "lcd/bar1.png",
+   "lcd/bar2.png",
+   "lcd/bar3.png",
+   "lcd/bar4.png",
+   "lcd/bar5.png",
+   "lcd/bar6.png",
+   "lcd/bar7.png",
+   "lcd/bar8.png",
+   "lcd/bar9.png",
+   "lcd/bar10.png"
+  ]
+ },
+ "size": {
+  "b": [
+   68,
+   132
+  ],
+  "m": [
+   50,
+   78
+  ],
+  "s": [
+   31,
+   47
+  ],
+  "w": [
+   81,
+   47
+  ],
+  "ic_batt": [
+   38,
+   22
+  ],
+  "ic_step": [
+   24,
+   34
+  ],
+  "ic_temp": [
+   18,
+   34
+  ],
+  "ic_sunrise": [
+   36,
+   34
+  ],
+  "ic_sunset": [
+   36,
+   34
+  ],
+  "blk": [
+   4,
+   10
+  ],
+  "t": [
+   22,
+   34
+  ],
+  "tcolon": [
+   7,
+   34
+  ],
+  "tminus": [
+   16,
+   34
+  ],
+  "tdeg": [
+   22,
+   34
+  ],
+  "a": [
+   68,
+   132
+  ],
+  "colon": [
+   25,
+   132
+  ],
+  "dash": [
+   22,
+   47
+  ],
+  "pm": [
+   20,
+   24
+  ],
+  "bar": [
+   26,
+   321
+  ],
+  "bell": [
+   28,
+   33
+  ],
+  "al1": [
+   57,
+   20
+  ],
+  "screen": [
+   390,
+   450
+  ]
+ },
+ "pos": {
+  "hour": [
+   30,
+   160
+  ],
+  "colon": [
+   166,
+   160
+  ],
+  "minute": [
+   192,
+   160
+  ],
+  "second": [
+   245,
+   323
+  ],
+  "week": [
+   73,
+   82
+  ],
+  "month": [
+   162,
+   82
+  ],
+  "dash": [
+   224,
+   82
+  ],
+  "day": [
+   246,
+   82
+  ],
+  "pm": [
+   23,
+   165
+  ],
+  "bar": [
+   360,
+   79
+  ],
+  "bell": [
+   278,
+   345
+  ],
+  "al1": [
+   30,
+   401
+  ]
+ },
+ "themed": [
+  "lcd",
+  "case",
+  "colon",
+  "dash",
+  "pm",
+  "b0",
+  "b1",
+  "b2",
+  "b3",
+  "b4",
+  "b5",
+  "b6",
+  "b7",
+  "b8",
+  "b9",
+  "m0",
+  "m1",
+  "m2",
+  "m3",
+  "m4",
+  "m5",
+  "m6",
+  "m7",
+  "m8",
+  "m9",
+  "s0",
+  "s1",
+  "s2",
+  "s3",
+  "s4",
+  "s5",
+  "s6",
+  "s7",
+  "s8",
+  "s9",
+  "w0",
+  "w1",
+  "w2",
+  "w3",
+  "w4",
+  "w5",
+  "w6",
+  "bar0",
+  "bar1",
+  "bar2",
+  "bar3",
+  "bar4",
+  "bar5",
+  "bar6",
+  "bar7",
+  "bar8",
+  "bar9",
+  "bar10",
+  "bell",
+  "al1",
+  "t0",
+  "t1",
+  "t2",
+  "t3",
+  "t4",
+  "t5",
+  "t6",
+  "t7",
+  "t8",
+  "t9",
+  "tcolon",
+  "tminus",
+  "tdeg",
+  "blk",
+  "ic_batt",
+  "ic_step",
+  "ic_temp",
+  "ic_sunrise",
+  "ic_sunset"
+ ]
+}
