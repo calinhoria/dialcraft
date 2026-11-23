@@ -52,7 +52,7 @@ const start = () => {
   t0 = Date.now(); frames = 0; tick()
 }
 try { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)
-const onPause = () => { pausedAt = Date.now(); stop() }
+const onPause = () => { if (Date.now() - startedAt < 1500) return; pausedAt = Date.now(); stop() }   // switching faces: the watch pauses and resumes the new face right after it loads, so a pause that early must not stop the loop
 const onResume = () => {
   const n = Date.now()
   if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads

@@ -55,6 +55,9 @@ watch. Never promise an fps that wasn't measured on the watch: probe first, or s
 - setInterval(16) gives 62/s, setTimeout(0) ~830/s. Date.now() doesn't advance inside a busy loop; drive motion from
   elapsed time, not from a frame counter, so the speed doesn't depend on fps.
 - Timers and sensors stop while the screen is off; WIDGET_DELEGATE `resume_call` fires on wake (and once at start).
+- **Switching faces pauses and resumes the new face right after it loads** (found Nov 2026: the animation never started). A `pause_call`
+  that stops the loop followed by a `resume_call` that is ignored as "the resume at load" leaves the face frozen. Ignore a pause in the
+  first ~1.5 s after the face starts (`if (Date.now() - startedAt < 1500) return` in `onPause`), as well as the resume.
 
 ## Compared with native pictures (IMG widgets, no canvas)
 - 1 full-screen IMG swapping its picture (MORE {src}): 44 fps. 8 rotated wedge IMGs swapping: 24 fps (rotation via

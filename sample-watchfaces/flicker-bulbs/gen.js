@@ -95,7 +95,7 @@ const start = (fresh) => {
 }
 const onTap = () => { const now = Date.now(); tint = (tint + 1) % 3; startUp(now, false); if (!timer) tick() }
 try { cv.addEventListener(ui.event.CLICK_UP, onTap) } catch (e) { say('tap: ' + e) }
-const onPause = () => { pausedAt = Date.now(); stop() }
+const onPause = () => { if (Date.now() - startedAt < 1500) return; pausedAt = Date.now(); stop() }   // switching faces: the watch pauses and resumes the new face right after it loads, so a pause that early must not stop the loop
 const onResume = () => {
   const n = Date.now()
   if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads

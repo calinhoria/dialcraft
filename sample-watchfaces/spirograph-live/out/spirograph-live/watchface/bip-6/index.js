@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_y7i6 = [
+const img_Minute_a14g = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -27,7 +27,7 @@ const img_Minute_y7i6 = [
   A('font_1_9.png'),
 ]
 
-const img_Hour_y2pz = [
+const img_Hour_a38k = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -87,7 +87,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(-6),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_y7i6,
+      minute_array: img_Minute_a14g,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -99,7 +99,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(-6),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_y7i6,
+      minute_array: img_Minute_a14g,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -127,7 +127,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(-6),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_y2pz,
+      hour_array: img_Hour_a38k,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -139,7 +139,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(-6),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_y2pz,
+      hour_array: img_Hour_a38k,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -252,7 +252,7 @@ WatchFace({
       t0 = Date.now(); frames = 0; tick()
     }
     try { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)
-    const onPause = () => { pausedAt = Date.now(); stop() }
+    const onPause = () => { if (Date.now() - startedAt < 1500) return; pausedAt = Date.now(); stop() }   // switching faces: the watch pauses and resumes the new face right after it loads, so a pause that early must not stop the loop
     const onResume = () => {
       const n = Date.now()
       if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads

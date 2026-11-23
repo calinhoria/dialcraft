@@ -14,7 +14,7 @@ import ui from '@zos/ui'
 const A = (p) => `images/${p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-const img_Minute_04bz = [
+const img_Minute_pzka = [
   A('font_1_0.png'),
   A('font_1_1.png'),
   A('font_1_2.png'),
@@ -27,7 +27,7 @@ const img_Minute_04bz = [
   A('font_1_9.png'),
 ]
 
-const img_Hour_o0kb = [
+const img_Hour_z1wt = [
   A('font_3_0.png'),
   A('font_3_1.png'),
   A('font_3_2.png'),
@@ -40,7 +40,7 @@ const img_Hour_o0kb = [
   A('font_3_9.png'),
 ]
 
-const img_Weekday_owkj = [
+const img_Weekday_r24y = [
   A('week_w1.png'),
   A('week_w2.png'),
   A('week_w3.png'),
@@ -50,7 +50,7 @@ const img_Weekday_owkj = [
   A('week_w7.png'),
 ]
 
-const img_Day_340h = [
+const img_Day_h46w = [
   A('font_2_0.png'),
   A('font_2_1.png'),
   A('font_2_2.png'),
@@ -107,7 +107,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_04bz,
+      minute_array: img_Minute_pzka,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -119,7 +119,7 @@ WatchFace({
       minute_zero: 1,
       minute_space: px(0),
       minute_align: ui.align.LEFT,
-      minute_array: img_Minute_04bz,
+      minute_array: img_Minute_pzka,
       minute_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -147,7 +147,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_o0kb,
+      hour_array: img_Hour_z1wt,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_NORMAL,
     })
@@ -159,7 +159,7 @@ WatchFace({
       hour_zero: 1,
       hour_space: px(0),
       hour_align: ui.align.RIGHT,
-      hour_array: img_Hour_o0kb,
+      hour_array: img_Hour_z1wt,
       hour_follow: 0,
       show_level: ui.show_level.ONLY_AOD,
     })
@@ -168,9 +168,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(108),
       y: px(121),
-      week_en: img_Weekday_owkj,
-      week_sc: img_Weekday_owkj,
-      week_tc: img_Weekday_owkj,
+      week_en: img_Weekday_r24y,
+      week_sc: img_Weekday_r24y,
+      week_tc: img_Weekday_r24y,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -178,9 +178,9 @@ WatchFace({
     ui.createWidget(ui.widget.IMG_WEEK, {
       x: px(108),
       y: px(121),
-      week_en: img_Weekday_owkj,
-      week_sc: img_Weekday_owkj,
-      week_tc: img_Weekday_owkj,
+      week_en: img_Weekday_r24y,
+      week_sc: img_Weekday_r24y,
+      week_tc: img_Weekday_r24y,
       show_level: ui.show_level.ONLY_AOD,
     })
 
@@ -192,9 +192,9 @@ WatchFace({
       day_space: px(0),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_340h,
-      day_sc_array: img_Day_340h,
-      day_tc_array: img_Day_340h,
+      day_en_array: img_Day_h46w,
+      day_sc_array: img_Day_h46w,
+      day_tc_array: img_Day_h46w,
       show_level: ui.show_level.ONLY_NORMAL,
     })
 
@@ -206,9 +206,9 @@ WatchFace({
       day_space: px(0),
       day_align: ui.align.LEFT,
       day_follow: 0,
-      day_en_array: img_Day_340h,
-      day_sc_array: img_Day_340h,
-      day_tc_array: img_Day_340h,
+      day_en_array: img_Day_h46w,
+      day_sc_array: img_Day_h46w,
+      day_tc_array: img_Day_h46w,
       show_level: ui.show_level.ONLY_AOD,
     })
 
@@ -343,7 +343,7 @@ WatchFace({
       t0 = Date.now(); frames = 0; tick()
     }
     try { W.tap.addEventListener(ui.event.CLICK_UP, start) } catch (e) { say('tap: ' + e) }       // the empty full-screen Text layer on top (handle tap)
-    const onPause = () => { pausedAt = Date.now(); stop() }
+    const onPause = () => { if (Date.now() - startedAt < 1500) return; pausedAt = Date.now(); stop() }   // switching faces: the watch pauses and resumes the new face right after it loads, so a pause that early must not stop the loop
     const onResume = () => {
       const n = Date.now()
       if (n - startedAt < 1500) return                       // the watch also calls resume once when the face loads
