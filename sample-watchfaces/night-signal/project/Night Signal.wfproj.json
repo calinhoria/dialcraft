@@ -1,0 +1,723 @@
+{
+  "version": 1,
+  "name": "Night Signal",
+  "device": "bip-6",
+  "appId": 2216919,
+  "vender": "dialcraft",
+  "description": "A luminous digital clock, a violet minute beacon, and a pulsing seconds light.",
+  "font": "Open Sans",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [],
+  "groups": {
+    "gmwuol8ry8n": "Clock",
+    "gmwuol9qeav": "Clock AOD"
+  },
+  "elements": [
+    {
+      "id": "elmwuol8nsx2",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwuol96w3pg",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "approved-artwork.png"
+    },
+    {
+      "id": "elmwuol9a02pz",
+      "kind": "IMG",
+      "name": "Minute beacon",
+      "x": 76,
+      "y": 8,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/beacon_001.png",
+      "images": [
+        "sp/beacon_001.png",
+        "sp/beacon_000.png"
+      ],
+      "handle": "beacon"
+    },
+    {
+      "id": "elmwuol9ad1wg",
+      "kind": "IMG",
+      "name": "Seconds pulse",
+      "x": 183,
+      "y": 337,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/pulse_004.png",
+      "images": [
+        "sp/pulse_004.png",
+        "sp/pulse_003.png",
+        "sp/pulse_002.png"
+      ],
+      "handle": "pulse"
+    },
+    {
+      "id": "elmwuol9lotk",
+      "kind": "IMG",
+      "name": "Reference lighting",
+      "x": 176,
+      "y": 286,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/original_005.png",
+      "images": [
+        "sp/original_005.png",
+        "sp/original_006.png"
+      ],
+      "handle": "original"
+    },
+    {
+      "id": "elmwuol8r31c7",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 203,
+      "y": 158,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol8ry8n",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "reference/minute-0.png",
+        "reference/minute-1.png",
+        "reference/minute-2.png",
+        "reference/minute-3.png",
+        "reference/minute-4.png",
+        "reference/minute-5.png",
+        "reference/minute-6.png",
+        "reference/minute-7.png",
+        "reference/minute-8.png",
+        "reference/minute-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwuol8r331k",
+      "kind": "IMG",
+      "name": "Colon Main",
+      "x": 180,
+      "y": 176,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol8ry8n",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "reference/colon-0.png",
+      "link": {
+        "kind": "between",
+        "a": "elmwuol8r36gq",
+        "b": "elmwuol8r31c7",
+        "gap": 13,
+        "x": 206,
+        "y": 214
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "space": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwuol8r36gq",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 9,
+      "y": 158,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol8ry8n",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "reference/hour-0.png",
+        "reference/hour-1.png",
+        "reference/hour-2.png",
+        "reference/hour-3.png",
+        "reference/hour-4.png",
+        "reference/hour-5.png",
+        "reference/hour-6.png",
+        "reference/hour-7.png",
+        "reference/hour-8.png",
+        "reference/hour-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwuol9q848r",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 210,
+      "y": 188,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol9qeav",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwuol9q86o2",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 180,
+      "y": 196,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol9qeav",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a_2.png",
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "link": {
+        "kind": "between",
+        "a": "elmwuol9q82rg",
+        "b": "elmwuol9q848r",
+        "gap": 25,
+        "x": 67,
+        "y": 29
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmwuol9q82rg",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 77,
+      "y": 188,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol9qeav",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 56,
+      "height": 88
+    },
+    {
+      "name": "colon.png",
+      "width": 15,
+      "height": 42
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 26,
+      "height": 68
+    },
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/beacon_000.png",
+      "width": 21,
+      "height": 21
+    },
+    {
+      "name": "sp/beacon_001.png",
+      "width": 21,
+      "height": 21
+    },
+    {
+      "name": "sp/pulse_002.png",
+      "width": 25,
+      "height": 25
+    },
+    {
+      "name": "sp/pulse_003.png",
+      "width": 25,
+      "height": 25
+    },
+    {
+      "name": "sp/pulse_004.png",
+      "width": 25,
+      "height": 25
+    },
+    {
+      "name": "approved-artwork.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "reference/colon-0.png",
+      "width": 23,
+      "height": 65
+    },
+    {
+      "name": "reference/hour-0.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-1.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-2.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-3.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-4.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-5.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-6.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-7.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-8.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/hour-9.png",
+      "width": 83,
+      "height": 103
+    },
+    {
+      "name": "reference/minute-0.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-1.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-2.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-3.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-4.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-5.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-6.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-7.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-8.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "reference/minute-9.png",
+      "width": 75,
+      "height": 101
+    },
+    {
+      "name": "sp/original_005.png",
+      "width": 214,
+      "height": 129
+    },
+    {
+      "name": "sp/original_006.png",
+      "width": 214,
+      "height": 129
+    },
+    {
+      "name": "colon_2.png",
+      "width": 15,
+      "height": 42
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "symbol_u003a_2.png",
+      "width": 22,
+      "height": 59
+    }
+  ],
+  "savePath": null,
+  "optimizePng": "lossless",
+  "userCode": "{const V = {\"beacon\":{\"1\":1,\"__blank\":0},\"pulse\":{\"0\":1,\"1\":2,\"__blank\":0},\"original\":{\"0\":0,\"__blank\":1}}; const P=[], D=[[86,18],[110,18],[133,18],[157,18],[181,18],[204,18],[228,18],[252,18],[275,18],[299,18],[322,21],[344,31],[360,47],[370,69],[372,92],[372,116],[372,140],[372,163],[372,187],[372,211],[372,234],[372,258],[372,282],[372,305],[372,329],[372,353],[371,376],[363,398],[348,416],[327,428],[304,432],[280,432],[257,432],[233,432],[209,432],[186,432],[162,432],[138,432],[115,432],[91,432],[68,429],[46,419],[30,403],[20,381],[18,358],[18,334],[18,310],[18,287],[18,263],[18,239],[18,216],[18,192],[18,168],[18,145],[18,121],[18,97],[19,74],[27,52],[42,34],[63,22],[86,18]], MS=100; const tick=()=>{\nconst d=new Date(),[x,y]=D[d.getMinutes()];\nif(d.getMinutes()===24&&d.getMilliseconds()<300){slot('beacon').hide();slot('pulse').hide();slot('original')(176,286,V.original[0]);return;}slot('original').hide();slot('beacon')(x-10,y-10,V.beacon[1]);\nslot('pulse')(183,337,V.pulse[d.getMilliseconds()<300?1:0]);\n};   // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { tick(); };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n}"
+}

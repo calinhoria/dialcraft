@@ -1,0 +1,3 @@
+Hour Glass
+
+Gold sand drains between the bulbs over each minute (a photographic sand texture revealed by a canvas mask, with a lit surface and falling dust), then the glass turns over and it starts again.

@@ -223,6 +223,7 @@ def alarm_pictures(tk):
     lay = Image.new('L', (AL_W * S4, AL_H * S4), 0); ImageDraw.Draw(lay).rounded_rectangle([1 * S4, 0, (AL_W - 1) * S4, (AL_H - 1) * S4], radius=0, fill=255)
     save(tint(np.array(lay.resize((AL_W, AL_H), Image.LANCZOS)).astype(float) / 255, th['block']), 'al1' + ('' if tk == 'green' else '__t1'))
     return bell_geo
+BLK_H = round(19 * K)
 def bar_picture(tk, n):
     th = THEMES[tk]; lay = Image.new('L', (BAR_W * S4, BAR_H * S4), 0); dr = ImageDraw.Draw(lay)
     for i in range(n):
@@ -395,18 +396,19 @@ for tk, suffix in (('green', ''), ('black', '__t1')):
     sets(tk, suffix); extras(tk, suffix)
     save(lcd_picture(tk), 'lcd' + suffix); save(case_picture(tk), 'case' + suffix)
     for n in range(11): save(bar_picture(tk, n), 'bar%d%s' % (n, suffix))
+    save(bar_picture(tk, 1).crop((0, 1, BAR_W, 1 + BLK_H)), 'barblk' + suffix)   # one lit block: ten of these are shown / hidden by the seconds code (no picture swap)
     bell_geo = alarm_pictures(tk); stats_set(tk, suffix)
 aod_set()
 Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(OUT + '/blank.png')
 geo['names']['bar'] = ['lcd/bar%d.png' % n for n in range(11)]
-geo['size'].update({'colon': list(colon_size), 'dash': list(dash_size), 'pm': list(p_size), 'bar': [BAR_W, BAR_H], 'bell': bell_geo[:2], 'al1': [AL_W, AL_H], 'screen': [SW, SH]})
+geo['size'].update({'colon': list(colon_size), 'dash': list(dash_size), 'pm': list(p_size), 'bar': [BAR_W, BAR_H], 'barblk': [BAR_W, BLK_H], 'bell': bell_geo[:2], 'al1': [AL_W, AL_H], 'screen': [SW, SH]})
 cb, cm, cs = SIZES['b'], SIZES['m'], SIZES['s']
 DATE_DY = 0                                                       # the date row sits a little lower than in the photo, to leave room for CASIO / WR under the case's title band
 CLOCK_DX = 4                                                      # centres the digits between the two rules (the photo's digits sit right of centre: the bar is beside them there)
 P = {'hour': [round(sx(420)) + CLOCK_DX, round(sy(576))], 'colon': [round(sx(630)) + CLOCK_DX, round(sy(576))], 'minute': [round(sx(669)) + CLOCK_DX, round(sy(576))],
      'second': [n_x(322) - 2 * cm[0], round(sy(827))], 'week': [round(sx(520) - WK_PAD * SC), round(sy(456)) + DATE_DY],
      'month': [round(sx(629.5)), round(sy(456)) + DATE_DY], 'dash': [round(sx(724.5)), round(sy(456)) + DATE_DY], 'day': [round(sx(758)), round(sy(456)) + DATE_DY],
-     'pm': [round(sx(P_BOX[0] - 3)), round(sy(P_BOX[1] - 3))], 'bar': [BAR_X, BAR_Y], 'bell': bell_geo[2:], 'al1': [AL_X0, AL_Y0]}
+     'pm': [round(sx(P_BOX[0] - 3)), round(sy(P_BOX[1] - 3))], 'bar': [BAR_X, BAR_Y], 'barblk_y': [round(BAR_Y + 1 + i * BAR_PITCH) for i in range(10)], 'bell': bell_geo[2:], 'al1': [AL_X0, AL_Y0]}
 geo['pos'] = P
-geo['themed'] = ['lcd', 'case', 'colon', 'dash', 'pm'] + ['%s%d' % (k, d) for k in 'bms' for d in range(10)] + ['w%d' % i for i in range(7)] + ['bar%d' % n for n in range(11)] + ['bell', 'al1'] + ['t%d' % d for d in range(10)] + ['tcolon', 'tminus', 'tdeg'] + ['blk'] + ['ic_' + k for k in ('batt', 'step', 'temp', 'sunrise', 'sunset')]
+geo['themed'] = ['lcd', 'case', 'colon', 'dash', 'pm'] + ['%s%d' % (k, d) for k in 'bms' for d in range(10)] + ['w%d' % i for i in range(7)] + ['bar%d' % n for n in range(11)] + ['barblk'] + ['bell', 'al1'] + ['t%d' % d for d in range(10)] + ['tcolon', 'tminus', 'tdeg'] + ['blk'] + ['ic_' + k for k in ('batt', 'step', 'temp', 'sunrise', 'sunset')]
 json.dump(geo, open(H + '/geometry.json', 'w'), indent=1); print(json.dumps({'size': geo['size'], 'pos': P}))

@@ -67,6 +67,9 @@ recipe, previews and output in a scratch folder (not in the repo).
 
 ## House rules (always follow)
 
+- **Pixel-perfect match to a model-made preview (hard rule).** When the user provided the initial preview (a concept image from their own image model, or any preview they supplied), the final result must match that preview pixel for pixel on the same data: same layout, sizes, positions, colours, fonts, corner shape and the same time, date and values in the same places. Build the face so it reproduces the preview exactly; do not reinterpret, restyle or "improve" it. Verify by rendering the final preview with the same data, overlaying it on the reference image at the same size and measuring the difference (report the mismatched pixel share and where it differs). Any difference the watch cannot reproduce (a font it lacks, a Bip 6 corner clip, a native widget's rendering) must be listed in the hand-over with the reason, not silently accepted.
+
+- **Previews are always images (hard rule).** A watchface preview is always an image file: PNG or JPEG for a still face, GIF for an animated face. Never a text, JSON, HTML or description-only preview. The preview image is always the reference: the face is built to match it, and when a preview exists the face is judged against that image, not against memory or the brief.
 - **Ask how the art assets are made, before making any (mandatory).** Any face that needs pictures beyond plain native layers and
   simple shapes (a scenery, painted digits, sprites, props, icons) starts with one multiple-choice question (`AskUserQuestion`):
   1. **External (recommended for painted looks):** the user generates the assets in their own tool (Gemini / Nano Banana, Midjourney …)

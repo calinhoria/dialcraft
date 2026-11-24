@@ -1,0 +1,660 @@
+{
+  "version": 1,
+  "name": "Paper Split",
+  "device": "bip-6",
+  "appId": 2349424,
+  "vender": "dialcraft",
+  "description": "Stacked paper panels flip as hours and minutes change.",
+  "font": "Open Sans",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [],
+  "groups": {
+    "gmwuol5jldf": "Clock",
+    "gmwuol62a5v": "Clock AOD"
+  },
+  "elements": [
+    {
+      "id": "elmwuol5gm176",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwuol5pq6u1",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "approved-artwork.png"
+    },
+    {
+      "id": "elmwuol5iu13e",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 39,
+      "y": 216,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol5jldf",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "reference/minute-0.png",
+        "reference/minute-1.png",
+        "reference/minute-2.png",
+        "reference/minute-3.png",
+        "reference/minute-4.png",
+        "reference/minute-5.png",
+        "reference/minute-6.png",
+        "reference/minute-7.png",
+        "reference/minute-8.png",
+        "reference/minute-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwuol5iu4i0",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 32,
+      "y": 41,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol5jldf",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "reference/hour-0.png",
+        "reference/hour-1.png",
+        "reference/hour-2.png",
+        "reference/hour-3.png",
+        "reference/hour-4.png",
+        "reference/hour-5.png",
+        "reference/hour-6.png",
+        "reference/hour-7.png",
+        "reference/hour-8.png",
+        "reference/hour-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwuol6222vd",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 210,
+      "y": 188,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol62a5v",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwuol622q4",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 180,
+      "y": 196,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol62a5v",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "link": {
+        "kind": "between",
+        "a": "elmwuol622av",
+        "b": "elmwuol6222vd",
+        "gap": 35,
+        "x": 56,
+        "y": 29
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmwuol622av",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 77,
+      "y": 188,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol62a5v",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwuol5r83zu",
+      "kind": "IMG",
+      "name": "Hour flap",
+      "x": 48,
+      "y": 88,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/paper_005.png",
+      "images": [
+        "sp/paper_005.png",
+        "sp/paper_001.png",
+        "sp/paper_002.png",
+        "sp/paper_003.png",
+        "sp/paper_004.png",
+        "sp/paper_000.png"
+      ],
+      "handle": "upperFold"
+    },
+    {
+      "id": "elmwuol5rf7le",
+      "kind": "IMG",
+      "name": "Minute flap",
+      "x": 48,
+      "y": 312,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/paper_005.png",
+      "images": [
+        "sp/paper_005.png",
+        "sp/paper_001.png",
+        "sp/paper_002.png",
+        "sp/paper_003.png",
+        "sp/paper_004.png",
+        "sp/paper_000.png"
+      ],
+      "handle": "lowerFold"
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 86,
+      "height": 136
+    },
+    {
+      "name": "colon.png",
+      "width": 15,
+      "height": 42
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/paper_000.png",
+      "width": 294,
+      "height": 48
+    },
+    {
+      "name": "sp/paper_001.png",
+      "width": 294,
+      "height": 48
+    },
+    {
+      "name": "sp/paper_002.png",
+      "width": 294,
+      "height": 48
+    },
+    {
+      "name": "sp/paper_003.png",
+      "width": 294,
+      "height": 48
+    },
+    {
+      "name": "sp/paper_004.png",
+      "width": 294,
+      "height": 48
+    },
+    {
+      "name": "sp/paper_005.png",
+      "width": 294,
+      "height": 48
+    },
+    {
+      "name": "approved-artwork.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "reference/hour-0.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-1.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-2.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-3.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-4.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-5.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-6.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-7.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-8.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/hour-9.png",
+      "width": 139,
+      "height": 158
+    },
+    {
+      "name": "reference/minute-0.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-1.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-2.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-3.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-4.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-5.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-6.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-7.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-8.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "reference/minute-9.png",
+      "width": 154,
+      "height": 166
+    },
+    {
+      "name": "colon_2.png",
+      "width": 15,
+      "height": 42
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 22,
+      "height": 59
+    }
+  ],
+  "savePath": null,
+  "optimizePng": "lossless",
+  "userCode": "{const V = {\"upperFold\":{\"0\":5,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"__blank\":0},\"lowerFold\":{\"0\":5,\"1\":1,\"2\":2,\"3\":3,\"4\":4,\"__blank\":0}}; const P=[], D=[], MS=100; const tick=()=>{\nconst d=new Date(), phase=Math.floor(d.getMilliseconds()/100);\nfor(const [h,y,active] of [['upperFold',88,d.getMinutes()===0],['lowerFold',312,true]]){\n if(active&&d.getSeconds()===0&&phase<5)slot(h)(48,y,V[h][phase]);else slot(h).hide();\n}\n};   // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { tick(); };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n}"
+}

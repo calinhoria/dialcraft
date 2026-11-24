@@ -1,0 +1,1110 @@
+{
+  "version": 1,
+  "name": "Switchback",
+  "device": "bip-6",
+  "appId": 2339699,
+  "vender": "dialcraft",
+  "description": "An orange waypoint climbs a mountain trail as each hour progresses.",
+  "font": "Open Sans",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [],
+  "groups": {
+    "gmwuol8trn8": "Clock",
+    "gmwuol9k9mm": "Clock AOD"
+  },
+  "elements": [
+    {
+      "id": "elmwuol8pc63h",
+      "kind": "FILL_RECT",
+      "name": "Background",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "color": "#000000",
+      "radius": 0,
+      "angle": 0
+    },
+    {
+      "id": "elmwuol92r253",
+      "kind": "IMG",
+      "name": "Scene",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "approved-artwork.png"
+    },
+    {
+      "id": "elmwuol94i4tg",
+      "kind": "IMG",
+      "name": "Trail segment 1",
+      "x": 14,
+      "y": 296,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/trail0_015.png",
+      "images": [
+        "sp/trail0_015.png",
+        "sp/trail0_001.png",
+        "sp/trail0_002.png",
+        "sp/trail0_003.png",
+        "sp/trail0_004.png",
+        "sp/trail0_005.png",
+        "sp/trail0_006.png",
+        "sp/trail0_007.png",
+        "sp/trail0_008.png",
+        "sp/trail0_009.png",
+        "sp/trail0_010.png",
+        "sp/trail0_011.png",
+        "sp/trail0_012.png",
+        "sp/trail0_013.png",
+        "sp/trail0_014.png",
+        "sp/trail0_000.png"
+      ],
+      "handle": "trail0"
+    },
+    {
+      "id": "elmwuol95b30w",
+      "kind": "IMG",
+      "name": "Trail segment 2",
+      "x": 76,
+      "y": 217,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/trail15_031.png",
+      "images": [
+        "sp/trail15_031.png",
+        "sp/trail15_017.png",
+        "sp/trail15_018.png",
+        "sp/trail15_019.png",
+        "sp/trail15_020.png",
+        "sp/trail15_021.png",
+        "sp/trail15_022.png",
+        "sp/trail15_023.png",
+        "sp/trail15_024.png",
+        "sp/trail15_025.png",
+        "sp/trail15_026.png",
+        "sp/trail15_027.png",
+        "sp/trail15_028.png",
+        "sp/trail15_029.png",
+        "sp/trail15_030.png",
+        "sp/trail15_016.png"
+      ],
+      "handle": "trail15"
+    },
+    {
+      "id": "elmwuol96871e",
+      "kind": "IMG",
+      "name": "Trail segment 3",
+      "x": 201,
+      "y": 145,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/trail30_047.png",
+      "images": [
+        "sp/trail30_047.png",
+        "sp/trail30_033.png",
+        "sp/trail30_034.png",
+        "sp/trail30_035.png",
+        "sp/trail30_036.png",
+        "sp/trail30_037.png",
+        "sp/trail30_038.png",
+        "sp/trail30_039.png",
+        "sp/trail30_040.png",
+        "sp/trail30_041.png",
+        "sp/trail30_042.png",
+        "sp/trail30_043.png",
+        "sp/trail30_044.png",
+        "sp/trail30_045.png",
+        "sp/trail30_046.png",
+        "sp/trail30_032.png"
+      ],
+      "handle": "trail30"
+    },
+    {
+      "id": "elmwuol97a2id",
+      "kind": "IMG",
+      "name": "Trail segment 4",
+      "x": 239,
+      "y": 64,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/trail45_063.png",
+      "images": [
+        "sp/trail45_063.png",
+        "sp/trail45_049.png",
+        "sp/trail45_050.png",
+        "sp/trail45_051.png",
+        "sp/trail45_052.png",
+        "sp/trail45_053.png",
+        "sp/trail45_054.png",
+        "sp/trail45_055.png",
+        "sp/trail45_056.png",
+        "sp/trail45_057.png",
+        "sp/trail45_058.png",
+        "sp/trail45_059.png",
+        "sp/trail45_060.png",
+        "sp/trail45_061.png",
+        "sp/trail45_062.png",
+        "sp/trail45_048.png"
+      ],
+      "handle": "trail45"
+    },
+    {
+      "id": "elmwuol97k6ru",
+      "kind": "IMG",
+      "name": "Trail waypoint",
+      "x": 41,
+      "y": 355,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/waypoint_065.png",
+      "images": [
+        "sp/waypoint_065.png",
+        "sp/waypoint_064.png"
+      ],
+      "handle": "waypoint"
+    },
+    {
+      "id": "elmwuol9iw6nv",
+      "kind": "IMG",
+      "name": "Reference lighting",
+      "x": 9,
+      "y": 252,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sp/original_066.png",
+      "images": [
+        "sp/original_066.png",
+        "sp/original_067.png"
+      ],
+      "handle": "original"
+    },
+    {
+      "id": "elmwuol8sl140",
+      "kind": "IMG_TIME",
+      "name": "Minute Main",
+      "x": 164,
+      "y": 250,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol8trn8",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "reference/minute-0.png",
+        "reference/minute-1.png",
+        "reference/minute-2.png",
+        "reference/minute-3.png",
+        "reference/minute-4.png",
+        "reference/minute-5.png",
+        "reference/minute-6.png",
+        "reference/minute-7.png",
+        "reference/minute-8.png",
+        "reference/minute-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwuol8sl5yf",
+      "kind": "IMG_TIME",
+      "name": "Hour Main",
+      "x": 0,
+      "y": 61,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol8trn8",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "reference/hour-0.png",
+        "reference/hour-1.png",
+        "reference/hour-2.png",
+        "reference/hour-3.png",
+        "reference/hour-4.png",
+        "reference/hour-5.png",
+        "reference/hour-6.png",
+        "reference/hour-7.png",
+        "reference/hour-8.png",
+        "reference/hour-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwuol9k415",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 210,
+      "y": 188,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol9k9mm",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwuol9k439l",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 180,
+      "y": 196,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol9k9mm",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "symbol_u003a.png",
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "link": {
+        "kind": "between",
+        "a": "elmwuol9k455m",
+        "b": "elmwuol9k415",
+        "gap": 25,
+        "x": 65,
+        "y": 29
+      },
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmwuol9k455m",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 77,
+      "y": 188,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwuol9k9mm",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "font_3_0.png",
+        "font_3_1.png",
+        "font_3_2.png",
+        "font_3_3.png",
+        "font_3_4.png",
+        "font_3_5.png",
+        "font_3_6.png",
+        "font_3_7.png",
+        "font_3_8.png",
+        "font_3_9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "glyph": {
+        "font": "Roboto Condensed",
+        "size": 95,
+        "weight": 400,
+        "variations": "",
+        "fill": "outline",
+        "color": "#62686a",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#62686a",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    }
+  ],
+  "images": [
+    {
+      "name": "font_1_0.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "colon.png",
+      "width": 15,
+      "height": 42
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "scene.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sp/trail0_000.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_001.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_002.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_003.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_004.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_005.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_006.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_007.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_008.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_009.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_010.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_011.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_012.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_013.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_014.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail0_015.png",
+      "width": 121,
+      "height": 105
+    },
+    {
+      "name": "sp/trail15_016.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_017.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_018.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_019.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_020.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_021.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_022.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_023.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_024.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_025.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_026.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_027.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_028.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_029.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_030.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail15_031.png",
+      "width": 140,
+      "height": 94
+    },
+    {
+      "name": "sp/trail30_032.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_033.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_034.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_035.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_036.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_037.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_038.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_039.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_040.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_041.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_042.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_043.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_044.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_045.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_046.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail30_047.png",
+      "width": 81,
+      "height": 87
+    },
+    {
+      "name": "sp/trail45_048.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_049.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_050.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_051.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_052.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_053.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_054.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_055.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_056.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_057.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_058.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_059.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_060.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_061.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_062.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/trail45_063.png",
+      "width": 135,
+      "height": 96
+    },
+    {
+      "name": "sp/waypoint_064.png",
+      "width": 21,
+      "height": 21
+    },
+    {
+      "name": "sp/waypoint_065.png",
+      "width": 21,
+      "height": 21
+    },
+    {
+      "name": "approved-artwork.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "reference/hour-0.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-1.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-2.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-3.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-4.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-5.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-6.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-7.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-8.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/hour-9.png",
+      "width": 84,
+      "height": 119
+    },
+    {
+      "name": "reference/minute-0.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-1.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-2.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-3.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-4.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-5.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-6.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-7.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-8.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "reference/minute-9.png",
+      "width": 26,
+      "height": 30
+    },
+    {
+      "name": "sp/original_066.png",
+      "width": 150,
+      "height": 153
+    },
+    {
+      "name": "sp/original_067.png",
+      "width": 150,
+      "height": 153
+    },
+    {
+      "name": "colon_2.png",
+      "width": 15,
+      "height": 42
+    },
+    {
+      "name": "font_3_0.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_1.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_2.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_3.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_4.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_5.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_6.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_7.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_8.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "font_3_9.png",
+      "width": 48,
+      "height": 76
+    },
+    {
+      "name": "symbol_u003a.png",
+      "width": 22,
+      "height": 59
+    }
+  ],
+  "savePath": null,
+  "optimizePng": "lossless",
+  "userCode": "{const V = {\"trail0\":{\"1\":15,\"2\":1,\"3\":2,\"4\":3,\"5\":4,\"6\":5,\"7\":6,\"8\":7,\"9\":8,\"10\":9,\"11\":10,\"12\":11,\"13\":12,\"14\":13,\"15\":14,\"__blank\":0},\"trail15\":{\"1\":15,\"2\":1,\"3\":2,\"4\":3,\"5\":4,\"6\":5,\"7\":6,\"8\":7,\"9\":8,\"10\":9,\"11\":10,\"12\":11,\"13\":12,\"14\":13,\"15\":14,\"__blank\":0},\"trail30\":{\"1\":15,\"2\":1,\"3\":2,\"4\":3,\"5\":4,\"6\":5,\"7\":6,\"8\":7,\"9\":8,\"10\":9,\"11\":10,\"12\":11,\"13\":12,\"14\":13,\"15\":14,\"__blank\":0},\"trail45\":{\"1\":15,\"2\":1,\"3\":2,\"4\":3,\"5\":4,\"6\":5,\"7\":6,\"8\":7,\"9\":8,\"10\":9,\"11\":10,\"12\":11,\"13\":12,\"14\":13,\"15\":14,\"__blank\":0},\"waypoint\":{\"1\":1,\"__blank\":0},\"original\":{\"0\":0,\"__blank\":1}}; const P=[[\"trail0\",14,296],[\"trail15\",76,217],[\"trail30\",201,145],[\"trail45\",239,64]], D=[[21,393],[27,384],[34,374],[40,365],[47,355],[54,348],[65,343],[75,339],[86,334],[96,330],[106,326],[117,321],[127,317],[120,312],[110,307],[100,303],[89,298],[83,293],[93,289],[104,285],[114,280],[125,276],[135,272],[145,266],[152,257],[159,248],[166,239],[175,233],[186,230],[197,227],[208,224],[219,222],[227,218],[219,209],[212,201],[208,193],[219,191],[230,188],[241,185],[252,182],[263,179],[274,176],[268,171],[259,164],[250,158],[246,152],[257,148],[268,145],[278,141],[289,137],[300,134],[311,130],[322,127],[322,120],[315,111],[319,103],[329,97],[338,90],[347,84],[357,77],[366,71]], MS=100; const tick=()=>{if(new Date().getMinutes()===24){for(const h of [...P.map(p=>p[0]),'waypoint'])slot(h).hide();slot('original')(9,252,V.original[0]);return;}slot('original').hide();\nconst m=new Date().getMinutes();\nfor(let i=0;i<15*P.length;i+=15){const [h,x,y]=P[i/15];const count=Math.max(0,Math.min(15,m-i));if(count)slot(h)(x,y,V[h][count]);else slot(h).hide();}\nconst [x,y]=D[m];slot('waypoint')(x-10,y-10,V.waypoint[1]);\n};   // ---- shared runtime: slot setter that skips unchanged calls, and a loop that runs only while the face is on screen ----\n  const SL = {};\n  const slot = (h) => {\n    if (SL[h]) return SL[h];\n    const w = W[h], f = F[h]; let key = '';\n    const s = (x, y, i, ww, hh) => {\n      const k = x + '|' + y + '|' + i + '|' + ww + '|' + hh;\n      if (k === key) return;\n      key = k;\n      const p = { x: pxv(x), y: pxv(y) };\n      if (i !== undefined) p.src = f[i];\n      if (ww !== undefined) { p.w = pxv(ww); p.h = pxv(hh); }\n      w.setProperty(ui.prop.MORE, p);\n    };\n    s.hide = () => { if (key === 'hide') return; key = 'hide'; w.setProperty(ui.prop.MORE, { src: f[V[h].__blank] }); };\n    return (SL[h] = s);\n  };\n  let gen = 0, running = false;\n  const safe = () => { tick(); };\n  const loop = (g) => {\n    if (!running || g !== gen) return;\n    safe();\n    if (running && g === gen) { try { setTimeout(() => loop(g), MS); } catch (e) {} }\n  };\n  const start = () => {\n    gen++; running = true; const g = gen;\n    try { setTimeout(() => loop(g), MS); } catch (e) {}\n    safe();\n  };\n  const stop = () => { running = false; gen++; };\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop });\n  start();\n}"
+}

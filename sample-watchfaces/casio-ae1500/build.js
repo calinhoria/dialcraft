@@ -9,7 +9,7 @@ const SIZE = { lcd: [W, H], case: [W, H], colon: Z.colon, dash: Z.dash, pm: Z.pm
 for (let n = 0; n < 11; n++) SIZE['bar' + n] = Z.bar;
 SIZE.bell = Z.bell; SIZE.al1 = Z.al1;
 for (let d = 0; d < 10; d++) SIZE['t' + d] = Z.t;
-SIZE.blk = Z.blk;
+SIZE.blk = Z.blk; SIZE.barblk = Z.barblk;
 for (const k of ['tcolon', 'tminus', 'tdeg', 'ic_batt', 'ic_step', 'ic_temp', 'ic_sunrise', 'ic_sunset']) SIZE[k] = Z[k];
 for (const k of ['b', 'm', 's', 'a']) for (let d = 0; d < 10; d++) SIZE[k + d] = Z[k];
 for (let i = 0; i < 7; i++) SIZE['w' + i] = Z.w;
@@ -19,7 +19,7 @@ const els = [];
 const add = (kind, patch) => { const e = newElement(kind, Object.assign({ show: 'normal' }, patch)); project.elements.push(e); els.push(e); return e; };
 add('IMG', { name: 'Display', src: 'lcd/lcd.png', x: 0, y: 0 });
 // the seconds bar (between the display and the case): its picture is swapped every second by the code below, bar0 .. bar10 = that many blocks lit
-add('IMG', { name: 'Seconds bar', src: 'lcd/bar5.png', images: ['lcd/bar5.png'].concat(N.bar), x: P.bar[0], y: P.bar[1], handle: 'sbar' });
+for (let i = 0; i < 10; i++) add('IMG', { name: 'Bar block ' + (i + 1), src: 'lcd/barblk.png', x: P.bar[0], y: P.barblk_y[i], handle: 'sb' + i, w: 0, h: 0 });   // ten separate blocks, shown / hidden by the code below (no picture swap)
 // the alarm indicators: native system-status layers, shown only while an alarm is set (a watch face cannot read how many alarms there are)
 add('IMG_STATUS', { name: 'Alarm bell', status: 'CLOCK', src: 'lcd/bell.png', x: P.bell[0], y: P.bell[1] });
 const WITH_CASE = false;                                          // true: the green resin case, bezel, scale and lettering around the display (lcd/case.png) is put back
@@ -67,27 +67,27 @@ add('TAP', { name: 'Tap: next colour theme', action: 'theme', x: 28, y: 166, w: 
 for (const [name, app, x, y, w, h] of [['Tap zone', 'WEATHER', 96, 13, 100, 50], ['Tap zone 2', 'COUNTDOWN', 246, 323, 102, 84], ['Tap zone 3', 'STATUS', 17, 366, 136, 48], ['Tap zone 4', 'CALENDAR', 206, 77, 140, 60], ['Tap zone 5', 'SUN_AND_MOON', 17, 311, 140, 51]]) add('TAP', { name, action: 'sysapp', sysApp: 'SYSTEM_APP_' + app, x, y, w, h });
 project.userImports = "import { Time as BarTime } from '@zos/sensor'";       // aliased: the generated code imports Time itself once a layer uses showWhen (sunrise / sunset), and a second import of the same name breaks the build
 project.userCode = `// <seconds-bar>
-// The bar down the right of the display counts the seconds in tens, like the watch's chronograph scale: it shows the last digit of the seconds: 1 block at :01, 9 at :09, all 10 at :00, :10, :20 ...
-// It swaps the bar's picture when the second changes (checked every 0.1 s), and only while the screen is on.
+// The bar down the right of the display counts the seconds in tens: 1 block at :01 ... all 10 at :00, :10, :20 ...
+// Ten block layers are shown / hidden (no picture is decoded), checked every 50 ms against the same clock the native seconds use.
 {
   const tm = new BarTime();
-  let timer = null;
-  let last = -1;
-  const upd = () => { try { const sec = tm.getSeconds(); if (sec === last) return; last = sec; const n = sec % 10 || 10; W.sbar.setProperty(ui.prop.MORE, { x: pxv(\${P.bar[0]}), y: pxv(\${P.bar[1]}), src: F.sbar[n + 1] }); } catch (e) {} };
+  const B = [W.sb0, W.sb1, W.sb2, W.sb3, W.sb4, W.sb5, W.sb6, W.sb7, W.sb8, W.sb9];
+  let timer = null, last = -1;
+  const upd = () => { try { const sec = tm.getSeconds(); if (sec === last) return; last = sec; const n = sec % 10 || 10; for (let i = 0; i < 10; i++) B[i].setProperty(ui.prop.VISIBLE, i < n); } catch (e) {} };
   const stop = () => { if (timer) { clearTimeout(timer); timer = null; } };
-  const tickNext = () => { upd(); timer = setTimeout(tickNext, 100); };   // polls every 0.1 s and redraws only when the second changed, so the bar never drifts from the native seconds
+  const tickNext = () => { upd(); timer = setTimeout(tickNext, 50); };
   const start = () => { stop(); last = -1; tickNext(); };
   ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start });
   start();
 }
 // </seconds-bar>
-`.replace('\${P.bar[0]}', P.bar[0]).replace('\${P.bar[1]}', P.bar[1]);
+`;
 project.groups = project.groups || {};
 project.groups.gClock = 'Clock'; for (const n of ['Hour', 'Colon', 'Minute', 'Seconds']) els.find((e) => e.name === n).group = 'gClock';
 project.groups.gDate = 'Date'; for (const n of ['Weekday', 'Month', 'Day']) els.find((e) => e.name === n).group = 'gDate';
 project.groups.gAlarm = 'Alarm'; for (const n of ['Alarm bell']) els.find((e) => e.name === n).group = 'gAlarm';
 project.groups.gStatTop = 'Battery and temperature'; for (const n of ['Battery icon', 'Battery', 'Temperature icon', 'Temperature']) els.find((e) => e.name === n).group = 'gStatTop';
 project.groups.gStatBot = 'Steps and sun'; for (const n of ['Steps icon', 'Steps', 'Sunrise icon', 'Sunrise', 'Sunset icon', 'Sunset']) els.find((e) => e.name === n).group = 'gStatBot';
-project.groups.gBar = 'Seconds bar'; els.find((e) => e.name === 'Seconds bar').group = 'gBar';
+project.groups.gBar = 'Seconds bar'; for (let i = 1; i <= 10; i++) els.find((e) => e.name === 'Bar block ' + i).group = 'gBar';
 project.groups.gAod = 'Always-on'; for (const n of ['Hour AOD', 'Colon AOD', 'Minute AOD']) els.find((e) => e.name === n).group = 'gAod';
 return project.elements.map((x) => x.name).join(', ');

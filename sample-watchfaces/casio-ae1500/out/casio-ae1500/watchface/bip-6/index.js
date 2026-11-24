@@ -18,27 +18,27 @@ import { launchApp, SYSTEM_APP_CALENDAR, SYSTEM_APP_COUNTDOWN, SYSTEM_APP_STATUS
 
 // colour themes: Black (pictures with a recoloured copy are listed in THEMED)
 const THEME_NAMES = ["Original","Black"]
-const THEMED = {"lcd/lcd.png":1,"lcd/case.png":1,"lcd/colon.png":1,"lcd/dash.png":1,"lcd/pm.png":1,"lcd/b0.png":1,"lcd/b1.png":1,"lcd/b2.png":1,"lcd/b3.png":1,"lcd/b4.png":1,"lcd/b5.png":1,"lcd/b6.png":1,"lcd/b7.png":1,"lcd/b8.png":1,"lcd/b9.png":1,"lcd/m0.png":1,"lcd/m1.png":1,"lcd/m2.png":1,"lcd/m3.png":1,"lcd/m4.png":1,"lcd/m5.png":1,"lcd/m6.png":1,"lcd/m7.png":1,"lcd/m8.png":1,"lcd/m9.png":1,"lcd/s0.png":1,"lcd/s1.png":1,"lcd/s2.png":1,"lcd/s3.png":1,"lcd/s4.png":1,"lcd/s5.png":1,"lcd/s6.png":1,"lcd/s7.png":1,"lcd/s8.png":1,"lcd/s9.png":1,"lcd/w0.png":1,"lcd/w1.png":1,"lcd/w2.png":1,"lcd/w3.png":1,"lcd/w4.png":1,"lcd/w5.png":1,"lcd/w6.png":1,"lcd/bar0.png":1,"lcd/bar1.png":1,"lcd/bar2.png":1,"lcd/bar3.png":1,"lcd/bar4.png":1,"lcd/bar5.png":1,"lcd/bar6.png":1,"lcd/bar7.png":1,"lcd/bar8.png":1,"lcd/bar9.png":1,"lcd/bar10.png":1,"lcd/bell.png":1,"lcd/al1.png":1,"lcd/t0.png":1,"lcd/t1.png":1,"lcd/t2.png":1,"lcd/t3.png":1,"lcd/t4.png":1,"lcd/t5.png":1,"lcd/t6.png":1,"lcd/t7.png":1,"lcd/t8.png":1,"lcd/t9.png":1,"lcd/tcolon.png":1,"lcd/tminus.png":1,"lcd/tdeg.png":1,"lcd/blk.png":1,"lcd/ic_batt.png":1,"lcd/ic_step.png":1,"lcd/ic_temp.png":1,"lcd/ic_sunrise.png":1,"lcd/ic_sunset.png":1}
+const THEMED = {"lcd/lcd.png":1,"lcd/case.png":1,"lcd/colon.png":1,"lcd/dash.png":1,"lcd/pm.png":1,"lcd/b0.png":1,"lcd/b1.png":1,"lcd/b2.png":1,"lcd/b3.png":1,"lcd/b4.png":1,"lcd/b5.png":1,"lcd/b6.png":1,"lcd/b7.png":1,"lcd/b8.png":1,"lcd/b9.png":1,"lcd/m0.png":1,"lcd/m1.png":1,"lcd/m2.png":1,"lcd/m3.png":1,"lcd/m4.png":1,"lcd/m5.png":1,"lcd/m6.png":1,"lcd/m7.png":1,"lcd/m8.png":1,"lcd/m9.png":1,"lcd/s0.png":1,"lcd/s1.png":1,"lcd/s2.png":1,"lcd/s3.png":1,"lcd/s4.png":1,"lcd/s5.png":1,"lcd/s6.png":1,"lcd/s7.png":1,"lcd/s8.png":1,"lcd/s9.png":1,"lcd/w0.png":1,"lcd/w1.png":1,"lcd/w2.png":1,"lcd/w3.png":1,"lcd/w4.png":1,"lcd/w5.png":1,"lcd/w6.png":1,"lcd/bar0.png":1,"lcd/bar1.png":1,"lcd/bar2.png":1,"lcd/bar3.png":1,"lcd/bar4.png":1,"lcd/bar5.png":1,"lcd/bar6.png":1,"lcd/bar7.png":1,"lcd/bar8.png":1,"lcd/bar9.png":1,"lcd/bar10.png":1,"lcd/barblk.png":1,"lcd/bell.png":1,"lcd/al1.png":1,"lcd/t0.png":1,"lcd/t1.png":1,"lcd/t2.png":1,"lcd/t3.png":1,"lcd/t4.png":1,"lcd/t5.png":1,"lcd/t6.png":1,"lcd/t7.png":1,"lcd/t8.png":1,"lcd/t9.png":1,"lcd/tcolon.png":1,"lcd/tminus.png":1,"lcd/tdeg.png":1,"lcd/blk.png":1,"lcd/ic_batt.png":1,"lcd/ic_step.png":1,"lcd/ic_temp.png":1,"lcd/ic_sunrise.png":1,"lcd/ic_sunset.png":1}
 let themeIdx = 0
 const A = (p) => `images/${themeIdx && THEMED[p] ? p.replace(/\.png$/i, '__t' + themeIdx + '.png') : p}`
 
 // ---- image arrays (frame order matters: digits 0-9, week 1-7) ----
-let img_Weekday_iz9h = []
+let img_Weekday_x6j5 = []
 
-let img_Month_z1pl = []
+let img_Month_x48o = []
 
-let img_Hour_z1h6 = []
+let img_Hour_fxhb = []
 
-let img_Seconds_izfj = []
+let img_Seconds_x67o = []
 
-let img_Temperature_izw9 = []
+let img_Temperature_x1o1 = []
 
-let img_Battery_level_z4ag = []
+let img_Battery_level_x1e5 = []
 
-let img_Hour_AOD_z4q4 = []
+let img_Hour_AOD_y4cn = []
 
 const initArrays = () => {
-  img_Weekday_iz9h = [
+  img_Weekday_x6j5 = [
     A('lcd/w0.png'),
     A('lcd/w1.png'),
     A('lcd/w2.png'),
@@ -47,7 +47,7 @@ const initArrays = () => {
     A('lcd/w5.png'),
     A('lcd/w6.png'),
   ]
-  img_Month_z1pl = [
+  img_Month_x48o = [
     A('lcd/s0.png'),
     A('lcd/s1.png'),
     A('lcd/s2.png'),
@@ -59,7 +59,7 @@ const initArrays = () => {
     A('lcd/s8.png'),
     A('lcd/s9.png'),
   ]
-  img_Hour_z1h6 = [
+  img_Hour_fxhb = [
     A('lcd/b0.png'),
     A('lcd/b1.png'),
     A('lcd/b2.png'),
@@ -71,7 +71,7 @@ const initArrays = () => {
     A('lcd/b8.png'),
     A('lcd/b9.png'),
   ]
-  img_Seconds_izfj = [
+  img_Seconds_x67o = [
     A('lcd/m0.png'),
     A('lcd/m1.png'),
     A('lcd/m2.png'),
@@ -83,7 +83,7 @@ const initArrays = () => {
     A('lcd/m8.png'),
     A('lcd/m9.png'),
   ]
-  img_Temperature_izw9 = [
+  img_Temperature_x1o1 = [
     A('lcd/t0.png'),
     A('lcd/t1.png'),
     A('lcd/t2.png'),
@@ -95,13 +95,13 @@ const initArrays = () => {
     A('lcd/t8.png'),
     A('lcd/t9.png'),
   ]
-  img_Battery_level_z4ag = [
+  img_Battery_level_x1e5 = [
     A('lcd/blk.png'),
     A('lcd/blk.png'),
     A('lcd/blk.png'),
     A('lcd/blk.png'),
   ]
-  img_Hour_AOD_z4q4 = [
+  img_Hour_AOD_y4cn = [
     A('lcd/a0.png'),
     A('lcd/a1.png'),
     A('lcd/a2.png'),
@@ -130,10 +130,6 @@ WatchFace({
   initView() {
     // px() only takes a literal number (the build replaces it, there is no px at run time); pxv() scales a computed one
     const pxv = (n) => Math.round(n * px(1000) / 1000)
-    // the picked variant survives a restart (when the watch offers storage)
-    let variantIdx = 0
-    variantIdx = dcGet('dialcraft_variant')
-
     // the picked colour theme survives a restart (when the watch offers storage)
     themeIdx = dcGet('dialcraft_theme') % THEME_NAMES.length
 
@@ -168,16 +164,85 @@ WatchFace({
         show_level: ui.show_level.ONLY_NORMAL
       })
 
-      // Seconds bar (IMG)
-      const variants_0 = [A('lcd/bar5.png'), A('lcd/bar0.png'), A('lcd/bar1.png'), A('lcd/bar2.png'), A('lcd/bar3.png'), A('lcd/bar4.png'), A('lcd/bar5.png'), A('lcd/bar6.png'), A('lcd/bar7.png'), A('lcd/bar8.png'), A('lcd/bar9.png'), A('lcd/bar10.png')]
-      const variant_0 = mk(ui.widget.IMG, {
+      // Bar block 1 (IMG)
+      W.sb0 = mk(ui.widget.IMG, {
         x: px(360),
-        y: px(79),
-        src: variants_0[variantIdx % variants_0.length],
+        y: px(80),
+        src: A('lcd/barblk.png'),
         show_level: ui.show_level.ONLY_NORMAL
       })
-      W.sbar = variant_0
-      F.sbar = variants_0
+
+      // Bar block 2 (IMG)
+      W.sb1 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(112),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
+
+      // Bar block 3 (IMG)
+      W.sb2 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(144),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
+
+      // Bar block 4 (IMG)
+      W.sb3 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(176),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
+
+      // Bar block 5 (IMG)
+      W.sb4 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(209),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
+
+      // Bar block 6 (IMG)
+      W.sb5 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(241),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
+
+      // Bar block 7 (IMG)
+      W.sb6 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(273),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
+
+      // Bar block 8 (IMG)
+      W.sb7 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(305),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
+
+      // Bar block 9 (IMG)
+      W.sb8 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(337),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
+
+      // Bar block 10 (IMG)
+      W.sb9 = mk(ui.widget.IMG, {
+        x: px(360),
+        y: px(369),
+        src: A('lcd/barblk.png'),
+        show_level: ui.show_level.ONLY_NORMAL
+      })
 
       // Alarm bell (IMG_STATUS)
       mk(ui.widget.IMG_STATUS, {
@@ -192,9 +257,9 @@ WatchFace({
       mk(ui.widget.IMG_WEEK, {
         x: px(73),
         y: px(82),
-        week_en: img_Weekday_iz9h,
-        week_sc: img_Weekday_iz9h,
-        week_tc: img_Weekday_iz9h,
+        week_en: img_Weekday_x6j5,
+        week_sc: img_Weekday_x6j5,
+        week_tc: img_Weekday_x6j5,
         show_level: ui.show_level.ONLY_NORMAL,
       })
 
@@ -206,9 +271,9 @@ WatchFace({
         month_space: px(0),
         month_align: ui.align.LEFT,
         month_follow: 0,
-        month_en_array: img_Month_z1pl,
-        month_sc_array: img_Month_z1pl,
-        month_tc_array: img_Month_z1pl,
+        month_en_array: img_Month_x48o,
+        month_sc_array: img_Month_x48o,
+        month_tc_array: img_Month_x48o,
         month_unit_en: A('lcd/dash.png'),
         month_unit_sc: A('lcd/dash.png'),
         month_unit_tc: A('lcd/dash.png'),
@@ -223,9 +288,9 @@ WatchFace({
         day_space: px(0),
         day_align: ui.align.LEFT,
         day_follow: 0,
-        day_en_array: img_Month_z1pl,
-        day_sc_array: img_Month_z1pl,
-        day_tc_array: img_Month_z1pl,
+        day_en_array: img_Month_x48o,
+        day_sc_array: img_Month_x48o,
+        day_tc_array: img_Month_x48o,
         show_level: ui.show_level.ONLY_NORMAL,
       })
 
@@ -236,7 +301,7 @@ WatchFace({
         hour_zero: 1,
         hour_space: px(0),
         hour_align: ui.align.LEFT,
-        hour_array: img_Hour_z1h6,
+        hour_array: img_Hour_fxhb,
         hour_follow: 0,
         show_level: ui.show_level.ONLY_NORMAL,
       })
@@ -256,7 +321,7 @@ WatchFace({
         minute_zero: 1,
         minute_space: px(0),
         minute_align: ui.align.LEFT,
-        minute_array: img_Hour_z1h6,
+        minute_array: img_Hour_fxhb,
         minute_follow: 0,
         show_level: ui.show_level.ONLY_NORMAL,
       })
@@ -268,7 +333,7 @@ WatchFace({
         second_zero: 1,
         second_space: px(0),
         second_align: ui.align.LEFT,
-        second_array: img_Seconds_izfj,
+        second_array: img_Seconds_x67o,
         second_follow: 0,
         show_level: ui.show_level.ONLY_NORMAL,
       })
@@ -286,7 +351,7 @@ WatchFace({
         x: px(123),
         y: px(20),
         type: ui.data_type.WEATHER_CURRENT,
-        font_array: img_Temperature_izw9,
+        font_array: img_Temperature_x1o1,
         align_h: ui.align.LEFT,
         unit_en: A('lcd/tdeg.png'),
         unit_sc: A('lcd/tdeg.png'),
@@ -308,7 +373,7 @@ WatchFace({
         x: px(271),
         y: px(20),
         type: ui.data_type.BATTERY,
-        font_array: img_Temperature_izw9,
+        font_array: img_Temperature_x1o1,
         align_h: ui.align.LEFT,
         show_level: ui.show_level.ONLY_NORMAL,
       })
@@ -317,8 +382,8 @@ WatchFace({
       mk(ui.widget.IMG_PROGRESS, {
         x: [px(235), px(241), px(247), px(253)],
         y: [px(32), px(32), px(32), px(32)],
-        image_array: img_Battery_level_z4ag,
-        image_length: img_Battery_level_z4ag.length,
+        image_array: img_Battery_level_x1e5,
+        image_length: img_Battery_level_x1e5.length,
         type: ui.data_type.BATTERY,
         show_level: ui.show_level.ONLY_NORMAL,
       })
@@ -336,7 +401,7 @@ WatchFace({
         x: px(58),
         y: px(367),
         type: ui.data_type.STEP,
-        font_array: img_Temperature_izw9,
+        font_array: img_Temperature_x1o1,
         align_h: ui.align.LEFT,
         show_level: ui.show_level.ONLY_NORMAL,
       })
@@ -354,7 +419,7 @@ WatchFace({
         x: px(58),
         y: px(323),
         type: ui.data_type.SUN_RISE,
-        font_array: img_Temperature_izw9,
+        font_array: img_Temperature_x1o1,
         align_h: ui.align.LEFT,
         dot_image: A('lcd/tcolon.png'),
         show_level: ui.show_level.ONLY_NORMAL,
@@ -373,7 +438,7 @@ WatchFace({
         x: px(58),
         y: px(323),
         type: ui.data_type.SUN_SET,
-        font_array: img_Temperature_izw9,
+        font_array: img_Temperature_x1o1,
         align_h: ui.align.LEFT,
         dot_image: A('lcd/tcolon.png'),
         show_level: ui.show_level.ONLY_NORMAL,
@@ -386,7 +451,7 @@ WatchFace({
         hour_zero: 1,
         hour_space: px(0),
         hour_align: ui.align.LEFT,
-        hour_array: img_Hour_AOD_z4q4,
+        hour_array: img_Hour_AOD_y4cn,
         hour_follow: 0,
         show_level: ui.show_level.ONLY_AOD,
       })
@@ -406,7 +471,7 @@ WatchFace({
         minute_zero: 1,
         minute_space: px(0),
         minute_align: ui.align.LEFT,
-        minute_array: img_Hour_AOD_z4q4,
+        minute_array: img_Hour_AOD_y4cn,
         minute_follow: 0,
         show_level: ui.show_level.ONLY_AOD,
       })
@@ -471,12 +536,6 @@ WatchFace({
         show_level: ui.show_level.ONLY_NORMAL,
       })
 
-      // a Tap zone set to "Cycle variants" calls this
-      const cycleVariants = () => {
-        variantIdx = (variantIdx + 1) % Math.max(variants_0.length)
-        dcSet('dialcraft_variant', variantIdx)
-        variant_0.setProperty(ui.prop.SRC, variants_0[variantIdx % variants_0.length])
-      }
       // Sunrise / sunset swap. The watch has no "next sunrise" reading: SUN_CURRENT stays on today's sunset once it has passed.
       // So the plain SUN_RISE and SUN_SET readings sit in the same place and this shows the one that comes next:
       // the sunset from sunrise until sunset, the sunrise otherwise (after sunset it is today's sunrise time, within a minute or two of tomorrow's).
@@ -520,15 +579,15 @@ WatchFace({
 
     // ---- user code (project.userCode) ----
     // <seconds-bar>
-    // The bar down the right of the display counts the seconds in tens, like the watch's chronograph scale: it shows the last digit of the seconds: 1 block at :01, 9 at :09, all 10 at :00, :10, :20 ...
-    // It swaps the bar's picture when the second changes (checked every 0.1 s), and only while the screen is on.
+    // The bar down the right of the display counts the seconds in tens: 1 block at :01 ... all 10 at :00, :10, :20 ...
+    // Ten block layers are shown / hidden (no picture is decoded), checked every 50 ms against the same clock the native seconds use.
     {
       const tm = new BarTime();
-      let timer = null;
-      let last = -1;
-      const upd = () => { try { const sec = tm.getSeconds(); if (sec === last) return; last = sec; const n = sec % 10 || 10; W.sbar.setProperty(ui.prop.MORE, { x: pxv(360), y: pxv(79), src: F.sbar[n + 1] }); } catch (e) {} };
+      const B = [W.sb0, W.sb1, W.sb2, W.sb3, W.sb4, W.sb5, W.sb6, W.sb7, W.sb8, W.sb9];
+      let timer = null, last = -1;
+      const upd = () => { try { const sec = tm.getSeconds(); if (sec === last) return; last = sec; const n = sec % 10 || 10; for (let i = 0; i < 10; i++) B[i].setProperty(ui.prop.VISIBLE, i < n); } catch (e) {} };
       const stop = () => { if (timer) { clearTimeout(timer); timer = null; } };
-      const tickNext = () => { upd(); timer = setTimeout(tickNext, 100); };   // polls every 0.1 s and redraws only when the second changed, so the bar never drifts from the native seconds
+      const tickNext = () => { upd(); timer = setTimeout(tickNext, 50); };
       const start = () => { stop(); last = -1; tickNext(); };
       ui.createWidget(ui.widget.WIDGET_DELEGATE, { pause_call: stop, resume_call: start });
       start();

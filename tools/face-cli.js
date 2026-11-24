@@ -119,8 +119,9 @@ app.whenReady().then(async () => {
   if (!res || !res.ok) return fail((res && res.error) || 'the recipe failed', res || {});
 
   // preview PNG(s): the normal and AOD states as the store icon would render them
+  const previewScene = recipe.previewScene ? JSON.stringify(recipe.previewScene) : 'null';
   if (recipe.preview) {
-    const b64 = await run(`return composePreviewB64();`);
+    const b64 = await run(`return composePreviewCanvas(false, ${previewScene}).toDataURL('image/png').split(',')[1];`);
     fs.mkdirSync(path.dirname(abs(recipe.preview)), { recursive: true });
     fs.writeFileSync(abs(recipe.preview), Buffer.from(b64, 'base64'));
     res.preview = abs(recipe.preview);
@@ -128,9 +129,12 @@ app.whenReady().then(async () => {
   if (recipe.previewAod) {
     const b64 = await run(`
       const d = dev(); const cv = document.createElement('canvas'); cv.width = d.w; cv.height = d.h;
-      const keep = { clock, dateParts, exportRender };
-      clock = { ...REF_CLOCK }; dateParts = { ...REF_DATE }; exportRender = true;
-      try { drawScene(cv.getContext('2d'), d.w, d.h, 'aod', false); } finally { clock = keep.clock; dateParts = keep.dateParts; exportRender = keep.exportRender; }
+      const scene = ${previewScene};
+      const keep = { clock, dateParts, exportRender, testData };
+      clock = { ...REF_CLOCK, ...(scene && scene.clock || {}) }; dateParts = { ...REF_DATE, ...(scene && scene.date || {}) };
+      if (scene && scene.data) testData = { ...testData, ...scene.data };
+      exportRender = true;
+      try { drawScene(cv.getContext('2d'), d.w, d.h, 'aod', false); } finally { clock = keep.clock; dateParts = keep.dateParts; exportRender = keep.exportRender; testData = keep.testData; }
       return cv.toDataURL('image/png').split(',')[1];`);
     fs.mkdirSync(path.dirname(abs(recipe.previewAod)), { recursive: true });
     fs.writeFileSync(abs(recipe.previewAod), Buffer.from(b64, 'base64'));
@@ -157,7 +161,8 @@ app.whenReady().then(async () => {
   if (recipe.out) {
     const outDir = abs(recipe.out);
     const ex = await run(`
-      const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewB64(), outDir: ${JSON.stringify(outDir)} };
+      const scene = ${previewScene};
+      const payload = { project, images: await exportImagesPayload(), fonts: fontRecords(), previewBase64: composePreviewCanvas(false, scene).toDataURL('image/png').split(',')[1], outDir: ${JSON.stringify(outDir)} };
       const r = ${recipe.build ? 'await API.buildZeus(payload)' : 'await API.exportZeus(payload)'};
       return r;`);
     res.export = { ok: ex && ex.ok !== false, outDir, error: ex && ex.error, warnings: ex && ex.warnings, artifacts: ex && ex.artifacts, code: ex && ex.code };

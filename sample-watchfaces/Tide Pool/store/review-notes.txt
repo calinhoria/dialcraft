@@ -1,0 +1,8 @@
+Tide Pool is a watch face made with Dialcraft, a watch face designer for Zepp OS, and built with the Zeus CLI for Amazfit Bip 6 (390x450, rounded-rectangle screen).
+
+- The preview pictures show the face in its normal (non-AOD) state at 10:09:36, in the shape of the screen, with transparent corners.
+- Contains animation, drawn by the face itself; it stops in always-on mode.
+- It has its own always-on display (AOD) design.
+- The face itself makes no network requests, has no app-side or settings page and stores nothing about the user.
+
+Thank you for reviewing.
