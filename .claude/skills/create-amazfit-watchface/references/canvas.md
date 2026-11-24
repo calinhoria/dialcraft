@@ -9,7 +9,7 @@ watch. Never promise an fps that wasn't measured on the watch: probe first, or s
 - Filled and outlined shapes: drawRect, drawCircle({center_x, center_y, radius, color}), drawPoly, drawLine (setPaint
   {color, line_width}), stroke*. Edges are antialiased.
 - `drawImage({x, y, w, h, image})` pastes a picture and **scales** it to w×h (up and down).
-- The canvas keeps its pixels while the screen is off. `clear()` makes a transparent hole.
+- The canvas keeps its pixels while the screen is off. `clear({x: 0, y: 0, w: 390, h: 450})` makes a transparent hole. **It needs that rectangle**: a bare `clear()` throws "cannot read property 'id' of undefined" on the watch (Nov 2026), while the editor's stand-in accepts it, so the error never shows in a capture.
 - Moving or resizing the canvas widget (setProperty X / Y / W): 0.3 ms, runs at screen rate (~62 fps).
 - Taps: `addEventListener(ui.event.CLICK_DOWN / CLICK_UP, (i) => i.x, i.y)`.
 - **Transparency: `canvas.setAlpha(0–255)`** (the widget method, API 2.1+) makes the whole canvas see-through and it blends
