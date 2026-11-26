@@ -1,0 +1,3 @@
+Solar Dial
+
+A 24-hour solar dial with a moving sun and moon, a phase-colored sky, twilight markers, and local sunrise and sunset.

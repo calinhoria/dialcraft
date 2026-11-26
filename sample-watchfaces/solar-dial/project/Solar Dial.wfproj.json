@@ -1,0 +1,760 @@
+{
+  "version": 1,
+  "name": "Solar Dial",
+  "device": "bip-6",
+  "appId": 2024208,
+  "vender": "dialcraft",
+  "description": "A 24-hour solar dial with a moving sun and moon, a phase-colored sky, twilight markers, and local sunrise and sunset.",
+  "font": "Solar Inter",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [
+    {
+      "name": "inter-500.ttf",
+      "family": "Solar Inter"
+    }
+  ],
+  "groups": {
+    "dial": "Solar dial",
+    "date": "Date",
+    "clock": "Clock",
+    "aod": "Clock AOD",
+    "rise": "Sunrise",
+    "set": "Sunset"
+  },
+  "elements": [
+    {
+      "id": "elmwwjjhom3s4",
+      "kind": "IMG",
+      "name": "Solar sky",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": "dial",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "solar-dial.png",
+      "images": [
+        "solar-dial.png",
+        "sky-horizon.png",
+        "sky-nautical.png",
+        "sky-astronomical.png",
+        "sky-night.png"
+      ],
+      "handle": "solarSky",
+      "solarDial": {
+        "role": "sky"
+      }
+    },
+    {
+      "id": "elmwwjjhom2gb",
+      "kind": "IMG",
+      "name": "Sun and moon marker",
+      "x": 298,
+      "y": 106,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": "dial",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sun.png",
+      "images": [
+        "sun.png",
+        "moon.png"
+      ],
+      "handle": "solarMarker",
+      "solarDial": {
+        "role": "marker",
+        "centerX": 195,
+        "centerY": 218.5,
+        "radius": 158,
+        "trackRadius": 175
+      }
+    },
+    {
+      "id": "elmwwjjhpk6gj",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 199,
+      "y": 176,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "clock",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "clock-0.png",
+        "clock-1.png",
+        "clock-2.png",
+        "clock-3.png",
+        "clock-4.png",
+        "clock-5.png",
+        "clock-6.png",
+        "clock-7.png",
+        "clock-8.png",
+        "clock-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwwjjhpl7k4",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 181,
+      "y": 176,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "clock",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "clock-colon.png"
+    },
+    {
+      "id": "elmwwjjhpl4tf",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 84,
+      "y": 176,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "clock",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -4,
+      "images": [
+        "clock-0.png",
+        "clock-1.png",
+        "clock-2.png",
+        "clock-3.png",
+        "clock-4.png",
+        "clock-5.png",
+        "clock-6.png",
+        "clock-7.png",
+        "clock-8.png",
+        "clock-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwwjjhq27kp",
+      "kind": "IMG_TIME",
+      "name": "Minute AOD",
+      "x": 199,
+      "y": 192,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "aod",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 0,
+      "images": [
+        "aod-0.png",
+        "aod-1.png",
+        "aod-2.png",
+        "aod-3.png",
+        "aod-4.png",
+        "aod-5.png",
+        "aod-6.png",
+        "aod-7.png",
+        "aod-8.png",
+        "aod-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwwjjhq37om",
+      "kind": "IMG",
+      "name": "Colon AOD",
+      "x": 181,
+      "y": 192,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "aod",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "aod-colon.png"
+    },
+    {
+      "id": "elmwwjjhq36xs",
+      "kind": "IMG_TIME",
+      "name": "Hour AOD",
+      "x": 84,
+      "y": 192,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "aod",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": -4,
+      "images": [
+        "aod-0.png",
+        "aod-1.png",
+        "aod-2.png",
+        "aod-3.png",
+        "aod-4.png",
+        "aod-5.png",
+        "aod-6.png",
+        "aod-7.png",
+        "aod-8.png",
+        "aod-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwwjjhq645p",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 133,
+      "y": 126,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "date",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "weekday-tue.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Solar Inter",
+        "weight": 500,
+        "size": 28,
+        "color": "#f7f9ff",
+        "fill": "solid"
+      },
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmwwjjht7mt",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 208,
+      "y": 126,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "date",
+      "alpha": 255,
+      "images": [
+        "font_1_0.png",
+        "date-1.png",
+        "date-2.png",
+        "font_1_3.png",
+        "font_1_4.png",
+        "font_1_5.png",
+        "font_1_6.png",
+        "font_1_7.png",
+        "font_1_8.png",
+        "font_1_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -4,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Solar Inter",
+        "weight": 500,
+        "size": 28,
+        "color": "#f7f9ff",
+        "fill": "solid"
+      },
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwwjji2e4td",
+      "kind": "IMG",
+      "name": "Sunrise icon",
+      "x": 38,
+      "y": 360,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "rise",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sunrise.png"
+    },
+    {
+      "id": "elmwwjji2e1jp",
+      "kind": "TEXT_IMG",
+      "name": "Sunrise",
+      "x": 27,
+      "y": 394,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "rise",
+      "alpha": 255,
+      "dataType": "SUN_RISE",
+      "images": [
+        "solar-time-0.png",
+        "solar-time-1.png",
+        "solar-time-2.png",
+        "solar-time-3.png",
+        "solar-time-4.png",
+        "solar-time-5.png",
+        "solar-time-6.png",
+        "solar-time-7.png",
+        "solar-time-8.png",
+        "solar-time-9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "solar-time-colon.png",
+      "negative": "",
+      "w": 78,
+      "invalid": "solar-time-missing.png",
+      "padding": 1
+    },
+    {
+      "id": "elmwwjji2e690",
+      "kind": "IMG",
+      "name": "Sunset icon",
+      "x": 312,
+      "y": 360,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "set",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "sunset.png"
+    },
+    {
+      "id": "elmwwjji2e5a9",
+      "kind": "TEXT_IMG",
+      "name": "Sunset",
+      "x": 301,
+      "y": 394,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "set",
+      "alpha": 255,
+      "dataType": "SUN_SET",
+      "images": [
+        "solar-time-0.png",
+        "solar-time-1.png",
+        "solar-time-2.png",
+        "solar-time-3.png",
+        "solar-time-4.png",
+        "solar-time-5.png",
+        "solar-time-6.png",
+        "solar-time-7.png",
+        "solar-time-8.png",
+        "solar-time-9.png"
+      ],
+      "hSpace": 1,
+      "alignH": "LEFT",
+      "unit": "",
+      "dot": "solar-time-colon.png",
+      "negative": "",
+      "w": 78,
+      "invalid": "solar-time-missing.png",
+      "padding": 1
+    }
+  ],
+  "images": [
+    {
+      "name": "solar-dial.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sun.png",
+      "width": 69,
+      "height": 69
+    },
+    {
+      "name": "sunrise.png",
+      "width": 40,
+      "height": 27
+    },
+    {
+      "name": "sunset.png",
+      "width": 40,
+      "height": 27
+    },
+    {
+      "name": "moon.png",
+      "width": 69,
+      "height": 69
+    },
+    {
+      "name": "sky-horizon.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sky-nautical.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sky-astronomical.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "sky-night.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "clock-0.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-1.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-2.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-3.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-4.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-5.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-6.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-7.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-8.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-9.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "clock-colon.png",
+      "width": 12,
+      "height": 66
+    },
+    {
+      "name": "aod-0.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-1.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-2.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-3.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-4.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-5.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-6.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-7.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-8.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-9.png",
+      "width": 48,
+      "height": 66
+    },
+    {
+      "name": "aod-colon.png",
+      "width": 12,
+      "height": 66
+    },
+    {
+      "name": "week_w1.png",
+      "width": 70,
+      "height": 40
+    },
+    {
+      "name": "week_w2.png",
+      "width": 70,
+      "height": 40
+    },
+    {
+      "name": "week_w3.png",
+      "width": 70,
+      "height": 40
+    },
+    {
+      "name": "week_w4.png",
+      "width": 70,
+      "height": 40
+    },
+    {
+      "name": "week_w5.png",
+      "width": 70,
+      "height": 40
+    },
+    {
+      "name": "week_w6.png",
+      "width": 70,
+      "height": 40
+    },
+    {
+      "name": "week_w7.png",
+      "width": 70,
+      "height": 40
+    },
+    {
+      "name": "font_1_0.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_1.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_2.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_3.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_4.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_5.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_6.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_7.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_8.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "font_1_9.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "weekday-tue.png",
+      "width": 70,
+      "height": 40
+    },
+    {
+      "name": "date-2.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "date-1.png",
+      "width": 22,
+      "height": 40
+    },
+    {
+      "name": "solar-time-0.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-1.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-2.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-3.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-4.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-5.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-6.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-7.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-8.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-9.png",
+      "width": 13,
+      "height": 24
+    },
+    {
+      "name": "solar-time-colon.png",
+      "width": 7,
+      "height": 24
+    },
+    {
+      "name": "solar-time-missing.png",
+      "width": 62,
+      "height": 24
+    }
+  ],
+  "savePath": null,
+  "userImports": "import * as SolarSensors from '@zos/sensor'",
+  "userCode": "{\nfunction solarDialState(minute, rise, set) {\n  if (!Number.isFinite(rise) || !Number.isFinite(set) || rise < 0 || set >= 1440 || set <= rise) {\n    rise = 360;\n    set = 1080;\n  }\n  const daylight = set - rise;\n  const noon = (rise + set) / 2;\n  const wrap = (m) => ((m % 1440) + 1440) % 1440;\n  const sinceRise = wrap(minute - rise);\n  const day = sinceRise < daylight;\n  const fromHorizon = day ? Math.min(sinceRise, daylight - sinceRise) :\n    Math.min(sinceRise - daylight, 1440 - sinceRise);\n  // Zepp tide data gives the two horizon crossings. These three markers are estimated.\n  const twilight = [30, 60, 90].filter((offset) => offset < (1440 - daylight) / 2);\n  const sky = day ? (fromHorizon < 30 ? 1 : 0) :\n    fromHorizon < 30 ? 1 : fromHorizon < 60 ? 2 : fromHorizon < 90 ? 3 : 4;\n  const angleAt = (m) => (m - noon) / 4;\n  return {\n    angle: angleAt(minute),\n    day,\n    sky,\n    sunrise: angleAt(rise),\n    sunset: angleAt(set),\n    twilight: twilight.flatMap((offset) => [angleAt(rise - offset), angleAt(set + offset)]),\n  };\n}\nfunction solarDialPoint(dial, angle, radius = dial.radius) {\n  const radians = angle * Math.PI / 180;\n  return {\n    x: dial.centerX + radius * Math.sin(radians),\n    y: dial.centerY - radius * Math.cos(radians),\n  };\n}\nconst DIAL = { centerX: 195, centerY: 218.5, radius: 158, trackRadius: 175 };\nconst MARKER_SIZE = 69;\n\nfunction markerAt(angle) {\n  const point = solarDialPoint(DIAL, angle);\n  return { x: Math.round(point.x - MARKER_SIZE / 2), y: Math.round(point.y - MARKER_SIZE / 2) };\n}\n\nfunction solarTimes(weather) {\n  if (!weather) return [360, 1080];\n  // Firmware versions expose either method name.\n  for (const method of ['getForecastWeather', 'getForecast']) {\n    try {\n      if (typeof weather[method] !== 'function') continue;\n      const forecast = weather[method]();\n      const today = forecast && forecast.tideData && forecast.tideData.data && forecast.tideData.data[0];\n      if (!today) continue;\n      const rise = toMinutes(today.sunrise);\n      const set = toMinutes(today.sunset);\n      if (rise >= 0 && set > rise) return [rise, set];\n    } catch (error) { /* Try the alternate method or use the default daylight interval. */ }\n  }\n  return [360, 1080];\n}\n\nfunction toMinutes(time) {\n  if (!time || !Number.isInteger(time.hour) || !Number.isInteger(time.minute) ||\n      time.hour < 0 || time.hour > 23 || time.minute < 0 || time.minute > 59) return -1;\n  return time.hour * 60 + time.minute;\n}\n\nconst time = new SolarSensors.Time();\nlet weather;\ntry {\n  if (SolarSensors.Weather) weather = new SolarSensors.Weather();\n} catch (error) { /* Weather is optional. */ }\n\nconst normal = ui.show_level.ONLY_NORMAL;\nconst twilightColors = [0xdfaa81, 0xb594c7, 0x8299d3];\nconst track = [];\nlet lastMarker;\nlet lastSky;\nlet lastTide;\n\nfunction drawTrack(state) {\n  track.forEach((widget) => ui.deleteWidget(widget));\n  track.length = 0;\n  const radius = DIAL.trackRadius;\n  const arc = (start, end, color) => {\n    if (end <= start) return;\n    track.push(ui.createWidget(ui.widget.ARC, {\n      x: pxv(DIAL.centerX - radius), y: pxv(DIAL.centerY - radius),\n      w: pxv(radius * 2), h: pxv(radius * 2), radius: pxv(radius),\n      start_angle: start, end_angle: end, line_width: pxv(2), color, show_level: normal,\n    }));\n  };\n  arc(0, 359.99, 0x536d9d);\n  const start = (state.sunrise + 270) % 360;\n  const end = start + state.sunset - state.sunrise;\n  arc(start, Math.min(end, 360), 0xf6be59);\n  if (end > 360) arc(0, end - 360, 0xf6be59);\n  state.twilight.forEach((angle, index) => {\n    const point = solarDialPoint(DIAL, angle, radius - 8);\n    track.push(ui.createWidget(ui.widget.CIRCLE, {\n      center_x: pxv(point.x), center_y: pxv(point.y), radius: pxv(2),\n      color: twilightColors[Math.floor(index / 2)], show_level: normal,\n    }));\n  });\n}\n\nfunction update() {\n  const minute = time.getHours() * 60 + time.getMinutes();\n  const [rise, set] = solarTimes(weather);\n  const state = solarDialState(minute, rise, set);\n  const marker = markerAt(state.angle);\n  if (lastSky !== state.sky) {\n    W.solarSky.setProperty(ui.prop.SRC, F.solarSky[state.sky]);\n    lastSky = state.sky;\n  }\n  if (!lastMarker || marker.x !== lastMarker.x || marker.y !== lastMarker.y || state.day !== lastMarker.day) {\n    W.solarMarker.setProperty(ui.prop.MORE, {\n      x: pxv(marker.x), y: pxv(marker.y), src: F.solarMarker[state.day ? 0 : 1],\n    });\n    lastMarker = { ...marker, day: state.day };\n  }\n  const tide = rise * 1440 + set;\n  if (lastTide !== tide) {\n    lastTide = tide;\n    drawTrack(state);\n  }\n}\n\nupdate();\ntime.onPerMinute(update);\nui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: update });\n\n}"
+}

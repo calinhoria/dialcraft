@@ -1,0 +1,855 @@
+{
+  "version": 1,
+  "name": "Forged Steel",
+  "device": "bip-6",
+  "appId": 29421,
+  "vender": "dialcraft",
+  "description": "Machined steel with an orange instrument cluster for steps, heart rate and battery.",
+  "font": "Inter",
+  "language": "en-US",
+  "groups": {
+    "clock": "Clock",
+    "date": "Date",
+    "steps": "Steps",
+    "heart": "Heart rate",
+    "battery": "Battery",
+    "clockAod": "Clock AOD"
+  },
+  "elements": [
+    {
+      "id": "l001",
+      "name": "Machined steel dial",
+      "kind": "IMG",
+      "show": "normal",
+      "visible": true,
+      "src": "steel-dial.png",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 450,
+      "locked": true
+    },
+    {
+      "id": "l002",
+      "name": "Minute",
+      "kind": "IMG_TIME",
+      "show": "normal",
+      "visible": true,
+      "part": "minute",
+      "images": [
+        "metal-0.png",
+        "metal-1.png",
+        "metal-2.png",
+        "metal-3.png",
+        "metal-4.png",
+        "metal-5.png",
+        "metal-6.png",
+        "metal-7.png",
+        "metal-8.png",
+        "metal-9.png"
+      ],
+      "x": 210,
+      "y": 130,
+      "zero": 1,
+      "space": -3,
+      "alignH": "LEFT",
+      "group": "clock"
+    },
+    {
+      "id": "l003",
+      "name": "Colon",
+      "kind": "IMG",
+      "show": "normal",
+      "visible": true,
+      "src": "metal-separator.png",
+      "x": 181,
+      "y": 148,
+      "w": 24,
+      "h": 47,
+      "group": "clock"
+    },
+    {
+      "id": "l004",
+      "name": "Hour",
+      "kind": "IMG_TIME",
+      "show": "normal",
+      "visible": true,
+      "part": "hour",
+      "images": [
+        "metal-0.png",
+        "metal-1.png",
+        "metal-2.png",
+        "metal-3.png",
+        "metal-4.png",
+        "metal-5.png",
+        "metal-6.png",
+        "metal-7.png",
+        "metal-8.png",
+        "metal-9.png"
+      ],
+      "x": 58,
+      "y": 130,
+      "zero": 1,
+      "space": -3,
+      "alignH": "LEFT",
+      "group": "clock"
+    },
+    {
+      "id": "l005",
+      "name": "Weekday",
+      "kind": "IMG_WEEK",
+      "show": "normal",
+      "visible": true,
+      "images": [
+        "week-mon.png",
+        "week-tue.png",
+        "week-wed.png",
+        "week-thu.png",
+        "week-fri.png",
+        "week-sat.png",
+        "week-sun.png"
+      ],
+      "x": 137,
+      "y": 76,
+      "labelAlign": "right",
+      "group": "date"
+    },
+    {
+      "id": "l006",
+      "name": "Day",
+      "kind": "IMG_DATE",
+      "show": "normal",
+      "visible": true,
+      "part": "day",
+      "images": [
+        "day-0.png",
+        "day-1.png",
+        "day-2.png",
+        "day-3.png",
+        "day-4.png",
+        "day-5.png",
+        "day-6.png",
+        "day-7.png",
+        "day-8.png",
+        "day-9.png"
+      ],
+      "x": 207,
+      "y": 76,
+      "space": -1,
+      "zero": 0,
+      "alignH": "LEFT",
+      "group": "date"
+    },
+    {
+      "id": "l007",
+      "name": "Steps progress",
+      "kind": "IMG_PROGRESS",
+      "show": "normal",
+      "visible": true,
+      "images": [
+        "step-arc-00.png",
+        "step-arc-01.png",
+        "step-arc-02.png",
+        "step-arc-03.png",
+        "step-arc-04.png",
+        "step-arc-05.png",
+        "step-arc-06.png",
+        "step-arc-07.png",
+        "step-arc-08.png",
+        "step-arc-09.png",
+        "step-arc-10.png",
+        "step-arc-11.png",
+        "step-arc-12.png",
+        "step-arc-13.png",
+        "step-arc-14.png",
+        "step-arc-15.png",
+        "step-arc-16.png",
+        "step-arc-17.png",
+        "step-arc-18.png",
+        "step-arc-19.png",
+        "step-arc-20.png",
+        "step-arc-21.png",
+        "step-arc-22.png",
+        "step-arc-23.png"
+      ],
+      "positions": [
+        [
+          52,
+          287
+        ],
+        [
+          53,
+          283
+        ],
+        [
+          53,
+          279
+        ],
+        [
+          54,
+          275
+        ],
+        [
+          56,
+          272
+        ],
+        [
+          58,
+          268
+        ],
+        [
+          60,
+          265
+        ],
+        [
+          62,
+          262
+        ],
+        [
+          65,
+          259
+        ],
+        [
+          68,
+          256
+        ],
+        [
+          71,
+          254
+        ],
+        [
+          74,
+          252
+        ],
+        [
+          78,
+          251
+        ],
+        [
+          82,
+          250
+        ],
+        [
+          86,
+          249
+        ],
+        [
+          90,
+          248
+        ],
+        [
+          94,
+          248
+        ],
+        [
+          98,
+          249
+        ],
+        [
+          101,
+          249
+        ],
+        [
+          105,
+          250
+        ],
+        [
+          109,
+          251
+        ],
+        [
+          112,
+          253
+        ],
+        [
+          115,
+          255
+        ],
+        [
+          118,
+          257
+        ]
+      ],
+      "x": 52,
+      "y": 287,
+      "dataType": "STEP",
+      "group": "steps"
+    },
+    {
+      "id": "l008",
+      "name": "Steps",
+      "kind": "TEXT_IMG",
+      "show": "normal",
+      "visible": true,
+      "images": [
+        "reading-0.png",
+        "reading-1.png",
+        "reading-2.png",
+        "reading-3.png",
+        "reading-4.png",
+        "reading-5.png",
+        "reading-6.png",
+        "reading-7.png",
+        "reading-8.png",
+        "reading-9.png"
+      ],
+      "group": "steps",
+      "dataType": "STEP",
+      "x": 55,
+      "y": 295,
+      "w": 86,
+      "hSpace": -1,
+      "alignH": "CENTER_H",
+      "unit": ""
+    },
+    {
+      "id": "l009",
+      "name": "Heart progress",
+      "kind": "ARC_PROGRESS",
+      "show": "normal",
+      "visible": true,
+      "dataType": "HEART",
+      "centerX": 195,
+      "centerY": 290,
+      "radius": 43,
+      "startAngle": -90,
+      "endAngle": 35,
+      "lineWidth": 5,
+      "color": "#ff790a",
+      "group": "heart",
+      "previewOnly": true
+    },
+    {
+      "id": "l010",
+      "name": "Heart rate",
+      "kind": "TEXT_IMG",
+      "show": "normal",
+      "visible": true,
+      "images": [
+        "reading-0.png",
+        "reading-1.png",
+        "reading-2.png",
+        "reading-3.png",
+        "reading-4.png",
+        "reading-5.png",
+        "reading-6.png",
+        "reading-7.png",
+        "reading-8.png",
+        "reading-9.png"
+      ],
+      "group": "heart",
+      "dataType": "HEART",
+      "x": 169,
+      "y": 289,
+      "w": 52,
+      "hSpace": -1,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "previewOnly": true
+    },
+    {
+      "id": "l011",
+      "name": "Battery progress",
+      "kind": "ARC_PROGRESS",
+      "show": "normal",
+      "visible": true,
+      "dataType": "BATTERY",
+      "centerX": 292,
+      "centerY": 294,
+      "radius": 43,
+      "startAngle": -90,
+      "endAngle": 8,
+      "lineWidth": 5,
+      "color": "#ff790a",
+      "group": "battery",
+      "previewOnly": true
+    },
+    {
+      "id": "l012",
+      "name": "Battery",
+      "kind": "TEXT_IMG",
+      "show": "normal",
+      "visible": true,
+      "images": [
+        "reading-0.png",
+        "reading-1.png",
+        "reading-2.png",
+        "reading-3.png",
+        "reading-4.png",
+        "reading-5.png",
+        "reading-6.png",
+        "reading-7.png",
+        "reading-8.png",
+        "reading-9.png"
+      ],
+      "group": "battery",
+      "dataType": "BATTERY",
+      "x": 254,
+      "y": 295,
+      "w": 76,
+      "hSpace": -1,
+      "alignH": "CENTER_H",
+      "unit": "percent.png",
+      "previewOnly": true
+    },
+    {
+      "id": "l013",
+      "name": "Minute AOD",
+      "kind": "IMG_TIME",
+      "show": "aod",
+      "visible": true,
+      "part": "minute",
+      "images": [
+        "aod-0.png",
+        "aod-1.png",
+        "aod-2.png",
+        "aod-3.png",
+        "aod-4.png",
+        "aod-5.png",
+        "aod-6.png",
+        "aod-7.png",
+        "aod-8.png",
+        "aod-9.png"
+      ],
+      "x": 207,
+      "y": 190,
+      "zero": 1,
+      "space": -2,
+      "alignH": "LEFT",
+      "group": "clockAod"
+    },
+    {
+      "id": "l014",
+      "name": "Colon AOD",
+      "kind": "IMG",
+      "show": "aod",
+      "visible": true,
+      "src": "aod-separator.png",
+      "x": 190,
+      "y": 205,
+      "w": 9,
+      "h": 40,
+      "group": "clockAod"
+    },
+    {
+      "id": "l015",
+      "name": "Hour AOD",
+      "kind": "IMG_TIME",
+      "show": "aod",
+      "visible": true,
+      "part": "hour",
+      "images": [
+        "aod-0.png",
+        "aod-1.png",
+        "aod-2.png",
+        "aod-3.png",
+        "aod-4.png",
+        "aod-5.png",
+        "aod-6.png",
+        "aod-7.png",
+        "aod-8.png",
+        "aod-9.png"
+      ],
+      "x": 96,
+      "y": 190,
+      "zero": 1,
+      "space": -2,
+      "alignH": "LEFT",
+      "group": "clockAod"
+    }
+  ],
+  "images": [
+    {
+      "name": "steel-dial.png",
+      "width": 390,
+      "height": 450
+    },
+    {
+      "name": "metal-0.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-1.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-2.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-3.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-4.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-5.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-6.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-7.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-8.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-9.png",
+      "width": 62,
+      "height": 82
+    },
+    {
+      "name": "metal-separator.png",
+      "width": 24,
+      "height": 47
+    },
+    {
+      "name": "day-0.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-1.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-2.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-3.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-4.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-5.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-6.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-7.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-8.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "day-9.png",
+      "width": 18,
+      "height": 23
+    },
+    {
+      "name": "week-mon.png",
+      "width": 63,
+      "height": 23
+    },
+    {
+      "name": "week-tue.png",
+      "width": 63,
+      "height": 23
+    },
+    {
+      "name": "week-wed.png",
+      "width": 63,
+      "height": 23
+    },
+    {
+      "name": "week-thu.png",
+      "width": 63,
+      "height": 23
+    },
+    {
+      "name": "week-fri.png",
+      "width": 63,
+      "height": 23
+    },
+    {
+      "name": "week-sat.png",
+      "width": 63,
+      "height": 23
+    },
+    {
+      "name": "week-sun.png",
+      "width": 63,
+      "height": 23
+    },
+    {
+      "name": "reading-0.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-1.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-2.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-3.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-4.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-5.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-6.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-7.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-8.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-9.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "percent.png",
+      "width": 22,
+      "height": 19
+    },
+    {
+      "name": "step-arc-00.png",
+      "width": 11,
+      "height": 10
+    },
+    {
+      "name": "step-arc-01.png",
+      "width": 10,
+      "height": 10
+    },
+    {
+      "name": "step-arc-02.png",
+      "width": 11,
+      "height": 10
+    },
+    {
+      "name": "step-arc-03.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-04.png",
+      "width": 11,
+      "height": 10
+    },
+    {
+      "name": "step-arc-05.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-06.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-07.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-08.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-09.png",
+      "width": 11,
+      "height": 12
+    },
+    {
+      "name": "step-arc-10.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-11.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-12.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-13.png",
+      "width": 10,
+      "height": 10
+    },
+    {
+      "name": "step-arc-14.png",
+      "width": 10,
+      "height": 11
+    },
+    {
+      "name": "step-arc-15.png",
+      "width": 10,
+      "height": 11
+    },
+    {
+      "name": "step-arc-16.png",
+      "width": 10,
+      "height": 11
+    },
+    {
+      "name": "step-arc-17.png",
+      "width": 10,
+      "height": 10
+    },
+    {
+      "name": "step-arc-18.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-19.png",
+      "width": 10,
+      "height": 11
+    },
+    {
+      "name": "step-arc-20.png",
+      "width": 10,
+      "height": 11
+    },
+    {
+      "name": "step-arc-21.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-22.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "step-arc-23.png",
+      "width": 11,
+      "height": 11
+    },
+    {
+      "name": "aod-0.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-1.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-2.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-3.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-4.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-5.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-6.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-7.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-8.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-9.png",
+      "width": 44,
+      "height": 70
+    },
+    {
+      "name": "aod-separator.png",
+      "width": 9,
+      "height": 40
+    },
+    {
+      "name": "reading-blank.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-dash.png",
+      "width": 18,
+      "height": 22
+    },
+    {
+      "name": "reading-percent.png",
+      "width": 22,
+      "height": 22
+    }
+  ],
+  "userImports": "import { HeartRate as GaugeHeartRate, Battery as GaugeBattery } from '@zos/sensor'",
+  "userCode": "{\n  const normal = ui.show_level.ONLY_NORMAL\n  const digitWidth = 18\n  const digitHeight = 22\n  const advance = 17\n  const percentWidth = 22\n  const blank = A('reading-blank.png')\n\n  function makeReading(center, top, percent) {\n    const slots = Array.from({ length: 3 }, () =>\n      ui.createWidget(ui.widget.IMG, {\n        x: pxv(center), y: pxv(top), w: pxv(digitWidth), h: pxv(digitHeight),\n        src: blank, show_level: normal,\n      })\n    )\n    const suffix = percent ? ui.createWidget(ui.widget.IMG, {\n      x: pxv(center), y: pxv(top), w: pxv(percentWidth), h: pxv(digitHeight),\n      src: blank, show_level: normal,\n    }) : null\n    let previous\n    return (value) => {\n      if (previous === value) return\n      const digits = value === null ? '--' : String(value)\n      const showPercent = percent && value !== null\n      const textWidth = digitWidth + (digits.length - 1) * advance\n      const width = textWidth + (showPercent ? percentWidth : 0)\n      const left = Math.round(center - width / 2)\n      slots.forEach((slot, index) => {\n        const char = digits[index]\n        const src = char ? A(char === '-' ? 'reading-dash.png' : 'reading-' + char + '.png') : blank\n        slot.setProperty(ui.prop.MORE, { x: pxv(left + index * advance), src })\n      })\n      if (suffix) suffix.setProperty(ui.prop.MORE, {\n        x: pxv(left + textWidth - 1),\n        src: showPercent ? A('reading-percent.png') : blank,\n      })\n      previous = value\n    }\n  }\n\n  function makeRing(centerX, centerY, sweep) {\n    return ui.createWidget(ui.widget.ARC_PROGRESS, {\n      center_x: pxv(centerX), center_y: pxv(centerY), radius: pxv(43),\n      start_angle: 0, end_angle: sweep, line_width: pxv(5),\n      color: 0xff790a, level: 0, show_level: normal,\n    })\n  }\n\n  function makeSensor(Sensor) {\n    try { return new Sensor() } catch (error) { return null }\n  }\n\n  function readSensor(sensor, method, min, max) {\n    try {\n      const value = sensor[method]()\n      return Number.isFinite(value) && value >= min && value <= max ? Math.round(value) : null\n    } catch (error) {\n      return null\n    }\n  }\n\n  const heart = makeSensor(GaugeHeartRate)\n  const battery = makeSensor(GaugeBattery)\n  const heartRing = makeRing(195, 290, 125)\n  const batteryRing = makeRing(292, 294, 98)\n  const displayHeart = makeReading(195, 289, false)\n  const displayBattery = makeReading(292, 295, true)\n\n  function updateHeart() {\n    const value = readSensor(heart, 'getLast', 1, 255)\n    displayHeart(value)\n    heartRing.setProperty(ui.prop.LEVEL, value === null ? 0 : Math.min(100, value))\n  }\n\n  function updateBattery() {\n    const value = readSensor(battery, 'getCurrent', 0, 100)\n    displayBattery(value)\n    batteryRing.setProperty(ui.prop.LEVEL, value === null ? 0 : value)\n  }\n\n  function update() {\n    updateHeart()\n    updateBattery()\n  }\n\n  update()\n  // Refresh when passive heart-rate data changes, and after waking the face.\n  let refreshTimer = null\n  function start() {\n    update()\n    if (refreshTimer === null) refreshTimer = setInterval(update, 15000)\n  }\n  function stop() {\n    if (refreshTimer !== null) clearInterval(refreshTimer)\n    refreshTimer = null\n  }\n  try { if (heart) heart.onLastChange(updateHeart) } catch (error) {}\n  try { if (battery) battery.onChange(updateBattery) } catch (error) {}\n  ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: start, pause_call: stop })\n}\n"
+}

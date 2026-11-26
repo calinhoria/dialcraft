@@ -1,0 +1,862 @@
+{
+  "version": 1,
+  "name": "Jurassic Park",
+  "device": "bip-6",
+  "appId": 29163,
+  "vender": "dialcraft",
+  "description": "Jurassic Park cinema watchface for Amazfit Bip 6 with live readings and a minimal always-on display.",
+  "font": "Roboto Condensed",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [],
+  "groups": {
+    "gmwwp6jam9s": "Clock",
+    "gmwwp6jg87x": "Clock AOD",
+    "gmwwp6jhy98": "Date"
+  },
+  "elements": [
+    {
+      "id": "elmwwp6jhj3d0",
+      "kind": "IMG",
+      "name": "Artwork and stat icons",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "cinema-artwork.png"
+    },
+    {
+      "id": "elmwwp6j9z540",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 205,
+      "y": 270,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6jam9s",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 1,
+      "images": [
+        "clock-sheet/digit-0.png",
+        "clock-sheet/digit-1.png",
+        "clock-sheet/digit-2.png",
+        "clock-sheet/digit-3.png",
+        "clock-sheet/digit-4.png",
+        "clock-sheet/digit-5.png",
+        "clock-sheet/digit-6.png",
+        "clock-sheet/digit-7.png",
+        "clock-sheet/digit-8.png",
+        "clock-sheet/digit-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmwwp6j9z6m7",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 190,
+      "y": 270,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6jam9s",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "clock-sheet/colon.png",
+      "link": {
+        "kind": "between",
+        "a": "elmwwp6j9z3xp",
+        "b": "elmwwp6j9z540",
+        "gap": 13,
+        "x": 131,
+        "y": 108
+      },
+      "space": -3,
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      }
+    },
+    {
+      "id": "elmwwp6j9z3xp",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 124,
+      "y": 270,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6jam9s",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 1,
+      "images": [
+        "clock-sheet/digit-0.png",
+        "clock-sheet/digit-1.png",
+        "clock-sheet/digit-2.png",
+        "clock-sheet/digit-3.png",
+        "clock-sheet/digit-4.png",
+        "clock-sheet/digit-5.png",
+        "clock-sheet/digit-6.png",
+        "clock-sheet/digit-7.png",
+        "clock-sheet/digit-8.png",
+        "clock-sheet/digit-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmwwp6jb52ws",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 118,
+      "y": 2,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6jhy98",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Lato",
+        "size": 36,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmwwp6jc018q",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 211,
+      "y": 2,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6jhy98",
+      "alpha": 255,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -3,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Lato",
+        "size": 36,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwwp6jew6qc",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 64,
+      "y": 392,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "fitted/steps-0.png",
+        "fitted/steps-1.png",
+        "fitted/steps-2.png",
+        "fitted/steps-3.png",
+        "fitted/steps-4.png",
+        "fitted/steps-5.png",
+        "fitted/steps-6.png",
+        "fitted/steps-7.png",
+        "fitted/steps-8.png",
+        "fitted/steps-9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": ""
+    },
+    {
+      "id": "elmwwp6jfa5cc",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 190,
+      "y": 393,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Lato",
+        "size": 25,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fffdf8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwwp6jfq4p1",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 297,
+      "y": 392,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "fitted/battery-0.png",
+        "fitted/battery-1.png",
+        "fitted/battery-2.png",
+        "fitted/battery-3.png",
+        "fitted/battery-4.png",
+        "fitted/battery-5.png",
+        "fitted/battery-6.png",
+        "fitted/battery-7.png",
+        "fitted/battery-8.png",
+        "fitted/battery-9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "CENTER_H",
+      "unit": "fitted/battery-unit.png",
+      "dot": "",
+      "negative": ""
+    },
+    {
+      "id": "elmwwp6jg51bv",
+      "kind": "IMG_TIME",
+      "name": "Minute AOD",
+      "x": 206,
+      "y": 193,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6jg87x",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 1,
+      "images": [
+        "aligned-clock/minute-aod-0.png",
+        "aligned-clock/minute-aod-1.png",
+        "aligned-clock/minute-aod-2.png",
+        "aligned-clock/minute-aod-3.png",
+        "aligned-clock/minute-aod-4.png",
+        "aligned-clock/minute-aod-5.png",
+        "aligned-clock/minute-aod-6.png",
+        "aligned-clock/minute-aod-7.png",
+        "aligned-clock/minute-aod-8.png",
+        "aligned-clock/minute-aod-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmwwp6jg53ij",
+      "kind": "IMG",
+      "name": "Colon AOD",
+      "x": 184,
+      "y": 200,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6jg87x",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fitted/colon-aod-0.png",
+      "link": {
+        "kind": "between",
+        "a": "elmwwp6jg52k2",
+        "b": "elmwwp6jg51bv",
+        "gap": 17,
+        "x": 131,
+        "y": 108
+      },
+      "space": -3,
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmwwp6jg52k2",
+      "kind": "IMG_TIME",
+      "name": "Hour AOD",
+      "x": 91,
+      "y": 193,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6jg87x",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 1,
+      "images": [
+        "aligned-clock/hour-aod-0.png",
+        "aligned-clock/hour-aod-1.png",
+        "aligned-clock/hour-aod-2.png",
+        "aligned-clock/hour-aod-3.png",
+        "aligned-clock/hour-aod-4.png",
+        "aligned-clock/hour-aod-5.png",
+        "aligned-clock/hour-aod-6.png",
+        "aligned-clock/hour-aod-7.png",
+        "aligned-clock/hour-aod-8.png",
+        "aligned-clock/hour-aod-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    }
+  ],
+  "images": [
+    {
+      "name": "aligned-clock/hour-aod-0.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-1.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-2.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-3.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-4.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-5.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-6.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-7.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-8.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/hour-aod-9.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-0.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-1.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-2.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-3.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-4.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-5.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-6.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-7.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-8.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "aligned-clock/minute-aod-9.png",
+      "width": 43,
+      "height": 65
+    },
+    {
+      "name": "fitted/battery-0.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-1.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-2.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-3.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-4.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-5.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-6.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-7.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-8.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-9.png",
+      "width": 18,
+      "height": 26
+    },
+    {
+      "name": "fitted/battery-unit.png",
+      "width": 23,
+      "height": 26
+    },
+    {
+      "name": "fitted/colon-aod-0.png",
+      "width": 16,
+      "height": 50
+    },
+    {
+      "name": "fitted/steps-0.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-1.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-2.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-3.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-4.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-5.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-6.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-7.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-8.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "fitted/steps-9.png",
+      "width": 19,
+      "height": 26
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 20,
+      "height": 26
+    },
+    {
+      "name": "week_w1.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w2.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w3.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w4.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w5.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w6.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w7.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "clock-sheet/digit-0.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-1.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-2.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-3.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-4.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-5.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-6.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-7.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-8.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/digit-9.png",
+      "width": 31,
+      "height": 65
+    },
+    {
+      "name": "clock-sheet/colon.png",
+      "width": 12,
+      "height": 63
+    },
+    {
+      "name": "cinema-artwork.png",
+      "width": 390,
+      "height": 450
+    }
+  ],
+  "savePath": null,
+  "optimizePng": "lossless"
+}

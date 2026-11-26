@@ -1204,6 +1204,10 @@ function elBox(e) {
         || (e.kind === 'IMG_ANIM' ? imgMeta((e.frames || []).find(Boolean)) : null);
       const w = num(e.w, 0) || (m ? m.width : 60);
       const h = num(e.h, 0) || (m ? m.height : 60);
+      if (e.solarDial?.role === 'marker') {
+        const point = solarDialPoint(e.solarDial, solarPreviewState().angle);
+        return { x: Math.round(point.x - w / 2), y: Math.round(point.y - h / 2), w, h };
+      }
       return { x: num(e.x), y: num(e.y), w, h };
     }
     case 'TEXT': return { x: num(e.x), y: num(e.y), w: num(e.w, 200), h: num(e.h, 40) };
@@ -1292,6 +1296,10 @@ function variantIndexOf(e, n) {
 }
 function pictureOf(e) {
   const v = variantList(e);
+  if (v && e.solarDial) {
+    const state = solarPreviewState();
+    return v[e.solarDial.role === 'sky' ? state.sky : Number(!state.day)] || e.src;
+  }
   if (v && typeof codeRunPick === 'function') { const p = codeRunPick(e); if (p !== undefined) return p; }
   return v ? v[variantIndexOf(e, v.length)] : e.src;
 }
@@ -1341,7 +1349,7 @@ function syncVariantSel() {
   syncThemeSel();
   const sel = $('variantSel');
   if (!sel) return;
-  const lay = project ? elements().find((e) => variantList(e)) : null;
+  const lay = project ? elements().find((e) => variantList(e) && !e.solarDial) : null;
   sel.hidden = !lay;
   if (!lay) return;
   const n = variantList(lay).length;
@@ -1361,6 +1369,33 @@ function clockMinutes(v) {
   const m = /^\s*(\d{1,2})\s*:\s*(\d{2})/.exec(String(v == null ? '' : v));
   return m && +m[1] < 24 && +m[2] < 60 ? +m[1] * 60 + +m[2] : null;
 }
+function solarPreviewState() {
+  return solarDialState(clock.h * 60 + clock.m, clockMinutes(testData.SUN_RISE), clockMinutes(testData.SUN_SET));
+}
+
+function drawSolarTrack(c, dial) {
+  const state = solarPreviewState();
+  const rad = (angle) => (angle - 90) * Math.PI / 180;
+  c.save();
+  c.lineWidth = 2;
+  c.strokeStyle = '#536d9d';
+  c.beginPath();
+  c.arc(dial.centerX, dial.centerY, dial.trackRadius, 0, 2 * Math.PI);
+  c.stroke();
+  c.strokeStyle = '#f6be59';
+  c.beginPath();
+  c.arc(dial.centerX, dial.centerY, dial.trackRadius, rad(state.sunrise), rad(state.sunset));
+  c.stroke();
+  state.twilight.forEach((angle, index) => {
+    const point = solarDialPoint(dial, angle, dial.trackRadius - 8);
+    c.fillStyle = ['#dfaa81', '#b594c7', '#8299d3'][Math.floor(index / 2)];
+    c.beginPath();
+    c.arc(Math.round(point.x), Math.round(point.y), 2, 0, 2 * Math.PI);
+    c.fill();
+  });
+  c.restore();
+}
+
 function whenAllows(e, h = clock.h) {
   if (!e.showWhen) return true;
   if (e.showWhen === 'sunset' || e.showWhen === 'sunrise') {
@@ -1925,6 +1960,7 @@ function drawElement(c, e) {
     }
     case 'IMG': {
       const b = elBox(e);
+      if (e.solarDial?.role === 'marker') drawSolarTrack(c, e.solarDial);
       if (e.angle) putRot(c, pictureOf(e), b.x, b.y, b.w, b.h, +e.angle, +e.centerX || b.x + b.w / 2, +e.centerY || b.y + b.h / 2);
       else {
         // the watch draws the picture at its own pixel size and clips it to the

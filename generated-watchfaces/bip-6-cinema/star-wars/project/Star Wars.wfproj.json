@@ -1,0 +1,909 @@
+{
+  "version": 1,
+  "name": "Star Wars",
+  "device": "bip-6",
+  "appId": 29162,
+  "vender": "dialcraft",
+  "description": "Star Wars cinema watchface for Amazfit Bip 6 with live readings and a minimal always-on display.",
+  "font": "Orbitron",
+  "language": "en-US",
+  "i18n": {
+    "languages": [],
+    "names": {},
+    "strings": {},
+    "meta": {}
+  },
+  "fonts": [],
+  "groups": {
+    "gmwwp6m9ylk": "Clock",
+    "gmwwp6milnp": "Clock AOD",
+    "gmwwp6mkn6b": "Date"
+  },
+  "elements": [
+    {
+      "id": "elmwwp6mk76ea",
+      "kind": "IMG",
+      "name": "Artwork and stat icons",
+      "x": 0,
+      "y": 0,
+      "show": "normal",
+      "visible": true,
+      "locked": true,
+      "group": null,
+      "alpha": 255,
+      "w": 390,
+      "h": 450,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "cinema-artwork.png"
+    },
+    {
+      "id": "elmwwp6m8x5n4",
+      "kind": "IMG_TIME",
+      "name": "Minute",
+      "x": 206,
+      "y": 146,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6m9ylk",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 1,
+      "images": [
+        "clock-sheet/digit-0.png",
+        "clock-sheet/digit-1.png",
+        "clock-sheet/digit-2.png",
+        "clock-sheet/digit-3.png",
+        "clock-sheet/digit-4.png",
+        "clock-sheet/digit-5.png",
+        "clock-sheet/digit-6.png",
+        "clock-sheet/digit-7.png",
+        "clock-sheet/digit-8.png",
+        "clock-sheet/digit-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "aidPad": 7
+    },
+    {
+      "id": "elmwwp6m8xr5",
+      "kind": "IMG",
+      "name": "Colon",
+      "x": 184,
+      "y": 148,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6m9ylk",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "clock-sheet/colon.png",
+      "link": {
+        "kind": "between",
+        "a": "elmwwp6m8x1z6",
+        "b": "elmwwp6m8x5n4",
+        "gap": 14,
+        "x": 135,
+        "y": 99
+      },
+      "space": -9,
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a.png"
+      },
+      "aidPad": 7
+    },
+    {
+      "id": "elmwwp6m8x1z6",
+      "kind": "IMG_TIME",
+      "name": "Hour",
+      "x": 69,
+      "y": 146,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6m9ylk",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 1,
+      "images": [
+        "clock-sheet/digit-0.png",
+        "clock-sheet/digit-1.png",
+        "clock-sheet/digit-2.png",
+        "clock-sheet/digit-3.png",
+        "clock-sheet/digit-4.png",
+        "clock-sheet/digit-5.png",
+        "clock-sheet/digit-6.png",
+        "clock-sheet/digit-7.png",
+        "clock-sheet/digit-8.png",
+        "clock-sheet/digit-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0,
+      "aidPad": 7
+    },
+    {
+      "id": "elmwwp6mai2jl",
+      "kind": "IMG_WEEK",
+      "name": "Weekday",
+      "x": 115,
+      "y": 8,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6mkn6b",
+      "alpha": 255,
+      "images": [
+        "week_w1.png",
+        "week_w2.png",
+        "week_w3.png",
+        "week_w4.png",
+        "week_w5.png",
+        "week_w6.png",
+        "week_w7.png"
+      ],
+      "glyph": {
+        "font": "Lato",
+        "size": 36,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "labelAlign": "right"
+    },
+    {
+      "id": "elmwwp6mbn6a0",
+      "kind": "IMG_DATE",
+      "name": "Day",
+      "x": 208,
+      "y": 8,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6mkn6b",
+      "alpha": 255,
+      "images": [
+        "font_6_0.png",
+        "font_6_1.png",
+        "font_6_2.png",
+        "font_6_3.png",
+        "font_6_4.png",
+        "font_6_5.png",
+        "font_6_6.png",
+        "font_6_7.png",
+        "font_6_8.png",
+        "font_6_9.png"
+      ],
+      "part": "day",
+      "zero": 0,
+      "follow": 0,
+      "space": -3,
+      "unit": "",
+      "isCharacter": false,
+      "glyph": {
+        "font": "Lato",
+        "size": 36,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#ffffff",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      },
+      "alignH": "LEFT"
+    },
+    {
+      "id": "elmwwp6mgq6nq",
+      "kind": "TEXT_IMG",
+      "name": "Steps",
+      "x": 32,
+      "y": 396,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "STEP",
+      "images": [
+        "font_7_0.png",
+        "font_7_1.png",
+        "font_7_2.png",
+        "font_7_3.png",
+        "font_7_4.png",
+        "font_7_5.png",
+        "font_7_6.png",
+        "font_7_7.png",
+        "font_7_8.png",
+        "font_7_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Lato",
+        "size": 26,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fffdf8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwwp6mhf8x",
+      "kind": "TEXT_IMG",
+      "name": "Heart rate",
+      "x": 163,
+      "y": 396,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "HEART",
+      "images": [
+        "font_8_0.png",
+        "font_8_1.png",
+        "font_8_2.png",
+        "font_8_3.png",
+        "font_8_4.png",
+        "font_8_5.png",
+        "font_8_6.png",
+        "font_8_7.png",
+        "font_8_8.png",
+        "font_8_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "CENTER_H",
+      "unit": "",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Lato",
+        "size": 26,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fffdf8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwwp6mi1k7",
+      "kind": "TEXT_IMG",
+      "name": "Battery",
+      "x": 262,
+      "y": 396,
+      "show": "normal",
+      "visible": true,
+      "locked": false,
+      "group": null,
+      "alpha": 255,
+      "dataType": "BATTERY",
+      "images": [
+        "font_2_0.png",
+        "font_2_1.png",
+        "font_2_2.png",
+        "font_2_3.png",
+        "font_2_4.png",
+        "font_2_5.png",
+        "font_2_6.png",
+        "font_2_7.png",
+        "font_2_8.png",
+        "font_2_9.png"
+      ],
+      "hSpace": -3,
+      "alignH": "CENTER_H",
+      "unit": "percent.png",
+      "dot": "",
+      "negative": "",
+      "glyph": {
+        "font": "Lato",
+        "size": 26,
+        "weight": 700,
+        "variations": "",
+        "fill": "solid",
+        "color": "#fffdf8",
+        "from": "#ffd400",
+        "to": "#ff2d55",
+        "angle": 180,
+        "css": "linear-gradient(180deg, #ffd400, #ff2d55)",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 2,
+        "bold": false,
+        "italic": false,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "shadowColor": "#000000",
+        "shadowX": 0,
+        "shadowY": 0,
+        "shadowBlur": 0
+      }
+    },
+    {
+      "id": "elmwwp6mij3ox",
+      "kind": "IMG_TIME",
+      "name": "Minute AOD",
+      "x": 197,
+      "y": 193,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6milnp",
+      "alpha": 255,
+      "part": "minute",
+      "zero": 1,
+      "follow": 0,
+      "space": 1,
+      "images": [
+        "aligned-clock/minute-aod-0.png",
+        "aligned-clock/minute-aod-1.png",
+        "aligned-clock/minute-aod-2.png",
+        "aligned-clock/minute-aod-3.png",
+        "aligned-clock/minute-aod-4.png",
+        "aligned-clock/minute-aod-5.png",
+        "aligned-clock/minute-aod-6.png",
+        "aligned-clock/minute-aod-7.png",
+        "aligned-clock/minute-aod-8.png",
+        "aligned-clock/minute-aod-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    },
+    {
+      "id": "elmwwp6mij5n2",
+      "kind": "IMG",
+      "name": "Colon AOD",
+      "x": 180,
+      "y": 199,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6milnp",
+      "alpha": 255,
+      "w": 0,
+      "h": 0,
+      "angle": 0,
+      "posX": 0,
+      "posY": 0,
+      "src": "fitted/colon-aod-0.png",
+      "link": {
+        "kind": "between",
+        "a": "elmwwp6mijz7",
+        "b": "elmwwp6mij3ox",
+        "gap": 17,
+        "x": 145,
+        "y": 106
+      },
+      "space": -3,
+      "symbol": {
+        "char": ":",
+        "name": "symbol_u003a_2.png"
+      }
+    },
+    {
+      "id": "elmwwp6mijz7",
+      "kind": "IMG_TIME",
+      "name": "Hour AOD",
+      "x": 82,
+      "y": 193,
+      "show": "aod",
+      "visible": true,
+      "locked": false,
+      "group": "gmwwp6milnp",
+      "alpha": 255,
+      "part": "hour",
+      "zero": 1,
+      "follow": 0,
+      "space": 1,
+      "images": [
+        "aligned-clock/hour-aod-0.png",
+        "aligned-clock/hour-aod-1.png",
+        "aligned-clock/hour-aod-2.png",
+        "aligned-clock/hour-aod-3.png",
+        "aligned-clock/hour-aod-4.png",
+        "aligned-clock/hour-aod-5.png",
+        "aligned-clock/hour-aod-6.png",
+        "aligned-clock/hour-aod-7.png",
+        "aligned-clock/hour-aod-8.png",
+        "aligned-clock/hour-aod-9.png"
+      ],
+      "unit": "",
+      "am": "",
+      "pm": "",
+      "amX": 0,
+      "amY": 0,
+      "pmX": 0,
+      "pmY": 0
+    }
+  ],
+  "images": [
+    {
+      "name": "aligned-clock/hour-aod-0.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-1.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-2.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-3.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-4.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-5.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-6.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-7.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-8.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/hour-aod-9.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-0.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-1.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-2.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-3.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-4.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-5.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-6.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-7.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-8.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "aligned-clock/minute-aod-9.png",
+      "width": 45,
+      "height": 64
+    },
+    {
+      "name": "fitted/colon-aod-0.png",
+      "width": 10,
+      "height": 52
+    },
+    {
+      "name": "font_2_0.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_1.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_2.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_3.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_4.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_5.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_6.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_7.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_8.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_2_9.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_6_0.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_1.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_2.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_3.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_4.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_5.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_6.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_7.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_8.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_6_9.png",
+      "width": 26,
+      "height": 52
+    },
+    {
+      "name": "font_7_0.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_1.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_2.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_3.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_4.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_5.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_6.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_7.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_8.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_7_9.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_0.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_1.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_2.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_3.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_4.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_5.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_6.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_7.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_8.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "font_8_9.png",
+      "width": 21,
+      "height": 27
+    },
+    {
+      "name": "percent.png",
+      "width": 26,
+      "height": 27
+    },
+    {
+      "name": "week_w1.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w2.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w3.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w4.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w5.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w6.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "week_w7.png",
+      "width": 91,
+      "height": 52
+    },
+    {
+      "name": "clock-sheet/digit-0.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-1.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-2.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-3.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-4.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-5.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-6.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-7.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-8.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/digit-9.png",
+      "width": 54,
+      "height": 54
+    },
+    {
+      "name": "clock-sheet/colon.png",
+      "width": 16,
+      "height": 51
+    },
+    {
+      "name": "cinema-artwork.png",
+      "width": 390,
+      "height": 450
+    }
+  ],
+  "savePath": null,
+  "optimizePng": "lossless"
+}

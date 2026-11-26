@@ -1,0 +1,18 @@
+Solar Dial - Zepp Console release form
+
+=== English (US) (en-US) ===
+Watch Face Name: Solar Dial
+Watch Face Preview: preview-390x450.png
+Watch Face Description (117/400):
+A 24-hour solar dial with a moving sun and moon, a phase-colored sky, twilight markers, and local sunrise and sunset.
+
+=== Review Notes (English) ===
+Solar Dial is a watch face made with Dialcraft, a watch face designer for Zepp OS, and built with the Zeus CLI for Amazfit Bip 6 (390x450, rounded-rectangle screen).
+
+- The preview pictures show the face in its normal (non-AOD) state at 10:09:36, in the shape of the screen, with transparent corners.
+- Data it shows, all read from the watch's own sensors: Sunrise, Sunset.
+- Contains animation, drawn by the face itself; it stops in always-on mode.
+- It has its own always-on display (AOD) design.
+- The face itself makes no network requests, has no app-side or settings page and stores nothing about the user. Weather and sun times are the values the watch already receives from the Zepp app.
+
+Thank you for reviewing.

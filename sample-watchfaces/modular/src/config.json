@@ -1,0 +1,57 @@
+{
+ "consts": {
+  "TIME_SPACE": -2,
+  "TIME_CY": 107,
+  "TIME_CX": 264,
+  "COLON_GAP": 5,
+  "DATE_CX": 293.5,
+  "DATE_CY": 50,
+  "DATE_GAP": 13,
+  "DATE_R": 348,
+  "LAB_SIZE": 28,
+  "FC_SIZE": 24,
+  "VAL_CY": 398,
+  "READ_SPACE": -2,
+  "DAY_SPACE": 0,
+  "ROW_RIGHT": 360,
+  "SUN_LIFT": 3
+ },
+ "scene": {
+  "clock": {
+   "h": 16,
+   "m": 25,
+   "s": 0
+  },
+  "date": {
+   "day": 21,
+   "month": 4,
+   "year": 2026,
+   "weekday": 2
+  },
+  "data": {
+   "HEART": 72,
+   "STEP": 6843,
+   "BATTERY": 92,
+   "WEATHER_CURRENT": 28,
+   "WEATHER_HIGH": 31,
+   "WEATHER_LOW": 24,
+   "WEATHER": 0,
+   "CAL": 390,
+   "FAT_BURNING": 63,
+   "STAND": 8,
+   "SUN_RISE": "07:02",
+   "SUN_SET": "17:43"
+  }
+ },
+ "styles": [
+  [
+   "Weekday",
+   {
+    "size": 35,
+    "color": "#EE2025",
+    "font": "Outfit Medium"
+   },
+   null
+  ]
+ ]
+}

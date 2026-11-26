@@ -1,0 +1,70 @@
+{
+  "configVersion": "v3",
+  "app": {
+    "appId": 2812016,
+    "appName": "Modular",
+    "appType": "watchface",
+    "version": {
+      "code": 1,
+      "name": "1.0.0"
+    },
+    "icon": "images/preview.png",
+    "cover": [
+      "images/preview.png"
+    ],
+    "vender": "dialcraft",
+    "description": "A modular face in the style of a smartwatch infograph: activity rings, the time, weather with the next four hours, and h"
+  },
+  "permissions": [
+    "data:user.hd.calorie",
+    "data:user.hd.fat_burning",
+    "data:user.hd.stand",
+    "data:user.hd.step"
+  ],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "4.0",
+      "target": "4.0",
+      "minVersion": "4.0"
+    },
+    "type": 0
+  },
+  "targets": {
+    "bip-6": {
+      "module": {
+        "watchface": {
+          "path": "watchface/bip-6/index",
+          "main": 1,
+          "editable": 1,
+          "lockscreen": 1
+        }
+      },
+      "platforms": [
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 9765120
+        },
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 9765121
+        },
+        {
+          "st": "s",
+          "sr": "w390",
+          "deviceSource": 10158337
+        }
+      ],
+      "designWidth": 390
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "appName": "Modular",
+      "icon": "images/preview.png"
+    }
+  },
+  "defaultLanguage": "en-US",
+  "debug": false
+}

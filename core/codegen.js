@@ -266,7 +266,7 @@ function emitElement(el, ctx, out) {
         const { cls, get } = dt.reader;
         ctx.sensors.add(cls);
         const sv = `s_${ident(el.dataType).toLowerCase()}`;
-        if (!ctx.declared.has(sv)) { lines.push(`  const ${sv} = new ${cls}()`); ctx.declared.add(sv); }
+        (ctx.sensorDecl || (ctx.sensorDecl = new Map())).set(sv, cls)   // declared once at the top of the view (see generateWatchface): a layer inside a complication choice sits in its own block
         const isTarget = /Target$/.test(el.dataType) || /getTarget/.test(get);
         const targetBased = /STEP|CAL|STAND|FAT_BURNING/.test(el.dataType) && !isTarget;
         frac = targetBased ? `${sv}.getCurrent() / (${sv}.getTarget() || 1)` : `${sv}.${get}() / ${DT_MAX[el.dataType] || 100}`;
@@ -283,7 +283,7 @@ function emitElement(el, ctx, out) {
           const off = el.mirror ? `Math.round((${total} - fill) / 2)` : el.inversion ? `${total} - fill` : '0';
           place.push(`x: px(${x0}) + ${off}`, `y: px(${y0})`, 'w: fill', `h: px(${lw})`);
         }
-        lines.push(`  const ${upd} = () => {`, `    const fill = ${fill}`, `    ${v}.setProperty(ui.prop.MORE, { ${place.join(', ')} })`, '  }', `  ${sv}.onChange(${upd})`, `  ${upd}()`);
+        lines.push(`  const ${upd} = () => {`, `    const fill = ${fill}`, `    ${v}.setProperty(ui.prop.MORE, { ${place.join(', ')} })`, '  }', `  ${sv}.onChange(${upd})`, `  refreshers.push(${upd})`, `  ${upd}()`);
       } else ctx.warnings.push(`${el.name}: ${el.dataType || 'no reading'} has no automatic reader — the bar stays empty on the watch`);
       for (const l of lines) out.push(l);
       break;
@@ -607,8 +607,10 @@ function emitElement(el, ctx, out) {
     case 'ARC_PROGRESS': {
       kv(L, 'center_x', p(el.centerX)); kv(L, 'center_y', p(el.centerY));
       kv(L, 'radius', p(el.radius));
-      kv(L, 'start_angle', num(el.startAngle));
-      kv(L, 'end_angle', num(el.endAngle));
+      // ARC_PROGRESS on a Bip 6 measures angles from 12 o'clock, clockwise (checked with a test face: an arc set 0..90 filled the top-right quarter),
+      // not from 3 o'clock as the docs and the editor do (-90 = the top there), so the export adds 90 and the watch matches the editor
+      kv(L, 'start_angle', num(el.startAngle) + 90);
+      kv(L, 'end_angle', num(el.endAngle) + 90);
       kv(L, 'line_width', p(el.lineWidth));
       kv(L, 'color', `0x${hexToNum(el.color).toString(16).padStart(6, '0')}`);
       if (el.bg) kv(L, 'src_bg', A(el.bg));
@@ -740,14 +742,16 @@ function readerFor(el, ctx) {
   // One sensor instance per data type: a layer shown in both states (or two
   // layers on the same reading) shares it, since a second `const` with the same
   // name is a syntax error that takes the whole face down.
-  const declare = !ctx.declared.has(sensorVar);
+  // the instance is declared once at the top of the view (a layer inside a complication choice sits in its own block, so a `const` made there
+  // is not visible to the same reading in another choice: "cannot read property 'onChange' of undefined" on a Bip 6)
+  (ctx.sensorDecl || (ctx.sensorDecl = new Map())).set(sensorVar, targetCls);
   const lines = [`  // ${dt.label} progress (${targetCls}.${get})`];
-  if (declare) lines.push(`  const ${sensorVar} = new ${targetCls}()`);
   lines.push(
     `  const ${updName} = () => {`,
     body,
     '  }',
     `  ${sensorVar}.onChange(${updName})`,
+    `  refreshers.push(${updName})`,
     `  ${updName}()`,
   );
   return { varName, code: lines.join('\n'), sensorVar };
@@ -1040,6 +1044,15 @@ function generateWatchface(project, device = deviceByKey(project.device)) {
     out.push('    const cycleVariants = () => {}');
   }
   // the handles are declared up front: a layer can be built inside a branch (a complication choice), and the updates below sit outside it
+  if (ctx.sensorDecl && ctx.sensorDecl.size) {
+    out.splice(bodyStart, 0, ...[...ctx.sensorDecl].map(([v, cls]) => `    const ${v} = new ${cls}()`), '    const refreshers = []   // the ring / bar updaters');
+    // the sensors' onChange does not fire reliably on the watch (a ring stayed where it was until the face was rebuilt): refresh the rings
+    // when the screen wakes and every 30 s as well
+    out.push('    // refresh the rings / bars: on wake-up and every 30 s (onChange alone left them stale)');
+    out.push('    const refreshAll = () => { for (const f of refreshers) { try { f() } catch (e) {} } }');
+    out.push('    ui.createWidget(ui.widget.WIDGET_DELEGATE, { resume_call: refreshAll })');
+    out.push('    setInterval(refreshAll, 30000)');
+  }
   if (whenVars.length || sunVars.length) out.splice(bodyStart, 0, `    let ${[...whenVars, ...sunVars].map((w) => w.v).join(', ')}   // layers shown by the hour or the sun; unset when their choice is not on screen`);
   if (whenVars.length) {
     out.push('    // lit AM / PM layers follow the hour');
@@ -1160,6 +1173,14 @@ function generateAppJson(project, device, opts = {}) {
     permissions: (() => {
       const p = [], code = `${project.userImports || ''}\n${project.userCodeBefore || ''}\n${project.userCode || ''}`;
       if ((project.elements || []).some((e) => e.visible !== false && (e.kind === 'PAI_CHART' || /^PAI_/.test(e.dataType || '')))) p.push('data:user.hd.pai');
+      // the sensor readers behind ARC_PROGRESS / BAR rings (Step, Calorie, Stand, FatBurning, HeartRate) throw "permission denied" on the watch without
+      // their codes (documented on docs.zepp.com, checked for each class page); a layer in a complication choice counts too
+      const SENSOR_PERM = { Step: 'data:user.hd.step', Calorie: 'data:user.hd.calorie', Stand: 'data:user.hd.stand', FatBurning: 'data:user.hd.fat_burning', HeartRate: 'data:user.hd.heart_rate' };
+      for (const e of project.elements || []) {
+        if (e.visible === false || (e.kind !== 'ARC_PROGRESS' && e.kind !== 'BAR')) continue;
+        const dt = dataType(e.dataType), perm = dt && dt.reader && SENSOR_PERM[dt.reader.cls];
+        if (perm && !p.includes(perm)) p.push(perm);
+      }
       if (/\bAccelerometer\b/.test(code)) p.push('device:os.accelerometer');
       if (/\bGyroscope\b/.test(code)) p.push('device:os.gyroscope');
       return p;
